@@ -10,7 +10,6 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/async-assert": "workspace:*",
     "@testring/async-breakpoints": "workspace:*",
     "@testring/element-path": "workspace:*",
     "@testring/fs-store": "workspace:*",

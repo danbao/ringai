@@ -24,7 +24,7 @@ import {generateUniqId} from '@testring/utils';
 import {PluggableModule} from '@testring/pluggable-module';
 import {createElementPath, ElementPathProxy} from '@testring/element-path';
 
-import {createAssertion} from '@testring/async-assert';
+import {createAssertion} from './async-assert';
 import {WebClient} from './web-client';
 import * as utils from './utils';
 import {
