@@ -1,6 +1,10 @@
 import * as path from 'path';
-import { PlaywrightPluginConfig } from './types';
+import { fileURLToPath } from 'url';
+import { PlaywrightPluginConfig } from './types.js';
 import { PluginAPI } from '@testring/plugin-api';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default function playwrightPlugin(
     pluginAPI: PluginAPI,

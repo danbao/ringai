@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noUnusedParameters": false,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "references": [
     {

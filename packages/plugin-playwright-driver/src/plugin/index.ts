@@ -1,4 +1,4 @@
-import { PlaywrightPluginConfig, BrowserClientItem } from '../types';
+import { PlaywrightPluginConfig, BrowserClientItem } from '../types.js';
 import {
     IBrowserProxyPlugin,
     WindowFeaturesConfig
@@ -11,7 +11,7 @@ import * as path from 'path';
 import * as os from 'os';
 
 // 导入统一的timeout配置
-const TIMEOUTS = require('@testring/timeout-config');
+import TIMEOUTS from '@testring/timeout-config';
 
 const DEFAULT_CONFIG: PlaywrightPluginConfig = {
     browserName: 'chromium',
