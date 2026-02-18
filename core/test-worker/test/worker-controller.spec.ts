@@ -1,6 +1,7 @@
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as chai from 'chai';
+import {createRequire} from 'node:module';
 import {TransportMock} from '@testring/test-utils';
 import {testAPIController, TestAPIController} from '@testring/api';
 import {
@@ -11,6 +12,7 @@ import {
 } from '@testring/types';
 import {WorkerController} from '../src/worker/worker-controller';
 
+const require = createRequire(import.meta.url);
 const TESTRING_API_ABSOLUTE_PATH = require.resolve('@testring/api').replace(/\\/g, '/');
 
 describe('WorkerController', () => {

@@ -36,6 +36,7 @@
 - [ ] 3.3 替换 CJS 特有 API（`__dirname`/`require.resolve` 等）
   - [x] 3.3.1 `packages/download-collector-crx` 替换 `__dirname` → `import.meta.url`
   - [x] 3.3.2 `packages/plugin-playwright-driver` 替换 `__dirname` → `import.meta.url`（ESM 迁移）
+  - [x] 3.3.3 `core/test-worker` 测试中替换 `require.resolve` → `createRequire(import.meta.url).resolve`
 - [ ] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
 - [ ] 3.5 重写 Transport → `MessagePort` + `birpc`
 - [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
