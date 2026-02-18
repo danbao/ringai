@@ -128,6 +128,8 @@
     "@vitest/coverage-v8": "4.0.18",
     "chai": "4.3.10",
     "eslint": "^9.39.2",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-sonarjs": "4.0.0",
     "glob": "11.0.0",
     "globals": "17.3.0",
     "lerna": "8.1.9",
