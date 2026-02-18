@@ -17,5 +17,9 @@
     "@types/babylon": "6.16.9",
     "babel-traverse": "6.26.0",
     "babylon": "6.18.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

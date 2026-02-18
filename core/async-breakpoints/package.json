@@ -17,5 +17,9 @@
   },
   "devDependencies": {
     "chai": "4.3.10"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

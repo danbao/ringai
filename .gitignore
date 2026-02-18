@@ -27,3 +27,6 @@ packages/e2e-test-app/test/playwright/test/**/*.pdf
 .wrangler
 
 .vscode
+
+# Turborepo
+.turbo

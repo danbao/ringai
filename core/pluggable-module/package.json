@@ -11,5 +11,9 @@
   "license": "MIT",
   "dependencies": {
     "@testring/types": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

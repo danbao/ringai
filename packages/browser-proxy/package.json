@@ -21,5 +21,9 @@
   },
   "devDependencies": {
     "@testring/test-utils": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

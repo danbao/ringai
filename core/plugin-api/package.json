@@ -15,5 +15,9 @@
     "@testring/types": "workspace:*",
     "@testring/utils": "workspace:*",
     "@types/node": "22.8.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

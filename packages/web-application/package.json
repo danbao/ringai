@@ -25,5 +25,9 @@
     "@testring/child-process": "workspace:*",
     "@testring/test-utils": "workspace:*",
     "@types/node": "22.8.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

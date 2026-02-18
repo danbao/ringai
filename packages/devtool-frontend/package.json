@@ -10,7 +10,8 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --config webpack.config.ts",
-    "build:watch": "webpack --config webpack.config.ts --watch --devtool inline-source-map"
+    "build:watch": "webpack --config webpack.config.ts --watch --devtool inline-source-map",
+    "test": "mocha"
   },
   "devDependencies": {
     "@testring/client-ws-transport": "workspace:*",

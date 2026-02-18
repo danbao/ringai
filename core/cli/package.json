@@ -25,5 +25,9 @@
     "@types/node": "22.8.5",
     "@types/yargs": "17.0.33",
     "yargs": "17.7.2"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

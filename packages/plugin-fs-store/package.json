@@ -19,7 +19,8 @@
     "@testring/transport": "workspace:*"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "tsc -p tsconfig.build.json"
   },
   "bugs": {
     "url": "https://github.com/ringcentral/testring/issues"

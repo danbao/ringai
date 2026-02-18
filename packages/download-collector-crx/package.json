@@ -1,19 +1,21 @@
 {
-    "name": "@testring/dwnld-collector-crx",
-    "version": "0.8.0",
-    "main": "./dist/index.js",
-    "types": "./index.d.ts",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ringcentral/testring.git"
-    },
-    "author": "RingCentral",
-    "license": "MIT",
-    "scripts": {
-        "postinstall": "shx mkdir -p dist && crx pack src/extension -o dist/extension.crx"
-    },
-    "dependencies": {
-        "crx": "5.0.1",
-        "shx": "0.3.4"
-    }
+  "name": "@testring/dwnld-collector-crx",
+  "version": "0.8.0",
+  "main": "./dist/index.js",
+  "types": "./index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ringcentral/testring.git"
+  },
+  "author": "RingCentral",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "shx mkdir -p dist && crx pack src/extension -o dist/extension.crx",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "crx": "5.0.1",
+    "shx": "0.3.4"
+  }
 }

@@ -14,5 +14,9 @@
     "@babel/plugin-transform-modules-commonjs": "7.25.9",
     "@testring/plugin-api": "workspace:*",
     "@types/babel__core": "7.20.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   }
 }

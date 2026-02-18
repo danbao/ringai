@@ -10,7 +10,8 @@
   "author": "RingCentral",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test/**/*.spec.js --recursive"
+    "test": "mocha test/**/*.spec.js --recursive",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {},
   "devDependencies": {
@@ -18,4 +19,4 @@
     "chai": "^4.3.7",
     "mocha": "^10.8.2"
   }
-} 
+}

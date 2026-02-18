@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    "build:types": {
+      "dependsOn": ["^build:types"],
+      "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
+      "outputLogs": "new-only"
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": [],
+      "outputLogs": "new-only"
+    },
+    "test:unit": {
+      "dependsOn": ["build"],
+      "outputs": [],
+      "outputLogs": "new-only"
+    },
+    "lint": {
+      "outputs": [],
+      "outputLogs": "new-only"
+    },
+    "lint:fix": {
+      "outputs": [],
+      "outputLogs": "new-only"
+    }
+  }
+}

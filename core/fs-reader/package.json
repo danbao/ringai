@@ -10,7 +10,9 @@
   "author": "RingCentral",
   "license": "MIT",
   "scripts": {
-    "test:performance": "mocha --performance --reporter spec"
+    "test:performance": "mocha --performance --reporter spec",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha"
   },
   "dependencies": {
     "@testring/logger": "workspace:*",
