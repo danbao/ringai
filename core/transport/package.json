@@ -10,9 +10,9 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/child-process": "0.8.0",
-    "@testring/types": "0.8.0",
-    "@testring/utils": "0.8.0",
+    "@testring/child-process": "workspace:*",
+    "@testring/types": "workspace:*",
+    "@testring/utils": "workspace:*",
     "@types/node": "22.8.5"
   }
 }

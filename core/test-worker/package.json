@@ -10,21 +10,21 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/api": "0.8.0",
-    "@testring/async-breakpoints": "0.8.0",
-    "@testring/child-process": "0.8.0",
-    "@testring/dependencies-builder": "0.8.0",
-    "@testring/fs-reader": "0.8.0",
-    "@testring/fs-store": "0.8.0",
-    "@testring/logger": "0.8.0",
-    "@testring/pluggable-module": "0.8.0",
-    "@testring/sandbox": "0.8.0",
-    "@testring/transport": "0.8.0",
-    "@testring/types": "0.8.0",
-    "@testring/utils": "0.8.0",
+    "@testring/api": "workspace:*",
+    "@testring/async-breakpoints": "workspace:*",
+    "@testring/child-process": "workspace:*",
+    "@testring/dependencies-builder": "workspace:*",
+    "@testring/fs-reader": "workspace:*",
+    "@testring/fs-store": "workspace:*",
+    "@testring/logger": "workspace:*",
+    "@testring/pluggable-module": "workspace:*",
+    "@testring/sandbox": "workspace:*",
+    "@testring/transport": "workspace:*",
+    "@testring/types": "workspace:*",
+    "@testring/utils": "workspace:*",
     "@types/node": "22.8.5"
   },
   "devDependencies": {
-    "@testring/test-utils": "0.8.0"
+    "@testring/test-utils": "workspace:*"
   }
 }

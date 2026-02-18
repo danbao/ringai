@@ -19,6 +19,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,19 +59,19 @@ jobs:
           fi
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright
-        run: npx playwright install chromium
+        run: pnpm exec playwright install chromium
 
       - name: Build project
-        run: npm run build:main
+        run: pnpm run build:main
 
       - name: Publish to production
         if: steps.check_publish_target.outputs.should_publish_dev == 'false'
         run: |
-          npm run publish:version ${{ github.event.inputs.version }}
-          npm run publish:ci
+          pnpm run publish:version ${{ github.event.inputs.version }}
+          pnpm run publish:ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -77,7 +80,7 @@ jobs:
       - name: Publish to dev packages
         if: steps.check_publish_target.outputs.should_publish_dev == 'true'
         run: |
-          npm run publish:dev -- --github-username=${{ steps.commit_info.outputs.github_username }} --commit-id=${{ steps.commit_info.outputs.commit_id }}
+          pnpm run publish:dev -- --github-username=${{ steps.commit_info.outputs.github_username }} --commit-id=${{ steps.commit_info.outputs.commit_id }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

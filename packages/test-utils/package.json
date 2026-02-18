@@ -16,7 +16,7 @@
     "build:watch": "tsc --watch --inlineSourceMap"
   },
   "dependencies": {
-    "@testring/types": "0.8.0"
+    "@testring/types": "workspace:*"
   },
   "devDependencies": {
     "@types/chai": "5.0.1",

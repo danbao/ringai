@@ -14,7 +14,7 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/api": "0.8.0",
-    "@testring/cli": "0.8.0"
+    "@testring/api": "workspace:*",
+    "@testring/cli": "workspace:*"
   }
 }

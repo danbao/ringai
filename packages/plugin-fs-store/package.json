@@ -11,12 +11,12 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/plugin-api": "0.8.0",
-    "@testring/types": "0.8.0",
-    "@testring/utils": "0.8.0"
+    "@testring/plugin-api": "workspace:*",
+    "@testring/types": "workspace:*",
+    "@testring/utils": "workspace:*"
   },
   "devDependencies": {
-    "@testring/transport": "0.8.0"
+    "@testring/transport": "workspace:*"
   },
   "scripts": {
     "test": "mocha"

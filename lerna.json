@@ -1,5 +1,6 @@
 {
   "independent": false,
+  "npmClient": "pnpm",
   "packages": [
     "packages/*",
     "core/*"

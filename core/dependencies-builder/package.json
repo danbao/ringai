@@ -10,9 +10,9 @@
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/test-utils": "0.8.0",
-    "@testring/types": "0.8.0",
-    "@testring/utils": "0.8.0",
+    "@testring/test-utils": "workspace:*",
+    "@testring/types": "workspace:*",
+    "@testring/utils": "workspace:*",
     "@types/babel-traverse": "6.25.10",
     "@types/babylon": "6.16.9",
     "babel-traverse": "6.26.0",

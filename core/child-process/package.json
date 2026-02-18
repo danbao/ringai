@@ -8,8 +8,8 @@
     "url": "https://github.com/ringcentral/testring.git"
   },
   "dependencies": {
-    "@testring/types": "0.8.0",
-    "@testring/utils": "0.8.0"
+    "@testring/types": "workspace:*",
+    "@testring/utils": "workspace:*"
   },
   "author": "RingCentral",
   "license": "MIT"
