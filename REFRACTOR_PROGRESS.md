@@ -13,6 +13,7 @@
 
 ## Phase 2 — 删除与替换（减法阶段）
 - [ ] 2.1 删除 `core/async-assert` → 用 `node:assert` + Chai
+  - [x] 2.1.1 web-application 移除对 @testring/async-assert 的依赖（改为本地 async-assert wrapper）
 - [ ] 2.2 删除 `core/transport/serialize` → 用 `structuredClone`
 - [ ] 2.3 删除 `packages/http-api` → 用 `fetch`
 - [ ] 2.4 删除 `core/dependencies-builder` → 用 ESM 原生解析
