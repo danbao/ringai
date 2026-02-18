@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as path from 'path';
 import * as chai from 'chai';
@@ -14,7 +13,7 @@ const testProcessPath = path.resolve(__dirname, './fixtures/test-process.ts');
 
 // TODO (flops) add more tests
 describe('WebApplicationController functional', () => {
-    it('should get messages from', (callback) => {
+    it('should get messages from', () => new Promise<void>((resolve, reject) => {
         const processID = generateUniqId();
 
         const transport = new Transport();
@@ -41,9 +40,9 @@ describe('WebApplicationController functional', () => {
                         chai.expect(message.command).to.be.equal(request);
                         chai.expect(message.applicant).includes(TEST_NAME);
 
-                        callback();
+                        resolve();
                     } catch (e) {
-                        callback(e);
+                        reject(e);
                     } finally {
                         setImmediate(() => {
                             testProcess.kill();
@@ -54,11 +53,11 @@ describe('WebApplicationController functional', () => {
 
             if (testProcess.stderr) {
                 testProcess.stderr.on('data', (message) => {
-                    callback(message.toString());
+                    reject(message.toString());
                 });
             } else {
-                callback(new Error('Failed to get STDERR'));
+                reject(new Error('Failed to get STDERR'));
             }
         });
-    }).timeout(30000);
+    }));
 });

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as chai from 'chai';
@@ -16,7 +15,7 @@ import {HttpServer} from '../src/http-server';
 
 describe('HttpServer', () => {
     describe('General', () => {
-        it('Should get data from broadcast', (callback) => {
+        it('Should get data from broadcast', () => new Promise<void>((resolve, reject) => {
             const responseMock: IHttpResponse = {
                 statusCode: 200,
                 statusMessage: '',
@@ -30,7 +29,7 @@ describe('HttpServer', () => {
             const httpServer = new HttpServer(transport, requestHandler);
 
             transport.on(HttpMessageType.reject, (error) => {
-                callback(error);
+                reject(error);
             });
 
             transport.on(HttpMessageType.response, (response) => {
@@ -38,9 +37,9 @@ describe('HttpServer', () => {
 
                 try {
                     chai.expect(response.response).to.be.equal(responseMock);
-                    callback();
+                    resolve();
                 } catch (err) {
-                    callback(err);
+                    reject(err);
                 }
             });
 
@@ -48,9 +47,9 @@ describe('HttpServer', () => {
                 uid: 'test',
                 request: {},
             });
-        });
+        }));
 
-        it('Should throw exception if data isn`t correct', (callback) => {
+        it('Should throw exception if data isn`t correct', () => new Promise<void>((resolve, reject) => {
             const rp = () => Promise.resolve();
             const transport = new TransportMock();
 
@@ -61,23 +60,23 @@ describe('HttpServer', () => {
 
                 try {
                     chai.expect(response.error).to.be.instanceOf(Error);
-                    callback();
+                    resolve();
                 } catch (err) {
-                    callback(err);
+                    reject(err);
                 }
             });
 
             transport.on(HttpMessageType.response, (response) => {
-                callback(`request complete somehow ${response}`);
+                reject(`request complete somehow ${response}`);
             });
 
             transport.broadcast(HttpMessageType.send, {
                 uid: 'test',
                 request: null,
             });
-        });
+        }));
 
-        it('Should throw exception if response isn`t correct', (callback) => {
+        it('Should throw exception if response isn`t correct', () => new Promise<void>((resolve, reject) => {
             const rp = () => Promise.resolve();
 
             const transport = new TransportMock();
@@ -89,9 +88,9 @@ describe('HttpServer', () => {
 
                 try {
                     chai.expect(response.error).to.be.instanceOf(Error);
-                    callback();
+                    resolve();
                 } catch (err) {
-                    callback(err);
+                    reject(err);
                 }
             });
 
@@ -102,17 +101,17 @@ describe('HttpServer', () => {
                         'Response error',
                     ).to.equal(true);
                 } catch (err) {
-                    callback(err);
+                    reject(err);
                 }
 
-                callback(`request complete somehow ${response}`);
+                reject(`request complete somehow ${response}`);
             });
 
             transport.broadcast(HttpMessageType.send, {
                 uid: 'test',
                 request: {},
             });
-        });
+        }));
     });
 
     describe('Hooks', () => {

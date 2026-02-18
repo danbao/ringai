@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -23,10 +22,10 @@ interface ReadOptions {
 }
 
 describe('fs-store-presets', () => {
-    before(() => {
+    beforeAll(() => {
         FSS = new FSStoreServer(10, prefix);
     });
-    after(() => {
+    afterAll(() => {
         return fs.promises.rm(tmpDir, {recursive: true});
     });
 

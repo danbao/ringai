@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as chai from 'chai';
@@ -15,7 +14,7 @@ import {WorkerController} from '../src/worker/worker-controller';
 const TESTRING_API_ABSOLUTE_PATH = require.resolve('@testring/api').replace(/\\/g, '/');
 
 describe('WorkerController', () => {
-    it('should run sync test', (callback) => {
+    it('should run sync test', () => new Promise<void>((resolve, reject) => {
         const transportMock = new TransportMock();
         const nTestAPIController = new TestAPIController();
         const workerController = new WorkerController(
@@ -31,7 +30,7 @@ describe('WorkerController', () => {
                 chai.expect(message.status).to.be.equal(TestStatus.done);
                 chai.expect(message.error).to.be.equal(null);
 
-                callback();
+                resolve();
             },
         );
 
@@ -49,9 +48,9 @@ describe('WorkerController', () => {
                 envParameters: null,
             },
         );
-    });
+    }));
 
-    it('should fail sync test correctly', (callback) => {
+    it('should fail sync test correctly', () => new Promise<void>((resolve, reject) => {
         const ERROR_TEXT = 'look ama error';
 
         const transportMock = new TransportMock();
@@ -72,7 +71,7 @@ describe('WorkerController', () => {
                     ERROR_TEXT,
                 );
 
-                callback();
+                resolve();
             },
         );
 
@@ -87,10 +86,9 @@ describe('WorkerController', () => {
                 envParameters: null,
             },
         );
-    });
+    }));
 
-    it('should run async test', function(callback) {
-        this.timeout(60000); // Increase timeout for Windows compatibility
+    it('should run async test', () => new Promise<void>((resolve, reject) => {
         const transportMock = new TransportMock();
         const workerController = new WorkerController(
             transportMock,
@@ -105,7 +103,7 @@ describe('WorkerController', () => {
                 chai.expect(message.status).to.be.equal(TestStatus.done);
                 chai.expect(message.error).to.be.equal(null);
 
-                callback();
+                resolve();
             },
         );
 
@@ -143,10 +141,9 @@ describe('WorkerController', () => {
                 envParameters: null,
             },
         );
-    });
+    }));
 
-    it('should fail async test', function(callback) {
-        this.timeout(60000); // Increase timeout for Windows compatibility
+    it('should fail async test', () => new Promise<void>((resolve, reject) => {
         const ERROR_TEXT = 'look ama error';
 
         const transportMock = new TransportMock();
@@ -166,7 +163,7 @@ describe('WorkerController', () => {
                     ERROR_TEXT,
                 );
 
-                callback();
+                resolve();
             },
         );
 
@@ -205,10 +202,9 @@ describe('WorkerController', () => {
                 envParameters: null,
             },
         );
-    });
+    }));
 
-    it('should run async test with await pending in it', function(callback) {
-        this.timeout(60000); // Increase timeout for Windows compatibility
+    it('should run async test with await pending in it', () => new Promise<void>((resolve, reject) => {
         const transportMock = new TransportMock();
         const workerController = new WorkerController(
             transportMock,
@@ -223,7 +219,7 @@ describe('WorkerController', () => {
                 chai.expect(message.status).to.be.equal(TestStatus.done);
                 chai.expect(message.error).to.be.equal(null);
 
-                callback();
+                resolve();
             },
         );
 
@@ -262,5 +258,5 @@ describe('WorkerController', () => {
                 envParameters: null,
             },
         );
-    });
+    }));
 });

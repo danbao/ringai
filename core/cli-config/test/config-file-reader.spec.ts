@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as path from 'path';
@@ -24,21 +23,21 @@ describe('config-file-reader', () => {
         });
     });
 
-    it('should load config as object from the file with unsupported extension', (callback) => {
+    it('should load config as object from the file with unsupported extension', () => new Promise<void>((resolve, reject) => {
         const filePath = path.join(__dirname, './fixtures/testring_invalid.ts');
 
         getFileConfig(filePath, {} as any)
             .then((config) => {
-                callback(`
+                reject(`
                     Config has been parsed, content:
                     ${config}
                 `);
             })
             .catch((exception) => {
                 chai.expect(exception).to.be.an.instanceof(Error);
-                callback();
+                resolve();
             });
-    });
+    }));
 
     it('should find config', async () => {
         const filePath = path.join(__dirname, './fixtures/testring.json');
@@ -60,19 +59,19 @@ describe('config-file-reader', () => {
         chai.expect(config).to.be.null;
     });
 
-    it('should throw correct exception when config file is invalid', (callback) => {
+    it('should throw correct exception when config file is invalid', () => new Promise<void>((resolve, reject) => {
         const filePath = path.join(__dirname, './fixtures/invalid.json');
 
         getFileConfig(filePath, {} as any)
             .then((config) => {
-                callback(`
+                reject(`
                     Config has been parsed, content:
                     ${config}
                 `);
             })
             .catch((exception) => {
                 chai.expect(exception).to.be.an.instanceof(SyntaxError);
-                callback();
+                resolve();
             });
-    });
+    }));
 });

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import { expect } from 'chai';
 import { PlaywrightPlugin } from '../src/plugin/index';
@@ -11,7 +10,7 @@ import playwrightPluginFactory from '../src/index';
 describe('Plugin Compatibility Summary', () => {
 
     // 增加进程监听器限制以避免警告
-    before(() => {
+    beforeAll(() => {
         process.setMaxListeners(100); // 设置足够大的限制
     });
 
@@ -116,7 +115,6 @@ describe('Plugin Compatibility Summary', () => {
         });
 
         it('should handle basic operations like Selenium', async function() {
-            this.timeout(10000); // Increased timeout for stability
 
             const applicant = 'compatibility-test';
 
@@ -182,7 +180,6 @@ describe('Plugin Compatibility Summary', () => {
         });
 
         it('should handle errors gracefully like Selenium', async function() {
-            this.timeout(8000); // Increased timeout for error scenarios
 
             const applicant = 'error-test';
 
@@ -219,7 +216,6 @@ describe('Plugin Compatibility Summary', () => {
         });
 
         it('should support multiple sessions like Selenium', async function() {
-            this.timeout(10000); // Increased timeout for multiple sessions
 
             const sessions = ['session1', 'session2'];
 
@@ -264,7 +260,6 @@ describe('Plugin Compatibility Summary', () => {
         });
 
         it('should support common test patterns', async function() {
-            this.timeout(5000);
 
             const plugin = new PlaywrightPlugin({
                 browserName: 'chromium',

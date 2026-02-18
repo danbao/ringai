@@ -1,14 +1,13 @@
 import {expect} from 'chai';
 import {createElementPath} from '../../src';
 
-const {
+import {
     getDescriptor,
     getPrivateDescriptor,
-
     checkAccessMethods,
     checkPreventExtensions,
     checkProperty,
-} = require('../utils');
+} from '../utils';
 
 describe('empty options ElementPath root.foo', () => {
     const root = createElementPath();

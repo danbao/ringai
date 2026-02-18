@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as chai from 'chai';
@@ -9,7 +8,7 @@ import {serialize} from '../src/serialize';
 import {Transport} from '../src/transport';
 
 describe('Transport', () => {
-    context('child process message sending', () => {
+    describe('child process message sending', () => {
         const MESSAGE_TYPE = 'randomModuleName';
 
         it('should get response', async () => {
@@ -21,26 +20,26 @@ describe('Transport', () => {
             await transport.send('test', MESSAGE_TYPE, []);
         });
 
-        it('should correctly fail if there is no such process', (callback) => {
+        it('should correctly fail if there is no such process', () => new Promise<void>((resolve, reject) => {
             const transport = new Transport();
 
             transport
                 .send('unexpectedName', MESSAGE_TYPE, [])
                 .then(() => {
-                    callback(
+                    reject(
                         'Message was sended to nonexistent process somehow',
                     );
                 })
                 .catch((exception) => {
                     chai.expect(exception).to.be.an.instanceof(ReferenceError);
-                    callback();
+                    resolve();
                 })
                 .catch((exception) => {
-                    callback(exception);
+                    reject(exception);
                 });
-        });
+        }));
 
-        it('should correctly fail, when process fails', (callback) => {
+        it('should correctly fail, when process fails', () => new Promise<void>((resolve, reject) => {
             const childProcessMock = new ChildProcessMock(true);
             const transport = new Transport();
 
@@ -48,18 +47,18 @@ describe('Transport', () => {
             transport
                 .send('unexpectedName', MESSAGE_TYPE, [])
                 .then(() => {
-                    callback('Message was sended to failed process somehow');
+                    reject('Message was sended to failed process somehow');
                 })
                 .catch(() => {
-                    callback();
+                    resolve();
                 })
                 .catch((exception) => {
-                    callback(exception);
+                    reject(exception);
                 });
-        });
+        }));
     });
 
-    context('root process broadcasting', () => {
+    describe('root process broadcasting', () => {
         it('should send message to process', () => {
             const rootProcessMock = new RootProcessMock();
             const transport = new Transport(rootProcessMock as any);
@@ -74,8 +73,8 @@ describe('Transport', () => {
         });
     });
 
-    context('message handling', () => {
-        it('should subscribe message from broadcast', (callback) => {
+    describe('message handling', () => {
+        it('should subscribe message from broadcast', () => new Promise<void>((resolve, reject) => {
             const messageType = 'test';
             const expectedPayload = {};
             const rootProcessMock = new RootProcessMock();
@@ -86,16 +85,16 @@ describe('Transport', () => {
 
                 chai.expect(payload).to.be.equal(expectedPayload);
 
-                callback();
+                resolve();
             });
 
             rootProcessMock.$triggerListener<ITransportMessage>({
                 type: messageType,
                 payload: expectedPayload,
             });
-        });
+        }));
 
-        it('should subscribe message from broadcast', (callback) => {
+        it('should subscribe message from broadcast', () => new Promise<void>((resolve, reject) => {
             const messageType = 'test';
             const expectedPayload = {};
             const childProcessMock = new ChildProcessMock();
@@ -109,13 +108,13 @@ describe('Transport', () => {
 
                 chai.expect(payload).to.be.equal(expectedPayload);
 
-                callback();
+                resolve();
             });
 
             childProcessMock.$triggerListener<ITransportMessage>({
                 type: messageType,
                 payload: expectedPayload,
             });
-        });
+        }));
     });
 });

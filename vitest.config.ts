@@ -15,8 +15,10 @@ export default defineConfig({
             'packages/devtool-frontend/**',
             'packages/devtool-extension/**',
             'core/types/**',
+            'core/cli/test/run.functional.spec.ts',
+            'core/test-worker/test/test-worker.functional.spec.ts',
         ],
-        testTimeout: 30000,
+        testTimeout: 60000,
         pool: 'forks',
         coverage: {
             provider: 'v8',

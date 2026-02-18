@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import { expect } from 'chai';
 import { PlaywrightPlugin } from '../src/plugin/index';
@@ -248,7 +247,6 @@ describe('Cross-Plugin Compatibility Tests', () => {
     describe('Error Behavior Compatibility', () => {
         
         it.skip('should throw similar errors for invalid operations', async function() {
-            this.timeout(10000); // Increase timeout for error handling tests
             const plugin = new PlaywrightPlugin({
                 browserName: 'chromium',
                 launchOptions: { headless: true }

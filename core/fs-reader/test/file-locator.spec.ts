@@ -1,6 +1,5 @@
 /* eslint no-unused-expressions: 0 */
 
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 

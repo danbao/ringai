@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as path from 'path';
 import * as os from 'os';
@@ -71,7 +70,6 @@ describe('testring CLI', () => {
 
     describe('Error Handling Improvements', () => {
         it('should properly report test failures with improved error logging', async function() {
-            this.timeout(60000); // 1 minute timeout
 
             const platform = os.platform();
             const isCI = process.env['CI'] === 'true';
@@ -116,7 +114,6 @@ describe('testring CLI', () => {
         });
 
         it('should handle platform-specific error reporting', async function() {
-            this.timeout(30000);
 
             const platform = os.platform();
             const isLinux = platform === 'linux';

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import {PluggableModule} from '../src/pluggable-module';
@@ -16,7 +15,7 @@ class TestModule extends PluggableModule {
 }
 
 describe('PluggableModule', () => {
-    it('should handle sync hooks', (callback) => {
+    it('should handle sync hooks', () => new Promise<void>((resolve, reject) => {
         const testData = {};
         const testModule = new TestModule();
         const hook = testModule.getHook(TestModule.hookName);
@@ -24,12 +23,12 @@ describe('PluggableModule', () => {
         if (hook) {
             hook.readHook('testPlugin', (data: any) => {
                 chai.expect(data).to.be.equal(testData);
-                callback();
+                resolve();
             });
 
             testModule.call(testData);
         }
-    });
+    }));
 
     it('should handle async hooks', async () => {
         const testData = {main: 1};

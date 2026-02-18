@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import {Transport} from '@testring/transport';
@@ -15,7 +14,7 @@ describe('TestWorkerInstance', () => {
         localWorker: false,
     };
 
-    context('test execution', () => {
+    describe('test execution', () => {
         it('should run sync test', async () => {
             const file = {
                 content: defaultSyncTestContent,
@@ -78,7 +77,7 @@ describe('TestWorkerInstance', () => {
         return execution;
     });
 
-    context('compilation', () => {
+    describe('compilation', () => {
         it('should compile source without errors', (callback) => {
             const file = {
                 content: defaultSyncTestContent,

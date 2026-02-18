@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import {IConfig} from '@testring/types';

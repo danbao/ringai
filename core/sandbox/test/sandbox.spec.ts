@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import {fileReaderFactory, fileResolverFactory} from '@testring/test-utils';
@@ -20,7 +19,7 @@ describe('Sandbox', () => {
 
     // TODO (flops) add dependencies tests
 
-    context('Compilation', () => {
+    describe('Compilation', () => {
         it('should compile module', async () => {
             const source = await fixturesFileReader('simple-module.js');
             const sandbox = new Sandbox(source, 'simple-module.js', {});
@@ -69,7 +68,7 @@ describe('Sandbox', () => {
         });
     });
 
-    context('Environment', () => {
+    describe('Environment', () => {
         it('should have all primitives provided', async () => {
             const source = await fixturesFileReader('primitives.js');
             const sandbox = new Sandbox(source, 'primitives.js', {});
@@ -134,7 +133,7 @@ describe('Sandbox', () => {
         });
     });
 
-    context('Resolve', () => {
+    describe('Resolve', () => {
         it('should import from "node_modules"', async () => {
             const source = await fixturesFileReader('external-dependency.js');
             const sandbox = new Sandbox(source, 'external-dependency.js', {});
@@ -246,7 +245,7 @@ describe('Sandbox', () => {
         });
     });
 
-    context('Exports', () => {
+    describe('Exports', () => {
         it('should correctly handle exports reference', async () => {
             const source = await fixturesFileReader('exports-reference.js');
             const sandbox = new Sandbox(source, 'exports-reference.js', {});
@@ -286,7 +285,7 @@ describe('Sandbox', () => {
         });
     });
 
-    context('Evaluate', () => {
+    describe('Evaluate', () => {
         it('Evaluate code in sandbox', async () => {
             const source = 'var test = 10;';
             const sandbox = new Sandbox(source, 'test-data.js', {});

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import { expect } from 'chai';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';

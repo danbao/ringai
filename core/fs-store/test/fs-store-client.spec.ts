@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 
@@ -15,7 +14,7 @@ interface ReadOptions {
 }
 
 describe('fs-store-client', () => {
-    before(() => {
+    beforeAll(() => {
         FSS = new FSStoreServer(10);
     });
     it('client should lock access & unlink data', (done) => {

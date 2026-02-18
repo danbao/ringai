@@ -1,6 +1,5 @@
 /* eslint no-unused-expressions: 0 */
 
-/// <reference types="mocha" />
 
 import * as path from 'path';
 import * as chai from 'chai';
@@ -34,19 +33,18 @@ const removeTestFiles = async () => {
     }
 };
 
-describe('Performance', function () {
-    this.timeout(120000);
+describe('Performance', () => {
     if (!runPerformanceTests) {
         it('Performance tests are disabled. To enable them set PERFORMANCE_TESTS=true environment variable', () => {
             chai.expect(true).to.be.true;
         });
     } else {
         describe('FSReader', () => {
-            before(async () => {
+            beforeAll(async () => {
                 await writeTestFiles(15000);
             });
 
-            after(async () => {
+            afterAll(async () => {
                 await removeTestFiles();
             });
 

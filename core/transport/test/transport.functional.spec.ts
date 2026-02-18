@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import {fork} from '@testring/child-process';
 import process from 'node:process';
@@ -13,17 +12,17 @@ import {
 import {Transport} from '../src/transport';
 
 describe('Transport functional test', () => {
-    it('should create connection between child and parent process', (callback) => {
+    it('should create connection between child and parent process', () => new Promise<void>((resolve, reject) => {
         const childEntryPath = path.resolve(__dirname, './fixtures/child.ts');
         fork(childEntryPath).then((childProcess) => {
             const transport = new Transport(process);
 
             if (childProcess.stderr) {
                 childProcess.stderr.on('data', (error) => {
-                    callback(error.toString());
+                    reject(error.toString());
                 });
             } else {
-                callback(new Error('No STDERR'));
+                reject(new Error('No STDERR'));
             }
 
             transport.registerChild(CHILD_PROCESS_NAME, childProcess);
@@ -34,9 +33,9 @@ describe('Transport functional test', () => {
                     try {
                         chai.expect(payload).to.be.deep.equal(PAYLOAD);
 
-                        callback();
+                        resolve();
                     } catch (error) {
-                        callback(error);
+                        reject(error);
                     } finally {
                         removeCallback();
                     }
@@ -45,11 +44,11 @@ describe('Transport functional test', () => {
 
             transport
                 .send(CHILD_PROCESS_NAME, REQUEST_NAME, null)
-                .catch((error) => callback(error));
+                .catch((error) => reject(error));
         });
-    });
+    }));
 
-    it("should wipe out children from registry, when it's closed", (callback) => {
+    it("should wipe out children from registry, when it's closed", () => new Promise<void>((resolve, reject) => {
         const childEntryPath = path.resolve(__dirname, './fixtures/child.ts');
 
         fork(childEntryPath).then((childProcess) => {
@@ -62,13 +61,13 @@ describe('Transport functional test', () => {
             childProcess.on('close', () => {
                 try {
                     chai.expect(transport.getProcessesList()).to.have.length(0);
-                    callback();
+                    resolve();
                 } catch (error) {
-                    callback(error);
+                    reject(error);
                 }
             });
 
             childProcess.kill();
         });
-    });
+    }));
 });

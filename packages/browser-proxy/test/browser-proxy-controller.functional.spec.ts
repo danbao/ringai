@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as path from 'path';
@@ -13,14 +12,14 @@ const syncPlugin = path.resolve(__dirname, './fixtures/sync-plugin.ts');
 const asyncPlugin = path.resolve(__dirname, './fixtures/async-plugin.ts');
 
 describe('Browser proxy controller functional test', () => {
-    it('should pass path to onAction plugin to workerCreator', (callback) => {
+    it('should pass path to onAction plugin to workerCreator', () => new Promise<void>((resolve, reject) => {
         const transport = new Transport();
         const controller = new BrowserProxyController(
             transport,
             (onActionPath) => {
                 chai.expect(onActionPath).to.be.equal(onActionPath);
 
-                callback();
+                resolve();
 
                 return fork(workerPath);
             },
@@ -51,7 +50,7 @@ describe('Browser proxy controller functional test', () => {
             .catch(() => {
                 controller.kill();
             });
-    });
+    }));
 
     it('should be able to use child process passed as function as proxy', async () => {
         const transport = new Transport();
@@ -76,7 +75,7 @@ describe('Browser proxy controller functional test', () => {
         });
     });
 
-    it('should respawn proxy if connection is lost somehow', (callback) => {
+    it('should respawn proxy if connection is lost somehow', () => new Promise<void>((resolve, reject) => {
         const transport = new Transport();
         const controller = new BrowserProxyController(transport, () => {
             return fork(workerPath, [
@@ -98,16 +97,16 @@ describe('Browser proxy controller functional test', () => {
                     .then(() => {
                         controller.kill();
 
-                        callback();
+                        resolve();
                     })
                     .catch((e) => {
-                        callback(e);
+                        reject(e);
                     });
             })
             .catch(callback);
-    });
+    }));
 
-    it('should throw exception if proxy response contains non-empty "exception" field', (callback) => {
+    it('should throw exception if proxy response contains non-empty "exception" field', () => new Promise<void>((resolve, reject) => {
         const transport = new Transport();
         const controller = new BrowserProxyController(transport, () => {
             return fork(workerPath, [
@@ -127,16 +126,16 @@ describe('Browser proxy controller functional test', () => {
                         args: [],
                     })
                     .then(() => {
-                        callback(new Error('passed somehow'));
+                        reject(new Error('passed somehow'));
                     })
                     .catch(() => {
                         controller.kill();
 
-                        callback();
+                        resolve();
                     });
             })
             .catch(callback);
-    });
+    }));
 
     it('should be able to run multiple workers', async () => {
         const transport = new Transport();

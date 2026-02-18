@@ -1,6 +1,5 @@
 /* eslint no-unused-expressions: 0 */
 
-/// <reference types="mocha" />
 
 import * as path from 'path';
 import * as chai from 'chai';
@@ -13,31 +12,31 @@ const falseGlob = path.resolve(
 );
 
 describe('TestsFinder', () => {
-    it('should throw error if no path passed', (callback) => {
+    it('should throw error if no path passed', () => new Promise<void>((resolve, reject) => {
         const fsReader = new FSReader();
 
         fsReader
             .find(undefined as any)
             .then(() => {
-                callback("it didn't throw");
+                reject("it didn't throw");
             })
             .catch(() => {
-                callback();
+                resolve();
             });
-    });
+    }));
 
-    it('should throw error if no files to passed glob', (callback) => {
+    it('should throw error if no files to passed glob', () => new Promise<void>((resolve, reject) => {
         const fsReader = new FSReader();
 
         fsReader
             .find(falseGlob)
             .then(() => {
-                callback("it didn't throw");
+                reject("it didn't throw");
             })
             .catch(() => {
-                callback();
+                resolve();
             });
-    });
+    }));
 
     it('should resolve files from glob', async () => {
         const fsReader = new FSReader();

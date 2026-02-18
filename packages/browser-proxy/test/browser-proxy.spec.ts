@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as path from 'path';
@@ -21,7 +20,7 @@ const commandMock: IBrowserProxyCommand = {
 };
 
 describe('Browser proxy', () => {
-    it('should listen to incoming messages and call onAction hook when gets message', (callback) => {
+    it('should listen to incoming messages and call onAction hook when gets message', () => new Promise<void>((resolve, reject) => {
         const uid = 'testUid';
         const transport = new TransportMock();
 
@@ -33,7 +32,7 @@ describe('Browser proxy', () => {
                 chai.expect(response.uid).to.be.equal(uid);
                 chai.expect(response.error).to.be.equal(null);
 
-                callback();
+                resolve();
             },
         );
 
@@ -42,9 +41,9 @@ describe('Browser proxy', () => {
             applicant: 'test',
             command: commandMock,
         });
-    });
+    }));
 
-    it('should work with async hooks', (callback) => {
+    it('should work with async hooks', () => new Promise<void>((resolve, reject) => {
         const uid = 'testUid';
         const transport = new TransportMock();
         new BrowserProxy(transport, asyncPluginPath, pluginConfig);
@@ -55,7 +54,7 @@ describe('Browser proxy', () => {
                 chai.expect(response.uid).to.be.equal(uid);
                 chai.expect(response.error).to.be.equal(null);
 
-                callback();
+                resolve();
             },
         );
 
@@ -63,9 +62,9 @@ describe('Browser proxy', () => {
             uid,
             command: commandMock,
         });
-    });
+    }));
 
-    it('should broadcast response with exception if onAction hook fails', (callback) => {
+    it('should broadcast response with exception if onAction hook fails', () => new Promise<void>((resolve, reject) => {
         const uid = 'testUid';
         const transport = new TransportMock();
         new BrowserProxy(transport, pluginPath, pluginConfig);
@@ -76,7 +75,7 @@ describe('Browser proxy', () => {
                 chai.expect(response).to.have.property('uid', uid);
                 chai.expect(response).to.have.property('error');
 
-                callback();
+                resolve();
             },
         );
 
@@ -87,5 +86,5 @@ describe('Browser proxy', () => {
                 arguments: ['foo', 'bar'],
             },
         });
-    });
+    }));
 });

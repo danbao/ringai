@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import {createAssertion} from '..';
@@ -52,59 +51,53 @@ describe('assertion functional', () => {
         chai.expect(assert._errorMessages.length).to.be.equal(3);
     });
 
-    it('should call onSuccess assertion callback', async (callback) => {
-        const assert = createAssertion({
-            onSuccess: (meta) => {
-                try {
-                    chai.expect(meta).to.be.deep.equal({
-                        assertMessage: '[assert] equal(act = 1, exp = 1)',
-                        isSoft: false,
-                        successMessage: '',
-                        originalMethod: 'equal',
-                        args: [1, 1],
-                    });
-                    callback();
-                } catch (e) {
-                    callback(e);
-                }
-            },
+    it('should call onSuccess assertion callback', async () => {
+        const result = await new Promise<void>((resolve, reject) => {
+            const assert = createAssertion({
+                onSuccess: (meta) => {
+                    try {
+                        chai.expect(meta).to.be.deep.equal({
+                            assertMessage: '[assert] equal(act = 1, exp = 1)',
+                            isSoft: false,
+                            successMessage: '',
+                            originalMethod: 'equal',
+                            args: [1, 1],
+                        });
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                },
+            });
+            assert.equal(1, 1).catch(reject);
         });
-
-        try {
-            await assert.equal(1, 1);
-        } catch (e) {
-            throw new Error('Web assertion error');
-        }
     });
 
-    it('should call onError assertion callback', async (callback) => {
-        const assert = createAssertion({
-            onError: (meta) => {
-                chai.expect(meta.error).to.be.an.instanceof(Error);
+    it('should call onError assertion callback', async () => {
+        await new Promise<void>((resolve, reject) => {
+            const assert = createAssertion({
+                onError: (meta) => {
+                    chai.expect(meta.error).to.be.an.instanceof(Error);
 
-                delete meta.error;
+                    delete meta.error;
 
-                try {
-                    chai.expect(meta).to.be.deep.equal({
-                        assertMessage: '[assert] equal(act = 1, exp = 2)',
-                        errorMessage: 'expected 1 to equal 2',
-                        isSoft: false,
-                        successMessage: '',
-                        originalMethod: 'equal',
-                        args: [1, 2],
-                    });
-                    callback();
-                } catch (e) {
-                    callback(e);
-                }
-            },
+                    try {
+                        chai.expect(meta).to.be.deep.equal({
+                            assertMessage: '[assert] equal(act = 1, exp = 2)',
+                            errorMessage: 'expected 1 to equal 2',
+                            isSoft: false,
+                            successMessage: '',
+                            originalMethod: 'equal',
+                            args: [1, 2],
+                        });
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                },
+            });
+            assert.equal(1, 2).catch(() => { /* ignore */ });
         });
-
-        try {
-            await assert.equal(1, 2);
-        } catch (ignore) {
-            /* ignore */
-        }
     });
 
     it('should call onError assertion callback without changed error object', async () => {

@@ -2,11 +2,13 @@
 import {expect} from 'chai';
 import {createElementPath} from '../../src';
 
-const {
+import {
     getDescriptor,
-
+    getPrivateDescriptor,
+    checkAccessMethods,
+    checkPreventExtensions,
     checkProperty,
-} = require('../utils');
+} from '../utils';
 
 describe('flows option on deep child', () => {
     const foo = async () => 'test string foo';

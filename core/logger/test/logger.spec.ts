@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import {Writable} from 'stream';
 import {LoggerPlugins} from '@testring/types';
@@ -15,7 +14,7 @@ const DEFAULT_WRITABLE_CONFIG = {
 };
 
 describe('Logger', () => {
-    it('should relay message from client to server through transport', (callback) => {
+    it('should relay message from client to server through transport', () => new Promise<void>((resolve, reject) => {
         const transport = new TransportMock();
         const stdout = new Writable(DEFAULT_WRITABLE_CONFIG);
         const loggerServer = new LoggerServer(
@@ -28,10 +27,10 @@ describe('Logger', () => {
 
         if (onLog) {
             onLog.readHook('testPlugin', () => {
-                callback();
+                resolve();
             });
         }
 
         loggerClient.log(LOG_ENTITY);
-    });
+    }));
 });

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import { expect } from 'chai';
 import seleniumPlugin from '../src/index';

@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as chai from 'chai';
 import * as sinon from 'sinon';
@@ -38,21 +37,21 @@ const imitateFailedServer = (transport: TransportMock, error: Error) => {
 };
 
 describe('HttpClient', () => {
-    it('should get an error if request is null', (callback) => {
+    it('should get an error if request is null', () => new Promise<void>((resolve, reject) => {
         const transport = new TransportMock();
         const httpClient = new HttpClient(transport);
 
         httpClient
             .post(null as any)
             .then(() => {
-                callback('Request resolved');
+                reject('Request resolved');
             })
             .catch((error) => {
                 chai.expect(error).instanceOf(Error);
-                callback();
+                resolve();
             })
             .catch(callback);
-    });
+    }));
 
     it('should get response from server (GET)', async () => {
         const transport = new TransportMock();
@@ -111,7 +110,7 @@ describe('HttpClient', () => {
         }
     });
 
-    it('should get an error if response has no uid', (callback) => {
+    it('should get an error if response has no uid', () => new Promise<void>((resolve, reject) => {
         const transport = new TransportMock();
         const httpClient = new HttpClient(transport);
 
@@ -128,14 +127,14 @@ describe('HttpClient', () => {
                 url: DEFAULT_URL,
             })
             .then(() => {
-                callback('Request resolved somehow');
+                reject('Request resolved somehow');
             })
             .catch((error) => {
                 chai.expect(error).instanceOf(Error);
-                callback();
+                resolve();
             })
             .catch(callback);
-    });
+    }));
 
     it('should return queue requests responses in proper order', async () => {
         const transport = new TransportMock();

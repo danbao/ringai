@@ -1,6 +1,5 @@
 /* eslint no-unused-expressions: 0 */
 
-/// <reference types="mocha" />
 
 import * as path from 'path';
 import * as chai from 'chai';
@@ -20,27 +19,27 @@ const falsePaths = [
 ];
 
 describe('resolve tests', () => {
-    it('should throw error if no argument passed', (callback) => {
+    it('should throw error if no argument passed', () => new Promise<void>((resolve, reject) => {
         resolveFiles(undefined as any)
             .then(() => {
-                callback("resolveTests did't throw");
+                reject("resolveTests did't throw");
             })
             .catch(() => {
-                callback();
+                resolve();
             })
             .catch(callback);
-    });
+    }));
 
-    it('should throw error if empty array passed', (callback) => {
+    it('should throw error if empty array passed', () => new Promise<void>((resolve, reject) => {
         resolveFiles([])
             .then(() => {
-                callback("resolveTests did't throw");
+                reject("resolveTests did't throw");
             })
             .catch(() => {
-                callback();
+                resolve();
             })
             .catch(callback);
-    });
+    }));
 
     it('should resolve array of objects that contain ', async () => {
         const res = await resolveFiles(testPaths);
@@ -65,14 +64,14 @@ describe('resolve tests', () => {
             .of.length(testPaths.length);
     });
 
-    it('should throw error if none of files passed to it was read', (callback) => {
+    it('should throw error if none of files passed to it was read', () => new Promise<void>((resolve, reject) => {
         resolveFiles(falsePaths)
             .then(() => {
-                callback("resolveTests did't throw");
+                reject("resolveTests did't throw");
             })
             .catch(() => {
-                callback();
+                resolve();
             })
             .catch(callback);
-    });
+    }));
 });

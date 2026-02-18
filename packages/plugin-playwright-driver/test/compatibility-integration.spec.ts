@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import { expect } from 'chai';
 import { PlaywrightPlugin } from '../src/plugin/index';
@@ -13,7 +12,7 @@ describe('Playwright Plugin Integration Compatibility Tests', () => {
     let plugin: PlaywrightPlugin;
 
     // 增加进程监听器限制以避免警告
-    before(() => {
+    beforeAll(() => {
         process.setMaxListeners(100); // 设置足够大的限制
     });
 
@@ -51,49 +50,40 @@ describe('Playwright Plugin Integration Compatibility Tests', () => {
 
     it.skip('should pass basic navigation tests', async function() {
         // Skipped due to external network dependency (example.com) 
-        this.timeout(8000); // Reasonable timeout for browser operations
         await tester.testBasicNavigation();
     });
 
     it('should pass element query tests', async function() {
-        this.timeout(5000);
         await tester.testElementQueries();
     });
 
     it('should pass form interaction tests', async function() {
-        this.timeout(5000);
         await tester.testFormInteractions();
     });
 
     it('should pass JavaScript execution tests', async function() {
-        this.timeout(5000);
         await tester.testJavaScriptExecution();
     });
 
     it('should pass screenshot tests', async function() {
-        this.timeout(5000);
         await tester.testScreenshots();
     });
 
     it('should pass wait operation tests', async function() {
-        this.timeout(5000);
         await tester.testWaitOperations();
     });
 
     it.skip('should pass session management tests', async function() {
         // Skipped due to timeout issues in test environment  
-        this.timeout(10000); // Sessions need more time
         await tester.testSessionManagement();
     });
 
     it('should pass error handling tests', async function() {
-        this.timeout(8000); // Reduced timeout for error handling tests
         await tester.testErrorHandling();
     });
 
     it.skip('should run comprehensive compatibility test suite', async function() {
         // Skipped to speed up tests - individual compatibility tests cover this
-        this.timeout(10000); // Further reduced timeout for full suite
         
         const results = await tester.runAllTests();
         
@@ -109,7 +99,6 @@ describe('Playwright Plugin Integration Compatibility Tests', () => {
 
     describe('Playwright-Specific Features', () => {
         it('should support modern browser features', async function() {
-            this.timeout(6000); // Add timeout
 
             const applicant = 'modern-features-test';
 
@@ -201,7 +190,6 @@ describe('Playwright Plugin Integration Compatibility Tests', () => {
 
     describe('Cross-Browser Compatibility', () => {
         it('should work with different browser types', async function() {
-            this.timeout(15000); // Increase timeout for browser operations
 
             // Only test browsers that are commonly available in CI environments
             const browsers = ['chromium', 'firefox'] as const; // Removed webkit and msedge for stability

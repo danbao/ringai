@@ -1,4 +1,3 @@
-/// <reference types="mocha" />
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -27,10 +26,10 @@ const tmpDir = 'tmp';
 const filetype = FSStoreType.text;
 
 describe('fs-store-file', () => {
-    before(() => {
+    beforeAll(() => {
         FSS = new FSStoreServer(10, prefix);
     });
-    after(() => {
+    afterAll(() => {
         return fs.promises.rm(tmpDir, {recursive: true});
     });
     it('store file static methods test', async () => {

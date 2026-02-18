@@ -123,7 +123,7 @@
     "@lerna/run-parallel-batches": "3.16.0",
     "@types/chai": "5.0.1",
     "@types/mocha": "10.0.9",
-    "@types/node": "22.8.5",
+    "@types/node": "22.19.11",
     "@types/sinon": "17.0.4",
     "@vitest/coverage-v8": "4.0.18",
     "chai": "4.3.10",
