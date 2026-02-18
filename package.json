@@ -40,6 +40,9 @@
     "build:devtool": "turbo run build --filter=@testring/devtool-frontend",
     "build:extension": "turbo run build --filter=@testring/devtool-extension",
     "build:types:check": "turbo run build --filter='!@testring/e2e-test-app' --filter='!@testring/devtool-frontend' --filter='!@testring/devtool-extension'",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
     "publish:version": "lerna version --exact --yes",
     "publish:ci": "node ./utils/publish.js --exclude=@testring/devtool-frontend,@testring/devtool-backend,@testring/devtool-extension",
     "publish:dev": "node ./utils/publish.js --dev --exclude=@testring/devtool-frontend,@testring/devtool-backend,@testring/devtool-extension",
@@ -110,6 +113,8 @@
     ]
   },
   "devDependencies": {
+    "@changesets/changelog-github": "0.5.2",
+    "@changesets/cli": "2.29.8",
     "@jsdevtools/npm-publish": "3.1.1",
     "@lerna/batch-packages": "3.16.0",
     "@lerna/filter-packages": "6.4.1",

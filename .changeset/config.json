@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "ringcentral/testring" }
+  ],
+  "commit": false,
+  "fixed": [
+    ["@testring/*", "testring"]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "master",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@testring/e2e-test-app"
+  ]
+}
