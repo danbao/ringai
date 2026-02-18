@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
       /* Language & emit */
-      "target": "ES2019",          // Node 18 baseline
-      "module": "commonjs",        // Can move to "nodenext" when ready
+      "target": "ES2022",
+      "module": "commonjs",
       "moduleResolution": "node",
-      "lib": ["ES2019", "DOM"],
+      "lib": ["ES2022", "DOM"],
       "allowJs": false,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
