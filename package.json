@@ -17,9 +17,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "pnpm run test:unit && pnpm run test:e2e:headless",
-    "test:unit": "turbo run test --filter='!@testring/types' --filter='!@testring/e2e-test-app'",
-    "test:unit:watch": "lerna exec --ignore=\"@testring/@(ui-kit|types|e2e-test-app)\" --parallel -- mocha --watch",
-    "test:unit:coverage": "nyc lerna exec --ignore=\"@testring/@(ui-kit|types|e2e-test-app)\" -- mocha",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest watch",
+    "test:unit:coverage": "vitest run --coverage",
     "test:e2e": "lerna run --stream --scope @testring/e2e-test-app test",
     "test:e2e:headless": "lerna run --stream --scope @testring/e2e-test-app test:playwright:headless",
     "test:e2e:simple": "lerna run --stream --scope @testring/e2e-test-app test:simple",
@@ -29,7 +29,7 @@
     "test:playwright:debug": "cd packages/plugin-playwright-driver && npm run test:debug",
     "test:ci": "pnpm run test:unit:coverage && pnpm run test:e2e:coverage",
     "test:ci:coverage": "pnpm run test:unit:coverage:lcov && pnpm run test:e2e:coverage:lcov",
-    "test:unit:coverage:lcov": "nyc --reporter=lcov lerna exec --ignore=\"@testring/@(ui-kit|types|e2e-test-app)\" -- mocha",
+    "test:unit:coverage:lcov": "vitest run --coverage --reporter=verbose",
     "test:e2e:coverage:lcov": "c8 ts-node ./packages/e2e-test-app/src/test-runner.ts --config ./packages/e2e-test-app/test/playwright/config.coverage.js --env-config=./packages/e2e-test-app/test/playwright/env.json --headless",
     "grid:start": "./scripts/start-selenium-grid.sh",
     "grid:stop": "./scripts/stop-selenium-grid.sh",
@@ -125,6 +125,7 @@
     "@types/mocha": "10.0.9",
     "@types/node": "22.8.5",
     "@types/sinon": "17.0.4",
+    "@vitest/coverage-v8": "4.0.18",
     "chai": "4.3.10",
     "eslint": "^9.39.2",
     "glob": "11.0.0",
@@ -141,6 +142,7 @@
     "tsup": "8.5.1",
     "turbo": "2.8.10",
     "typescript": "5.6.3",
-    "typescript-eslint": "8.56.0"
+    "typescript-eslint": "8.56.0",
+    "vitest": "4.0.18"
   }
 }
