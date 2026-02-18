@@ -35,17 +35,17 @@ jobs:
       run: pnpm install --frozen-lockfile
 
     - name: Build project
-      run: npm run build:main
+      run: pnpm run build:main
 
     - name: Install Playwright browsers
-      run: npx playwright install chromium firefox
+      run: pnpm exec playwright install chromium firefox
 
     - name: Run tests with coverage
-      run: npm run test:ci:coverage
+      run: pnpm run test:ci:coverage
 
     - name: Analyze test performance
       if: ${{ matrix.os=='ubuntu-latest' && matrix.node-version=='22'}}
-      run: npm run analyze:performance:logs-only
+      run: pnpm run analyze:performance:logs-only
       continue-on-error: true
 
     - name: Upload performance analysis

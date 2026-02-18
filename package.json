@@ -26,7 +26,7 @@
     "test:e2e:coverage": "c8 --config .c8.json ts-node ./packages/e2e-test-app/src/test-runner.ts --config ./packages/e2e-test-app/test/playwright/config.coverage.js --env-config=./packages/e2e-test-app/test/playwright/env.json --headless",
     "test:performance": "lerna run --stream --scope @testring/fs-reader test:performance",
     "test:playwright": "lerna exec --scope @testring/plugin-playwright-driver -- mocha",
-    "test:playwright:debug": "cd packages/plugin-playwright-driver && npm run test:debug",
+    "test:playwright:debug": "cd packages/plugin-playwright-driver && pnpm run test:debug",
     "test:ci": "pnpm run test:unit:coverage && pnpm run test:e2e:coverage",
     "test:ci:coverage": "pnpm run test:unit:coverage:lcov && pnpm run test:e2e:coverage:lcov",
     "test:unit:coverage:lcov": "vitest run --coverage --reporter=verbose",

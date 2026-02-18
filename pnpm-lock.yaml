@@ -750,8 +750,8 @@ importers:
         specifier: ^10.0.0
         version: 10.8.2
       testring:
-        specifier: 0.8.0
-        version: 0.8.0
+        specifier: workspace:*
+        version: link:../../core/testring
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.8.5)(typescript@5.6.3)
@@ -2272,75 +2272,6 @@ packages:
 
   '@testim/chrome-version@1.1.4':
     resolution: {integrity: sha512-kIhULpw9TrGYnHp/8VfdcneIcxKnLixmADtukQRtJUmsVlMg0niMkwV0xZmi8hqa57xqilIHjWFA0GKvEjVU5g==}
-
-  '@testring/api@0.8.0':
-    resolution: {integrity: sha512-44wx7c86e/TI+w+e8TscaitIt9C8hrG0JmaBVCdl5w+TFtgmzuVs6uAJvP9MwVb/xXlWN5JZR57aoJeBxhCNUw==}
-
-  '@testring/async-assert@0.8.0':
-    resolution: {integrity: sha512-0tCpM6wKgwMOXhq0vWawpJ1mpYFmsSxS/CuvKj46kVwkbZbmeAP1wi2VEXzQi5y1/GjIc5mVg+sicUx/yHNBtQ==}
-
-  '@testring/async-breakpoints@0.8.0':
-    resolution: {integrity: sha512-B1Quh0tTzfbCQ0keSrtlGyC0ER+RwHkI/1Gl1oxcNMRrJ0j1SOlXADqaMnjl7mdpXMipPWMwcUzX67yQo/XyEg==}
-
-  '@testring/browser-proxy@0.8.0':
-    resolution: {integrity: sha512-ZzSf4k/CxL0Js3vldSFPgP/p1D7I0JGqaaiaWi4rBt3jzn/YGnaBV+Qp5eZFtsx+zqJVpAxmu6ZOefL+9YUyaA==}
-
-  '@testring/child-process@0.8.0':
-    resolution: {integrity: sha512-y8nfIokAO+eSD/RNqh4J8nZPZJIcExm5QbfWXvOgYIutojsYQrFlePoNvMuDwJS/r1u9sHngxflGUSlzAqCD1Q==}
-
-  '@testring/cli-config@0.8.0':
-    resolution: {integrity: sha512-nRv6V1Js7r81c/n0CuBfeKd6DcAy6lmrQ0l7iL7QBYxcYvWmVljBzGgcD36eU6SpxjN/V1zn7Q1OP8yzVsCVZA==}
-
-  '@testring/cli@0.8.0':
-    resolution: {integrity: sha512-rHUpmcutEaDo0ywTYoCHrPS8c5Nmpj2qV/bgDqS5zkXT8qnmjmRIrvD38NG+WiZVDbKhr7dO4gAiftrzmND93g==}
-
-  '@testring/dependencies-builder@0.8.0':
-    resolution: {integrity: sha512-sZSwTKzB7h2UzHAe2LBsh0Zgg4lgOXfiIeIe6H8wuHhBigreMy8KjQO61pR+uz7fUKBW3SZ2DpubuCeOTQDkZQ==}
-
-  '@testring/element-path@0.8.0':
-    resolution: {integrity: sha512-n7BWwMujhfznH4GgEnC+0xQJBAchvkcOgCWlC1Ry727I/ilFAd2qZnq3zoue8xW/d70szrtgicGleVygfa0w9w==}
-
-  '@testring/fs-reader@0.8.0':
-    resolution: {integrity: sha512-wbekr1jWM0T/o4ukawIpulzfZ4dXBOqvmztiJUvO2b0OUg9ENRbfI7/timnyfXdUAZbB2fBQhhnjtnJ6IFaiBg==}
-
-  '@testring/fs-store@0.8.0':
-    resolution: {integrity: sha512-7ilgCpIFxkyFgvrYL3w8XQEyWAElC43LW2VB87yxxjvTvXGMDADYuy5Ub6knQE3bE3sR3WBBkrWAD08RK2xJUA==}
-
-  '@testring/http-api@0.8.0':
-    resolution: {integrity: sha512-fFLPeGVLjXuHDr1je6pxl4NWqALLaJtwIJN8IrYsfQaB2Egps/TFmhslt0dG4oe6htIAQ5oXmZHxSpuseTqF4A==}
-
-  '@testring/logger@0.8.0':
-    resolution: {integrity: sha512-J47rS0qE68RQpKIc+neto+4K7ShdUJAoBTG2JLlGLSgZ3vweW0/AMkuFzvRb01aAgN3xSQCYOLXmLK34aNAj2w==}
-
-  '@testring/pluggable-module@0.8.0':
-    resolution: {integrity: sha512-BSkyQnp6Qwl7M9ib9wgdxoXSPKAdk89OFqs2IeIbH8sX0mrLhNgoaGCsnTvyhy9HdqmlMhx42m0AHy++37m5YA==}
-
-  '@testring/plugin-api@0.8.0':
-    resolution: {integrity: sha512-OuZs/OwtTP+JjX5sAiaHk46vLk8Yl7GfAh3hz8s+E2DPie7jt0xf+H0Y152nRya6/gCsB24O3MOXlMRmCFyDRA==}
-
-  '@testring/sandbox@0.8.0':
-    resolution: {integrity: sha512-RBr0sqnuH5ozNhzNYzJLF9x9CBrMYW/0OiipZpnxbN86iBmkbpZFFUy9U36NgUCoIHHEmdp11uMkSG6FS5Q/Dw==}
-
-  '@testring/test-run-controller@0.8.0':
-    resolution: {integrity: sha512-ZAuUIzy/JYaOooa/diaZ63Mjqbk/E+i0X87tQ9KvFvvAUh5fvu43w7japhX18SbAnfROwZwitavm8D6FiMzt2Q==}
-
-  '@testring/test-utils@0.8.0':
-    resolution: {integrity: sha512-p6gRSw+56nSedrPEXJwEqRdrLK+t9bizQXx5Jcu06b5xKv02kbY8eishS45eXp3OWppFHjbOtDZ3ptY4JO5S+g==}
-
-  '@testring/test-worker@0.8.0':
-    resolution: {integrity: sha512-ccFTKWYzui78b+r0bIJA2Cf3P/IanBRrz3GVn6lYeHTssCLfEEhB7u/pfdcBIUDwB2f5zzpJzMB48HL2r91yMA==}
-
-  '@testring/transport@0.8.0':
-    resolution: {integrity: sha512-CWcF+tLjbd6PUqfNDyTDfJYlywF/gdY9NW8/i0AbWXyDT+Rf00Z9ZSw8pFurmdtAYr1ZiAiQRFLr2eokMQKmSg==}
-
-  '@testring/types@0.8.0':
-    resolution: {integrity: sha512-MwcMItsX1FSFvPTL8sfXKZ9zzwR7/JPl621k1KvCqY2ikcHYRnIqf3H7/N8lsSuIS62vASKpf0GQV/iaOvdUaA==}
-
-  '@testring/utils@0.8.0':
-    resolution: {integrity: sha512-gqS83Y9Kfl4vPt5PhfhvyIwLO6ffhxpbas3HLP/N20Lx/FN5nHvPRaRbul/X4oINoVzGh1BN06QR8wfyZTOMcw==}
-
-  '@testring/web-application@0.8.0':
-    resolution: {integrity: sha512-I115+Esdg4bGscjRSTPcWtGdHvmZTL+rrcJB1CDXgmfroic4TjD39OwdvX5wmp4cEnGui4xfUk/Usf0iqMDNpA==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -6858,10 +6789,6 @@ packages:
     resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
     engines: {node: '>=18'}
 
-  testring@0.8.0:
-    resolution: {integrity: sha512-1ADxzti3+9gfcJtuXkGJcB0zyBYhRxrPxyrcVuIrXD6JmTuCwEMXeJm7gjFnK1G66OiLsD++dciBZr/8JZl6vQ==}
-    hasBin: true
-
   text-decoder@1.2.7:
     resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
 
@@ -8937,212 +8864,6 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@testim/chrome-version@1.1.4': {}
-
-  '@testring/api@0.8.0':
-    dependencies:
-      '@testring/async-breakpoints': 0.8.0
-      '@testring/http-api': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@testring/web-application': 0.8.0
-
-  '@testring/async-assert@0.8.0':
-    dependencies:
-      '@testring/types': 0.8.0
-      chai: 4.3.10
-
-  '@testring/async-breakpoints@0.8.0':
-    dependencies:
-      '@types/node': 22.8.5
-
-  '@testring/browser-proxy@0.8.0':
-    dependencies:
-      '@testring/child-process': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/yargs': 17.0.33
-      yargs: 17.7.2
-
-  '@testring/child-process@0.8.0':
-    dependencies:
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-
-  '@testring/cli-config@0.8.0':
-    dependencies:
-      '@testring/logger': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/deepmerge': 2.2.3
-      '@types/yargs': 17.0.33
-      deepmerge: 4.3.1
-      yargs: 17.7.2
-
-  '@testring/cli@0.8.0':
-    dependencies:
-      '@testring/browser-proxy': 0.8.0
-      '@testring/cli-config': 0.8.0
-      '@testring/fs-reader': 0.8.0
-      '@testring/fs-store': 0.8.0
-      '@testring/http-api': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/plugin-api': 0.8.0
-      '@testring/test-run-controller': 0.8.0
-      '@testring/test-worker': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/web-application': 0.8.0
-      '@types/node': 22.8.5
-      '@types/yargs': 17.0.33
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@testring/dependencies-builder@0.8.0':
-    dependencies:
-      '@testring/test-utils': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/babel-traverse': 6.25.10
-      '@types/babylon': 6.16.9
-      babel-traverse: 6.26.0
-      babylon: 6.18.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@testring/element-path@0.8.0': {}
-
-  '@testring/fs-reader@0.8.0':
-    dependencies:
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/types': 0.8.0
-      fast-glob: 3.3.2
-      p-limit: 3.1.0
-
-  '@testring/fs-store@0.8.0':
-    dependencies:
-      '@testring/cli-config': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/test-utils': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-
-  '@testring/http-api@0.8.0':
-    dependencies:
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/test-utils': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/node': 22.8.5
-      '@types/request-promise-native': 1.0.21
-      '@types/tough-cookie': 4.0.5
-      request: 2.88.2
-      request-promise-native: 1.0.9(request@2.88.2)
-      tough-cookie: 4.1.4
-
-  '@testring/logger@0.8.0':
-    dependencies:
-      '@testring/pluggable-module': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/bytes': 3.1.4
-      '@types/node': 22.8.5
-      bytes: 3.1.2
-      chalk: 4.1.2
-
-  '@testring/pluggable-module@0.8.0':
-    dependencies:
-      '@testring/types': 0.8.0
-
-  '@testring/plugin-api@0.8.0':
-    dependencies:
-      '@testring/fs-store': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/node': 22.8.5
-
-  '@testring/sandbox@0.8.0':
-    dependencies:
-      '@testring/api': 0.8.0
-      '@testring/test-utils': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-
-  '@testring/test-run-controller@0.8.0':
-    dependencies:
-      '@testring/fs-store': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-
-  '@testring/test-utils@0.8.0':
-    dependencies:
-      '@testring/types': 0.8.0
-
-  '@testring/test-worker@0.8.0':
-    dependencies:
-      '@testring/api': 0.8.0
-      '@testring/async-breakpoints': 0.8.0
-      '@testring/child-process': 0.8.0
-      '@testring/dependencies-builder': 0.8.0
-      '@testring/fs-reader': 0.8.0
-      '@testring/fs-store': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/sandbox': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/node': 22.8.5
-    transitivePeerDependencies:
-      - supports-color
-
-  '@testring/transport@0.8.0':
-    dependencies:
-      '@testring/child-process': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
-      '@types/node': 22.8.5
-
-  '@testring/types@0.8.0':
-    dependencies:
-      '@types/node': 22.8.5
-
-  '@testring/utils@0.8.0':
-    dependencies:
-      '@testring/types': 0.8.0
-      '@types/bytes': 3.1.4
-      '@types/nanoid': 3.0.0
-      '@types/node': 22.8.5
-      '@types/resolve': 1.20.6
-      bytes: 3.1.2
-      nanoid: 3.3.7
-      resolve: 1.22.8
-
-  '@testring/web-application@0.8.0':
-    dependencies:
-      '@testring/async-assert': 0.8.0
-      '@testring/async-breakpoints': 0.8.0
-      '@testring/element-path': 0.8.0
-      '@testring/fs-store': 0.8.0
-      '@testring/logger': 0.8.0
-      '@testring/pluggable-module': 0.8.0
-      '@testring/transport': 0.8.0
-      '@testring/types': 0.8.0
-      '@testring/utils': 0.8.0
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
@@ -14459,13 +14180,6 @@ snapshots:
       '@istanbuljs/schema': 0.1.3
       glob: 10.5.0
       minimatch: 9.0.5
-
-  testring@0.8.0:
-    dependencies:
-      '@testring/api': 0.8.0
-      '@testring/cli': 0.8.0
-    transitivePeerDependencies:
-      - supports-color
 
   text-decoder@1.2.7:
     dependencies:
