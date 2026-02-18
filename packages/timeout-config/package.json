@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha test/**/*.spec.js --recursive",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "echo 'No build needed for plain JS package'"
   },
   "dependencies": {},
   "devDependencies": {

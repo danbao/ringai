@@ -18,7 +18,7 @@
     "@testring/cli": "workspace:*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "test": "mocha"
   }
 }

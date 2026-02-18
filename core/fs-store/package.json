@@ -25,7 +25,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   },
   "bugs": {
     "url": "https://github.com/ringcentral/testring/issues"

@@ -11,7 +11,7 @@
   "scripts": {
     "start": "ts-node src/test-server.ts",
     "start:watch": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' ./src/index.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "test": "mocha"
   },
   "dependencies": {

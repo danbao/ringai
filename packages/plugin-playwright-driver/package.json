@@ -15,7 +15,7 @@
     "postinstall": "node scripts/install-browsers.js",
     "install-browsers": "node scripts/install-browsers.js",
     "uninstall-browsers": "npx playwright uninstall --all",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   },
   "dependencies": {
     "@testring/logger": "workspace:*",
