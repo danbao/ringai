@@ -18,7 +18,7 @@
 - [ ] 2.3 删除 `packages/http-api` → 用 `fetch`
 - [ ] 2.4 删除 `core/dependencies-builder` → 用 ESM 原生解析
 - [ ] 2.5 废弃 `plugin-selenium-driver` → Playwright 统一
-- [ ] 2.6 简化 `core/fs-reader` → 用 `tinyglobby`
+- [x] 2.6 简化 `core/fs-reader` → 用 `tinyglobby`
 - [ ] 2.7 简化 `core/logger` → 用 `pino`
 
 ## Phase 3 — ESM 迁移 + Sandbox 重写

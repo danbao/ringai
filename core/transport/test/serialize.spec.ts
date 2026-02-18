@@ -1,4 +1,3 @@
-
 import * as chai from 'chai';
 import {serialize, deserialize} from '../src/serialize';
 
@@ -56,99 +55,15 @@ describe('serialize', () => {
         chai.expect(deserializedError.stack).to.be.equal(error.stack);
     });
 
-    it('should serialize arrow function', () => {
+    it('should throw when trying to serialize function', () => {
         const arrowFunction = (a: any, b: any) => {
             return a + b + 2;
         };
 
-        const serializedFunction = serialize(arrowFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(2);
-
-        const callResult = deserializedFunction(1, 3);
-
-        chai.expect(callResult).to.be.equal(6);
+        chai.expect(() => serialize(arrowFunction)).to.throw();
     });
 
-    it('should serialize arrow function with zero arguments', () => {
-        const arrowFunction = () => 2;
-
-        const serializedFunction = serialize(arrowFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(0);
-
-        const callResult = deserializedFunction(1);
-
-        chai.expect(callResult).to.be.equal(2);
-    });
-
-    it('should serialize arrow function without body', () => {
-        const arrowFunction = (a: number) => a + 2;
-
-        const serializedFunction = serialize(arrowFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(1);
-
-        const callResult = deserializedFunction(1);
-
-        chai.expect(callResult).to.be.equal(3);
-    });
-
-    it('should serialize anonymous function', () => {
-        const anonymousFunction = (a: any, b: any) => {
-            return a + b + 2;
-        };
-
-        const serializedFunction = serialize(anonymousFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(2);
-
-        const callResult = deserializedFunction(1, 3);
-
-        chai.expect(callResult).to.be.equal(6);
-    });
-
-    it('should serialize anonymous function without arguments', () => {
-        const anonymousFunction = () => {
-            return 2;
-        };
-
-        const serializedFunction = serialize(anonymousFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(0);
-
-        const callResult = deserializedFunction();
-
-        chai.expect(callResult).to.be.equal(2);
-    });
-
-    it('should serialize named function', () => {
-        function namedFunction(a: any, b: any) {
-            return a + b + 2;
-        }
-
-        const serializedFunction = serialize(namedFunction);
-        const deserializedFunction = deserialize(serializedFunction);
-
-        chai.expect(deserializedFunction).to.be.a('function');
-        chai.expect(deserializedFunction.length).to.be.equal(2);
-
-        const callResult = deserializedFunction(1, 3);
-
-        chai.expect(callResult).to.be.equal(6);
-    });
-
-    it('should serialize objects with circular links', () => {
+    it('should serialize objects with circular references', () => {
         const obj1: any = {};
         const obj2: any = {};
 
@@ -157,15 +72,71 @@ describe('serialize', () => {
         obj2.a = obj1;
         obj2.b = obj2;
 
-        const serializedFunction = serialize(obj1);
-        const deserializedFunction = deserialize(serializedFunction);
+        const serialized = serialize(obj1);
+        
+        // structuredClone preserves circular references
+        chai.expect(serialized.a).to.equal(serialized);
+        chai.expect(serialized.b.a).to.equal(serialized);
+        chai.expect(serialized.b.b).to.equal(serialized.b);
+    });
 
-        chai.expect(deserializedFunction).to.be.deep.equal({
-            a: '(Circular)',
-            b: {
-                a: '(Circular)',
-                b: '(Circular)',
-            },
-        });
+    it('should serialize Date objects', () => {
+        const date = new Date('2024-01-01T00:00:00Z');
+        
+        const serialized = serialize(date);
+        const deserialized = deserialize(serialized);
+        
+        chai.expect(deserialized).to.be.instanceof(Date);
+        chai.expect(deserialized.getTime()).to.equal(date.getTime());
+    });
+
+    it('should serialize Buffer as Uint8Array', () => {
+        const buffer = Buffer.from('hello world');
+        
+        const serialized = serialize(buffer);
+        const deserialized = deserialize(serialized);
+        
+        // Buffer becomes Uint8Array after structuredClone
+        chai.expect(deserialized).to.be.instanceof(Uint8Array);
+        chai.expect(Buffer.from(deserialized).toString()).to.equal('hello world');
+    });
+
+    it('should serialize Map', () => {
+        const map = new Map([['key1', 'value1'], ['key2', 'value2']]);
+        
+        const serialized = serialize(map);
+        const deserialized = deserialize(serialized);
+        
+        chai.expect(deserialized).to.be.instanceof(Map);
+        chai.expect(deserialized.get('key1')).to.equal('value1');
+        chai.expect(deserialized.get('key2')).to.equal('value2');
+    });
+
+    it('should serialize Set', () => {
+        const set = new Set([1, 2, 3]);
+        
+        const serialized = serialize(set);
+        const deserialized = deserialize(serialized);
+        
+        chai.expect(deserialized).to.be.instanceof(Set);
+        chai.expect(deserialized.has(1)).to.be.true;
+        chai.expect(deserialized.has(2)).to.be.true;
+        chai.expect(deserialized.has(3)).to.be.true;
+    });
+
+    it('should serialize nested objects', () => {
+        const data = {
+            level1: {
+                level2: {
+                    level3: 'value'
+                },
+                array: [1, 2, 3]
+            }
+        };
+        
+        const serialized = serialize(data);
+        const deserialized = deserialize(serialized);
+        
+        chai.expect(deserialized).to.be.deep.equal(data);
     });
 });
