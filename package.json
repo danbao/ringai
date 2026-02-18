@@ -14,8 +14,8 @@
     "reinstall": "pnpm run cleanup && pnpm install && pnpm run build",
     "utils:add-package-files": "lerna exec --no-sort -- node ../../utils/add-package-files",
     "utils:generate-readme": "lerna exec --no-sort -- node ../../utils/generate-readme",
-    "lint": "eslint --ext .ts ./",
-    "lint:fix": "eslint --fix --ext .ts ./",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "test": "pnpm run test:unit && pnpm run test:e2e:headless",
     "test:unit": "turbo run test --filter='!@testring/types' --filter='!@testring/e2e-test-app'",
     "test:unit:watch": "lerna exec --ignore=\"@testring/@(ui-kit|types|e2e-test-app)\" --parallel -- mocha --watch",
@@ -115,6 +115,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.29.8",
+    "@eslint/js": "^9.39.2",
     "@jsdevtools/npm-publish": "3.1.1",
     "@lerna/batch-packages": "3.16.0",
     "@lerna/filter-packages": "6.4.1",
@@ -125,10 +126,9 @@
     "@types/node": "22.8.5",
     "@types/sinon": "17.0.4",
     "chai": "4.3.10",
-    "eslint": "8.57.1",
-    "eslint-config-ringcentral": "7.0.3",
-    "eslint-config-ringcentral-typescript": "7.0.3",
+    "eslint": "^9.39.2",
     "glob": "11.0.0",
+    "globals": "17.3.0",
     "lerna": "8.1.9",
     "lerna-update-wizard": "1.1.2",
     "mocha": "10.8.2",
@@ -139,6 +139,7 @@
     "sinon": "19.0.2",
     "ts-node": "10.9.2",
     "turbo": "2.8.10",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.56.0"
   }
 }
