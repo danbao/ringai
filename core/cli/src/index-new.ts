@@ -9,12 +9,14 @@ import { runInitCommand } from './commands/initCommand.js';
 import { runPluginListCommand } from './commands/pluginCommand.js';
 import { getConfig } from '@testring/cli-config';
 import { transport } from '@testring/transport';
-import { loggerClient, LoggerServer } from '@testring/logger';
+import { loggerClient } from '@testring/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// Note: dist entry is located at ./dist/index-new.js, package.json is one level up.
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 const version = pkg.version;
 
+// Define the main CLI command
 const mainCommand = defineCommand({
     meta: {
         name: 'testring',
@@ -23,21 +25,21 @@ const mainCommand = defineCommand({
     },
     subCommands: {
         run: defineCommand({
-            meta: { name: 'run', description: 'Run tests' },
+            meta: {
+                name: 'run',
+                description: 'Run tests',
+            },
             run: async () => {
                 const config = await getConfig(process.argv);
-                // start logger transport early
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const loggerServer = new LoggerServer(config, transport, process.stdout);
-
                 const command = runTests(config, transport, process.stdout);
+
                 return command.execute().catch(async (exception) => {
-                    loggerClient.error('[CLI] Test execution failed:', exception.message);
-                    if (exception.stack) {
+                    loggerClient.error('[CLI] Test execution failed:', exception?.message);
+                    if (exception?.stack) {
                         loggerClient.error('[CLI] Stack trace:', exception.stack);
                     }
 
-                    if (exception.testFailures && exception.totalTests) {
+                    if (exception?.testFailures && exception?.totalTests) {
                         loggerClient.error(
                             `[CLI] Test summary: ${exception.testFailures}/${exception.totalTests} tests failed`,
                         );
@@ -45,35 +47,41 @@ const mainCommand = defineCommand({
 
                     await command.shutdown();
 
-                    const exitCode = exception.exitCode || exception.code || 1;
-                    setTimeout(() => process.exit(exitCode), 200);
+                    const exitCode = exception?.exitCode || exception?.code || 1;
+
+                    setTimeout(() => {
+                        process.exit(exitCode);
+                    }, 500);
                 });
             },
         }),
         init: defineCommand({
-            meta: { name: 'init', description: 'Initialize a new testring project' },
-            run: async () => runInitCommand(),
+            meta: {
+                name: 'init',
+                description: 'Initialize a new testring project',
+            },
+            run: async () => {
+                await runInitCommand();
+            },
         }),
         plugin: defineCommand({
-            meta: { name: 'plugin', description: 'List available plugins' },
-            run: async () => runPluginListCommand(),
+            meta: {
+                name: 'plugin',
+                description: 'List available plugins',
+            },
+            run: async () => {
+                await runPluginListCommand();
+            },
         }),
     },
 });
 
+// Create and run the main CLI
 const cli = createMain(mainCommand);
 
-/**
- * Backward-compatible programmatic entry.
- */
-export async function runCLI(argv: string[]): Promise<void> {
-    await cli({ rawArgs: argv });
-}
-
-// If executed directly
-if (process.argv[1] && process.argv[1].includes('testring')) {
-    cli({ rawArgs: process.argv }).catch((error) => {
-        console.error(kleur.red('Error:'), error.message);
-        process.exit(1);
-    });
-}
+cli({
+    rawArgs: process.argv,
+}).catch((error) => {
+    console.error(kleur.red('Error:'), error.message);
+    process.exit(1);
+});
