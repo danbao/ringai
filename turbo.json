@@ -5,30 +5,37 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true,
+      "persistent": false
     },
     "build:types": {
       "dependsOn": ["^build:types"],
       "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true
     },
     "test": {
       "dependsOn": ["build"],
       "outputs": [],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true
     },
     "test:unit": {
       "dependsOn": ["build"],
       "outputs": [],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true
     },
     "lint": {
       "outputs": [],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true
     },
     "lint:fix": {
       "outputs": [],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "cache": true
     }
   }
 }

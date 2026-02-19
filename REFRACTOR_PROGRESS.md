@@ -60,13 +60,29 @@
   - [x] 4.3.2 创建 TestWorkerTinypool 实现（实验性）
   - [x] 4.3.3 创建 worker-tinypool-runner.ts
 - [x] 4.4 简化 BrowserProxy → 直接调用 Playwright API
-- [ ] 4.5 简化 WebApplication → 薄封装 Playwright Page
+- [x] 4.5 简化 WebApplication → 薄封装 Playwright Page
+  - [x] 4.5.1 创建 WebApplicationSimplified 基于 Playwright Page
+  - [x] 4.5.2 添加 assert hooks 支持 (onSuccess/onError)
+  - [x] 4.5.3 添加 ElementPath selector 转换
+  - [x] 4.5.4 添加关键缺失方法 (getElementsCount, getSource, waitUntil, getSize, getCssProperty, isClickable, isDisabled, scrollIntoViewIfNeeded, selectByAttribute, waitForEnabled, waitForValue, windowHandles, getActiveElement, isFocused, getTagName)
 - [x] 4.6 错误处理标准化（Error hierarchy + context）
 
 ## Phase 5 - 类型安全 + DX
 - [ ] 5.1 类型系统强化（消除核心域 `any`/`Function` 等不安全类型）
+  - [x] 5.1.1 `test-worker-instance.ts` - 将 `Function | null` 替换为具体函数类型
+  - [x] 5.1.2 `test-worker-instance.ts` - 将 `any` 替换为具体类型（exitCode: number | null, error: Error）
+  - [x] 5.1.3 `api/run.ts` - 改进 `TestFunction` 返回类型（`Promise<any>` → `Promise<void>`）
+  - [x] 5.1.4 `api/run.ts` - 改进 `beforeRun`/`afterRun` 回调类型
+  - [x] 5.1.5 `api/test-api-controller.ts` - 改进回调类型定义
+  - [x] 5.1.6 `utils/package-require.ts` - 改进 `requirePackage` 返回类型（`any` → `unknown` 泛型）
+  - [x] 5.1.7 `utils/plugin-require.ts` - 改进 `requirePlugin` 返回类型（`any` → `unknown` 泛型）
 - [ ] 5.2 强类型 EventEmitter / branded types / `using` 资源管理
-- [ ] 5.3 开发者体验优化
+  - [x] 5.2.1 `types/src/transport/index.ts` - 改进 IWorkerEmitter EventEmitter 类型（添加 WorkerEvents 泛型）
+  - [x] 5.2.2 `types/src/transport/index.ts` - 改进 ITransport 方法泛型（`any` → `unknown`）
+  - [x] 5.2.3 `types/src/transport/structs.ts` - 改进序列化类型（`any` → `unknown`）
+- [x] 5.3 开发者体验优化
+  - [x] 5.3.1 优化 vitest 配置（使用 threads pool 提升测试速度，添加更好的错误报告）
+  - [x] 5.3.2 优化 turbo.json 配置（添加 cache 提升构建速度）
 
 ## Phase 6 - 生态与体验（Future）
 - [ ] 6.1 CLI 子命令架构与 init 向导
