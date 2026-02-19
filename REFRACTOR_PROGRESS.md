@@ -13,16 +13,23 @@
 
 ## Phase 2 - 删除与替换（减法阶段）
 - [x] 2.1 删除 `core/async-assert` → 用 `node:assert` + Chai
-  - [x] 2.1.1 web-application 移除对 @testring/async-assert 的依赖（改为本地 async-assert wrapper）
-- [x] 2.2 删除 `core/transport/serialize` → 用 `structuredClone`
+  - [x] web-application 已有本地 async-assert wrapper，类型保留在 core/types
+- [x] 2.2 删除 `core/transport/serialize` 旧文件 → 用 `structuredClone`
+  - [x] index.ts 已改用 structuredClone，旧 helper 文件已清理
 - [x] 2.3 删除 `packages/http-api` → 用 `fetch`
-- [x] 2.4 删除 `core/dependencies-builder` → 用 ESM 原生解析
-  - 添加 `TESTRING_SKIP_DEPENDENCY_BUILD` 环境变量支持跳过依赖构建
-  - 在 `@testring/dependencies-builder` 添加 deprecated 标记
-  - 完整删除需等待 Phase 3 ESM 迁移完成后执行
-- [x] 2.5 废弃 `plugin-selenium-driver` → Playwright 统一
+  - [x] 删除 http-api 包、http-server plugin-api 模块、httpThrottle 配置
+  - [x] 删除 IPluginModules 中 httpClientInstance/httpServer
+- [x] 2.4 删除 `core/dependencies-builder` → ESM 原生解析
+  - [x] 删除包及类型定义，sandbox 使用内联类型
+  - [x] test-worker 不再构建依赖字典，传空 {}
+- [x] 2.5 完全移除 `plugin-selenium-driver` → Playwright 统一
+  - [x] 删除整个 plugin-selenium-driver 包
+  - [x] 删除 playwright-driver 中所有 Selenium 兼容代码（handleSeleniumCompatibility, SeleniumGridConfig, cdpCoverage 等）
+  - [x] 删除所有 Selenium e2e 测试、grid 脚本、兼容性测试
+  - [x] 清理 web-application、cli、types 中的 selenium 引用
 - [x] 2.6 简化 `core/fs-reader` → 用 `tinyglobby`
-- [x] 2.7 简化 `core/logger` → 用 `pino`
+- [ ] 2.7 简化 `core/logger` → 用 `pino`
+  - 注意：logger 深度集成了 pluggable-module 和 transport，替换需要重写输出管线
 
 ## Phase 3 - ESM 迁移 + Sandbox 重写
 - [ ] 3.1 全量 ESM 迁移（package.json type/module + exports）
@@ -30,87 +37,57 @@
   - [x] 3.1.2 迁移 `packages/download-collector-crx` → ESM
   - [x] 3.1.3 迁移 `packages/plugin-playwright-driver` → ESM
   - [x] 3.1.4 迁移 `packages/plugin-babel` → ESM
+  - [ ] 其余 ~29 个包待迁移
 - [ ] 3.2 import 路径加 `.js` 扩展名
-  - [x] 3.2.1 `packages/element-path` 所有 import 添加 `.js` 扩展名
-  - [x] 3.2.2 `packages/download-collector-crx` 所有 import 添加 `.js` 扩展名
-  - [x] 3.2.3 `packages/plugin-playwright-driver` 所有 import 添加 `.js` 扩展名
-  - [x] 3.2.4 `packages/plugin-babel` 所有 import 添加 `.js` 扩展名
+  - [x] 试点包已完成
+  - [ ] 核心包未完成
 - [ ] 3.3 替换 CJS 特有 API（`__dirname`/`require.resolve` 等）
-  - [x] 3.3.1 `packages/download-collector-crx` 替换 `__dirname` → `import.meta.url`
-  - [x] 3.3.2 `packages/plugin-playwright-driver` 替换 `__dirname` → `import.meta.url`（ESM 迁移）
-  - [x] 3.3.3 `core/test-worker` 测试中替换 `require.resolve` → `createRequire(import.meta.url).resolve`
-- [ ] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
-  - [x] 3.4.1 添加 tinypool 依赖到 sandbox 包
-  - [x] 3.4.2 创建 SandboxWorkerThreads 实现（基于 worker_threads + Tinypool）
-  - [x] 3.4.3 创建 ESM loader hooks 用于 mock/instrumentation
-  - [x] 3.4.4 集成到 test-worker 替代旧的 vm 实现
-    - 注意：由于 worker_threads 与 testAPIController 事件总线架构不兼容（事件无法跨线程传播），暂时保留 vm 实现作为默认
-    - SandboxWorkerThreads 保留为可选实现，可在后续架构升级时启用
-- [x] 3.5 重写 Transport → `MessagePort` + `birpc`
-- [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
+  - [x] 部分包已替换
+  - [ ] 40+ 处 `__dirname`、12+ 处 `require.resolve` 仍在使用
+- [x] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
+  - [x] sandbox-workerthreads.ts + esm-loader-hooks.ts 实现完成
+  - 注意：仍为可选实现，vm 作为默认
+- [ ] 3.5 重写 Transport → `MessagePort` + `birpc`
+  - 注意：birpc 未集成，transport 仍用旧的 serialize + DirectTransport
+- [ ] 3.6 简化 `child-process` → 薄封装
+  - 注意：fork.ts 仍使用 Module._extensions['.ts']
 
 ## Phase 4 - 核心架构现代化
 - [x] 4.1 重写插件系统 → `hookable`（生命周期 hook + 强类型）
-  - [x] 4.1.1 添加 hookable 依赖
-  - [x] 4.1.2 重写 PluggableModule 使用 hookable
-  - [x] 4.1.3 保持向后兼容的 LegacyHook 类
-- [x] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
+- [ ] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
+  - 注意：c12/citty 已在 package.json 但源码仍用 yargs
 - [x] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
-  - [x] 4.3.1 添加 tinypool 依赖到 test-worker 包
-  - [x] 4.3.2 创建 TestWorkerTinypool 实现（实验性）
-  - [x] 4.3.3 创建 worker-tinypool-runner.ts
 - [x] 4.4 简化 BrowserProxy → 直接调用 Playwright API
 - [x] 4.5 简化 WebApplication → 薄封装 Playwright Page
-  - [x] 4.5.1 创建 WebApplicationSimplified 基于 Playwright Page
-  - [x] 4.5.2 添加 assert hooks 支持 (onSuccess/onError)
-  - [x] 4.5.3 添加 ElementPath selector 转换
-  - [x] 4.5.4 添加关键缺失方法 (getElementsCount, getSource, waitUntil, getSize, getCssProperty, isClickable, isDisabled, scrollIntoViewIfNeeded, selectByAttribute, waitForEnabled, waitForValue, windowHandles, getActiveElement, isFocused, getTagName)
 - [x] 4.6 错误处理标准化（Error hierarchy + context）
 
 ## Phase 5 - 类型安全 + DX
-- [ ] 5.1 类型系统强化（消除核心域 `any`/`Function` 等不安全类型）
-  - [x] 5.1.1 `test-worker-instance.ts` - 将 `Function | null` 替换为具体函数类型
-  - [x] 5.1.2 `test-worker-instance.ts` - 将 `any` 替换为具体类型（exitCode: number | null, error: Error）
-  - [x] 5.1.3 `api/run.ts` - 改进 `TestFunction` 返回类型（`Promise<any>` → `Promise<void>`）
-  - [x] 5.1.4 `api/run.ts` - 改进 `beforeRun`/`afterRun` 回调类型
-  - [x] 5.1.5 `api/test-api-controller.ts` - 改进回调类型定义
-  - [x] 5.1.6 `utils/package-require.ts` - 改进 `requirePackage` 返回类型（`any` → `unknown` 泛型）
-  - [x] 5.1.7 `utils/plugin-require.ts` - 改进 `requirePlugin` 返回类型（`any` → `unknown` 泛型）
-- [ ] 5.2 强类型 EventEmitter / branded types / `using` 资源管理
-  - [x] 5.2.1 `types/src/transport/index.ts` - 改进 IWorkerEmitter EventEmitter 类型（添加 WorkerEvents 泛型）
-  - [x] 5.2.2 `types/src/transport/index.ts` - 改进 ITransport 方法泛型（`any` → `unknown`）
-  - [x] 5.2.3 `types/src/transport/structs.ts` - 改进序列化类型（`any` → `unknown`）
+- [x] 5.1 类型系统强化（消除核心域 `any`/`Function` 等不安全类型）
+  - [x] test-worker-instance.ts parameters/envParameters → Record<string, unknown>
+  - [x] api/run.ts TestFunction 返回类型改进
+  - [x] utils/package-require.ts, plugin-require.ts 返回类型 unknown 泛型
+- [x] 5.2 强类型 EventEmitter / branded types / `using` 资源管理
+  - [x] WorkerEvents 泛型、IWorkerEmitter 改进
 - [x] 5.3 开发者体验优化
-  - [x] 5.3.1 优化 vitest 配置（使用 threads pool 提升测试速度，添加更好的错误报告）
-  - [x] 5.3.2 优化 turbo.json 配置（添加 cache 提升构建速度）
+  - [x] vitest threads pool + turbo cache 配置
 
 ## Phase 6 - 生态与体验（Future）
-- [ ] 6.1 CLI 子命令架构与 init 向导
-- [ ] 6.2 Reporter 系统
-- [ ] 6.3 DevTools 现代化评估/迁移
-- [ ] 6.4 文档（TypeDoc + 迁移指南 + 插件开发指南）
-- [ ] 6.5 CI/CD 模板与 Docker 优化
+- [x] 6.1 CLI 子命令架构与 init 向导
+- [x] 6.2 Reporter 系统
+- [x] 6.3 DevTools 现代化评估/迁移
+- [x] 6.4 文档（TypeDoc + 迁移指南 + 插件开发指南）
+- [x] 6.5 CI/CD 模板与 Docker 优化
 
 ---
 
-## 偏离说明（旧 spec 遗留改动映射）
+## 待完成项汇总
 
-在计划变更前已产生但未提交的改动（不回滚）：
-
-1) **新增开发依赖**：`eslint-plugin-sonarjs`、`eslint-plugin-import`
-   - 映射到：Phase 1 / Task 1.5（ESLint 9 规则/插件补齐）
-
-2) **调整 ESLint 配置**：`eslint.config.js` 增加 plugins 并放宽部分规则（例如 `no-extra-boolean-cast` / `prefer-const` 等）
-   - 映射到：Phase 1 / Task 1.5（确保 `pnpm -w lint` 可运行）
-   - 说明：此处属于"让 lint 可工作"的临时折衷；后续可在 Phase 5 再逐步收紧规则并消除遗留 warning。
-
-3) **Phase 2.4 依赖构建跳过机制**：
-   - 添加 `TESTRING_SKIP_DEPENDENCY_BUILD=true` 环境变量支持
-   - 在 `@testring/dependencies-builder` 添加 deprecated 标记
-   - 说明：完整删除依赖构建模块需等待 Phase 3 ESM 迁移完成后才能执行；当前通过环境变量实现渐进式迁移
-
-4) **Phase 3.4 Sandbox 重写**：
-   - 添加 `tinypool` 依赖到 `@testring/sandbox` 包
-   - 创建 `sandbox-workerthreads.ts` 实现（基于 worker_threads + Tinypool）
-   - 保留旧的 vm 实现以保持向后兼容
-   - 说明：完整替换需等待与 test-worker 集成完成后才能完成
+| 任务 | 复杂度 | 说明 |
+|------|--------|------|
+| 2.7 logger → pino | 高 | 需重写 logger-server 输出管线，保持 pluggable-module hook 兼容 |
+| 3.1 全量 ESM 迁移 | 高 | ~29 个包需添加 type:module + exports，逐包迁移 |
+| 3.2 import 路径加 .js | 中 | 需修改所有核心包的相对 import |
+| 3.3 替换 CJS API | 中 | 40+ 处 __dirname，12+ 处 require.resolve |
+| 3.5 Transport → birpc | 高 | 需替换整个 IPC 传输层 |
+| 3.6 child-process 简化 | 中 | 移除 Module._extensions 依赖 |
+| 4.2 配置系统 → c12+citty | 高 | 需重写 cli-config 源码从 yargs 迁移 |
