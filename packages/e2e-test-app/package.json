@@ -2,6 +2,7 @@
   "name": "@testring/e2e-test-app",
   "private": true,
   "version": "0.8.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/ringcentral/testring.git"

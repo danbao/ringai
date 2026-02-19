@@ -1,6 +1,7 @@
 {
   "name": "@testring/plugin-api",
   "version": "0.8.0",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {

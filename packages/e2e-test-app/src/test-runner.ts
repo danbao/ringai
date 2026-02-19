@@ -1,8 +1,12 @@
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import {MockWebServer} from './mock-web-server';
 import * as path from 'node:path';
-import * as os from 'os';
+import * as os from 'node:os';
 
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
 const mockWebServer = new MockWebServer();
 
 const filenameArgIndex = process.argv.indexOf(__filename);

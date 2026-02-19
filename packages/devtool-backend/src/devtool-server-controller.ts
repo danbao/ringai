@@ -12,7 +12,8 @@ import {
     WebApplicationDevtoolActions,
 } from '@testring/types';
 
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {fork} from '@testring/child-process';
 import {generateUniqId} from '@testring/utils';
@@ -70,6 +71,7 @@ export class DevtoolServerController
     }
 
     private async startServer() {
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
         const workerPath = path.resolve(__dirname, 'worker');
         const workerID = this.getWorkerID();
 

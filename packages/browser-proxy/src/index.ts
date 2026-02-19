@@ -1,9 +1,11 @@
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {fork} from '@testring/child-process';
 import {ITransport, IChildProcessForkOptions} from '@testring/types';
 import {BrowserProxyController} from './browser-proxy-controller';
 import {BrowserProxyPlaywright} from './browser-proxy-playwright';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WORKER_PATH = path.join(__dirname, './browser-proxy');
 
 /**

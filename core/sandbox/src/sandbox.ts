@@ -1,5 +1,5 @@
-import * as vm from 'vm';
-import * as path from 'path';
+import * as vm from 'node:vm';
+import * as path from 'node:path';
 type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
 import {requirePackage} from '@testring/utils';
 import {Script} from './script';

@@ -1,6 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import process from 'node:process';
+import { createRequire } from 'node:module';
 
 const IS_WIN = process.platform === 'win32';
 
@@ -34,6 +35,7 @@ function escapify(str: string) {
 }
 
 export function resolveBinary(name: string): string {
+    const require = createRequire(import.meta.url);
     const modulePath = require.resolve(name);
     const nodeModules = findNodeModulesDir(modulePath);
     const binSuffix = IS_WIN ? '.cmd' : '';

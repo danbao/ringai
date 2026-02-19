@@ -1,4 +1,5 @@
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {loggerClient} from '@testring/logger';
 import {FSReader} from '@testring/fs-reader';
 import {FSStoreClient, FSClientGet} from '@testring/fs-store';
@@ -18,7 +19,8 @@ import {
     IWorkerEmitter,
 } from '@testring/types';
 
-const WORKER_ROOT = require.resolve(path.resolve(__dirname, 'worker'));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const WORKER_ROOT = path.resolve(__dirname, 'worker.js');
 
 const WORKER_DEFAULT_CONFIG: ITestWorkerConfig = {
     screenshots: 'disable',

@@ -1,4 +1,5 @@
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {requirePackage, resolvePackage} from './package-require';
 
 const PREFIXES = ['@testring/plugin-', 'testring-plugin-', '@testring/'];
@@ -21,6 +22,7 @@ function normalizeExport<T>(module: T): T {
 
 export function requirePlugin<T = unknown>(pluginPath: string): T {
     let resolvedPlugin;
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const parentModule = path.join(__dirname, '../..');
 
     for (let index = 0; index < PREFIXES.length; index++) {

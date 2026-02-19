@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'node:path';
 import process from 'node:process';
 import {getAvailablePort} from '@testring/utils';
 import {IChildProcessForkOptions, IChildProcessFork} from '@testring/types';
@@ -26,7 +26,6 @@ const PREFERRED_DEBUG_PORTS: Array<number> = [
 const IS_WIN = process.platform === 'win32';
 const EMPTY_PARAMETERS: Array<string> = [];
 const REQUIRE_TS_NODE = ['-r', 'ts-node/register'];
-const Module = require('module').Module;
 
 const DEFAULT_FORK_OPTIONS: IChildProcessForkOptions = {
     debug: false,
@@ -44,9 +43,7 @@ function getAdditionalParameters(filePath: string): Array<string> {
             return REQUIRE_TS_NODE;
 
         case '':
-            return Module._extensions['.ts']
-                ? REQUIRE_TS_NODE
-                : EMPTY_PARAMETERS;
+            return EMPTY_PARAMETERS;
 
         default:
             return EMPTY_PARAMETERS;

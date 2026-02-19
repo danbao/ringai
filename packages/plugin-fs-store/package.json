@@ -1,6 +1,7 @@
 {
   "name": "@testring/plugin-fs-store",
   "version": "0.8.0",
+  "type": "module",
   "description": "fs storage & default plugin",
   "main": "./dist/index.js",
   "types": "./src/index.ts",

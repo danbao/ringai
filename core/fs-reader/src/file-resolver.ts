@@ -1,7 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import {IFile} from '@testring/types';
-const pLimit = require('p-limit');
+import pLimit from 'p-limit';
 
 const ERR_NO_FILES = new Error('No test files found');
 

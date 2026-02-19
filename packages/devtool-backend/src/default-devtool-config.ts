@@ -5,11 +5,13 @@ import {
 } from './constants';
 import {IDevtoolServerConfig} from '@testring/types';
 
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {absolutePath as FRONTEND_PATH} from '@testring/devtool-frontend';
 
-const getRouterPath = (filepath) =>
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const getRouterPath = (filepath: string) =>
     path.resolve(__dirname, './routes/', filepath);
 
 export const defaultDevtoolConfig: IDevtoolServerConfig = {

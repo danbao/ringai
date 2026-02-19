@@ -1,6 +1,7 @@
 {
   "name": "@testring/devtool-backend",
   "version": "0.8.0",
+  "type": "module",
   "description": "DEPRECATED: DevTools server backend. Consider migrating to a modern solution.",
   "deprecated": true,
   "main": "./dist/index.js",

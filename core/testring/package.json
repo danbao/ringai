@@ -1,6 +1,7 @@
 {
   "name": "testring",
   "version": "0.8.0",
+  "type": "module",
   "description": "Main package with CLI interface and test API.",
   "main": "./dist/index.js",
   "types": "./src/index.ts",

@@ -1,6 +1,7 @@
 {
   "name": "@testring/timeout-config",
   "version": "0.8.0",
+  "type": "module",
   "main": "./index.js",
   "typings": "./index.d.ts",
   "repository": {

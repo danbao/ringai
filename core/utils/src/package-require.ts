@@ -1,13 +1,11 @@
-import * as path from 'path';
+import * as path from 'node:path';
+import { createRequire } from 'node:module';
 import * as resolve from 'resolve';
 
-type webpackRequire = (arg0: string, ...rest: any[]) => any;
-declare const __webpack_require__: webpackRequire | undefined;
-
-export const isWebpack = () => typeof __webpack_require__ !== 'undefined';
+const require = createRequire(import.meta.url);
 
 const requireById = <T = unknown>(id: string): T => {
-    return module.require(id) as T;
+    return require(id) as T;
 };
 
 const requireResolveById = (id: string, options?: {paths?: string[]}) => {
@@ -18,9 +16,6 @@ export function resolvePackage(
     modulePath: string,
     parentModule?: string,
 ): string {
-    if (isWebpack()) {
-        throw Error("Can't use dynamic imports with webpack.");
-    }
 
     try {
         if (typeof parentModule === 'string') {
@@ -51,9 +46,6 @@ interface RequireError extends Error {
 }
 
 export function requirePackage<T = unknown>(modulePath: string, parentModule?: string): T {
-    if (isWebpack()) {
-        throw Error("Can't use dynamic imports with webpack.");
-    }
 
     const fileName = resolvePackage(modulePath, parentModule);
 

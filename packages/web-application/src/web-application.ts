@@ -34,7 +34,7 @@ import {
 } from './browser-scripts';
 
 // 导入统一的timeout配置
-const TIMEOUTS = require('@testring/timeout-config');
+import TIMEOUTS from '@testring/timeout-config';
 
 type valueType = string | number | null | undefined;
 

@@ -1,6 +1,7 @@
 {
   "name": "@testring/fs-store",
   "version": "0.8.0",
+  "type": "module",
   "description": "fs storage & operations service",
   "keywords": [
     "fs",
