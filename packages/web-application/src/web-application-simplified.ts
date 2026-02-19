@@ -19,11 +19,12 @@ import type {
 } from '@testring/types';
 import { loggerClient } from '@testring/logger';
 
-const DEFAULT_CONFIG: Partial<IWebApplicationConfig> = {
-    screenshotsEnabled: false,
-    screenshotPath: './_tmp/',
-    devtool: null,
-};
+// DEFAULT_CONFIG reserved for future use
+// const DEFAULT_CONFIG: Partial<IWebApplicationConfig> = {
+//     screenshotsEnabled: false,
+//     screenshotPath: './_tmp/',
+//     devtool: null,
+// };
 
 /**
  * Simplified WebApplication - Thin wrapper around Playwright Page
@@ -98,12 +99,24 @@ export class WebApplicationSimplified {
         onSuccess: (handler: (meta: IAssertionSuccessMeta) => void) => {
             // Soft assert success - could log but not fail
             this.logger.debug('Soft assert success:', handler);
-            this.handleSuccess({ successMessage: '', assertMessage: '' });
+            this.handleSuccess({ 
+                isSoft: true,
+                successMessage: '', 
+                assertMessage: '',
+                originalMethod: '',
+                args: []
+            });
         },
         onError: (handler: (meta: IAssertionErrorMeta) => void) => {
             // Soft assert error - log but don't throw
             this.logger.warn('Soft assert error:', handler);
-            this.handleError({ assertMessage: '' });
+            this.handleError({ 
+                isSoft: true,
+                assertMessage: '',
+                successMessage: '',
+                originalMethod: '',
+                args: []
+            });
         },
     };
 

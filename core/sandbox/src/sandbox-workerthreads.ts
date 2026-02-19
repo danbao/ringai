@@ -175,6 +175,7 @@ export class SandboxWorkerThreads extends EventEmitter {
     public async execute(): Promise<void> {
         logger.debug(`[${this.workerID}] Executing ${this.filename}`);
 
+        // Create a fresh worker for each execution (like vm.createContext)
         const worker = new Worker(WORKER_EVAL_SOURCE, {
             eval: true,
         });

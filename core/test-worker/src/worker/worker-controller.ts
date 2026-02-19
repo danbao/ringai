@@ -229,7 +229,7 @@ export class WorkerController {
         // TODO (flops) pass message.parameters somewhere inside web application
         const testID = path.relative(process.cwd(), message.path);
 
-        const sandbox = new SandboxWorkerThreads(
+        const sandbox = new Sandbox(
             message.content,
             message.path,
             message.dependencies,
