@@ -3,22 +3,23 @@ import {requirePackage, resolvePackage} from './package-require';
 
 const PREFIXES = ['@testring/plugin-', 'testring-plugin-', '@testring/'];
 
-function normalizeExport(module: any) {
+function normalizeExport<T>(module: T): T {
     // filtering null and other falsy values
     if (!module) {
         return module;
     }
 
+    const anyModule = module as Record<string, unknown>;
     // returning original module, if it wasn't transformed by babel
-    if (!module['__esModule']) {
+    if (!anyModule['__esModule']) {
         return module;
     }
 
     // returning default as default
-    return module.default ? module.default : module;
+    return anyModule['default'] ? anyModule['default'] as T : module;
 }
 
-export function requirePlugin(pluginPath: string): any {
+export function requirePlugin<T = unknown>(pluginPath: string): T {
     let resolvedPlugin;
     const parentModule = path.join(__dirname, '../..');
 
@@ -38,7 +39,7 @@ export function requirePlugin(pluginPath: string): any {
         resolvedPlugin = resolvePackage(pluginPath);
     }
 
-    const plugin = requirePackage(resolvedPlugin);
+    const plugin = requirePackage<T>(resolvedPlugin);
 
     return normalizeExport(plugin);
 }

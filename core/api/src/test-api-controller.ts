@@ -4,8 +4,8 @@ import {EventEmitter} from 'events';
 
 import {asyncBreakpoints} from '@testring/async-breakpoints';
 
-type BeforeRunCallback = () => any;
-type AfterRunCallback = () => any;
+type BeforeRunCallback = () => void | Promise<void>;
+type AfterRunCallback = () => void | Promise<void>;
 
 export class BusEmitter extends EventEmitter {
     private async addDelayToStack(): Promise<void> {

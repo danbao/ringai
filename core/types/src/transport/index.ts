@@ -3,11 +3,26 @@ import {TransportMessageHandler} from './structs';
 
 type RemoveHandlerFunction = () => void;
 
+// Worker process message types
+export type WorkerMessage = {
+    type: string;
+    payload: unknown;
+};
+
+// Worker events for type-safe event emitter
+export type WorkerEvents = {
+    close: [code: number, signal: string];
+    disconnect: [];
+    error: [err: Error];
+    exit: [code: number, signal: string];
+};
+
 export interface IWorkerEmitter extends EventEmitter {
-    send(message: any, callback?: (error: Error | null) => void): boolean;
+    send(message: WorkerMessage, callback?: (error: Error | null) => void): boolean;
     kill(signal?: NodeJS.Signals): void;
 
-    addListener(event: string, listener: (...args: any[]) => void): this;
+    addListener<K extends keyof WorkerEvents>(event: K, listener: (...args: WorkerEvents[K]) => void): this;
+    addListener(event: string, listener: (...args: unknown[]) => void): this;
     addListener(
         event: 'close',
         listener: (code: number, signal: string) => void,
@@ -19,19 +34,22 @@ export interface IWorkerEmitter extends EventEmitter {
         listener: (code: number, signal: string) => void,
     ): this;
 
-    emit(event: string | symbol, ...args: any[]): boolean;
+    emit<K extends keyof WorkerEvents>(event: K, ...args: WorkerEvents[K]): boolean;
+    emit(event: string | symbol, ...args: unknown[]): boolean;
     emit(event: 'close', code: number, signal: string): boolean;
     emit(event: 'disconnect'): boolean;
     emit(event: 'error', err: Error): boolean;
     emit(event: 'exit', code: number, signal: string): boolean;
 
-    on(event: string, listener: (...args: any[]) => void): this;
+    on<K extends keyof WorkerEvents>(event: K, listener: (...args: WorkerEvents[K]) => void): this;
+    on(event: string, listener: (...args: unknown[]) => void): this;
     on(event: 'close', listener: (code: number, signal: string) => void): this;
     on(event: 'disconnect', listener: () => void): this;
     on(event: 'error', listener: (err: Error) => void): this;
     on(event: 'exit', listener: (code: number, signal: string) => void): this;
 
-    once(event: string, listener: (...args: any[]) => void): this;
+    once<K extends keyof WorkerEvents>(event: K, listener: (...args: WorkerEvents[K]) => void): this;
+    once(event: string, listener: (...args: unknown[]) => void): this;
     once(
         event: 'close',
         listener: (code: number, signal: string) => void,
@@ -40,7 +58,8 @@ export interface IWorkerEmitter extends EventEmitter {
     once(event: 'error', listener: (err: Error) => void): this;
     once(event: 'exit', listener: (code: number, signal: string) => void): this;
 
-    prependListener(event: string, listener: (...args: any[]) => void): this;
+    prependListener<K extends keyof WorkerEvents>(event: K, listener: (...args: WorkerEvents[K]) => void): this;
+    prependListener(event: string, listener: (...args: unknown[]) => void): this;
     prependListener(
         event: 'close',
         listener: (code: number, signal: string) => void,
@@ -52,9 +71,10 @@ export interface IWorkerEmitter extends EventEmitter {
         listener: (code: number, signal: string) => void,
     ): this;
 
+    prependOnceListener<K extends keyof WorkerEvents>(event: K, listener: (...args: WorkerEvents[K]) => void): this;
     prependOnceListener(
         event: string,
-        listener: (...args: any[]) => void,
+        listener: (...args: unknown[]) => void,
     ): this;
     prependOnceListener(
         event: 'close',
@@ -71,33 +91,33 @@ export interface IWorkerEmitter extends EventEmitter {
 export interface ITransport {
     getProcessesList(): Array<string>;
 
-    send<T = any>(
+    send<T = unknown>(
         processID: string,
         messageType: string,
         payload: T,
     ): Promise<void>;
 
-    broadcast<T = any>(messageType: string, payload: T): void;
+    broadcast<T = unknown>(messageType: string, payload: T): void;
 
-    broadcastLocal<T = any>(messageType: string, payload: T): void;
+    broadcastLocal<T = unknown>(messageType: string, payload: T): void;
 
-    broadcastUniversally<T = any>(messageType: string, payload: T): void;
+    broadcastUniversally<T = unknown>(messageType: string, payload: T): void;
 
     isChildProcess(): boolean;
 
     registerChild(processID: string, child: IWorkerEmitter): void;
 
-    on<T = any>(
+    on<T = unknown>(
         messageType: string,
         callback: TransportMessageHandler<T>,
     ): RemoveHandlerFunction;
 
-    once<T = any>(
+    once<T = unknown>(
         messageType: string,
         callback: TransportMessageHandler<T>,
     ): RemoveHandlerFunction;
 
-    onceFrom<T = any>(
+    onceFrom<T = unknown>(
         processID: string,
         messageType: string,
         callback: TransportMessageHandler<T>,

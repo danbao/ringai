@@ -1,19 +1,19 @@
-export type TransportMessageHandler<T = any> = (
+export type TransportMessageHandler<T = unknown> = (
     payload: T,
     source?: string,
 ) => void;
 
-export type TransportSerializer = (v: any) => ITransportSerializedStruct;
+export type TransportSerializer = (v: unknown) => ITransportSerializedStruct;
 
-export type TransportDeserializer = (struct: ITransportSerializedStruct) => any;
+export type TransportDeserializer = (struct: ITransportSerializedStruct) => unknown;
 
 export interface ITransportSerializedStruct {
     $key: string;
 
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
-export interface ITransportMessage<T = any> {
+export interface ITransportMessage<T = unknown> {
     type: string;
     payload: T;
 }
