@@ -1,4 +1,4 @@
-import {hasOwn, isInteger, keysCount} from './utils';
+import {hasOwn, isInteger, keysCount} from './utils.js';
 
 export type FlowFn = () => any;
 

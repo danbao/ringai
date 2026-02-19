@@ -40,6 +40,10 @@
   - [x] 3.3.2 `packages/plugin-playwright-driver` 替换 `__dirname` → `import.meta.url`（ESM 迁移）
   - [x] 3.3.3 `core/test-worker` 测试中替换 `require.resolve` → `createRequire(import.meta.url).resolve`
 - [ ] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
+  - [x] 3.4.1 添加 tinypool 依赖到 sandbox 包
+  - [x] 3.4.2 创建 SandboxWorkerThreads 实现（基于 worker_threads + Tinypool）
+  - [x] 3.4.3 创建 ESM loader hooks 用于 mock/instrumentation
+  - [ ] 3.4.4 集成到 test-worker 替代旧的 vm 实现
 - [x] 3.5 重写 Transport → `MessagePort` + `birpc`
 - [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
 
@@ -49,8 +53,11 @@
   - [x] 4.1.2 重写 PluggableModule 使用 hookable
   - [x] 4.1.3 保持向后兼容的 LegacyHook 类
 - [x] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
-- [ ] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
-- [ ] 4.4 简化 BrowserProxy → 直接调用 Playwright API
+- [x] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
+  - [x] 4.3.1 添加 tinypool 依赖到 test-worker 包
+  - [x] 4.3.2 创建 TestWorkerTinypool 实现（实验性）
+  - [x] 4.3.3 创建 worker-tinypool-runner.ts
+- [x] 4.4 简化 BrowserProxy → 直接调用 Playwright API
 - [ ] 4.5 简化 WebApplication → 薄封装 Playwright Page
 - [x] 4.6 错误处理标准化（Error hierarchy + context）
 
@@ -83,3 +90,9 @@
    - 添加 `TESTRING_SKIP_DEPENDENCY_BUILD=true` 环境变量支持
    - 在 `@testring/dependencies-builder` 添加 deprecated 标记
    - 说明：完整删除依赖构建模块需等待 Phase 3 ESM 迁移完成后才能执行；当前通过环境变量实现渐进式迁移
+
+4) **Phase 3.4 Sandbox 重写**：
+   - 添加 `tinypool` 依赖到 `@testring/sandbox` 包
+   - 创建 `sandbox-workerthreads.ts` 实现（基于 worker_threads + Tinypool）
+   - 保留旧的 vm 实现以保持向后兼容
+   - 说明：完整替换需等待与 test-worker 集成完成后才能完成

@@ -1,2 +1,2 @@
-export {ElementPath} from './element-path';
-export {createElementPath, ElementPathProxy} from './create-element-path';
+export {ElementPath} from './element-path.js';
+export {createElementPath, ElementPathProxy} from './create-element-path.js';

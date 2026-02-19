@@ -14,6 +14,9 @@ importers:
       tinyglobby:
         specifier: 0.2.15
         version: 0.2.15
+      tinypool:
+        specifier: 2.1.0
+        version: 2.1.0
     devDependencies:
       '@changesets/changelog-github':
         specifier: 0.5.2
@@ -378,6 +381,9 @@ importers:
       '@testring/api':
         specifier: workspace:*
         version: link:../api
+      '@testring/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@testring/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
@@ -387,6 +393,9 @@ importers:
       '@testring/utils':
         specifier: workspace:*
         version: link:../utils
+      tinypool:
+        specifier: 2.1.0
+        version: 2.1.0
 
   core/test-run-controller:
     dependencies:
@@ -451,6 +460,9 @@ importers:
       '@types/node':
         specifier: 22.8.5
         version: 22.8.5
+      tinypool:
+        specifier: 2.1.0
+        version: 2.1.0
     devDependencies:
       '@testring/test-utils':
         specifier: workspace:*
@@ -518,6 +530,9 @@ importers:
       '@testring/child-process':
         specifier: workspace:*
         version: link:../../core/child-process
+      '@testring/element-path':
+        specifier: workspace:*
+        version: link:../element-path
       '@testring/logger':
         specifier: workspace:*
         version: link:../../core/logger
@@ -533,12 +548,12 @@ importers:
       '@testring/utils':
         specifier: workspace:*
         version: link:../../core/utils
-      '@types/yargs':
-        specifier: 17.0.33
-        version: 17.0.33
-      yargs:
-        specifier: 17.7.2
-        version: 17.7.2
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.11
+      playwright:
+        specifier: ^1.48.0
+        version: 1.58.2
     devDependencies:
       '@testring/test-utils':
         specifier: workspace:*
@@ -1034,6 +1049,9 @@ importers:
       '@testring/utils':
         specifier: workspace:*
         version: link:../../core/utils
+      playwright:
+        specifier: ^1.48.0
+        version: 1.58.2
     devDependencies:
       '@testring/child-process':
         specifier: workspace:*
@@ -7241,6 +7259,10 @@ packages:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
+  tinypool@2.1.0:
+    resolution: {integrity: sha512-Pugqs6M0m7Lv1I7FtxN4aoyToKg1C4tu+/381vH35y8oENM/Ai7f7C4StcoK4/+BSw9ebcS8jRiVrORFKCALLw==}
+    engines: {node: ^20.0.0 || >=22.0.0}
+
   tinyrainbow@3.0.3:
     resolution: {integrity: sha512-PSkbLUoxOFRzJYjjxHJt9xro7D+iilgMX/C9lawzVuYiIdcihh9DXmVibBe8lmcFrRi/VzlPjBxbN7rH24q8/Q==}
     engines: {node: '>=14.0.0'}
@@ -9409,7 +9431,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.0.1':
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -9478,7 +9500,7 @@ snapshots:
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.5
 
@@ -9488,7 +9510,7 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
 
   '@types/sinon-chai@3.2.12':
     dependencies:
@@ -9511,7 +9533,7 @@ snapshots:
 
   '@types/webpack@5.28.5(esbuild@0.27.3)(webpack-cli@5.1.4)':
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
       tapable: 2.3.0
       webpack: 5.95.0(esbuild@0.27.3)(webpack-cli@5.1.4)
     transitivePeerDependencies:
@@ -9524,7 +9546,7 @@ snapshots:
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -9534,7 +9556,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3)':
@@ -10784,7 +10806,7 @@ snapshots:
 
   chrome-launcher@1.1.2:
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 2.0.2
@@ -12786,7 +12808,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.8.5
+      '@types/node': 22.19.11
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -15264,6 +15286,8 @@ snapshots:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
+
+  tinypool@2.1.0: {}
 
   tinyrainbow@3.0.3: {}
 

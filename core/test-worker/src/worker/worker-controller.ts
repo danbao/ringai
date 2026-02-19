@@ -13,7 +13,7 @@ import {
 } from '@testring/types';
 import {restructureError} from '@testring/utils';
 
-import {Sandbox} from '@testring/sandbox';
+import {Sandbox, SandboxWorkerThreads} from '@testring/sandbox';
 import {testAPIController, TestAPIController} from '@testring/api';
 import {asyncBreakpoints, BreakStackError} from '@testring/async-breakpoints';
 import {loggerClient, LoggerClient} from '@testring/logger';
@@ -105,7 +105,9 @@ export class WorkerController {
         } catch (e) {
             this.logger.error('Failed to release tests execution');
         }
-        Sandbox.clearCache();
+        // With SandboxWorkerThreads each execution happens in its own worker thread.
+        // Keeping this call for backward compatibility.
+        SandboxWorkerThreads.clearCache();
 
         this.transport.broadcastUniversally(TestWorkerAction.unregister, {});
 
@@ -145,7 +147,9 @@ export class WorkerController {
             },
         );
 
-        Sandbox.clearCache();
+        // With SandboxWorkerThreads each execution happens in its own worker thread.
+        // Keeping this call for backward compatibility.
+        SandboxWorkerThreads.clearCache();
 
         this.transport.broadcastUniversally(
             TestWorkerAction.unregister,
@@ -225,7 +229,7 @@ export class WorkerController {
         // TODO (flops) pass message.parameters somewhere inside web application
         const testID = path.relative(process.cwd(), message.path);
 
-        const sandbox = new Sandbox(
+        const sandbox = new SandboxWorkerThreads(
             message.content,
             message.path,
             message.dependencies,

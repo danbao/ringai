@@ -18,7 +18,8 @@
     "@testring/timeout-config": "workspace:*",
     "@testring/transport": "workspace:*",
     "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*"
+    "@testring/utils": "workspace:*",
+    "playwright": "^1.48.0"
   },
   "devDependencies": {
     "@testring/child-process": "workspace:*",

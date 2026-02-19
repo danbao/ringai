@@ -22,7 +22,8 @@
     "@testring/transport": "workspace:*",
     "@testring/types": "workspace:*",
     "@testring/utils": "workspace:*",
-    "@types/node": "22.8.5"
+    "@types/node": "22.8.5",
+    "tinypool": "2.1.0"
   },
   "devDependencies": {
     "@testring/test-utils": "workspace:*"

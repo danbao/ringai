@@ -16,8 +16,8 @@
     "@testring/transport": "workspace:*",
     "@testring/types": "workspace:*",
     "@testring/utils": "workspace:*",
-    "@types/yargs": "17.0.33",
-    "yargs": "17.7.2"
+    "@types/node": "^22.0.0",
+    "playwright": "^1.48.0"
   },
   "devDependencies": {
     "@testring/test-utils": "workspace:*"

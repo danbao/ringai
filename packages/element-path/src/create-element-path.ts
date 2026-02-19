@@ -1,5 +1,5 @@
-import {proxify, XpathLocatorProxified} from './proxify';
-import {ElementPath, FlowsObject} from './element-path';
+import {proxify, XpathLocatorProxified} from './proxify.js';
+import {ElementPath, FlowsObject} from './element-path.js';
 
 export type createElementPathOptions = {
     flows?: FlowsObject;

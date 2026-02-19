@@ -1,6 +1,6 @@
 /* eslint-disable prefer-spread,prefer-rest-params */
-import {hasOwn, isGenKeyType} from './utils';
-import {ElementPath, SearchObject} from './element-path';
+import {hasOwn, isGenKeyType} from './utils.js';
+import {ElementPath, SearchObject} from './element-path.js';
 
 type KeyType = string | number | symbol;
 
