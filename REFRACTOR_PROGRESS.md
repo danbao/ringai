@@ -38,7 +38,7 @@
   - [x] 3.3.2 `packages/plugin-playwright-driver` 替换 `__dirname` → `import.meta.url`（ESM 迁移）
   - [x] 3.3.3 `core/test-worker` 测试中替换 `require.resolve` → `createRequire(import.meta.url).resolve`
 - [ ] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
-- [ ] 3.5 重写 Transport → `MessagePort` + `birpc`
+- [x] 3.5 重写 Transport → `MessagePort` + `birpc`
 - [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
 
 ## Phase 4 - 核心架构现代化
@@ -47,7 +47,7 @@
 - [ ] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
 - [ ] 4.4 简化 BrowserProxy → 直接调用 Playwright API
 - [ ] 4.5 简化 WebApplication → 薄封装 Playwright Page
-- [ ] 4.6 错误处理标准化（Error hierarchy + context）
+- [x] 4.6 错误处理标准化（Error hierarchy + context）
 
 ## Phase 5 - 类型安全 + DX
 - [ ] 5.1 类型系统强化（消除核心域 `any`/`Function` 等不安全类型）

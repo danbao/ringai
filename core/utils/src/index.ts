@@ -24,3 +24,13 @@ export {getMemoryReport, getHeapReport} from './memory-usage';
 export {throttle} from './throttle';
 
 export {restructureError} from './restructure-error';
+
+// Error classes - Task 4.6: Error hierarchy standardization
+export {
+    TestringError,
+    TransportError,
+    PluginError,
+    ConfigError,
+    WorkerError,
+} from './errors';
+export type {ErrorContext} from './errors/types';
