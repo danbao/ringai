@@ -102,8 +102,8 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     public async execute(
         file: IFile,
-        parameters: any,
-        envParameters: any,
+        parameters: Record<string, unknown>,
+        envParameters: Record<string, unknown>,
     ): Promise<void> {
         return new Promise((resolve, reject) => {
             this.makeExecutionRequest(file, parameters, envParameters, (err) =>
@@ -158,8 +158,8 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     private async getExecutionPayload(
         file: IFile,
-        parameters: any,
-        envParameters: any,
+        parameters: Record<string, unknown>,
+        envParameters: Record<string, unknown>,
     ) {
         const additionalFiles = await this.beforeCompile(
             [],
@@ -189,8 +189,8 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     private async makeExecutionRequest(
         file: IFile,
-        parameters: any,
-        envParameters: any,
+        parameters: Record<string, unknown>,
+        envParameters: Record<string, unknown>,
         callback: (err?: Error) => void,
     ): Promise<void> {
         const worker = await this.initWorker();

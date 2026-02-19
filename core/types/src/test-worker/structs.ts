@@ -9,9 +9,8 @@ export type FileCompiler = (
 export interface ITestExecutionMessage extends IFile {
     waitForRelease: boolean;
     dependencies: Record<string, unknown>;
-    // TODO (flops) rename envParameters and fix any
-    parameters: any;
-    envParameters: any;
+    parameters: Record<string, unknown>;
+    envParameters: Record<string, unknown>;
 }
 
 export type ITestEvaluationMessage = IFile;
