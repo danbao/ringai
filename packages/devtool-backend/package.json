@@ -1,6 +1,8 @@
 {
   "name": "@testring/devtool-backend",
   "version": "0.8.0",
+  "description": "DEPRECATED: DevTools server backend. Consider migrating to a modern solution.",
+  "deprecated": true,
   "main": "./dist/index.js",
   "repository": {
     "type": "git",
@@ -11,10 +13,13 @@
   "scripts": {
     "start": "ts-node src/test-server.ts",
     "start:watch": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' ./src/index.ts",
-    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
-    "test": "mocha"
+    "build": "tsup --config ../../tsup.config.base.ts",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0",
+    "@babel/types": "^7.26.0",
     "@testring/child-process": "workspace:*",
     "@testring/devtool-extension": "workspace:*",
     "@testring/devtool-frontend": "workspace:*",
@@ -23,20 +28,15 @@
     "@testring/transport": "workspace:*",
     "@testring/types": "workspace:*",
     "@testring/utils": "workspace:*",
-    "babel-traverse": "6.26.0",
-    "babel-types": "6.26.0",
     "express": "4.21.1",
     "redux": "5.0.1",
     "ws": "8.18.0"
   },
   "devDependencies": {
     "@testring/test-utils": "workspace:*",
-    "@types/babel-traverse": "6.25.10",
     "@types/express-serve-static-core": "5.0.1",
     "@types/node": "22.8.5",
     "@types/ws": "8.5.12",
-    "request": "2.88.2",
-    "request-promise": "4.2.6",
-    "ts-node": "10.9.2"
+    "vitest": "2.1.8"
   }
 }

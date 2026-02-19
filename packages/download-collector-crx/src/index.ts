@@ -1,9 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const crxFilePath = path.join(__dirname, './extension.crx');
 
-let CACHED_CRX_BASE64 = null;
+let CACHED_CRX_BASE64: string | null = null;
 
 function getCrxBase64() {
     if (CACHED_CRX_BASE64) {
@@ -16,6 +20,8 @@ function getCrxBase64() {
     return CACHED_CRX_BASE64;
 }
 
-module.exports = {
+export const getCrxBase64Export = getCrxBase64;
+
+export default {
     getCrxBase64,
 };

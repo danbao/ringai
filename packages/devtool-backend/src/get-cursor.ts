@@ -1,6 +1,6 @@
-import * as babylon from 'babylon';
-import traverse from 'babel-traverse';
-import * as t from 'babel-types';
+import * as babelParser from '@babel/parser';
+import traverse from '@babel/traverse';
+import * as t from '@babel/types';
 
 interface CursorPosition {
     line: number;
@@ -37,12 +37,12 @@ export function getCursor(
     code: string,
     currentPosition: CursorPosition,
 ): CursorPosition | null {
-    const ast = babylon.parse(code);
+    const ast = babelParser.parse(code);
     let wasCursorFound: any;
 
     traverse(ast, {
         enter(path) {
-            if (isCursorHere(path.node.loc, currentPosition)) {
+            if (path.node.loc && isCursorHere(path.node.loc, currentPosition)) {
                 wasCursorFound = path;
             }
         },

@@ -641,13 +641,178 @@ export class WebApplicationSimplified {
     }
 
     /**
-     * Upload file
-     * Note: This is a placeholder - to use, call setInputFiles on a file input locator directly
+     * Upload file to input element
      */
-    public async uploadFile(_fullPath: string): Promise<void> {
-        // This would need to be called on a file input element
-        // Using Playwright's setInputFiles
-        // For now, just a placeholder
+    public async uploadFile(selector: string | ElementPathProxy, fullPath: string): Promise<void> {
+        const locator = this.toLocator(selector);
+        await locator.setInputFiles(fullPath);
+    }
+
+    // ============ Additional Missing Methods ============
+
+    /**
+     * Get count of matching elements
+     */
+    public async getElementsCount(selector: string | ElementPathProxy): Promise<number> {
+        const locator = this.toLocator(selector);
+        return locator.count();
+    }
+
+    /**
+     * Get page source HTML
+     */
+    public async getSource(): Promise<string> {
+        return this.page.content();
+    }
+
+    /**
+     * Wait until condition is met
+     */
+    public async waitUntil(
+        condition: () => Promise<boolean>,
+        timeout: number = 30000,
+        timeoutMsg?: string,
+        interval: number = 500
+    ): Promise<void> {
+        const startTime = Date.now();
+        while (true) {
+            if (Date.now() - startTime > timeout) {
+                throw new Error(timeoutMsg || `waitUntil timeout after ${timeout}ms`);
+            }
+            const result = await condition();
+            if (result) return;
+            await new Promise(resolve => setTimeout(resolve, interval));
+        }
+    }
+
+    /**
+     * Get element size (bounding box)
+     */
+    public async getSize(selector: string | ElementPathProxy): Promise<{ width: number; height: number }> {
+        const locator = this.toLocator(selector);
+        const box = await locator.boundingBox();
+        return box || { width: 0, height: 0 };
+    }
+
+    /**
+     * Get CSS property value
+     */
+    public async getCssProperty(selector: string | ElementPathProxy, propertyName: string): Promise<string> {
+        const locator = this.toLocator(selector);
+        return locator.evaluate((el, prop) => {
+            return window.getComputedStyle(el).getPropertyValue(prop);
+        }, propertyName);
+    }
+
+    /**
+     * Check if element is clickable (visible and enabled)
+     */
+    public async isClickable(selector: string | ElementPathProxy): Promise<boolean> {
+        const locator = this.toLocator(selector);
+        try {
+            await locator.click({ trial: true });
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Check if element is disabled
+     */
+    public async isDisabled(selector: string | ElementPathProxy): Promise<boolean> {
+        const locator = this.toLocator(selector);
+        const isEnabled = await locator.isEnabled();
+        return !isEnabled;
+    }
+
+    /**
+     * Scroll element into view if needed
+     */
+    public async scrollIntoViewIfNeeded(selector: string | ElementPathProxy): Promise<void> {
+        const locator = this.toLocator(selector);
+        await locator.scrollIntoViewIfNeeded();
+    }
+
+    /**
+     * Select by attribute value
+     */
+    public async selectByAttribute(selector: string | ElementPathProxy, attribute: string, value: string): Promise<string[]> {
+        const locator = this.toLocator(selector);
+        return locator.selectOption({ [attribute]: value });
+    }
+
+    /**
+     * Wait for element to be enabled
+     */
+    public async waitForEnabled(selector: string | ElementPathProxy, timeout?: number): Promise<void> {
+        const locator = this.toLocator(selector);
+        const opts: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; timeout?: number } = { state: 'visible' };
+        if (timeout !== undefined) {
+            opts.timeout = timeout;
+        }
+        await locator.waitFor(opts);
+        if (!(await locator.isEnabled())) {
+            throw new Error(`Element ${selector} is not enabled`);
+        }
+    }
+
+    /**
+     * Wait for element to have a specific value
+     */
+    public async waitForValue(selector: string | ElementPathProxy, value: string, timeout?: number): Promise<void> {
+        const locator = this.toLocator(selector);
+        const opts: { state?: 'attached' | 'detached' | 'visible' | 'hidden'; timeout?: number } = { state: 'attached' };
+        if (timeout !== undefined) {
+            opts.timeout = timeout;
+        }
+        await locator.waitFor(opts);
+        
+        // Poll until value matches
+        const startTime = Date.now();
+        const timeoutMs = timeout || 30000;
+        while (Date.now() - startTime < timeoutMs) {
+            const currentValue = await locator.inputValue();
+            if (currentValue === value) return;
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        throw new Error(`Element ${selector} did not have value "${value}" within ${timeoutMs}ms`);
+    }
+
+    /**
+     * Get all window/tab handles
+     */
+    public async windowHandles(): Promise<string[]> {
+        const pages = this.page.context().pages();
+        return pages.map((_, i) => String(i));
+    }
+
+    /**
+     * Get the active element
+     */
+    public async getActiveElement(): Promise<string> {
+        return this.page.evaluate(() => {
+            const el = document.activeElement;
+            return el ? el.tagName.toLowerCase() : '';
+        });
+    }
+
+    /**
+     * Check if element is focused
+     */
+    public async isFocused(selector: string | ElementPathProxy): Promise<boolean> {
+        const locator = this.toLocator(selector);
+        return this.page.evaluate((el) => {
+            return document.activeElement === el;
+        }, await locator.elementHandle());
+    }
+
+    /**
+     * Get element tag name
+     */
+    public async getTagName(selector: string | ElementPathProxy): Promise<string> {
+        const locator = this.toLocator(selector);
+        return locator.evaluate((el) => el.tagName.toLowerCase());
     }
 
     /**
