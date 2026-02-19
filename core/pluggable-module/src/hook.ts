@@ -1,27 +1,32 @@
+type HookWriteHandler = (...args: any[]) => any | Promise<any>;
+type HookReadHandler = (...args: any[]) => void | Promise<void>;
+
 export class Hook {
-    private writeHooks: Map<string, Function> = new Map();
+    private writeHooks: Map<string, HookWriteHandler> = new Map();
 
-    private readHooks: Map<string, Function> = new Map();
+    private readHooks: Map<string, HookReadHandler> = new Map();
 
-    private generateError(pluginName: string, error: Error) {
+    private generateError(pluginName: string, error: unknown) {
+        const err = error instanceof Error ? error : new Error(String(error));
+
         const generatedError = new Error(
-            `Plugin ${pluginName} failed: ${error.message}`,
+            `Plugin ${pluginName} failed: ${err.message}`,
         );
 
-        generatedError.stack = error.stack ?? 'No stack trace available';
+        generatedError.stack = err.stack ?? 'No stack trace available';
 
-        return error;
+        return generatedError;
     }
 
-    public writeHook(pluginName: string, modifier: Function) {
+    public writeHook(pluginName: string, modifier: HookWriteHandler) {
         this.writeHooks.set(pluginName, modifier);
     }
 
-    public readHook(pluginName: string, reader: Function) {
+    public readHook(pluginName: string, reader: HookReadHandler) {
         this.readHooks.set(pluginName, reader);
     }
 
-    public async callHooks(...data: Array<any>) {
+    public async callHooks<T = any>(...data: Array<any>): Promise<T> {
         const {writeHooks, readHooks} = this;
 
         let dataArguments = data;
@@ -33,7 +38,7 @@ export class Hook {
                     ...dataArguments.slice(1),
                 ];
             } catch (error) {
-                throw this.generateError(key, error as Error);
+                throw this.generateError(key, error);
             }
         }
 
@@ -41,10 +46,10 @@ export class Hook {
             try {
                 await hook(...dataArguments);
             } catch (error) {
-                throw this.generateError(key, error as Error);
+                throw this.generateError(key, error);
             }
         }
 
-        return dataArguments[0];
+        return dataArguments[0] as T;
     }
 }

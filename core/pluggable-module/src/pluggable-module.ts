@@ -11,10 +11,8 @@ export class PluggableModule implements IPluggableModule<Hook> {
     }
 
     private createHooks(hooks: Array<HookDescriptor> = []) {
-        let hookName;
-
         for (let index = 0; index < hooks.length; index++) {
-            hookName = hooks[index];
+            const hookName = hooks[index];
 
             if (hookName !== undefined) {
                 this.pluginHooks.set(hookName, new Hook());
@@ -29,7 +27,7 @@ export class PluggableModule implements IPluggableModule<Hook> {
             throw new ReferenceError(`There is no plugin called ${name}.`);
         }
 
-        return pluginHook.callHooks(...args);
+        return pluginHook.callHooks<T>(...args);
     }
 
     public getHook(name: string) {
