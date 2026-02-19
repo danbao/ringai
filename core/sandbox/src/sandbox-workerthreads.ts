@@ -15,7 +15,7 @@ import {EventEmitter} from 'events';
 import {Worker} from 'node:worker_threads';
 import {loggerClient} from '@testring/logger';
 import {generateUniqId} from '@testring/utils';
-import type {DependencyDict} from '@testring/types';
+type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
 
 const logger = loggerClient.withPrefix('[sandbox-workerthreads]');
 

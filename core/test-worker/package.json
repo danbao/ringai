@@ -13,7 +13,6 @@
     "@testring/api": "workspace:*",
     "@testring/async-breakpoints": "workspace:*",
     "@testring/child-process": "workspace:*",
-    "@testring/dependencies-builder": "workspace:*",
     "@testring/fs-reader": "workspace:*",
     "@testring/fs-store": "workspace:*",
     "@testring/logger": "workspace:*",

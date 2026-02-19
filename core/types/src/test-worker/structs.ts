@@ -1,6 +1,5 @@
 import {IFile} from '../fs-reader';
 import {TestStatus} from './enums';
-import {DependencyDict} from '../dependencies-builder';
 
 export type FileCompiler = (
     source: string,
@@ -9,7 +8,7 @@ export type FileCompiler = (
 
 export interface ITestExecutionMessage extends IFile {
     waitForRelease: boolean;
-    dependencies: DependencyDict;
+    dependencies: Record<string, unknown>;
     // TODO (flops) rename envParameters and fix any
     parameters: any;
     envParameters: any;

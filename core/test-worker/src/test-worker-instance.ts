@@ -6,10 +6,6 @@ import {fork} from '@testring/child-process';
 import {generateUniqId} from '@testring/utils';
 import {TestWorkerLocal} from './test-worker-local';
 import {
-    buildDependencyDictionary,
-    mergeDependencyDictionaries,
-} from '@testring/dependencies-builder';
-import {
     IFile,
     ITransport,
     ITestWorkerConfig,
@@ -40,9 +36,9 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     private compileCache: Map<string, string> = new Map();
 
-    private successTestExecution: Function | null = null;
+    private successTestExecution: (() => void) | null = null;
 
-    private abortTestExecution: Function | null = null;
+    private abortTestExecution: ((error: Error | undefined) => void) | null = null;
 
     private worker: IWorkerEmitter | null = null;
 
@@ -54,7 +50,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     private fsWriterClient: FSStoreClient;
 
-    private workerExitHandler = (exitCode: any) => {
+    private workerExitHandler = (exitCode: number | null) => {
         this.clearWorkerHandlers();
         this.fsWriterClient.releaseAllWorkerActions();
         this.worker = null;
@@ -71,7 +67,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
         }
     };
 
-    private workerErrorHandler = (error: any) => {
+    private workerErrorHandler = (error: Error) => {
         this.fsWriterClient.releaseAllWorkerActions();
         if (this.abortTestExecution !== null) {
             this.abortTestExecution(error);
@@ -182,36 +178,10 @@ export class TestWorkerInstance implements ITestWorkerInstance {
             content: compiledSource,
         };
 
-        let dependencies = await buildDependencyDictionary(
-            compiledFile,
-            this.readDependency.bind(this),
-        );
-
-        for (let i = 0, len = additionalFiles.length; i < len; i++) {
-            const additionalFilePath = additionalFiles[i];
-            if (typeof additionalFilePath === 'string') {
-                const additionalFile = await this.fsReader.readFile(
-                    additionalFilePath,
-                );
-
-                if (additionalFile) {
-                    const additionalDependencies = await buildDependencyDictionary(
-                        additionalFile,
-                        this.readDependency.bind(this),
-                    );
-
-                    dependencies = await mergeDependencyDictionaries(
-                        dependencies,
-                        additionalDependencies,
-                    );
-                }
-            }
-        }
-
         return {
             waitForRelease: this.config.waitForRelease,
             ...compiledFile,
-            dependencies,
+            dependencies: {},
             parameters,
             envParameters,
         };

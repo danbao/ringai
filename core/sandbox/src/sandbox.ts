@@ -1,6 +1,6 @@
 import * as vm from 'vm';
 import * as path from 'path';
-import {DependencyDict} from '@testring/types';
+type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
 import {requirePackage} from '@testring/utils';
 import {Script} from './script';
 
