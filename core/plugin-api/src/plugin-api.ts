@@ -1,10 +1,9 @@
-import {IHttpClient, IPluginModules} from '@testring/types';
+import {IPluginModules} from '@testring/types';
 import {BrowserProxyAPI} from './modules/browser-proxy';
 import {FSReaderAPI} from './modules/fs-reader';
 import {LoggerAPI} from './modules/logger';
 import {TestWorkerAPI} from './modules/test-worker';
 import {TestRunControllerAPI} from './modules/test-run-controller';
-import {HttpServerAPI} from './modules/http-server';
 import {FSStoreServerAPI} from './modules/fs-store-server';
 
 export class PluginAPI {
@@ -35,14 +34,6 @@ export class PluginAPI {
 
     getBrowserProxy(): BrowserProxyAPI {
         return new BrowserProxyAPI(this.pluginName, this.modules.browserProxy);
-    }
-
-    getHttpServer(): HttpServerAPI {
-        return new HttpServerAPI(this.pluginName, this.modules.httpServer);
-    }
-
-    getHttpClient(): IHttpClient {
-        return this.modules.httpClientInstance;
     }
 
     getFSStoreServer(): FSStoreServerAPI {

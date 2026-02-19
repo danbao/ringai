@@ -18,5 +18,4 @@ export const defaultConfiguration: IConfig = {
     testTimeout: 15 * 60 * 1000,
     logLevel: LogLevel.info,
     envParameters: {},
-    httpThrottle: 0,
 };

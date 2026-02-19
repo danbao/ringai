@@ -194,7 +194,7 @@ export class TestRunController
     private getQueueItemWithRunData(queueItem: IQueuedTest): IQueuedTest {
         let screenshotsEnabled = false;
         const isRetryRun = queueItem.retryCount > 0;
-        const {debug, httpThrottle, logLevel, devtool, screenshotPath} =
+        const {debug, logLevel, devtool, screenshotPath} =
             this.config;
 
         if (this.config.screenshots === 'enable') {
@@ -211,7 +211,6 @@ export class TestRunController
         const runData: ITestQueuedTestRunData = {
             debug,
             logLevel,
-            httpThrottle,
             screenshotsEnabled,
             devtool: devtoolConfig,
             isRetryRun,

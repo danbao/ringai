@@ -30,10 +30,6 @@ export * from './transport/structs';
 export * from './transport/enums';
 export * from './transport';
 
-export * from './http-api/structs';
-export * from './http-api/enums';
-export * from './http-api';
-
 export * from './logger/enums';
 export * from './logger';
 
@@ -48,3 +44,5 @@ export * from './utils';
 export * from './web-application/enums';
 
 export * from './web-application';
+
+export * from './reporter';

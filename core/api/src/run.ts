@@ -4,22 +4,20 @@ import {restructureError} from '@testring/utils';
 import {TestContext} from './test-context';
 import {testAPIController} from './test-api-controller';
 
-type TestFunction = (api: TestContext) => void | Promise<any>;
+type TestFunction = (api: TestContext) => void | Promise<void>;
 
-export function beforeRun(callback: (...args: any[]) => any) {
+export function beforeRun(callback: () => void | Promise<void>) {
     testAPIController.registerBeforeRunCallback(callback);
 }
 
-export function afterRun(callback: (...args: any[]) => any) {
+export function afterRun(callback: () => void | Promise<void>) {
     testAPIController.registerAfterRunCallback(callback);
 }
 
 export async function run(...tests: Array<TestFunction>) {
     const testID = testAPIController.getTestID();
     const bus = testAPIController.getBus();
-    const testParameters = testAPIController.getTestParameters() as any;
-
-    const api = new TestContext(testParameters.runData);
+    const api = new TestContext({});
     let passed = false;
     let catchedError;
 

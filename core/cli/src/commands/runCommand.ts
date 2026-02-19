@@ -1,4 +1,3 @@
-import {createHttpServer, HttpClient, HttpServer} from '@testring/http-api';
 import {LoggerServer, loggerClient} from '@testring/logger';
 import {TestRunController} from '@testring/test-run-controller';
 import {applyPlugins} from '@testring/plugin-api';
@@ -21,8 +20,6 @@ class RunCommand implements ICLICommand {
     private webApplicationController!: WebApplicationController;
     private browserProxyController!: BrowserProxyController;
     private testRunController!: TestRunController;
-    private httpServer!: HttpServer;
-
     private fsStoreServer: FSStoreServer;
 
     constructor(
@@ -65,7 +62,6 @@ class RunCommand implements ICLICommand {
             screenshots: this.config.screenshots,
         });
 
-        this.httpServer = createHttpServer(this.transport);
         this.browserProxyController = browserProxyControllerFactory(
             this.transport,
         );
@@ -87,9 +83,6 @@ class RunCommand implements ICLICommand {
             this.stdout,
         );
         const fsReader = new FSReader();
-        const httpClient = new HttpClient(this.transport, {
-            httpThrottle: this.config.httpThrottle,
-        });
 
         applyPlugins(
             {
@@ -99,8 +92,6 @@ class RunCommand implements ICLICommand {
                 testWorker,
                 browserProxy: this.browserProxyController,
                 testRunController: this.testRunController,
-                httpClientInstance: httpClient,
-                httpServer: this.httpServer,
             },
             this.config,
         );
@@ -145,12 +136,10 @@ class RunCommand implements ICLICommand {
     }
 
     async shutdown() {
-        const httpServer = this.httpServer;
         const testRunController = this.testRunController;
         const browserProxyController = this.browserProxyController;
         const webApplicationController = this.webApplicationController;
 
-        this.httpServer = null as any;
         this.testRunController = null as any;
         this.browserProxyController = null as any;
         this.webApplicationController = null as any;
@@ -158,7 +147,6 @@ class RunCommand implements ICLICommand {
         this.fsWriterQueueServer && this.fsWriterQueueServer.cleanUpTransport();
         this.fsWriterQueueServer = null as any;
 
-        httpServer && httpServer.kill();
         webApplicationController && webApplicationController.kill();
         testRunController && (await testRunController.kill());
         browserProxyController && (await browserProxyController.kill());

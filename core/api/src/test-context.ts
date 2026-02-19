@@ -1,6 +1,5 @@
 import {ITestQueuedTestRunData} from '@testring/types';
 import {loggerClient} from '@testring/logger';
-import {HttpClient} from '@testring/http-api';
 import {transport} from '@testring/transport';
 import {WebApplication} from '@testring/web-application';
 import {testAPIController} from './test-api-controller';
@@ -12,12 +11,7 @@ export class TestContext {
 
     private customApplications: Set<WebApplication> = new Set();
 
-    public http: HttpClient;
-
-    constructor(config: any) {
-        this.http = new HttpClient(transport, {
-            httpThrottle: config.httpThrottle,
-        });
+    constructor(_config: any) {
     }
 
     public get application(): WebApplication {
