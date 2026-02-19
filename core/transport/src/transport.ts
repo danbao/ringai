@@ -36,25 +36,25 @@ export class Transport implements ITransport {
         return this.directTransport.getProcessesList();
     }
 
-    public send(
+    public send<T = unknown>(
         processID: string,
         messageType: string,
-        payload: unknown,
+        payload: T,
     ): Promise<void> {
         return this.directTransport.send(processID, messageType, payload);
     }
 
-    public broadcast(messageType: string, payload: unknown): void {
+    public broadcast<T = unknown>(messageType: string, payload: T): void {
         this.broadcastTransport.broadcast(messageType, payload);
     }
 
-    public broadcastLocal(messageType: string, payload: unknown): void {
+    public broadcastLocal<T = unknown>(messageType: string, payload: T): void {
         this.broadcastTransport.broadcastLocal(messageType, payload);
     }
 
-    public broadcastUniversally(
+    public broadcastUniversally<T = unknown>(
         messageType: string,
-        payload: unknown,
+        payload: T,
     ): void {
         if (this.isChildProcess()) {
             this.broadcast(messageType, payload);
