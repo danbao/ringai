@@ -5,13 +5,13 @@ import {MockWebServer} from './mock-web-server';
 import * as path from 'node:path';
 import * as os from 'node:os';
 
-const require = createRequire(import.meta.url);
+const esmRequire = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const mockWebServer = new MockWebServer();
 
 const filenameArgIndex = process.argv.indexOf(__filename);
 const args = process.argv.slice(filenameArgIndex + 1);
-const testringDir = path.resolve(require.resolve('testring'), '..', '..');
+const testringDir = path.resolve(esmRequire.resolve('testring'), '..', '..');
 const testringFile = path.resolve(testringDir, 'bin', 'testring.js');
 
 // Platform-specific configuration

@@ -4,9 +4,14 @@ import {
     TransportMessageHandler,
     ITransportDirectMessage,
     ITransportMessage,
+    ITransportSerializedStruct,
 } from '@testring/types';
 import {generateUniqId} from '@testring/utils';
 import {serialize, deserialize} from './serialize';
+
+function isSerializedStruct(v: unknown): v is ITransportSerializedStruct {
+    return v !== null && typeof v === 'object' && '$key' in v && typeof (v as ITransportSerializedStruct).$key === 'string';
+}
 
 class DirectTransport {
     private static createMessageUID(processID: string) {
@@ -31,7 +36,7 @@ class DirectTransport {
      * Sending direct message to child process. Returns promise,
      * that resolves, when child process answers to message (like in TCP)
      */
-    public send(processID: string, type: string, payload: any): Promise<void> {
+    public send(processID: string, type: string, payload: unknown): Promise<void> {
         return new Promise((resolve, reject) => {
             const child = this.childRegistry.get(processID);
 
@@ -73,8 +78,8 @@ class DirectTransport {
         this.childRegistry.set(processID, child);
 
         child.on('exit', () => this.handleChildClose(processID));
-        child.on('message', (message) =>
-            this.handleChildMessage(message, processID),
+        child.on('message', (message: unknown) =>
+            this.handleChildMessage(message as ITransportDirectMessage, processID),
         );
     }
 
@@ -102,9 +107,9 @@ class DirectTransport {
             return;
         }
 
-        let normalizedMessage = message;
+        let normalizedMessage: ITransportDirectMessage = message;
 
-        if (message.payload && typeof message.payload.$key === 'string') {
+        if (isSerializedStruct(message.payload)) {
             normalizedMessage = {
                 ...message,
                 payload: deserialize(message.payload),
@@ -113,7 +118,7 @@ class DirectTransport {
 
         switch (message.type) {
             case TransportInternalMessageType.messageResponse:
-                this.handleMessageResponse(normalizedMessage);
+                this.handleMessageResponse(normalizedMessage as ITransportMessage<string>);
                 break;
 
             default:
@@ -121,8 +126,8 @@ class DirectTransport {
         }
     }
 
-    private handleMessageResponse(message: ITransportMessage<string>) {
-        const messageUID = message.payload;
+    private handleMessageResponse(message: ITransportMessage) {
+        const messageUID = message.payload as string;
         const responseHandler = this.responseHandlers.get(messageUID);
 
         if (typeof responseHandler === 'function') {

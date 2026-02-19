@@ -2,8 +2,8 @@
     "compilerOptions": {
       /* Language & emit */
       "target": "ES2022",
-      "module": "commonjs",
-      "moduleResolution": "node",
+      "module": "ES2022",
+      "moduleResolution": "bundler",
       "lib": ["ES2022", "DOM"],
       "allowJs": false,
       "experimentalDecorators": true,

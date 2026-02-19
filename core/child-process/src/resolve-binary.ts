@@ -35,8 +35,8 @@ function escapify(str: string) {
 }
 
 export function resolveBinary(name: string): string {
-    const require = createRequire(import.meta.url);
-    const modulePath = require.resolve(name);
+    const esmRequire = createRequire(import.meta.url);
+    const modulePath = esmRequire.resolve(name);
     const nodeModules = findNodeModulesDir(modulePath);
     const binSuffix = IS_WIN ? '.cmd' : '';
     const binaryPath = path.join(nodeModules, '.bin', name) + binSuffix;

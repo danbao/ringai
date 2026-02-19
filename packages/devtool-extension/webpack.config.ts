@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 
-const getAbsolutePath = (filepath): string => path.join(__dirname, filepath);
+const getAbsolutePath = (filepath: string): string => path.join(__dirname, filepath);
 
 const packageJson = require('./package.json');
 const manifestKeyJson = require('./extension/manifest-key.json');

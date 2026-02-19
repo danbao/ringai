@@ -3,8 +3,13 @@ import {
     TransportMessageHandler,
     ITransportBroadcastMessage,
     ITransportDirectMessage,
+    ITransportSerializedStruct,
 } from '@testring/types';
 import {deserialize, serialize} from './serialize';
+
+function isSerializedStruct(v: unknown): v is ITransportSerializedStruct {
+    return v !== null && typeof v === 'object' && '$key' in v && typeof (v as ITransportSerializedStruct).$key === 'string';
+}
 
 class BroadcastTransport {
     constructor(
@@ -17,14 +22,14 @@ class BroadcastTransport {
     /**
      * Sending message to all connected processes
      */
-    public broadcast(type: string, payload: any): void {
+    public broadcast(type: string, payload: unknown): void {
         this.sendMessage({
             type,
             payload: serialize(payload),
         });
     }
 
-    public broadcastLocal(type: string, payload: any) {
+    public broadcastLocal(type: string, payload: unknown) {
         this.triggerListeners({
             type,
             payload,
@@ -33,19 +38,18 @@ class BroadcastTransport {
 
     private registerRootProcess() {
         this.rootProcess.on('message', (message) =>
-            this.handleRootProcessMessage(message as any),
+            this.handleRootProcessMessage(message as ITransportDirectMessage),
         );
     }
 
     private handleRootProcessMessage(message: ITransportDirectMessage) {
-        // incorrect message filtering
         if (!message || typeof message.type !== 'string') {
             return;
         }
 
-        let normalizedMessage = message;
+        let normalizedMessage: ITransportDirectMessage = message;
 
-        if (message.payload && typeof message.payload.$key === 'string') {
+        if (isSerializedStruct(message.payload)) {
             normalizedMessage = {
                 ...message,
                 payload: deserialize(message.payload),

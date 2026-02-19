@@ -61,9 +61,7 @@ function getExecutor(filePath: string): string {
             return resolveBinary('ts-node');
 
         case '':
-            return Module._extensions['.ts']
-                ? resolveBinary('ts-node')
-                : process.execPath;
+            return process.execPath;
 
         default:
             return process.execPath;

@@ -31,7 +31,7 @@ export class ClientWsTransport
         this.url = this.getUrl(host, port);
     }
 
-    private connection: WebSocket;
+    private connection!: WebSocket;
 
     private messagesQueue = new Queue<IQueuedMessage>();
 
@@ -88,7 +88,7 @@ export class ClientWsTransport
         this.emit(ClientWsTransportEvents.CLOSE);
     }
 
-    private errorHandler(e): void {
+    private errorHandler(e: Event | Error): void {
         this.emit(ClientWsTransportEvents.ERROR, e);
 
         if (this.shouldReconnect) {

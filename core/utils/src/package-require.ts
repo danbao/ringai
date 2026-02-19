@@ -2,14 +2,14 @@ import * as path from 'node:path';
 import { createRequire } from 'node:module';
 import * as resolve from 'resolve';
 
-const require = createRequire(import.meta.url);
+const esmRequire = createRequire(import.meta.url);
 
 const requireById = <T = unknown>(id: string): T => {
-    return require(id) as T;
+    return esmRequire(id) as T;
 };
 
 const requireResolveById = (id: string, options?: {paths?: string[]}) => {
-    return require.resolve(id, options);
+    return esmRequire.resolve(id, options);
 };
 
 export function resolvePackage(

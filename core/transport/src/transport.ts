@@ -24,7 +24,8 @@ export class Transport implements ITransport {
         rootProcess: NodeJS.Process = process,
         private broadcastToLocal: boolean = IS_CHILD_PROCESS,
     ) {
-        const handler = this.triggerListeners.bind(this);
+        const handler: TransportMessageHandler = (payload, source) =>
+            this.triggerListeners(payload as ITransportDirectMessage, source);
 
         this.directTransport = new DirectTransport(handler);
 
@@ -35,25 +36,25 @@ export class Transport implements ITransport {
         return this.directTransport.getProcessesList();
     }
 
-    public send<T = any>(
+    public send(
         processID: string,
         messageType: string,
-        payload: T,
+        payload: unknown,
     ): Promise<void> {
         return this.directTransport.send(processID, messageType, payload);
     }
 
-    public broadcast<T = any>(messageType: string, payload: T): void {
+    public broadcast(messageType: string, payload: unknown): void {
         this.broadcastTransport.broadcast(messageType, payload);
     }
 
-    public broadcastLocal<T = any>(messageType: string, payload: T): void {
+    public broadcastLocal(messageType: string, payload: unknown): void {
         this.broadcastTransport.broadcastLocal(messageType, payload);
     }
 
-    public broadcastUniversally<T = any>(
+    public broadcastUniversally(
         messageType: string,
-        payload: T,
+        payload: unknown,
     ): void {
         if (this.isChildProcess()) {
             this.broadcast(messageType, payload);
@@ -70,7 +71,7 @@ export class Transport implements ITransport {
         this.directTransport.registerChild(processID, child);
     }
 
-    public on<T = any>(
+    public on<T = unknown>(
         messageType: string,
         callback: TransportMessageHandler<T>,
     ) {
@@ -79,7 +80,7 @@ export class Transport implements ITransport {
         return () => this.emitter.removeListener(messageType, callback);
     }
 
-    public once<T = any>(
+    public once<T = unknown>(
         messageType: string,
         callback: TransportMessageHandler<T>,
     ) {
@@ -88,7 +89,7 @@ export class Transport implements ITransport {
         return () => this.emitter.removeListener(messageType, callback);
     }
 
-    public onceFrom<T = any>(
+    public onceFrom<T = unknown>(
         processID: string,
         messageType: string,
         callback: TransportMessageHandler<T>,
