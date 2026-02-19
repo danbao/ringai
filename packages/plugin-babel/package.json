@@ -1,8 +1,17 @@
 {
   "name": "@testring/plugin-babel",
   "version": "0.8.0",
+  "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ringcentral/testring.git"
@@ -16,7 +25,7 @@
     "@types/babel__core": "7.20.5"
   },
   "scripts": {
-    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
+    "build": "tsup",
     "test": "mocha"
   }
 }

@@ -29,10 +29,12 @@
   - [x] 3.1.1 迁移 `packages/element-path` → ESM（试点包）
   - [x] 3.1.2 迁移 `packages/download-collector-crx` → ESM
   - [x] 3.1.3 迁移 `packages/plugin-playwright-driver` → ESM
+  - [x] 3.1.4 迁移 `packages/plugin-babel` → ESM
 - [ ] 3.2 import 路径加 `.js` 扩展名
   - [x] 3.2.1 `packages/element-path` 所有 import 添加 `.js` 扩展名
   - [x] 3.2.2 `packages/download-collector-crx` 所有 import 添加 `.js` 扩展名
   - [x] 3.2.3 `packages/plugin-playwright-driver` 所有 import 添加 `.js` 扩展名
+  - [x] 3.2.4 `packages/plugin-babel` 所有 import 添加 `.js` 扩展名
 - [ ] 3.3 替换 CJS 特有 API（`__dirname`/`require.resolve` 等）
   - [x] 3.3.1 `packages/download-collector-crx` 替换 `__dirname` → `import.meta.url`
   - [x] 3.3.2 `packages/plugin-playwright-driver` 替换 `__dirname` → `import.meta.url`（ESM 迁移）
@@ -42,8 +44,11 @@
 - [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
 
 ## Phase 4 - 核心架构现代化
-- [ ] 4.1 重写插件系统 → `hookable`（生命周期 hook + 强类型）
-- [ ] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
+- [x] 4.1 重写插件系统 → `hookable`（生命周期 hook + 强类型）
+  - [x] 4.1.1 添加 hookable 依赖
+  - [x] 4.1.2 重写 PluggableModule 使用 hookable
+  - [x] 4.1.3 保持向后兼容的 LegacyHook 类
+- [x] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
 - [ ] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
 - [ ] 4.4 简化 BrowserProxy → 直接调用 Playwright API
 - [ ] 4.5 简化 WebApplication → 薄封装 Playwright Page

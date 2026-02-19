@@ -4,7 +4,9 @@
       "outDir": "dist",
       "rootDir": "src",
       "noEmit": false,
-      "composite": true
+      "composite": true,
+      "skipLibCheck": true,
+      "noImplicitAny": false
     },
     "exclude": ["test"]
   }

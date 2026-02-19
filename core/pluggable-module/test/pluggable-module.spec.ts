@@ -15,7 +15,7 @@ class TestModule extends PluggableModule {
 }
 
 describe('PluggableModule', () => {
-    it('should handle sync hooks', () => new Promise<void>((resolve, reject) => {
+    it('should handle sync hooks', () => new Promise<void>((resolve) => {
         const testData = {};
         const testModule = new TestModule();
         const hook = testModule.getHook(TestModule.hookName);

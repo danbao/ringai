@@ -1,10 +1,14 @@
-type HookWriteHandler = (...args: any[]) => any | Promise<any>;
-type HookReadHandler = (...args: any[]) => void | Promise<void>;
+type HookHandler = (...args: any[]) => any | Promise<any>;
 
+/**
+ * Legacy Hook class - provides write (modifier) and read (listener) hook semantics
+ * This is kept for backward compatibility with existing code
+ * 
+ * For new code, use the hookable library directly via PluggableModule.getHookable()
+ */
 export class Hook {
-    private writeHooks: Map<string, HookWriteHandler> = new Map();
-
-    private readHooks: Map<string, HookReadHandler> = new Map();
+    private writeHooks: Map<string, HookHandler> = new Map();
+    private readHooks: Map<string, HookHandler> = new Map();
 
     private generateError(pluginName: string, error: unknown) {
         const err = error instanceof Error ? error : new Error(String(error));
@@ -18,11 +22,11 @@ export class Hook {
         return generatedError;
     }
 
-    public writeHook(pluginName: string, modifier: HookWriteHandler) {
+    public writeHook(pluginName: string, modifier: HookHandler) {
         this.writeHooks.set(pluginName, modifier);
     }
 
-    public readHook(pluginName: string, reader: HookReadHandler) {
+    public readHook(pluginName: string, reader: HookHandler) {
         this.readHooks.set(pluginName, reader);
     }
 
@@ -51,5 +55,30 @@ export class Hook {
         }
 
         return dataArguments[0] as T;
+    }
+
+    /**
+     * Get all registered hook names
+     */
+    public getHookNames(): string[] {
+        const writeNames = Array.from(this.writeHooks.keys());
+        const readNames = Array.from(this.readHooks.keys());
+        return [...new Set([...writeNames, ...readNames])];
+    }
+
+    /**
+     * Check if a plugin has registered any hooks
+     */
+    public hasPlugin(pluginName: string): boolean {
+        return this.writeHooks.has(pluginName) || this.readHooks.has(pluginName);
+    }
+
+    /**
+     * Remove a plugin's hooks
+     */
+    public removePlugin(pluginName: string): boolean {
+        const writeRemoved = this.writeHooks.delete(pluginName);
+        const readRemoved = this.readHooks.delete(pluginName);
+        return writeRemoved || readRemoved;
     }
 }
