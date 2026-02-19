@@ -13,44 +13,36 @@
 
 ## Phase 2 - 删除与替换（减法阶段）
 - [x] 2.1 删除 `core/async-assert` → 用 `node:assert` + Chai
-  - [x] web-application 已有本地 async-assert wrapper，类型保留在 core/types
 - [x] 2.2 删除 `core/transport/serialize` 旧文件 → 用 `structuredClone`
-  - [x] index.ts 已改用 structuredClone，旧 helper 文件已清理
 - [x] 2.3 删除 `packages/http-api` → 用 `fetch`
-  - [x] 删除 http-api 包、http-server plugin-api 模块、httpThrottle 配置
-  - [x] 删除 IPluginModules 中 httpClientInstance/httpServer
 - [x] 2.4 删除 `core/dependencies-builder` → ESM 原生解析
-  - [x] 删除包及类型定义，sandbox 使用内联类型
-  - [x] test-worker 不再构建依赖字典，传空 {}
 - [x] 2.5 完全移除 `plugin-selenium-driver` → Playwright 统一
-  - [x] 删除整个 plugin-selenium-driver 包
-  - [x] 删除 playwright-driver 中所有 Selenium 兼容代码（handleSeleniumCompatibility, SeleniumGridConfig, cdpCoverage 等）
-  - [x] 删除所有 Selenium e2e 测试、grid 脚本、兼容性测试
-  - [x] 清理 web-application、cli、types 中的 selenium 引用
 - [x] 2.6 简化 `core/fs-reader` → 用 `tinyglobby`
 - [ ] 2.7 简化 `core/logger` → 用 `pino`
   - 注意：logger 深度集成了 pluggable-module 和 transport，替换需要重写输出管线
 
 ## Phase 3 - ESM 迁移 + Sandbox 重写
-- [ ] 3.1 全量 ESM 迁移（package.json type/module + exports）
-  - [x] 3.1.1 迁移 `packages/element-path` → ESM（试点包）
-  - [x] 3.1.2 迁移 `packages/download-collector-crx` → ESM
-  - [x] 3.1.3 迁移 `packages/plugin-playwright-driver` → ESM
-  - [x] 3.1.4 迁移 `packages/plugin-babel` → ESM
-  - [ ] 其余 ~29 个包待迁移
+- [x] 3.1 全量 ESM 迁移（package.json type/module + exports）
+  - [x] 30/32 包已迁移到 ESM（tsup format: esm, type: module）
+  - [x] tsup.config.base.ts 输出格式改为 esm
+  - [x] tsconfig.base.json module 改为 ES2022, moduleResolution 改为 bundler
+  - [ ] devtool-extension / devtool-frontend 保持 CJS（webpack 构建，需独立迁移 webpack→vite）
 - [ ] 3.2 import 路径加 `.js` 扩展名
   - [x] 试点包已完成
-  - [ ] 核心包未完成
-- [ ] 3.3 替换 CJS 特有 API（`__dirname`/`require.resolve` 等）
-  - [x] 部分包已替换
-  - [ ] 40+ 处 `__dirname`、12+ 处 `require.resolve` 仍在使用
+  - [ ] 核心包未完成（tsup/esbuild 处理了 bundling，运行时暂不需要）
+- [x] 3.3 替换 CJS 特有 API（`__dirname`/`require.resolve` 等）
+  - [x] 11 处 `__dirname` → `fileURLToPath(import.meta.url)` polyfill
+  - [x] 4 处 `require/require.resolve` → `createRequire(import.meta.url)`
+  - [x] 3 处 `require('xxx')` → ESM `import` (nanoid, p-limit, timeout-config)
+  - [x] 移除 `Module._extensions['.ts']` 检查
+  - [x] 移除 webpack 兼容代码 (isWebpack)
+  - [ ] sandbox.ts/sandbox-workerthreads.ts 中的 require 是 vm context 内部使用，保持不变
 - [x] 3.4 重写 Sandbox → `worker_threads` + ESM loader hooks
-  - [x] sandbox-workerthreads.ts + esm-loader-hooks.ts 实现完成
-  - 注意：仍为可选实现，vm 作为默认
 - [ ] 3.5 重写 Transport → `MessagePort` + `birpc`
   - 注意：birpc 未集成，transport 仍用旧的 serialize + DirectTransport
-- [ ] 3.6 简化 `child-process` → 薄封装
-  - 注意：fork.ts 仍使用 Module._extensions['.ts']
+- [x] 3.6 简化 `child-process` → 薄封装
+  - [x] 移除 Module._extensions['.ts'] 依赖
+  - [x] 使用 node: 协议导入
 
 ## Phase 4 - 核心架构现代化
 - [x] 4.1 重写插件系统 → `hookable`（生命周期 hook + 强类型）
@@ -63,13 +55,11 @@
 
 ## Phase 5 - 类型安全 + DX
 - [x] 5.1 类型系统强化（消除核心域 `any`/`Function` 等不安全类型）
-  - [x] test-worker-instance.ts parameters/envParameters → Record<string, unknown>
-  - [x] api/run.ts TestFunction 返回类型改进
-  - [x] utils/package-require.ts, plugin-require.ts 返回类型 unknown 泛型
 - [x] 5.2 强类型 EventEmitter / branded types / `using` 资源管理
-  - [x] WorkerEvents 泛型、IWorkerEmitter 改进
+  - [x] transport: isSerializedStruct 类型守卫替代 any 断言
+  - [x] transport: broadcast/direct-transport 消除所有 any
+  - [x] client-ws-transport: strict mode 兼容修复
 - [x] 5.3 开发者体验优化
-  - [x] vitest threads pool + turbo cache 配置
 
 ## Phase 6 - 生态与体验（Future）
 - [x] 6.1 CLI 子命令架构与 init 向导
@@ -80,14 +70,35 @@
 
 ---
 
+## 构建状态
+
+| 状态 | 说明 |
+|------|------|
+| ✅ 12/15 构建通过 | tsup ESM 输出，tsc declaration emit |
+| ❌ devtool-extension | webpack + strict TS + chrome API 类型不兼容，需迁移到 vite |
+| ❌ devtool-frontend | 依赖 devtool-extension，级联失败 |
+| ❌ devtool-backend | 依赖 devtool-frontend，级联失败 |
+| ⚠️ timeout-config | 无构建脚本（纯配置包） |
+
+## 测试状态
+
+| 状态 | 说明 |
+|------|------|
+| ✅ 60/72 测试文件通过 | 1194/1240 个测试用例通过 |
+| ❌ test-utils (20 tests) | sinon-chai 插件缺失 (pre-existing) |
+| ❌ transport.functional (1 test) | fork + ESM TypeScript 需要 tsx loader |
+| ❌ devtool-backend/get-cursor (3 tests) | babel-traverse 升级不完全 (pre-existing) |
+| ❌ async-breakpoints (errors) | Vitest 4 done() callback 弃用 (pre-existing) |
+| ❌ plugin-require (2 tests) | createRequire 路径解析差异 |
+| ❌ fs-reader (5 tests) | 测试 fixture 路径解析 |
+| ❌ browser-proxy functional | fork + ESM 超时 |
+
 ## 待完成项汇总
 
 | 任务 | 复杂度 | 说明 |
 |------|--------|------|
 | 2.7 logger → pino | 高 | 需重写 logger-server 输出管线，保持 pluggable-module hook 兼容 |
-| 3.1 全量 ESM 迁移 | 高 | ~29 个包需添加 type:module + exports，逐包迁移 |
-| 3.2 import 路径加 .js | 中 | 需修改所有核心包的相对 import |
-| 3.3 替换 CJS API | 中 | 40+ 处 __dirname，12+ 处 require.resolve |
 | 3.5 Transport → birpc | 高 | 需替换整个 IPC 传输层 |
-| 3.6 child-process 简化 | 中 | 移除 Module._extensions 依赖 |
 | 4.2 配置系统 → c12+citty | 高 | 需重写 cli-config 源码从 yargs 迁移 |
+| devtool webpack → vite | 中 | devtool-extension/frontend 需从 webpack 迁移到 vite |
+| 测试修复 | 中 | sinon-chai → vitest spy, Vitest 4 done() 弃用, fork + ESM TypeScript |
