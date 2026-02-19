@@ -1,0 +1,92 @@
+# ============================================
+# Reusable Workflow: Publish Package
+# ============================================
+# This is a reusable workflow for publishing packages to npm.
+#
+# Usage:
+#   jobs:
+#     publish:
+#       uses: ./.github/workflows/templates/publish.yml@main
+#       secrets:
+#         npm-token: ${{ secrets.NPM_TOKEN }}
+
+name: Publish Package (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '22'
+        description: 'Node.js version to use'
+      publish-scope:
+        type: string
+        default: '@testring'
+        description: 'npm scope for packages'
+      exclude-packages:
+        type: string
+        default: '@testring/devtool-frontend,@testring/devtool-backend,@testring/devtool-extension'
+        description: 'Comma-separated list of packages to exclude'
+    secrets:
+      npm-token:
+        required: true
+        description: 'NPM token for publishing'
+      github-token:
+        required: false
+        description: 'GitHub token for releases'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright
+        run: pnpm exec playwright install chromium
+
+      - name: Build project
+        run: pnpm run build:main
+
+      - name: Publish to npm
+        run: |
+          EXCLUDE_PACKAGES="${{ inputs.exclude-packages }}"
+          pnpm run publish:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
+          NPM_TOKEN: ${{ secrets.npm-token }}
+          GH_TOKEN: ${{ secrets.github-token }}
+
+      - name: Create GitHub Release
+        if: secrets.github-token
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: Release v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false

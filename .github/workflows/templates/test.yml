@@ -1,0 +1,121 @@
+# ============================================
+# Reusable Workflow: Testring Test Suite
+# ============================================
+# This is a reusable workflow that can be called from other workflows.
+# It runs the testring test suite with coverage.
+#
+# Usage:
+#   jobs:
+#     test:
+#       uses: ./.github/workflows/templates/test.yml@main
+#       with:
+#         node-version: '22'
+#         run-coverage: true
+
+name: Test Suite (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '22'
+        description: 'Node.js version to use'
+      run-coverage:
+        type: boolean
+        default: true
+        description: 'Run tests with coverage'
+      run-e2e:
+        type: boolean
+        default: false
+        description: 'Run E2E tests'
+      runs-on:
+        type: string
+        default: 'ubuntu-latest'
+        description: 'Runner OS'
+    secrets:
+      SONAR_TOKEN:
+        required: false
+        description: 'SonarQube token for code analysis'
+      COVERALLS_REPO_TOKEN:
+        required: false
+        description: 'Coveralls token for coverage reporting'
+
+jobs:
+  test:
+    runs-on: ${{ inputs.runs-on }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm run build:main
+
+      - name: Install Playwright browsers
+        if: inputs.run-e2e
+        run: pnpm exec playwright install chromium firefox
+
+      - name: Run unit tests
+        run: pnpm run test:unit
+
+      - name: Run E2E tests
+        if: inputs.run-e2e
+        run: pnpm run test:e2e:headless
+        continue-on-error: true
+
+      - name: Run tests with coverage
+        if: inputs.run-coverage
+        run: pnpm run test:unit:coverage
+
+      - name: Upload coverage
+        if: inputs.run-coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.node-version }}
+          path: .coverage
+          retention-days: 7
+
+      - name: SonarQube Scan
+        if: inputs.run-coverage && secrets.SONAR_TOKEN
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=${{ github.repository_owner }}
+            -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
+            -Dsonar.sources=core,packages
+            -Dsonar.tests=core,packages
+            -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/.coverage/**
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

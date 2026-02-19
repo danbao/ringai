@@ -1,0 +1,113 @@
+# ============================================
+# Reusable Workflow: Docker Build & Push
+# ============================================
+# This is a reusable workflow for building and pushing Docker images.
+#
+# Usage:
+#   jobs:
+#     docker:
+#       uses: ./.github/workflows/templates/docker.yml@main
+#       with:
+#         image-name: my-testring-image
+#         dockerfile: Dockerfile
+#         target: ci
+#       secrets:
+#         dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+name: Docker Build (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        type: string
+        required: true
+        description: 'Name of the Docker image'
+      dockerfile:
+        type: string
+        default: 'Dockerfile'
+        description: 'Path to Dockerfile'
+      target:
+        type: string
+        default: ''
+        description: 'Build target (e.g., ci, dev, test-runner)'
+      context:
+        type: string
+        default: '.'
+        description: 'Build context'
+      push:
+        type: boolean
+        default: false
+        description: 'Push image to registry'
+      tags:
+        type: string
+        default: ''
+        description: 'Additional tags (comma-separated)'
+      registry:
+        type: string
+        default: 'ghcr.io'
+        description: 'Docker registry'
+    secrets:
+      dockerhub-username:
+        required: false
+        description: 'Docker Hub username'
+      dockerhub-token:
+        required: false
+        description: 'Docker Hub token'
+      github-token:
+        required: false
+        description: 'GitHub token (for GHCR)'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        if: inputs.push
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.dockerhub-username }}
+          password: ${{ secrets.dockerhub-token }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ inputs.registry }}/${{ github.repository }}/${{ inputs.image-name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix=
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            ${{ inputs.tags }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.target }}
+          push: ${{ inputs.push }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Image digest
+        run: echo ${{ steps.build.outputs.digest }}

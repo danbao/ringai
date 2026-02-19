@@ -1,0 +1,66 @@
+# Docker environment for testring
+# This file should be placed in .dockerignore
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+**/dist
+**/.turbo
+**/build
+*.tsbuildinfo
+
+# Coverage
+.coverage
+.c8-cov
+.nyc_output
+coverage
+
+# Test outputs
+**/test-results
+**/playwright-report
+**/playwright-report-tmp
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+Jenkinsfile
+
+# Documentation
+docs
+README.md
+
+# Turborepo
+.turbo
+
+# pnpm
+pnpm-workspace.yaml
+pnpm-lock.yaml
+package-lock.json
+
+# Changesets
+.changeset
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,115 @@
+# ============================================
+# Testring Docker Compose - Local Development
+# ============================================
+# Usage:
+#   docker compose run --rm test        # Run unit tests
+#   docker compose run --rm test-e2e     # Run e2e tests
+#   docker compose run --rm test-unit     # Run unit tests only
+#   docker compose run --rm dev          # Start dev container
+#   docker compose build --target ci     # Build CI image
+#   docker compose build --target dev     # Build dev image
+
+services:
+  # Base test container
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-runner
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - core_modules:/app/core/node_modules
+      - packages_modules:/app/packages/*/node_modules
+    environment:
+      - CI=true
+      - PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+    working_dir: /app
+    command: pnpm run test:unit
+
+  # Unit tests only
+  test-unit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-runner
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+    working_dir: /app
+    command: pnpm run test:unit
+
+  # E2E tests
+  test-e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-runner
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+      - PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
+    working_dir: /app
+    command: pnpm run test:e2e:headless
+    shm_size: '2gb'  # Required for Playwright
+
+  # CI test runner (with coverage)
+  ci:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ci
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+    working_dir: /app
+    command: pnpm run test:unit:coverage
+
+  # Development container
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - .:/app
+    environment:
+      - CI=false
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # Linter
+  lint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-runner
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+    working_dir: /app
+    command: pnpm run lint
+
+  # Type check
+  type-check:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-runner
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+    working_dir: /app
+    command: pnpm run build:types:check
+
+volumes:
+  node_modules:
+  core_modules:
+  packages_modules:

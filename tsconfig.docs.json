@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "core/api/src/**/*.ts",
+    "core/cli/src/**/*.ts",
+    "core/cli-config/src/**/*.ts",
+    "core/fs-reader/src/**/*.ts",
+    "core/logger/src/**/*.ts",
+    "core/pluggable-module/src/**/*.ts",
+    "core/plugin-api/src/**/*.ts",
+    "core/sandbox/src/**/*.ts",
+    "core/test-run-controller/src/**/*.ts",
+    "core/test-worker/src/**/*.ts",
+    "core/transport/src/**/*.ts",
+    "core/types/src/**/*.ts",
+    "packages/browser-proxy/src/**/*.ts",
+    "packages/web-application/src/**/*.ts",
+    "packages/plugin-playwright-driver/src/**/*.ts",
+    "packages/element-path/src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/test/**",
+    "**/tests/**",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}

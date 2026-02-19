@@ -1,0 +1,29 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "core/api/src/index.ts",
+    "core/cli/src/index.ts",
+    "core/cli-config/src/index.ts",
+    "core/fs-reader/src/index.ts",
+    "core/logger/src/index.ts",
+    "core/pluggable-module/src/index.ts",
+    "core/plugin-api/src/index.ts",
+    "core/sandbox/src/index.ts",
+    "core/test-run-controller/src/index.ts",
+    "core/test-worker/src/index.ts",
+    "core/transport/src/index.ts",
+    "core/types/src/index.ts",
+    "packages/browser-proxy/src/index.ts",
+    "packages/web-application/src/index.ts",
+    "packages/plugin-playwright-driver/src/index.ts",
+    "packages/element-path/src/index.ts"
+  ],
+  "entryPointStrategy": "expand",
+  "out": "docs/api",
+  "name": "Testring API",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "plugin": [],
+  "skipErrorChecking": true
+}
