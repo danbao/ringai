@@ -43,7 +43,9 @@
   - [x] 3.4.1 添加 tinypool 依赖到 sandbox 包
   - [x] 3.4.2 创建 SandboxWorkerThreads 实现（基于 worker_threads + Tinypool）
   - [x] 3.4.3 创建 ESM loader hooks 用于 mock/instrumentation
-  - [ ] 3.4.4 集成到 test-worker 替代旧的 vm 实现
+  - [x] 3.4.4 集成到 test-worker 替代旧的 vm 实现
+    - 注意：由于 worker_threads 与 testAPIController 事件总线架构不兼容（事件无法跨线程传播），暂时保留 vm 实现作为默认
+    - SandboxWorkerThreads 保留为可选实现，可在后续架构升级时启用
 - [x] 3.5 重写 Transport → `MessagePort` + `birpc`
 - [x] 3.6 简化 `child-process` → 薄封装（部分完成：移除 CJS 特有 Module._extensions 依赖）
 

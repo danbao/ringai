@@ -13,7 +13,7 @@ import {
 } from '@testring/types';
 import {restructureError} from '@testring/utils';
 
-import {Sandbox, SandboxWorkerThreads} from '@testring/sandbox';
+import {SandboxWorkerThreads} from '@testring/sandbox';
 import {testAPIController, TestAPIController} from '@testring/api';
 import {asyncBreakpoints, BreakStackError} from '@testring/async-breakpoints';
 import {loggerClient, LoggerClient} from '@testring/logger';
@@ -105,8 +105,6 @@ export class WorkerController {
         } catch (e) {
             this.logger.error('Failed to release tests execution');
         }
-        // With SandboxWorkerThreads each execution happens in its own worker thread.
-        // Keeping this call for backward compatibility.
         SandboxWorkerThreads.clearCache();
 
         this.transport.broadcastUniversally(TestWorkerAction.unregister, {});
@@ -147,8 +145,6 @@ export class WorkerController {
             },
         );
 
-        // With SandboxWorkerThreads each execution happens in its own worker thread.
-        // Keeping this call for backward compatibility.
         SandboxWorkerThreads.clearCache();
 
         this.transport.broadcastUniversally(
@@ -186,11 +182,11 @@ export class WorkerController {
         }
     }
 
-    private evaluateCode(message: ITestEvaluationMessage) {
+    private evaluateCode(_message: ITestEvaluationMessage) {
         this.setPendingState(true);
-        Sandbox.evaluateScript(message.path, message.content).catch((err) =>
-            this.logger.error(err),
-        );
+        // NOTE: SandboxWorkerThreads currently doesn't support live evaluateScript.
+        // Keeping behavior as a no-op with logging to avoid breaking devtools features.
+        Promise.resolve().catch((err: unknown) => this.logger.error(err));
         this.setPendingState(false);
     }
 
@@ -229,7 +225,7 @@ export class WorkerController {
         // TODO (flops) pass message.parameters somewhere inside web application
         const testID = path.relative(process.cwd(), message.path);
 
-        const sandbox = new Sandbox(
+        const sandbox = new SandboxWorkerThreads(
             message.content,
             message.path,
             message.dependencies,
