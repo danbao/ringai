@@ -1,4 +1,3 @@
-// TODO (flops) rework and merge with selenium backend
 /* eslint-disable @typescript-eslint/no-shadow,@typescript-eslint/no-this-alias */
 import * as url from 'url';
 import {FSScreenshotFactory} from '@testring/fs-store';
@@ -91,9 +90,6 @@ export class WebApplication extends PluggableModule {
     ) {
         super();
         this.config = this.getConfig(config);
-        if (config.seleniumConfig) {
-            this.initPromise = this.client.setCustomBrowserClientConfig(this.config.seleniumConfig);
-        }
     }
 
     protected getConfig(
@@ -513,7 +509,7 @@ export class WebApplication extends PluggableModule {
         const normalizedSelector = this.normalizeSelector(xpath);
 
         // For clickCoordinates, we only need to check existence, not hover capability
-        // This matches Selenium behavior where clickCoordinates fails fast for covered elements
+        // For clickCoordinates, only check existence, not hover capability
         await this.waitForExist(normalizedSelector, timeout);
         await this.makeScreenshot();
 
@@ -662,7 +658,7 @@ export class WebApplication extends PluggableModule {
                 this.logger.debug(
                     `Value ${value} was entered into ${this.formatXpath(
                         xpath,
-                    )} using Playwright/Selenium`,
+                    )} using Playwright`,
                 );
             }
         }

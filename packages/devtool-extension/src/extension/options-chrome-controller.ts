@@ -132,7 +132,7 @@ ${error.stack}
         let checkCount = 0;
 
         while (callback === null && checkCount < 10) {
-            // Waiting for selenium to add resolve callback in window
+            // Waiting for browser to add resolve callback in window
             await new Promise((resolve) => setTimeout(resolve, 300));
 
             if (typeof this.window.resolveWebApp === 'function') {

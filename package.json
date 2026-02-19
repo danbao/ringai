@@ -31,8 +31,6 @@
     "test:ci:coverage": "pnpm run test:unit:coverage:lcov && pnpm run test:e2e:coverage:lcov",
     "test:unit:coverage:lcov": "vitest run --coverage --reporter=verbose",
     "test:e2e:coverage:lcov": "c8 ts-node ./packages/e2e-test-app/src/test-runner.ts --config ./packages/e2e-test-app/test/playwright/config.coverage.js --env-config=./packages/e2e-test-app/test/playwright/env.json --headless",
-    "grid:start": "./scripts/start-selenium-grid.sh",
-    "grid:stop": "./scripts/stop-selenium-grid.sh",
     "test:e2e:grid": "lerna run --stream --scope @testring/e2e-test-app test:playwright:grid",
     "build": "turbo run build",
     "build:main": "turbo run build --filter='!@testring/e2e-test-app' --filter='!@testring/devtool-frontend' --filter='!@testring/devtool-extension'",
@@ -52,7 +50,9 @@
     "deps:find-updates": "ncu -m --deep --color",
     "deps:lerna:update": "lernaupdate",
     "deps:lerna:dedupe": "lernaupdate -d",
-    "analyze:performance": "node scripts/run-tests-and-analyze.js",
+    "docs:api": "typedoc",
+    "docs:api:watch": "typedoc --watch",
+    "docs": "pnpm run docs:api",
     "analyze:performance:logs-only": "node scripts/analyze-long-steps.js"
   },
   "nyc": {
@@ -76,7 +76,6 @@
       "packages/*/src/index.ts",
       "packages/web-application/src/web-application.ts",
       "packages/web-application/src/web-client.ts",
-      "packages/plugin-selenium-driver/src/plugin/index.ts",
       "packages/plugin-playwright-driver/**/*",
       "packages/devtool-*/**/*",
       "packages/e2e-test-app/**/*",
@@ -142,13 +141,18 @@
     "sinon": "19.0.2",
     "ts-node": "10.9.2",
     "tsup": "8.5.1",
+    "tsx": "4.21.0",
     "turbo": "2.8.10",
+    "typedoc": "0.28.17",
     "typescript": "5.6.3",
     "typescript-eslint": "8.56.0",
     "vitest": "4.0.18"
   },
   "dependencies": {
+    "@clack/prompts": "1.0.1",
+    "citty": "^0.1.6",
     "hookable": "6.0.1",
+    "kleur": "4.1.5",
     "tinyglobby": "0.2.15",
     "tinypool": "2.1.0"
   }

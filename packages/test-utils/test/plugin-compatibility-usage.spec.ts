@@ -96,29 +96,6 @@ describe('PluginCompatibilityTester Usage Examples', () => {
     });
 
     describe('Plugin-Specific Test Scenarios', () => {
-        it('should demonstrate testing Selenium-like plugins', async () => {
-            // Example configuration for Selenium-compatible plugins
-            const mockSeleniumPlugin = createBrowserProxyPluginMock(sandbox);
-            
-            const seleniumConfig: CompatibilityTestConfig = {
-                pluginName: 'selenium-webdriver',
-                skipTests: [
-                    // Selenium might not support some modern features
-                ],
-                customTimeouts: {
-                    waitForExist: 30000,
-                    waitForVisible: 30000
-                }
-            };
-
-            const tester = new PluginCompatibilityTester(mockSeleniumPlugin as any, seleniumConfig);
-            const results = await tester.runAllTests();
-            
-            expect(results).to.have.property('passed');
-            expect(results).to.have.property('failed');
-            expect(results).to.have.property('skipped');
-        });
-
         it('should demonstrate testing Playwright-like plugins', async () => {
             // Example configuration for Playwright-compatible plugins
             const mockPlaywrightPlugin = createBrowserProxyPluginMock(sandbox);

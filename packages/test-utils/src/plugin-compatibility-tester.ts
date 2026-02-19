@@ -3,7 +3,7 @@
  * 
  * This utility helps test compatibility between different browser driver plugins
  * by providing a common set of test scenarios that should work with both
- * Selenium and Playwright drivers.
+ * Playwright drivers.
  */
 
 import { expect } from 'chai';

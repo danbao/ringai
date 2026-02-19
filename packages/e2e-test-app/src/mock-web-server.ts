@@ -54,8 +54,6 @@ if (require.main === module) {
         console.log('');
         console.log('可用的端点：');
         console.log('  POST /upload - 文件上传端点');
-        console.log('  ALL  /wd/hub/* - Mock Selenium WebDriver hub');
-        console.log('  GET  /selenium-headers - 获取存储的请求头');
         console.log('  GET  /grid-test - 测试页面');
         console.log('  GET  /health - 健康检查');
         console.log('  GET  /static/* - HTML 测试页面（所有环境）');

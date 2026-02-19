@@ -24,7 +24,6 @@ const DEFAULT_CONFIG: PlaywrightPluginConfig = {
     clientTimeout: TIMEOUTS.CLIENT_SESSION,
     disableClientPing: false,
     coverage: false,
-    cdpCoverage: false,
     video: false,
     trace: false,
 };
@@ -776,9 +775,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     private isCleaningUp: boolean = false; // 标记是否正在清理过程中
 
     constructor(config: Partial<PlaywrightPluginConfig> = {}) {
-        // Handle Selenium plugin compatibility parameters
-        const compatConfig = this.handleSeleniumCompatibility(config);
-        this.config = { ...DEFAULT_CONFIG, ...compatConfig };
+        this.config = { ...DEFAULT_CONFIG, ...config };
         
         // PLAYWRIGHT_DEBUG=1 is the only way to control headless mode
         // When set, it forces the use of non-headless mode and adds slow motion for debugging
@@ -835,134 +832,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         }
     }
 
-    private handleSeleniumCompatibility(config: Partial<PlaywrightPluginConfig>): Partial<PlaywrightPluginConfig> {
-        const compatConfig = { ...config };
-        
-        // Track which compatibility parameters are being used
-        const compatParamsUsed: string[] = [];
-        
-        // Map Selenium host/hostname to Selenium Grid configuration
-        if ((config.host || config.hostname) && !config.seleniumGrid) {
-            const gridHost = config.hostname || config.host;
-            const gridPort = config.port || 4444;
-            
-            compatConfig.seleniumGrid = {
-                gridUrl: `http://${gridHost}:${gridPort}/wd/hub`,
-                ...(config.seleniumGrid || {})
-            };
-            
-            if (config.host) {
-                compatParamsUsed.push('host');
-                this.logger.warn(`[Selenium Compatibility] Parameter 'host' is deprecated. Please use 'seleniumGrid.gridUrl' instead.`);
-            }
-            if (config.hostname) {
-                compatParamsUsed.push('hostname');
-                this.logger.warn(`[Selenium Compatibility] Parameter 'hostname' is deprecated. Please use 'seleniumGrid.gridUrl' instead.`);
-            }
-            if (config.port) {
-                compatParamsUsed.push('port');
-                this.logger.warn(`[Selenium Compatibility] Parameter 'port' is deprecated. Please include port in 'seleniumGrid.gridUrl'.`);
-            }
-        }
-        
-        // Map desiredCapabilities to launch/context options
-        if (config.desiredCapabilities && config.desiredCapabilities.length > 0) {
-            compatParamsUsed.push('desiredCapabilities');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'desiredCapabilities' is deprecated. Please use 'browserName', 'launchOptions', and 'contextOptions' instead.`);
-            
-            const desiredCaps = config.desiredCapabilities[0];
-            
-            // Map browserName
-            if (desiredCaps.browserName && !config.browserName) {
-                // Map chrome to chromium for Playwright
-                compatConfig.browserName = desiredCaps.browserName === 'chrome' ? 'chromium' : desiredCaps.browserName;
-                this.logger.warn(`[Selenium Compatibility] Mapped desiredCapabilities.browserName='${desiredCaps.browserName}' to browserName='${compatConfig.browserName}'`);
-            }
-            
-            // Map Chrome options
-            if (desiredCaps['goog:chromeOptions']) {
-                const chromeOptions = desiredCaps['goog:chromeOptions'];
-                if (chromeOptions.args && !config.launchOptions?.args) {
-                    compatConfig.launchOptions = {
-                        ...config.launchOptions,
-                        args: chromeOptions.args
-                    };
-                    this.logger.warn(`[Selenium Compatibility] Mapped desiredCapabilities['goog:chromeOptions'].args to launchOptions.args`);
-                }
-            }
-        }
-        
-        // Map capabilities to launch/context options
-        if (config.capabilities) {
-            compatParamsUsed.push('capabilities');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'capabilities' is deprecated. Please use 'browserName', 'launchOptions', and 'contextOptions' instead.`);
-            
-            // Map browserName
-            if (config.capabilities.browserName && !config.browserName) {
-                // Map chrome to chromium for Playwright
-                compatConfig.browserName = config.capabilities.browserName === 'chrome' ? 'chromium' : config.capabilities.browserName;
-                this.logger.warn(`[Selenium Compatibility] Mapped capabilities.browserName='${config.capabilities.browserName}' to browserName='${compatConfig.browserName}'`);
-            }
-            
-            // Map Chrome options
-            if (config.capabilities['goog:chromeOptions']) {
-                const chromeOptions = config.capabilities['goog:chromeOptions'];
-                if (chromeOptions.args && !config.launchOptions?.args) {
-                    compatConfig.launchOptions = {
-                        ...config.launchOptions,
-                        args: chromeOptions.args
-                    };
-                    this.logger.warn(`[Selenium Compatibility] Mapped capabilities['goog:chromeOptions'].args to launchOptions.args`);
-                }
-                
-                // Note: headless mode is now controlled only by PLAYWRIGHT_DEBUG environment variable
-                // Removing headless detection from Chrome args to avoid conflicts
-            }
-        }
-        
-        // Log level mapping (Selenium uses WebDriverIO log levels)
-        if (config.logLevel && !process.env['DEBUG']) {
-            compatParamsUsed.push('logLevel');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'logLevel' is deprecated. Please use DEBUG environment variable for Playwright logging.`);
-            
-            const logLevelMap: { [key: string]: string } = {
-                'trace': 'pw:api',
-                'debug': 'pw:api',
-                'info': 'pw:api',
-                'warn': 'pw:api',
-                'error': 'pw:api',
-                'silent': ''
-            };
-            
-            if (logLevelMap[config.logLevel]) {
-                process.env['DEBUG'] = logLevelMap[config.logLevel];
-                this.logger.warn(`[Selenium Compatibility] Mapped logLevel='${config.logLevel}' to DEBUG='${logLevelMap[config.logLevel]}'`);
-            }
-        }
-        
-        // Note: chromeDriverPath and recorderExtension are ignored as they are Selenium-specific
-        if (config.chromeDriverPath) {
-            compatParamsUsed.push('chromeDriverPath');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'chromeDriverPath' is not applicable to Playwright and will be ignored.`);
-        }
-        if (config.recorderExtension) {
-            compatParamsUsed.push('recorderExtension');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'recorderExtension' is not applicable to Playwright and will be ignored.`);
-        }
-        
-        // Check for cdpCoverage
-        if (config.cdpCoverage) {
-            compatParamsUsed.push('cdpCoverage');
-            this.logger.warn(`[Selenium Compatibility] Parameter 'cdpCoverage' is deprecated. Please use 'coverage' instead.`);
-        }
-        
-        // Log summary if any compatibility parameters were used
-        if (compatParamsUsed.length > 0) {
-            this.logger.warn(`[Selenium Compatibility] Found ${compatParamsUsed.length} deprecated Selenium parameters: ${compatParamsUsed.join(', ')}. Please update your configuration to use Playwright-native parameters.`);
-        }
-        
-        return compatConfig;
-    }
+
     
     private initIntervals() {
         if (this.config.workerLimit !== 'local' && !this.config.disableClientPing) {
@@ -1007,51 +877,6 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         }
     }
 
-    private isSeleniumGridEnabled(): boolean {
-        // 检查是否通过配置或环境变量启用了 Selenium Grid
-        return !!(
-            this.config.seleniumGrid?.gridUrl ||
-            process.env['SELENIUM_REMOTE_URL']
-        );
-    }
-
-    private setupSeleniumGridEnvironment(): void {
-        const gridConfig = this.config.seleniumGrid;
-        
-        if (!gridConfig) {
-            return;
-        }
-
-        // 设置 Selenium Grid URL
-        if (gridConfig.gridUrl && !process.env['SELENIUM_REMOTE_URL']) {
-            process.env['SELENIUM_REMOTE_URL'] = gridConfig.gridUrl;
-            this.logger.info(`Setting Selenium Grid URL: ${gridConfig.gridUrl}`);
-        }
-
-        // 设置 Selenium Grid Capabilities
-        if (gridConfig.gridCapabilities && !process.env['SELENIUM_REMOTE_CAPABILITIES']) {
-            process.env['SELENIUM_REMOTE_CAPABILITIES'] = JSON.stringify(gridConfig.gridCapabilities);
-            this.logger.debug(`Setting Selenium Grid capabilities: ${JSON.stringify(gridConfig.gridCapabilities)}`);
-        }
-
-        // 设置 Selenium Grid Headers
-        if (gridConfig.gridHeaders && !process.env['SELENIUM_REMOTE_HEADERS']) {
-            process.env['SELENIUM_REMOTE_HEADERS'] = JSON.stringify(gridConfig.gridHeaders);
-            this.logger.debug(`Setting Selenium Grid headers: ${JSON.stringify(gridConfig.gridHeaders)}`);
-        }
-
-        // 如果启用了 Selenium Grid，记录相关信息
-        if (this.isSeleniumGridEnabled()) {
-            const gridUrl = gridConfig.gridUrl || process.env['SELENIUM_REMOTE_URL'];
-            this.logger.info(`Selenium Grid mode enabled. Connecting to: ${gridUrl}`);
-            
-            const browserName = this.config.browserName || 'chromium';
-            if (browserName !== 'chromium' && browserName !== 'msedge') {
-                this.logger.warn(`Browser ${browserName} may not be supported with Selenium Grid. Only chromium and msedge are officially supported.`);
-            }
-        }
-    }
-
     private async getBrowser(): Promise<Browser> {
         // 检查现有浏览器是否仍然可用
         if (this.browser) {
@@ -1084,25 +909,14 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         const browserName = this.config.browserName || 'chromium';
         const launchOptions = this.config.launchOptions || {};
         
-        // 设置 Selenium Grid 环境变量（如果配置了）
-        this.setupSeleniumGridEnvironment();
-
         switch (browserName) {
             case 'chromium':
                 this.browser = await chromium.launch(launchOptions);
                 break;
             case 'firefox':
-                // Firefox 不支持 Selenium Grid
-                if (this.isSeleniumGridEnabled()) {
-                    throw new Error('Selenium Grid is not supported for Firefox. Only Chromium and Microsoft Edge are supported.');
-                }
                 this.browser = await firefox.launch(launchOptions);
                 break;
             case 'webkit':
-                // WebKit 不支持 Selenium Grid  
-                if (this.isSeleniumGridEnabled()) {
-                    throw new Error('Selenium Grid is not supported for WebKit. Only Chromium and Microsoft Edge are supported.');
-                }
                 this.browser = await webkit.launch(launchOptions);
                 break;
             case 'msedge':
@@ -1235,8 +1049,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         });
         
         let coverage = null;
-        // Support both 'coverage' and 'cdpCoverage' for compatibility with Selenium plugin
-        if (this.config.coverage || this.config.cdpCoverage) {
+        if (this.config.coverage) {
             await page.coverage.startJSCoverage();
             await page.coverage.startCSSCoverage();
             coverage = page.coverage;
@@ -1425,8 +1238,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
             }
 
             // Stop coverage with timeout
-            // Support both 'coverage' and 'cdpCoverage' for compatibility with Selenium plugin
-            if ((this.config.coverage || this.config.cdpCoverage) && clientData?.coverage) {
+            if (this.config.coverage && clientData?.coverage) {
                 try {
                     await Promise.race([
                         Promise.all([
@@ -1642,10 +1454,10 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         // Handle XPath selectors
         const normalizedSelector = this.normalizeSelector(selector);
 
-        // For compatibility with Selenium: use much shorter timeout for covered elements
+        // Use much shorter timeout for covered elements
         // This prevents long waits when element is covered by overlay
         if (!options?.force && clickOptions.timeout > 5000) {
-            // For non-force clicks, use a much shorter timeout to fail fast like Selenium
+            // For non-force clicks, use a much shorter timeout to fail fast
             clickOptions.timeout = 2000; // 2 seconds instead of 30 seconds
             console.log(`[DEBUG] Using short timeout (${clickOptions.timeout}ms) for ${selector}`);
         }
@@ -2367,7 +2179,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
             }));
         }
         
-        // Find specific cookie and return just the value like Selenium does
+        // Find specific cookie and return just the value
         const cookie = cookies.find(cookie => cookie.name === cookieName);
         return cookie ? cookie.value : null;
     }
@@ -2837,35 +2649,20 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     public async gridTestSession(applicant: string): Promise<any> {
         await this.createClient(applicant);
         
-        const isGridEnabled = this.isSeleniumGridEnabled();
-        const gridUrl = this.config.seleniumGrid?.gridUrl || process.env['SELENIUM_REMOTE_URL'];
-        
         return {
             sessionId: applicant,
-            localSelenium: !isGridEnabled,
-            localPlaywright: !isGridEnabled,
-            seleniumGrid: isGridEnabled,
-            gridUrl: gridUrl || null,
+            localPlaywright: true,
             browserName: this.config.browserName || 'chromium',
-            gridCapabilities: this.config.seleniumGrid?.gridCapabilities || null
         };
     }
 
     public async getHubConfig(applicant: string): Promise<any> {
         await this.createClient(applicant);
         
-        const isGridEnabled = this.isSeleniumGridEnabled();
-        const gridUrl = this.config.seleniumGrid?.gridUrl || process.env['SELENIUM_REMOTE_URL'];
-        
         return {
             sessionId: applicant,
-            localSelenium: !isGridEnabled,
-            localPlaywright: !isGridEnabled,
-            seleniumGrid: isGridEnabled,
-            gridUrl: gridUrl || null,
+            localPlaywright: true,
             browserName: this.config.browserName || 'chromium',
-            gridCapabilities: this.config.seleniumGrid?.gridCapabilities || null,
-            gridHeaders: this.config.seleniumGrid?.gridHeaders || null
         };
     }
 

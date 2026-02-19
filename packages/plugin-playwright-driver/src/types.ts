@@ -1,22 +1,5 @@
 import { LaunchOptions, BrowserContextOptions } from 'playwright';
 
-export interface SeleniumGridConfig {
-    /**
-     * Selenium Grid Hub URL
-     */
-    gridUrl?: string;
-    
-    /**
-     * Additional capabilities to pass to Selenium Grid
-     */
-    gridCapabilities?: Record<string, any>;
-    
-    /**
-     * Additional headers to pass to Selenium Grid
-     */
-    gridHeaders?: Record<string, string>;
-}
-
 export interface PlaywrightPluginConfig {
     /**
      * Browser type to use: 'chromium', 'firefox', or 'webkit'
@@ -32,11 +15,6 @@ export interface PlaywrightPluginConfig {
      * Context options for browser context
      */
     contextOptions?: BrowserContextOptions;
-    
-    /**
-     * Selenium Grid configuration
-     */
-    seleniumGrid?: SeleniumGridConfig;
     
     /**
      * Client check interval in milliseconds
@@ -67,51 +45,6 @@ export interface PlaywrightPluginConfig {
      * Enable coverage collection
      */
     coverage?: boolean;
-    
-    /**
-     * Enable CDP coverage collection (alias for coverage, for compatibility with Selenium plugin)
-     */
-    cdpCoverage?: boolean;
-    
-    /**
-     * Chrome driver path (for compatibility with Selenium plugin, not used in Playwright)
-     */
-    chromeDriverPath?: string;
-    
-    /**
-     * Enable recorder extension (for compatibility with Selenium plugin, not used in Playwright)
-     */
-    recorderExtension?: boolean;
-    
-    /**
-     * Host (for compatibility with Selenium plugin, maps to seleniumGrid.gridUrl)
-     */
-    host?: string;
-    
-    /**
-     * Hostname (for compatibility with Selenium plugin, maps to seleniumGrid.gridUrl)
-     */
-    hostname?: string;
-    
-    /**
-     * Port (for compatibility with Selenium plugin)
-     */
-    port?: number;
-    
-    /**
-     * Desired capabilities (for compatibility with Selenium plugin)
-     */
-    desiredCapabilities?: any[];
-    
-    /**
-     * Capabilities (for compatibility with Selenium plugin)
-     */
-    capabilities?: any;
-    
-    /**
-     * Log level (for compatibility with Selenium plugin)
-     */
-    logLevel?: string;
     
     /**
      * Enable video recording
