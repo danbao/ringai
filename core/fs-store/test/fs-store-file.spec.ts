@@ -29,8 +29,12 @@ describe('fs-store-file', () => {
     beforeAll(() => {
         FSS = new FSStoreServer(10, prefix);
     });
-    afterAll(() => {
-        return fs.promises.rm(tmpDir, {recursive: true});
+    afterAll(async () => {
+        const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
+        if (onRelease) {
+            onRelease.removePlugin('testRelease');
+        }
+        await fs.promises.rm(tmpDir, {recursive: true}).catch(() => {});
     });
     it('store file static methods test', async () => {
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);

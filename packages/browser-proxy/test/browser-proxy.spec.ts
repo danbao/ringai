@@ -20,64 +20,70 @@ const commandMock: IBrowserProxyCommand = {
 };
 
 describe('Browser proxy', () => {
-    it('should listen to incoming messages and call onAction hook when gets message', () => new Promise<void>((resolve, reject) => {
+    it('should listen to incoming messages and call onAction hook when gets message', async () => {
         const uid = 'testUid';
         const transport = new TransportMock();
 
         new BrowserProxy(transport, pluginPath, pluginConfig);
 
-        transport.on<IBrowserProxyCommandResponse>(
-            BrowserProxyMessageTypes.response,
-            (response) => {
-                chai.expect(response.uid).to.be.equal(uid);
-                chai.expect(response.error).to.be.equal(null);
+        const responsePromise = new Promise<IBrowserProxyCommandResponse>((resolve) => {
+            transport.on<IBrowserProxyCommandResponse>(
+                BrowserProxyMessageTypes.response,
+                (response) => resolve(response),
+            );
+        });
 
-                resolve();
-            },
-        );
+        await new Promise((r) => setTimeout(r, 10));
 
         transport.emit(BrowserProxyMessageTypes.execute, {
             uid,
             applicant: 'test',
             command: commandMock,
         });
-    }));
 
-    it('should work with async hooks', () => new Promise<void>((resolve, reject) => {
+        const response = await responsePromise;
+        chai.expect(response.uid).to.be.equal(uid);
+        chai.expect(response.error).to.be.equal(null);
+    });
+
+    it('should work with async hooks', async () => {
         const uid = 'testUid';
         const transport = new TransportMock();
         new BrowserProxy(transport, asyncPluginPath, pluginConfig);
 
-        transport.on<IBrowserProxyCommandResponse>(
-            BrowserProxyMessageTypes.response,
-            (response) => {
-                chai.expect(response.uid).to.be.equal(uid);
-                chai.expect(response.error).to.be.equal(null);
+        const responsePromise = new Promise<IBrowserProxyCommandResponse>((resolve) => {
+            transport.on<IBrowserProxyCommandResponse>(
+                BrowserProxyMessageTypes.response,
+                (response) => resolve(response),
+            );
+        });
 
-                resolve();
-            },
-        );
+        await new Promise((r) => setTimeout(r, 10));
 
         transport.emit(BrowserProxyMessageTypes.execute, {
             uid,
+            applicant: 'test',
             command: commandMock,
         });
-    }));
 
-    it('should broadcast response with exception if onAction hook fails', () => new Promise<void>((resolve, reject) => {
+        const response = await responsePromise;
+        chai.expect(response.uid).to.be.equal(uid);
+        chai.expect(response.error).to.be.equal(null);
+    });
+
+    it('should broadcast response with exception if onAction hook fails', async () => {
         const uid = 'testUid';
         const transport = new TransportMock();
         new BrowserProxy(transport, pluginPath, pluginConfig);
 
-        transport.on<IBrowserProxyCommandResponse>(
-            BrowserProxyMessageTypes.response,
-            (response) => {
-                chai.expect(response).to.have.property('uid', uid);
-                chai.expect(response).to.have.property('error');
+        const responsePromise = new Promise<IBrowserProxyCommandResponse>((resolve) => {
+            transport.on<IBrowserProxyCommandResponse>(
+                BrowserProxyMessageTypes.response,
+                (response) => resolve(response),
+            );
+        });
 
-                resolve();
-            },
-        );
+        await new Promise((r) => setTimeout(r, 10));
 
         transport.emit(BrowserProxyMessageTypes.execute, {
             uid,
@@ -86,5 +92,9 @@ describe('Browser proxy', () => {
                 arguments: ['foo', 'bar'],
             },
         });
-    }));
+
+        const response = await responsePromise;
+        chai.expect(response).to.have.property('uid', uid);
+        chai.expect(response).to.have.property('error');
+    });
 });

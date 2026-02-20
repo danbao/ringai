@@ -17,6 +17,12 @@ describe('fs-store-client', () => {
     beforeAll(() => {
         FSS = new FSStoreServer(10);
     });
+    afterAll(() => {
+        const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
+        if (onRelease) {
+            onRelease.removePlugin('testRelease');
+        }
+    });
     it('client should lock access & unlink data', () => new Promise<void>((resolve, reject) => {
         const done = (err?: any) => { if (err) reject(err); else resolve(); };
         const FSC = new FSStoreClient();
