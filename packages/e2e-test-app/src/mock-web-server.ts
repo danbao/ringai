@@ -46,7 +46,9 @@ export const app = new MockWebServer().getApp();
 export default app;
 
 // 如果直接运行此文件，启动服务器
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}` ||
+    process.argv[1]?.endsWith('mock-web-server.ts');
+if (isMainModule) {
     const server = new MockWebServer();
 
     server.start().then(() => {
