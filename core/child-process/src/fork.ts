@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import process from 'node:process';
 import { createRequire } from 'node:module';
 import {getAvailablePort} from '@testring/utils';
@@ -51,8 +52,9 @@ function getTsEnv(filePath: string): Record<string, string | undefined> | undefi
     const extension = path.extname(filePath);
     if (extension === '.ts') {
         const tsxPath = resolveTsxImportPath();
+        const tsxUrl = tsxPath.startsWith('file://') ? tsxPath : pathToFileURL(tsxPath).href;
         return {
-            NODE_OPTIONS: `--import ${tsxPath}`,
+            NODE_OPTIONS: `--import ${tsxUrl}`,
         };
     }
     return undefined;

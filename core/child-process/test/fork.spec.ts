@@ -12,9 +12,10 @@ describe('fork', () => {
                 if (signal) {
                     reject(signal);
                 } else {
-                    chai.expect(ps['spawnfile'].endsWith('node')).to.equal(
-                        true,
-                    );
+                    const spawnfile = ps['spawnfile'] as string;
+                    chai.expect(
+                        spawnfile.endsWith('node') || spawnfile.endsWith('node.exe'),
+                    ).to.equal(true);
 
                     resolve();
                 }
