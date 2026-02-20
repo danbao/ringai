@@ -7,8 +7,8 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 
 const workerPath = path.resolve(__dirname, './fixtures/worker.ts');
-const asyncPlugin = path.resolve(__dirname, './fixtures/async-plugin.ts');
-const syncPlugin = path.resolve(__dirname, './fixtures/sync-plugin.ts');
+const asyncPlugin = path.resolve(__dirname, './fixtures/async-plugin.cjs');
+const syncPlugin = path.resolve(__dirname, './fixtures/sync-plugin.cjs');
 
 describe('Browser Proxy Controller functional test for local worker', () => {
     it('should not call workerCreator if workerLimit is set to local', async () => {

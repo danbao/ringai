@@ -11,8 +11,8 @@ import {
 import {TransportMock} from '@testring/test-utils';
 import {BrowserProxy} from '../src/browser-proxy/browser-proxy';
 
-const asyncPluginPath = path.resolve(__dirname, './fixtures/async-plugin.ts');
-const pluginPath = path.resolve(__dirname, './fixtures/sync-plugin.ts');
+const asyncPluginPath = path.resolve(__dirname, './fixtures/async-plugin.cjs');
+const pluginPath = path.resolve(__dirname, './fixtures/sync-plugin.cjs');
 const pluginConfig = {};
 const commandMock: IBrowserProxyCommand = {
     action: BrowserProxyActions.click,

@@ -8,8 +8,8 @@ import {BrowserProxyActions, BrowserProxyPlugins} from '@testring/types';
 import {BrowserProxyController} from '../src/browser-proxy-controller';
 
 const workerPath = path.resolve(__dirname, './fixtures/worker.ts');
-const syncPlugin = path.resolve(__dirname, './fixtures/sync-plugin.ts');
-const asyncPlugin = path.resolve(__dirname, './fixtures/async-plugin.ts');
+const syncPlugin = path.resolve(__dirname, './fixtures/sync-plugin.cjs');
+const asyncPlugin = path.resolve(__dirname, './fixtures/async-plugin.cjs');
 
 describe('Browser proxy controller functional test', () => {
     it('should pass path to onAction plugin to workerCreator', () => new Promise<void>((resolve, reject) => {
