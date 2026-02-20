@@ -19,8 +19,8 @@
   "scripts": {
     "test": "mocha",
     "test:debug": "PLAYWRIGHT_DEBUG=1 mocha --config .mocharc.debug.json",
-    "postinstall": "node scripts/install-browsers.js",
-    "install-browsers": "node scripts/install-browsers.js",
+    "postinstall": "node scripts/install-browsers.cjs",
+    "install-browsers": "node scripts/install-browsers.cjs",
     "uninstall-browsers": "npx playwright uninstall --all",
     "build": "tsup --config ../../tsup.config.base.ts --format esm && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   },
