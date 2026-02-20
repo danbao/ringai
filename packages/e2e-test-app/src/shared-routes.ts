@@ -24,6 +24,10 @@ import { getCssHtml } from './static-fixtures/css';
 import { getScreenshotHtml } from './static-fixtures/screenshot';
 import { getFormHtml } from './static-fixtures/form';
 import { getIframe1Html } from './static-fixtures/iframe1';
+import { getAssertDemoHtml } from './static-fixtures/assert-demo';
+import { getSimulateFieldHtml } from './static-fixtures/simulate-field';
+import { getLocationSizeHtml } from './static-fixtures/location-size';
+import { getTagNameHtml } from './static-fixtures/tag-name';
 
 
 
@@ -88,6 +92,10 @@ export function createSharedApp(): Hono {
     app.get('/static/screenshot.html', getScreenshotHtml);
     app.get('/static/form.html', getFormHtml);
     app.get('/static/iframe1.html', getIframe1Html);
+    app.get('/static/assert-demo.html', getAssertDemoHtml);
+    app.get('/static/simulate-field.html', getSimulateFieldHtml);
+    app.get('/static/location-size.html', getLocationSizeHtml);
+    app.get('/static/tag-name.html', getTagNameHtml);
 
     // 首页
     app.get('/', (c: Context) => {

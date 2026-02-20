@@ -122,4 +122,19 @@ run(async (api) => {
     let windowSize = await app.getWindowSize();
     await app.assert.isNumber(windowSize.width);
     await app.assert.isNumber(windowSize.height);
+
+    // setActiveTab — switch + verify
+    let currentTabId = await app.getCurrentTabId();
+    await app.newWindow(getTargetUrl(api, 'title.html'));
+    let newTabId = await app.getCurrentTabId();
+    await app.setActiveTab(currentTabId);
+    await app.assert.equal(await app.getCurrentTabId(), currentTabId);
+    await app.setActiveTab(newTabId);
+    await app.assert.equal(await app.getCurrentTabId(), newTabId);
+
+    // closeBrowserWindow — close window and focus returns
+    await app.closeBrowserWindow(currentTabId);
+    await app.assert.equal(await app.getCurrentTabId(), currentTabId);
+    let afterCloseTabIds = await app.getTabIds();
+    await app.assert.lengthOf(afterCloseTabIds, 1);
 });

@@ -13,6 +13,7 @@ export function getAlertHtml(c: Context) {
         <p data-test-automation-id="second" class="alerts"></p>
         <p data-test-automation-id="third" class="alerts"></p>
     </div>
+    <button data-test-automation-id="delayAlertButton" onclick="setTimeout(function(){ alert('delayed'); }, 1000)">Delay Alert</button>
     <script>
         const a1 = confirm();
         document.getElementsByClassName('alerts')[0].innerText = a1;

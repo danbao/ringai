@@ -49,4 +49,10 @@ run(async (api) => {
         'byVisibleText',
         'withTestId',
     ]);
+
+    // getOptionsProperty — retrieve a specific property from all options
+    const optionIds = await app.getOptionsProperty(app.root.form.select, 'id');
+    await app.assert.isArray(optionIds);
+    await app.assert.include(optionIds, 'select-option-visible-text');
+    await app.assert.include(optionIds, 'select-test-option');
 });
