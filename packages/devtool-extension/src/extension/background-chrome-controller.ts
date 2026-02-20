@@ -15,13 +15,13 @@ type resolveReadyCallback = (value?: any) => void;
 export class BackgroundChromeController {
     private backgroundServer: BackgroundChromeServer;
 
-    private waitForReadyPromise: Promise<void>;
+    private waitForReadyPromise!: Promise<void>;
 
-    private resolveReadyStateCallback: null | resolveReadyCallback;
+    private resolveReadyStateCallback!: null | resolveReadyCallback;
 
     private serverConfig: IExtensionApplicationConfig | null = null;
 
-    private ws: ClientWsTransport;
+    private ws!: ClientWsTransport;
 
     private CSPController: CSPController = new CSPController();
 
@@ -36,17 +36,17 @@ export class BackgroundChromeController {
     private registerInternalHandlers() {
         const handler = async (
             message: IExtensionMessagingTransportMessage,
-            conId: string,
+            _conId: string,
         ) => {
             try {
                 switch (message.type) {
                     case ExtensionMessagingTransportTypes.WAIT_FOR_READY:
-                        await this.waitForReadyHandler(message.payload, conId);
+                        await this.waitForReadyHandler(message.payload, _conId);
                         break;
                     case ExtensionMessagingTransportTypes.SET_EXTENSION_OPTIONS:
                         await this.setExtensionOptionsHandler(
                             message.payload as IExtensionApplicationConfig,
-                            conId,
+                            _conId,
                         );
                         break;
                     default:
@@ -104,7 +104,7 @@ export class BackgroundChromeController {
         }
     }
 
-    private async waitForReadyHandler(message, conId: string) {
+    private async waitForReadyHandler(_message: any, conId: string) {
         if (this.serverConfig === null) {
             await this.waitForReadyPromise;
         }

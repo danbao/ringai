@@ -9,7 +9,7 @@ import {
 import {requirePlugin} from '@testring/utils';
 import {loggerClient} from '@testring/logger';
 
-function resolvePlugin(pluginPath: string): IBrowserProxyPlugin {
+function resolvePlugin(pluginPath: string): any {
     const resolvedPlugin = requirePlugin(pluginPath);
 
     if (typeof resolvedPlugin !== 'function') {
@@ -62,7 +62,7 @@ export class BrowserProxy {
         this.removeHandlers.push(
             this.transportInstance.on(
                 BrowserProxyMessageTypes.execute,
-                (message) => this.onMessage(message),
+                (message: any) => this.onMessage(message),
             ),
         );
     }

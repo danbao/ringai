@@ -61,7 +61,7 @@ function askSelect<T extends string>(question: string, options: { label: string;
             if (isNaN(idx) || idx < 0 || idx >= options.length) {
                 resolve(defaultValue);
             } else {
-                resolve(options[idx].value);
+                resolve(options[idx]!.value);
             }
         });
     });

@@ -3,6 +3,7 @@ import {testAPIController} from '@testring/api';
 import {WorkerController} from './worker/worker-controller';
 import {
     ITransport,
+    ITestExecutionMessage,
     TestWorkerAction,
     IWorkerEmitter,
     ITransportDirectMessage,
@@ -31,7 +32,7 @@ export class TestWorkerLocal extends EventEmitter implements IWorkerEmitter {
         const {payload, type} = message;
 
         if (type === TestWorkerAction.executeTest) {
-            this.workerController.executeTest(payload);
+            this.workerController.executeTest(payload as ITestExecutionMessage);
         }
 
         return true;

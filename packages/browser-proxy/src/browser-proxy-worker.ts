@@ -41,7 +41,7 @@ export class BrowserProxyWorker implements IBrowserProxyWorker {
     private registerResponseListener(): void {
         this.transport.on(
             BrowserProxyMessageTypes.response,
-            (response, source) => {
+            (response: any, source: any) => {
                 if (this.workerID === source) {
                     this.onCommandResponse(response);
                 }

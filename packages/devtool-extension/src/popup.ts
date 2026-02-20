@@ -19,7 +19,7 @@ function renderPopup(config: IExtensionApplicationConfig) {
     document.body.appendChild(iframe);
 }
 
-function renderError(error) {
+function renderError(error: any) {
     document.body.innerText = `${error.message}`;
 }
 

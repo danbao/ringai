@@ -35,11 +35,11 @@ export class CSPController {
         'style-src',
     ];
 
-    private isCspHeader(headerName) {
+    private isCspHeader(headerName: string) {
         return this.cspHeaders.includes(headerName.toLowerCase());
     }
 
-    private getScpUrls(cspSource) {
+    private getScpUrls(cspSource: string) {
         if (this.serverConfig) {
             return `${cspSource} ${this.serverConfig.host}:${this.serverConfig.httpPort}`;
         }
@@ -47,7 +47,7 @@ export class CSPController {
         return cspSource;
     }
 
-    private modifyCspHeaders(details) {
+    private modifyCspHeaders(details: any) {
         if (this.serverConfig !== null) {
             details.responseHeaders.forEach((responseHeader) => {
                 if (!this.isCspHeader(responseHeader.name)) {

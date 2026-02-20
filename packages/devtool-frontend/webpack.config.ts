@@ -15,6 +15,8 @@ const config: webpack.Configuration = {
         fallback: {
             net: false,
             fs: false,
+            module: false,
+            url: false,
             path: require.resolve('path-browserify'),
             events: require.resolve('events/'),
             os: require.resolve('os-browserify/browser'),
@@ -38,7 +40,12 @@ const config: webpack.Configuration = {
             {
                 test: /\.tsx?$/,
                 exclude: /\.d\.ts$/,
-                use: 'ts-loader',
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        transpileOnly: true,
+                    },
+                },
             },
             {
                 test: /\.css$/,

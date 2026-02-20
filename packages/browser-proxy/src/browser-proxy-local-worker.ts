@@ -36,7 +36,7 @@ export class BrowserProxyLocalWorker implements IBrowserProxyWorker {
         this.removeHandlers.push(
             this.transport.on(
                 BrowserProxyMessageTypes.response,
-                (response, _source) => {
+                (response: any, _source: any) => {
                     this.onCommandResponse(response);
                 },
             ),

@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {loggerClient} from '@testring/logger';
-import {FSReader} from '@testring/fs-reader';
+// import {FSReader} from '@testring/fs-reader';
 import {FSStoreClient, FSClientGet} from '@testring/fs-store';
 import {fork} from '@testring/child-process';
 import {generateUniqId} from '@testring/utils';
@@ -34,7 +34,7 @@ const delay = (timeout: number) =>
 export class TestWorkerInstance implements ITestWorkerInstance {
     private config: ITestWorkerConfig;
 
-    private fsReader = new FSReader();
+    // private fsReader = new FSReader();
 
     private compileCache: Map<string, string> = new Map();
 
@@ -163,7 +163,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
         parameters: Record<string, unknown>,
         envParameters: Record<string, unknown>,
     ) {
-        const additionalFiles = await this.beforeCompile(
+        await this.beforeCompile(
             [],
             file.path,
             file.content,
@@ -364,12 +364,12 @@ export class TestWorkerInstance implements ITestWorkerInstance {
         return worker;
     }
 
-    private async readDependency(dependencyPath: string): Promise<string> {
-        const rawFile = await this.fsReader.readFile(dependencyPath);
-        const rawContent = rawFile ? rawFile.content : '';
-
-        return this.compile(rawContent, dependencyPath);
-    }
+    // TODO: readDependency is currently unused but may be needed for future dependency resolution
+    // private async readDependency(dependencyPath: string): Promise<string> {
+    //     const rawFile = await this.fsReader.readFile(dependencyPath);
+    //     const rawContent = rawFile ? rawFile.content : '';
+    //     return this.compile(rawContent, dependencyPath);
+    // }
 
     private clearWorkerHandlers() {
         if (this.worker === null) {

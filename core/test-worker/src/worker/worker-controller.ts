@@ -228,7 +228,7 @@ export class WorkerController {
         const sandbox = new SandboxWorkerThreads(
             message.content,
             message.path,
-            message.dependencies,
+            message.dependencies as any,
         );
         const bus = this.testAPI.getBus();
 
