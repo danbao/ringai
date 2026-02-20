@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Testring"
   text: "Modern UI Testing Framework"
-  tagline: "A powerful Node.js-based automated UI testing framework for web applications"
+  tagline: "An ESM-first Node.js automated UI testing framework for web applications"
   image:
     src: /logo.svg
     alt: Testring Logo
@@ -14,7 +14,7 @@ hero:
       link: /getting-started/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/ringcentral/testring
+      link: https://github.com/danbao/testring
 
 features:
   - icon: ⚡
@@ -23,7 +23,7 @@ features:
 
   - icon: 🌐
     title: Multi-Browser Support
-    details: Support for Chrome, Firefox, Safari, Edge with both Selenium and Playwright drivers.
+    details: Support for Chrome, Firefox, Safari, and Edge via Playwright for modern browser automation.
 
   - icon: 🔧
     title: Rich Plugin System
@@ -39,7 +39,7 @@ features:
 
   - icon: 📦
     title: Modern Architecture
-    details: TypeScript support, modern JavaScript features, and clean modular design.
+    details: ESM-first design, TypeScript-native, Node.js 22+, and clean modular architecture.
 ---
 
 ## Quick Start
@@ -48,7 +48,7 @@ Get up and running with Testring in minutes:
 
 ```bash
 # Install testring
-npm install --save-dev testring
+pnpm add -D testring
 
 # Run tests
 testring run
@@ -83,21 +83,21 @@ testring run --config ./test.config.js
 
 ## Core Modules
 
-Testring is built on a foundation of core modules:
+Testring is built on a foundation of [18 core modules](/core-modules/):
 
-- <span class="badge core">API</span> **Test Execution API** - Core testing engine and execution framework
-- <span class="badge core">CLI</span> **Command Line Interface** - Easy-to-use command line tools
-- <span class="badge core">Types</span> **TypeScript Definitions** - Complete type safety and IntelliSense
-- <span class="badge core">Transport</span> **Communication Layer** - Inter-process communication system
+- <span class="badge core">API</span> **Test Execution API** — Core testing engine and execution framework
+- <span class="badge core">CLI</span> **Command Line Interface** — Easy-to-use command line tools built with citty
+- <span class="badge core">Types</span> **TypeScript Definitions** — Complete type safety and IntelliSense
+- <span class="badge core">Transport</span> **Communication Layer** — Inter-process communication system
 
 ## Extension Packages
 
-Extend Testring with powerful packages:
+Extend Testring with powerful [packages](/packages/):
 
-- <span class="badge package">Playwright Driver</span> **Modern Browser Automation** - Latest browser automation technology
-- <span class="badge package">Browser Proxy</span> **Network Interception** - Advanced network testing capabilities
-- <span class="badge package">DevTools</span> **Development Tools** - Debugging and development utilities
-- <span class="badge package">Plugins</span> **Custom Extensions** - Babel, FS Store, and custom drivers
+- <span class="badge package">Playwright Driver</span> **Modern Browser Automation** — Playwright-based multi-browser automation
+- <span class="badge package">Browser Proxy</span> **Network Interception** — Advanced network testing capabilities
+- <span class="badge package">DevTools</span> **Development Tools** — Debugging and development utilities
+- <span class="badge package">Plugins</span> **Custom Extensions** — Babel, FS Store, and custom drivers
 
 ## Community & Support
 
@@ -117,12 +117,12 @@ Extend Testring with powerful packages:
   <div class="feature-card">
     <h3>🐛 Issue Tracking</h3>
     <p>Report bugs, request features, and get help from the community.</p>
-    <a href="https://github.com/ringcentral/testring/issues" target="_blank">GitHub Issues →</a>
+    <a href="https://github.com/danbao/testring/issues" target="_blank">GitHub Issues →</a>
   </div>
   
   <div class="feature-card">
     <h3>💬 Discussions</h3>
     <p>Connect with other users and share your experiences with Testring.</p>
-    <a href="https://github.com/ringcentral/testring/discussions" target="_blank">Join Discussion →</a>
+    <a href="https://github.com/danbao/testring/discussions" target="_blank">Join Discussion →</a>
   </div>
-</div> 
+</div>

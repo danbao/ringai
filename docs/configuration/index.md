@@ -1,69 +1,109 @@
-# Config API
+# Configuration
 
-At first, testring have similar API for config file and arguments in command line,
-so this guide will have examples for both CLI and config file.\
-Framework have 3 levels of configuration, sorted by priority:
+Testring provides a flexible configuration system with support for config files, environment configs, and CLI arguments. All three levels share the same set of options, with a clear priority order:
 
 ```
-CLI arguments -> environment file -> config file
+CLI arguments > environment config > config file > defaults
 ```
 
-Config file have lowest priority, it's fields will be overrided by environment config,
-if it's exists, CLI arguments overrides everything.
+CLI arguments have the highest priority and override everything. The environment config extends and overrides the base config file. The config file has the lowest priority.
 
-* [config](#config)
-* [envConfig](#envconfig)
-* [tests](#tests)
-* [logLevel](#loglevel)
-* [bail](#bail)
-* [workerLimit](#workerlimit)
-* [retryCount](#retrycount)
-* [retryDelay](#retrydelay)
-* [testTimeout](#testtimeout)
-* [screenshots](#screenshots)
-* [envParameters](#envparameters)
-* [restartWorker](#restartworker)
-* [plugins](#plugins)
+## Configuration Files
 
-<br/>
+Testring supports the following config file formats:
 
-## `config`
+| File | Format |
+|------|--------|
+| `.testringrc` | JSON (default) |
+| `.testringrc.js` | ESM JavaScript |
+| `.testringrc.cjs` | CommonJS JavaScript |
+| `testring.config.js` | ESM JavaScript |
+| `testring.config.cjs` | CommonJS JavaScript |
 
-###### `.testringrc` <sup>default</sup>
+::: tip
+Since testring packages use `"type": "module"`, any CommonJS config files must use the `.cjs` extension.
+:::
 
-Path to config file, relative to project root, works only as CLI argument.
-Config can be json or javascript file.
+### JSON Config
 
-Javascript file should return:
-* Config object;
-* Function with config object;
-* Function with `Promise`, that returns config object (for async initialization).
-
-```
-$ testring run --config ./my-custom-config.json
+```json
+{
+  "tests": "./tests/**/*.spec.js",
+  "workerLimit": 4,
+  "bail": true,
+  "logLevel": "info"
+}
 ```
 
-<br/>
+### JavaScript Config (ESM)
 
-## `envConfig`
+JavaScript config files can export a config object, a function returning a config object, or an async function returning a config object:
 
-###### `void` <sup>default</sup>
-
-Path to environment config, relative to project root, works only as CLI argument.
-All resolving logic is similar to `--config`. \
-`envConfig` extends and overrides original config, useful for decomposing config into smaller parts.
-
-<br/>
-
-## `tests`
-
-###### `./tests/**/*.js` <sup>default</sup>
-
-[Glob](https://github.com/isaacs/node-glob#glob-primer) pattern, relative to project root.
-All founded file will be added to run queue.
-
+```js
+// .testringrc.js or testring.config.js
+export default {
+  tests: './tests/**/*.spec.js',
+  workerLimit: 4,
+  bail: true,
+  logLevel: 'info',
+};
 ```
-$ testring run --tests ./src/**/test/*.spec.js
+
+```js
+// Async config (e.g., load secrets or dynamic values)
+export default async function () {
+  const secrets = await loadSecrets();
+  return {
+    tests: './tests/**/*.spec.js',
+    envParameters: {
+      apiKey: secrets.apiKey,
+    },
+  };
+}
+```
+
+### CommonJS Config
+
+```js
+// .testringrc.cjs or testring.config.cjs
+module.exports = {
+  tests: './tests/**/*.spec.js',
+  workerLimit: 4,
+  bail: true,
+  logLevel: 'info',
+};
+```
+
+## Config Options
+
+### `config`
+
+**Default:** `.testringrc`
+
+Path to the config file, relative to the project root. Works only as a CLI argument.
+
+```bash
+testring run --config ./my-custom-config.json
+```
+
+### `envConfig`
+
+**Default:** `undefined`
+
+Path to an environment config file, relative to the project root. Works only as a CLI argument. The environment config extends and overrides the base config — useful for decomposing configuration by environment (e.g., CI, staging, local).
+
+```bash
+testring run --config ./base.json --envConfig ./ci.json
+```
+
+### `tests`
+
+**Default:** `"./tests/**/*.js"`
+
+Glob pattern for test file discovery, relative to the project root. All matching files are added to the test run queue.
+
+```bash
+testring run --tests "./src/**/test/*.spec.js"
 ```
 
 ```json
@@ -72,60 +112,49 @@ $ testring run --tests ./src/**/test/*.spec.js
 }
 ```
 
-<br/>
+### `plugins`
 
-## `logLevel`
+**Default:** `[]`
 
-###### `info` <sup>default</sup>
+Array of plugins to load. Plugins can be specified as a string (module name) or a tuple of `[moduleName, pluginConfig]`. See the [Plugin Development Guide](../guides/plugin-development.md) for details.
 
-Filtering logs rule.
-
-Available levels:
-* `verbose`
-* `debug`
-* `info`
-* `warning`
-* `error`
-* `silent`
-
-```
-$ testring run --log-level silent
+```bash
+testring run --plugins my-plugin-1 --plugins my-plugin-2
 ```
 
 ```json
 {
-  "logLevel": "silent"
+  "plugins": [
+    "my-plugin-1",
+    ["my-plugin-2", { "userConfig": true }]
+  ]
 }
 ```
 
-<br/>
+### `workerLimit`
 
-## `silent`
+**Default:** `1`
 
-###### `false` <sup>default</sup>
+Maximum number of tests to run in parallel. Increase carefully — too many workers may overwhelm the browser driver. Pass `"local"` to run tests in the same process as the runner (useful for debugging).
 
-Alias for `--logLevel silent`.
-
-```
-$ testring run --silent
+```bash
+testring run --worker-limit 4
 ```
 
 ```json
 {
-  "silent": true
+  "workerLimit": 4
 }
 ```
 
-<br/>
+### `bail`
 
-## `bail`
+**Default:** `false`
 
-###### `false` <sup>default</sup>
+Stop the test run on the first failure instead of continuing.
 
-Fail out on the first error instead of tolerating it.
-
-```
-$ testring run --bail
+```bash
+testring run --bail
 ```
 
 ```json
@@ -134,37 +163,14 @@ $ testring run --bail
 }
 ```
 
-<br/>
+### `retryCount`
 
-## `workerLimit`
+**Default:** `3`
 
-###### `1` <sup>default</sup>
+Number of times to retry a failed test before marking it as failed.
 
-Limit of parallel running tests. Increase this number carefully,
-because a lot of workers won't be so efficient,
-also your driver plugin may not be able to handle so much connections.
-Can be passed as `local` value to run test in same process with runner.
-
-```
-$ testring run --worker-limit 20
-```
-
-```json
-{
-  "workerLimit": 20
-}
-```
-
-<br/>
-
-## `retryCount`
-
-###### `3` <sup>default</sup>
-
-Reruns count, if test failed. Useful, if your test is not stable.
-
-```
-$ testring run --retry-count 5
+```bash
+testring run --retry-count 5
 ```
 
 ```json
@@ -173,16 +179,14 @@ $ testring run --retry-count 5
 }
 ```
 
-<br/>
+### `retryDelay`
 
-## `retryDelay`
+**Default:** `2000`
 
-###### `2000` <sup>default</sup>
+Delay in milliseconds between test retries.
 
-Value in milliseconds, adds time gap between reruns of test.
-
-```
-$ testring run --retry-delay 10000
+```bash
+testring run --retry-delay 10000
 ```
 
 ```json
@@ -191,126 +195,214 @@ $ testring run --retry-delay 10000
 }
 ```
 
-<br/>
+### `testTimeout`
 
-## `testTimeout`
+**Default:** `900000`
 
-###### `900000` <sup>default</sup>
+Maximum time in milliseconds for a single test execution before it is terminated.
 
-Value in milliseconds, maximum time for test execution.
-
-```
-$ testring run --test-timeout 10000
+```bash
+testring run --test-timeout 30000
 ```
 
 ```json
 {
-  "testTimeout": 10000
+  "testTimeout": 30000
 }
 ```
 
-<br/>
+### `logLevel`
 
-## `screenshots`
+**Default:** `"info"`
 
-###### `disable` <sup>default</sup>
+Controls the verbosity of log output.
 
-String value for screenshots making policy
+Available levels (from most to least verbose):
+- `verbose`
+- `debug`
+- `info`
+- `warning`
+- `error`
+- `silent`
+
+```bash
+testring run --log-level debug
+```
+
+```json
+{
+  "logLevel": "debug"
+}
+```
+
+### `silent`
+
+**Default:** `false`
+
+Shorthand for `--logLevel silent`. Suppresses all log output.
+
+```bash
+testring run --silent
+```
+
+```json
+{
+  "silent": true
+}
+```
+
+### `debug`
+
+**Default:** `false`
+
+Enable debug mode. Provides additional diagnostic output useful during test development.
+
+```bash
+testring run --debug
+```
+
+```json
+{
+  "debug": true
+}
+```
+
+### `devtool`
+
+**Default:** `false`
+
+Enable the devtool interface for interactive debugging and inspection.
+
+```bash
+testring run --devtool
+```
+
+```json
+{
+  "devtool": true
+}
+```
+
+### `headless`
+
+**Default:** `false`
+
+Run browsers in headless mode (no visible UI). Commonly used in CI environments.
+
+```bash
+testring run --headless
+```
+
+```json
+{
+  "headless": true
+}
+```
+
+### `screenshots`
+
+**Default:** `"disable"`
+
+Controls when screenshots are captured during test execution.
 
 Available values:
-* `disable` - turn off screenshots
-* `enable` - turn on screenshots
-* `afterError` - turn on screenshots only on retry runs
+- `disable` — no screenshots
+- `enable` — capture screenshots
+- `afterError` — capture screenshots only after errors (on retry runs)
 
-```
-$ testring run --screenshots enable
+```bash
+testring run --screenshots afterError
 ```
 
 ```json
 {
-  "screenshots": "enable"
+  "screenshots": "afterError"
 }
 ```
 
-<br/>
+### `screenshotPath`
 
-## `restartWorker`
+**Default:** `undefined`
 
-###### `never` <sup>default</sup>
+Directory path where screenshots are saved.
 
-String value for workers restart strategy. If passed always - it will be killed after it ends
+```json
+{
+  "screenshotPath": "./test-screenshots"
+}
+```
+
+### `maxWriteThreadCount`
+
+**Default:** `undefined`
+
+Maximum number of concurrent write threads for file operations (e.g., saving screenshots or artifacts).
+
+```json
+{
+  "maxWriteThreadCount": 4
+}
+```
+
+### `restartWorker`
+
+**Default:** `"never"`
+
+Controls whether worker processes are restarted after each test execution.
 
 Available values:
-* `always` - always restart worker after test execution finished
-* `never` - disable restart
+- `always` — restart worker after every test
+- `never` — keep workers alive
 
-```
-$ testring run --restartWorker always
+```bash
+testring run --restartWorker always
 ```
 
 ```json
 {
-  "restartWorker": "never"
+  "restartWorker": "always"
 }
 ```
 
-<br/>
+### `envParameters`
 
-## `envParameters`
+**Default:** `{}`
 
-###### `{}` <sup>default</sup>
-
-Special object, that passed right into test.
-You can get it inside test with `api.getEnvironment()` call.
+A custom object passed into every test. Retrieve it inside tests with `api.getEnvironment()`.
 
 ```json
 {
   "envParameters": {
-    "custom": [ "test", "data" ]
+    "baseUrl": "https://example.com",
+    "credentials": {
+      "user": "test-user",
+      "pass": "test-pass"
+    }
   }
 }
 ```
 
-<br/>
-
-## `httpThrottle`
-
-###### `0` <sup>default</sup>
-
-Delay between http requests in milliseconds.
-Useful if you don't want spam your test environment.
-
-```	
-$ testring run --http-throttle 500	
-```	
-
- ```json	
-{	
-  "httpThrottle": 500	
-}	
-```
-
-<br/>
-
-## `plugins`
-
-###### `void` <sup>default</sup>
-
-Plugins are powerful instrument for extending framework functional.
-More about plugins you can read [here](../guides/plugin-development.md).
-
-```
-$ testring run --plugins my-plugin-1 --plugins my-plugin-2
-```
+## Full Example
 
 ```json
 {
+  "tests": "./tests/**/*.spec.js",
   "plugins": [
-    "my-plugin-1",
-
-    ["my-plugin-2", {
-      "userConfig": true
-    }]
-  ]
+    "@aspect/plugin-playwright-driver",
+    ["@aspect/plugin-babel", { "presets": ["@babel/preset-env"] }]
+  ],
+  "workerLimit": 4,
+  "bail": false,
+  "retryCount": 2,
+  "retryDelay": 1000,
+  "testTimeout": 60000,
+  "logLevel": "info",
+  "screenshots": "afterError",
+  "screenshotPath": "./screenshots",
+  "headless": true,
+  "restartWorker": "never",
+  "envParameters": {
+    "baseUrl": "https://staging.example.com"
+  }
 }
-``` 
+```

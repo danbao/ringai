@@ -1,304 +1,159 @@
 # @testring/fs-reader
 
-File system reader module that provides test file finding, reading, and parsing functionality.
+File system reader that locates test files by glob pattern, reads their content, and exposes plugin hooks for custom file resolution logic.
+
+## Installation
+
+```bash
+pnpm add @testring/fs-reader
+```
 
 ## Overview
 
-This module handles file system operations for test files, including:
-- Finding test files based on glob patterns
-- Reading and parsing test file content
-- Supporting plugin-based file processing
-- Providing file caching and optimization
+`FSReader` extends [`PluggableModule`](/docs/core-modules/pluggable-module.md) and provides a two-step pipeline:
 
-## Main Components
+1. **Locate** — resolve a glob pattern to a list of file paths using [`tinyglobby`](https://github.com/SuperchupuDev/tinyglobby)
+2. **Resolve** — read file contents from disk with concurrency limiting via [`p-limit`](https://github.com/sindresorhus/p-limit) (max 10 concurrent reads)
 
-### FSReader
-Main file system reader class:
+Plugin hooks allow modifying the file list between these steps.
+
+## API Reference
+
+### `FSReader` class
 
 ```typescript
-export class FSReader extends PluggableModule implements IFSReader {
-  // Find files based on pattern
-  find(pattern: string): Promise<IFile[]>
+import { FSReader } from '@testring/fs-reader';
+```
 
-  // Read single file
-  readFile(fileName: string): Promise<IFile | null>
+**Constructor:**
+
+```typescript
+new FSReader()
+```
+
+Registers two plugin hooks: `beforeResolve` and `afterResolve` (from `FSReaderPlugins` enum).
+
+#### `find(pattern): Promise<IFile[]>`
+
+Main method. Locates files matching the glob `pattern`, runs them through the plugin pipeline, reads their content, and returns an array of `IFile` objects.
+
+**Pipeline:**
+
+```
+glob(pattern)
+  → beforeResolve hook (can filter/reorder file paths)
+  → resolve: read file contents (p-limit concurrency = 10)
+  → afterResolve hook (can filter/transform resolved files)
+  → return IFile[]
+```
+
+Throws an `Error` if no files match the pattern after the `beforeResolve` hook.
+
+```typescript
+const reader = new FSReader();
+const files = await reader.find('./tests/**/*.spec.ts');
+
+for (const file of files) {
+  console.log(file.path, file.content.length);
 }
 ```
 
-### File Interface
+**Windows compatibility:** On Windows, the pattern is automatically converted using `tinyglobby`'s `convertPathToPattern()` to handle backslash path separators.
+
+#### `readFile(fileName): Promise<IFile | null>`
+
+Reads a single file by path. Resolves the path to absolute, reads the content as a UTF-8 string, and returns an `IFile` object. Rejects if the file does not exist or cannot be read.
+
+```typescript
+const file = await reader.readFile('./tests/login.spec.ts');
+if (file) {
+  console.log(file.path);    // absolute path
+  console.log(file.content);  // file content as string
+}
+```
+
+---
+
+### `IFile` interface
+
 ```typescript
 interface IFile {
-  path: string;           // File path
-  content: string;        // File content
-  dependencies?: string[]; // Dependency files
+  path: string;     // Absolute file path
+  content: string;  // File content as UTF-8 string
 }
 ```
 
-## Main Features
+---
 
-### File Finding
-Find test files using glob patterns:
+### `FSReaderPlugins` hooks
 
-```typescript
-import { FSReader } from '@testring/fs-reader';
+| Hook            | Type  | Input                | Output               | Description                                  |
+| --------------- | ----- | -------------------- | -------------------- | -------------------------------------------- |
+| `beforeResolve` | write | `string[]` (paths)   | `string[]` (paths)   | Modify the list of matched file paths before reading |
+| `afterResolve`  | write | `IFile[]` (files)    | `IFile[]` (files)    | Modify the list of resolved files after reading |
 
-const fsReader = new FSReader();
+## Writing FSReader Plugins
 
-// Find all test files
-const files = await fsReader.find('./tests/**/*.spec.js');
-console.log('Found test files:', files.map(f => f.path));
-
-// Support complex glob patterns
-const unitTests = await fsReader.find('./src/**/*.{test,spec}.{js,ts}');
-```
-
-### File Reading
-Read content of individual files:
+Plugins register via the `plugin-api`:
 
 ```typescript
-import { FSReader } from '@testring/fs-reader';
-
-const fsReader = new FSReader();
-
-// Read specific file
-const file = await fsReader.readFile('./tests/login.spec.js');
-if (file) {
-  console.log('File path:', file.path);
-  console.log('File content:', file.content);
-}
-```
-
-## Supported File Formats
-
-### JavaScript Files
-```javascript
-// tests/example.spec.js
-describe('Example Test', () => {
-  it('should pass the test', () => {
-    expect(true).toBe(true);
-  });
-});
-```
-
-### TypeScript Files
-```typescript
-// tests/example.spec.ts
-describe('Example Test', () => {
-  it('should pass the test', () => {
-    expect(true).toBe(true);
-  });
-});
-```
-
-### Modular Tests
-```javascript
-// tests/modular.spec.js
-import { helper } from './helper';
-
-describe('Modular Test', () => {
-  it('uses helper functions', () => {
-    expect(helper.add(1, 2)).toBe(3);
-  });
-});
-```
-
-## Plugin Support
-
-FSReader supports plugins to extend file processing functionality:
-
-### Plugin Hooks
-- `beforeResolve` - Pre-file resolution processing
-- `afterResolve` - Post-file resolution processing
-
-### Custom File Processing Plugin
-```typescript
+// my-fs-plugin.ts
 export default (pluginAPI) => {
   const fsReader = pluginAPI.getFSReader();
-  
+
   if (fsReader) {
-    // Pre-file resolution processing
-    fsReader.beforeResolve((files) => {
-      // Filter out certain files
-      return files.filter(file => !file.path.includes('skip'));
+    // Filter out files before reading
+    fsReader.onBeforeResolve((files) => {
+      return files.filter((filePath) => !filePath.includes('.skip'));
     });
-    
-    // Post-file resolution processing
-    fsReader.afterResolve((files) => {
-      // Add additional file information
-      return files.map(file => ({
+
+    // Transform resolved files after reading
+    fsReader.onAfterResolve((files) => {
+      return files.map((file) => ({
         ...file,
-        lastModified: fs.statSync(file.path).mtime
+        content: addTestWrapper(file.content),
       }));
     });
   }
 };
 ```
 
-## Glob Pattern Support
-
-### Basic Patterns
-```typescript
-// Match all .js files
-await fsReader.find('**/*.js');
-
-// Match specific directory
-await fsReader.find('./tests/**/*.spec.js');
-
-// Match multiple file types
-await fsReader.find('**/*.{js,ts}');
-```
-
-### Advanced Patterns
-```typescript
-// Exclude certain files
-await fsReader.find('**/*.spec.js', { ignore: ['**/node_modules/**'] });
-
-// Match specific naming patterns
-await fsReader.find('**/*.{test,spec}.{js,ts}');
-
-// Depth limitation
-await fsReader.find('**/!(node_modules)/**/*.spec.js');
-```
-
-## File Parsing
-
-### Dependency Resolution
-Automatically resolve file dependencies:
+Or register directly on the `Hook` instance:
 
 ```typescript
-// Main test file
-import { helper } from './helper';
-import { config } from '../config';
+const reader = new FSReader();
+const beforeHook = reader.getHook('beforeResolve');
 
-// FSReader will automatically identify dependencies
-const files = await fsReader.find('./tests/**/*.spec.js');
-// Results include dependency information
-// file.dependencies = ['./helper.js', '../config.js']
+beforeHook?.writeHook('myPlugin', (filePaths) => {
+  // Sort files alphabetically
+  return filePaths.sort();
+});
 ```
 
-### Content Parsing
-Parse file content and extract information:
+## Internal Modules
 
-```typescript
-const file = await fsReader.readFile('./tests/example.spec.js');
-// file.content contains complete file content
-// Can further parse AST or extract test case information
-```
+### `locateFiles(searchpath): Promise<string[]>`
 
-## Performance Optimization
+Uses `tinyglobby`'s `glob()` to resolve a pattern to file paths. Returns an empty array if `searchpath` is falsy.
 
-### File Caching
-- Automatically cache read files
-- Monitor file changes, automatically update cache
-- Reduce repeated file system access
+### `resolveFiles(files): Promise<IFile[]>`
 
-### Parallel Processing
-- Read multiple files in parallel
-- Asynchronously process file content
-- Optimize performance for large numbers of files
+Reads an array of file paths concurrently (max 10 at a time via `p-limit`). Skips files that fail to read. Throws if no files are successfully read.
 
-### Memory Management
-- Intelligent memory usage
-- Timely release of unnecessary file content
-- Support for large project file processing
+### `readFile(file): Promise<IFile>`
 
-## Error Handling
-
-### File Not Found
-```typescript
-try {
-  const files = await fsReader.find('./nonexistent/**/*.js');
-} catch (error) {
-  console.error('No matching files found:', error.message);
-}
-```
-
-### File Read Error
-```typescript
-const file = await fsReader.readFile('./protected-file.js');
-if (!file) {
-  console.log('File read failed or file does not exist');
-}
-```
-
-### Permission Issues
-```typescript
-try {
-  await fsReader.find('./protected-dir/**/*.js');
-} catch (error) {
-  if (error.code === 'EACCES') {
-    console.error('No permission to access file');
-  }
-}
-```
-
-## Configuration Options
-
-### Find Options
-```typescript
-interface FindOptions {
-  ignore?: string[];      // File patterns to ignore
-  absolute?: boolean;     // Return absolute paths
-  maxDepth?: number;      // Maximum search depth
-}
-```
-
-### Read Options
-```typescript
-interface ReadOptions {
-  encoding?: string;      // File encoding
-  cache?: boolean;        // Whether to use cache
-}
-```
-
-## Usage Examples
-
-### Basic Usage
-```typescript
-import { FSReader } from '@testring/fs-reader';
-
-const fsReader = new FSReader();
-
-// Find all test files
-const testFiles = await fsReader.find('./tests/**/*.spec.js');
-
-// Process each file
-for (const file of testFiles) {
-  console.log(`Processing file: ${file.path}`);
-  // Execute tests or other processing
-}
-```
-
-### Integration with Other Modules
-```typescript
-import { FSReader } from '@testring/fs-reader';
-import { TestRunner } from '@testring/test-runner';
-
-const fsReader = new FSReader();
-const testRunner = new TestRunner();
-
-// Find and execute tests
-const files = await fsReader.find('./tests/**/*.spec.js');
-for (const file of files) {
-  await testRunner.execute(file);
-}
-```
-
-## Installation
-
-```bash
-npm install @testring/fs-reader
-```
+Reads a single file, resolving its path to absolute. Returns `{ path, content }`. Rejects if the file does not exist.
 
 ## Dependencies
 
-- `@testring/pluggable-module` - Plugin support
-- `@testring/logger` - Logging
-- `@testring/types` - Type definitions
-- `glob` - File pattern matching
+- `@testring/pluggable-module` — Plugin hook base class
+- `@testring/logger` — Error logging when no files match
+- `@testring/types` — `IFSReader`, `IFile`, `FSReaderPlugins`
+- `tinyglobby` — Fast glob pattern matching
+- `p-limit` — Concurrency limiter for file reads
 
 ## Related Modules
 
-- `@testring/test-run-controller` - Test run controller
-- `@testring/dependencies-builder` - Dependency builder
-- `@testring/plugin-api` - Plugin API
+- [`@testring/pluggable-module`](/docs/core-modules/pluggable-module.md) — Base class for `FSReader`
+- [`@testring/plugin-api`](/docs/core-modules/plugin-api.md) — Exposes `getFSReader()` with `onBeforeResolve` / `onAfterResolve` methods
+- [`@testring/test-run-controller`](/docs/core-modules/test-run-controller.md) — Uses `FSReader` to discover test files

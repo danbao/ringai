@@ -22,13 +22,13 @@ test/
 
 Use descriptive and consistent naming:
 
-```javascript
+```typescript
 // Good: Descriptive test names
 describe('User Authentication', () => {
     it('should login with valid credentials', async () => {
         // Test implementation
     });
-    
+
     it('should show error message for invalid credentials', async () => {
         // Test implementation
     });
@@ -48,25 +48,26 @@ describe('Login', () => {
 
 Each test should be independent and not rely on other tests:
 
-```javascript
-// Good: Independent tests
+```typescript
+import { describe, it, beforeEach, expect } from 'vitest';
+
 describe('Shopping Cart', () => {
     beforeEach(async () => {
-        await browser.url('/cart');
+        await page.goto('/cart');
         await clearCart();
     });
-    
+
     it('should add item to cart', async () => {
         await addItemToCart('product-1');
         const count = await getCartItemCount();
-        expect(count).to.equal(1);
+        expect(count).toBe(1);
     });
-    
+
     it('should remove item from cart', async () => {
         await addItemToCart('product-1');
         await removeItemFromCart('product-1');
         const count = await getCartItemCount();
-        expect(count).to.equal(0);
+        expect(count).toBe(0);
     });
 });
 ```
@@ -75,40 +76,42 @@ describe('Shopping Cart', () => {
 
 Organize your UI interactions using the Page Object Model:
 
-```javascript
-// pages/LoginPage.js
-class LoginPage {
-    get usernameInput() { return browser.$('#username'); }
-    get passwordInput() { return browser.$('#password'); }
-    get loginButton() { return browser.$('#login-btn'); }
-    get errorMessage() { return browser.$('.error-message'); }
-    
-    async login(username, password) {
-        await this.usernameInput.setValue(username);
-        await this.passwordInput.setValue(password);
+```typescript
+// pages/LoginPage.ts
+import type { Page } from 'playwright';
+
+export class LoginPage {
+    constructor(private page: Page) {}
+
+    get usernameInput() { return this.page.locator('#username'); }
+    get passwordInput() { return this.page.locator('#password'); }
+    get loginButton() { return this.page.locator('#login-btn'); }
+    get errorMessage() { return this.page.locator('.error-message'); }
+
+    async login(username: string, password: string) {
+        await this.usernameInput.fill(username);
+        await this.passwordInput.fill(password);
         await this.loginButton.click();
     }
-    
-    async getErrorMessage() {
-        await this.errorMessage.waitForDisplayed();
-        return await this.errorMessage.getText();
+
+    async getErrorMessage(): Promise<string> {
+        await this.errorMessage.waitFor({ state: 'visible' });
+        return await this.errorMessage.textContent() ?? '';
     }
 }
 
-module.exports = new LoginPage();
-
-// test/login.spec.js
-const LoginPage = require('../pages/LoginPage');
+// test/login.spec.ts
+import { describe, it, expect } from 'vitest';
+import { LoginPage } from '../pages/LoginPage.js';
 
 describe('Login Functionality', () => {
     it('should login successfully', async () => {
-        await browser.url('/login');
-        await LoginPage.login('user@example.com', 'password123');
-        
-        await browser.waitUntil(
-            async () => (await browser.getUrl()).includes('/dashboard'),
-            { timeout: 5000, timeoutMsg: 'Expected to be redirected to dashboard' }
-        );
+        await page.goto('/login');
+        const loginPage = new LoginPage(page);
+        await loginPage.login('user@example.com', 'password123');
+
+        await page.waitForURL('**/dashboard', { timeout: 5000 });
+        expect(page.url()).toContain('/dashboard');
     });
 });
 ```
@@ -117,41 +120,47 @@ describe('Login Functionality', () => {
 
 Use stable selectors that won't break easily:
 
-```javascript
+```typescript
 // Good: Use data attributes
-const submitButton = await browser.$('[data-test-id="submit-button"]');
+const submitButton = page.locator('[data-test-id="submit-button"]');
 
 // Good: Use semantic selectors
-const heading = await browser.$('h1');
+const heading = page.locator('h1');
+
+// Good: Use role-based selectors (Playwright best practice)
+const button = page.getByRole('button', { name: 'Submit' });
+const input = page.getByLabel('Email');
+const link = page.getByRole('link', { name: 'Sign up' });
 
 // Acceptable: Use specific CSS selectors
-const navItem = await browser.$('nav .menu-item:first-child');
+const navItem = page.locator('nav .menu-item:first-child');
 
 // Bad: Fragile selectors
-const element = await browser.$('div > div:nth-child(3) > span');
+const element = page.locator('div > div:nth-child(3) > span');
 ```
 
 ### Proper Waiting Strategies
 
-Always wait for elements and conditions:
+Playwright has built-in auto-waiting, but you can add explicit waits when needed:
 
-```javascript
-// Good: Wait for element to be displayed
-const element = await browser.$('#my-element');
-await element.waitForDisplayed({ timeout: 5000 });
+```typescript
+// Good: Playwright auto-waits for elements before actions
+const element = page.locator('#my-element');
+await element.click(); // Auto-waits for element to be actionable
 
 // Good: Wait for specific conditions
-await browser.waitUntil(
-    async () => {
-        const elements = await browser.$$('.list-item');
-        return elements.length > 0;
-    },
-    { timeout: 10000, timeoutMsg: 'Expected list items to appear' }
-);
+await expect(page.locator('.list-item')).toHaveCount(5, { timeout: 10000 });
 
-// Bad: No waiting
-const element = await browser.$('#my-element');
-await element.click(); // May fail if element not ready
+// Good: Wait for navigation
+await page.waitForURL('**/dashboard');
+
+// Good: Wait for network idle
+await page.waitForLoadState('networkidle');
+
+// Good: Wait for a response
+await page.waitForResponse(resp =>
+    resp.url().includes('/api/data') && resp.status() === 200
+);
 ```
 
 ## Test Data Management
@@ -160,7 +169,7 @@ await element.click(); // May fail if element not ready
 
 Store test data in separate files:
 
-```javascript
+```json
 // fixtures/users.json
 {
     "validUser": {
@@ -172,13 +181,17 @@ Store test data in separate files:
         "password": "wrongpassword"
     }
 }
+```
 
-// test/login.spec.js
-const users = require('../fixtures/users.json');
+```typescript
+// test/login.spec.ts
+import { describe, it } from 'vitest';
+import users from '../fixtures/users.json' with { type: 'json' };
 
 describe('Login Tests', () => {
     it('should login with valid user', async () => {
-        await LoginPage.login(users.validUser.email, users.validUser.password);
+        const loginPage = new LoginPage(page);
+        await loginPage.login(users.validUser.email, users.validUser.password);
         // Assert success
     });
 });
@@ -188,18 +201,19 @@ describe('Login Tests', () => {
 
 Generate dynamic data to avoid conflicts:
 
-```javascript
-const faker = require('faker');
+```typescript
+import { faker } from '@faker-js/faker';
+import { describe, it } from 'vitest';
 
 describe('User Registration', () => {
     it('should register new user', async () => {
         const userData = {
             email: faker.internet.email(),
             password: faker.internet.password(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName()
+            firstName: faker.person.firstName(),
+            lastName: faker.person.lastName(),
         };
-        
+
         await RegistrationPage.register(userData);
         // Assert registration success
     });
@@ -212,35 +226,33 @@ describe('User Registration', () => {
 
 Provide clear error messages:
 
-```javascript
-// Good: Descriptive assertions
-const actualTitle = await browser.getTitle();
-expect(actualTitle).to.equal('Expected Page Title', 
-    `Expected page title to be 'Expected Page Title' but got '${actualTitle}'`);
+```typescript
+import { expect } from 'vitest';
 
-// Good: Custom error messages
-await browser.waitUntil(
-    async () => (await browser.getUrl()).includes('/success'),
-    { 
-        timeout: 5000, 
-        timeoutMsg: 'Expected to be redirected to success page after form submission' 
-    }
-);
+// Good: Descriptive assertions with Vitest
+const actualTitle = await page.title();
+expect(actualTitle, `Expected page title to be 'Expected Page Title' but got '${actualTitle}'`)
+    .toBe('Expected Page Title');
+
+// Good: Playwright assertions with built-in messages
+await expect(page).toHaveURL(/\/success/, { timeout: 5000 });
+await expect(page.locator('.status')).toHaveText('Complete');
 ```
 
 ### Screenshots on Failure
 
 Capture screenshots when tests fail:
 
-```javascript
-// In your test configuration or afterEach hook
-afterEach(async function() {
-    if (this.currentTest.state === 'failed') {
-        const testName = this.currentTest.title.replace(/\s+/g, '_');
+```typescript
+import { afterEach } from 'vitest';
+
+afterEach(async (context) => {
+    if (context.task.result?.state === 'fail') {
+        const testName = context.task.name.replace(/\s+/g, '_');
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const filename = `${testName}_${timestamp}.png`;
-        
-        await browser.saveScreenshot(`./screenshots/${filename}`);
+
+        await page.screenshot({ path: `./screenshots/${filename}` });
         console.log(`Screenshot saved: ${filename}`);
     }
 });
@@ -250,7 +262,7 @@ afterEach(async function() {
 
 ### Parallel Execution
 
-Configure appropriate parallelization:
+Configure appropriate parallelization in `.testringrc`:
 
 ```json
 {
@@ -264,30 +276,32 @@ Configure appropriate parallelization:
 
 Group related tests and use setup/teardown efficiently:
 
-```javascript
+```typescript
+import { describe, it, beforeAll, beforeEach, afterAll } from 'vitest';
+
 describe('E-commerce Workflow', () => {
-    before(async () => {
+    beforeAll(async () => {
         // One-time setup for all tests
         await setupTestDatabase();
     });
-    
+
     beforeEach(async () => {
         // Setup for each test
-        await browser.url('/');
-        await clearBrowserStorage();
+        await page.goto('/');
+        await page.evaluate(() => localStorage.clear());
     });
-    
-    after(async () => {
+
+    afterAll(async () => {
         // One-time cleanup
         await cleanupTestDatabase();
     });
-    
+
     // Group related tests
     describe('Product Search', () => {
         it('should find products by name', async () => {
             // Test implementation
         });
-        
+
         it('should filter products by category', async () => {
             // Test implementation
         });
@@ -299,18 +313,13 @@ describe('E-commerce Workflow', () => {
 
 ### CI-Friendly Configuration
 
-Configure tests for CI environments:
+Configure tests for CI environments in `.testringrc`:
 
 ```json
 {
     "plugins": [
         ["@testring/plugin-playwright-driver", {
-            "headless": true,
-            "args": [
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu"
-            ]
+            "headless": true
         }]
     ],
     "retryCount": 2,
@@ -322,56 +331,53 @@ Configure tests for CI environments:
 
 Use different configurations for different environments:
 
-```javascript
-// testring.config.js
+```typescript
+// .testringrc.js
 const baseConfig = {
-    tests: './test/**/*.spec.js',
-    plugins: ['@testring/plugin-babel']
+    tests: './test/**/*.spec.ts',
 };
 
 const environments = {
     local: {
         ...baseConfig,
         plugins: [
-            ...baseConfig.plugins,
-            ['@testring/plugin-playwright-driver', { headless: false }]
-        ]
+            ['@testring/plugin-playwright-driver', { headless: false }],
+        ],
     },
     ci: {
         ...baseConfig,
         plugins: [
-            ...baseConfig.plugins,
-            ['@testring/plugin-playwright-driver', { 
-                headless: true,
-                args: ['--no-sandbox', '--disable-dev-shm-usage']
-            }]
+            ['@testring/plugin-playwright-driver', { headless: true }],
         ],
-        retryCount: 2
-    }
+        retryCount: 2,
+    },
 };
 
-module.exports = environments[process.env.NODE_ENV] || environments.local;
+export default environments[process.env.NODE_ENV] || environments.local;
 ```
 
 ## Code Quality
 
 ### Linting and Formatting
 
-Use ESLint and Prettier for consistent code style:
+Use ESLint flat config for consistent code style:
 
-```json
-// .eslintrc.js
-module.exports = {
-    extends: ['eslint:recommended'],
-    env: {
-        node: true,
-        mocha: true
+```javascript
+// eslint.config.js
+import js from '@eslint/js';
+
+export default [
+    js.configs.recommended,
+    {
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
+            globals: {
+                browser: 'readonly',
+            },
+        },
     },
-    globals: {
-        browser: 'readonly',
-        expect: 'readonly'
-    }
-};
+];
 ```
 
 ### Code Reviews
@@ -390,16 +396,16 @@ Establish code review practices:
 
 Document complex test scenarios:
 
-```javascript
+```typescript
 /**
  * Test the complete user registration workflow
- * 
+ *
  * This test covers:
  * 1. Form validation
  * 2. Email verification
  * 3. Account activation
  * 4. First login
- * 
+ *
  * Prerequisites:
  * - Email service must be running
  * - Database must be clean
@@ -424,6 +430,6 @@ Following these best practices will help you:
 - Integrate smoothly with CI/CD pipelines
 
 For more specific guidance, see:
-- [API Reference](../api/.md)
-- [Configuration Guide](../configuration/.md)
+- [API Reference](../core-modules/api.md)
+- [Configuration Guide](../configuration/index.md)
 - [Troubleshooting Guide](troubleshooting.md)

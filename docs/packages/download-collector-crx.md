@@ -2,9 +2,6 @@
 
 Chrome extension for the testring framework that enables monitoring and tracking of file downloads during automated testing. This extension solves the problem of accessing download information in headless browser mode by storing download metadata in localStorage, making it accessible to test scripts.
 
-[![npm version](https://badge.fury.io/js/@testring/download-collector-crx.svg)](https://www.npmjs.com/package/@testring/download-collector-crx)
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-
 ## Overview
 
 The download collector Chrome extension addresses a critical limitation in browser automation testing: accessing download information in headless mode. Since accessing Chrome's internal pages like `chrome://downloads` is restricted in headless mode, this extension provides an alternative way to track and verify downloads by:
@@ -28,14 +25,8 @@ The download collector Chrome extension addresses a critical limitation in brows
 - Accessible from any page in the browser
 - Persistent across page navigations
 
-### 🔄 Browser Integration
-- Seamless integration with Chrome's download API
-- Background service worker for continuous monitoring
-- Content script injection for cross-page access
-- Compatible with headless browser testing
-
 ### 🧪 Testing Framework Support
-- Easy integration with Selenium, Playwright, and Puppeteer
+- Easy integration with Playwright and other browser automation tools
 - Simple API for accessing download information
 - Verification helpers for download status checking
 - Support for both headless and normal browser modes
@@ -43,14 +34,7 @@ The download collector Chrome extension addresses a critical limitation in brows
 ## Installation
 
 ```bash
-# Using npm
-npm install --save-dev @testring/download-collector-crx
-
-# Using yarn
-yarn add @testring/download-collector-crx --dev
-
-# Using pnpm
-pnpm add @testring/download-collector-crx --dev
+pnpm add @testring/download-collector-crx --save-dev
 ```
 
 The extension is automatically built during installation via a postinstall script.
@@ -61,9 +45,9 @@ The extension is automatically built during installation via a postinstall scrip
 
 The extension stores download information in localStorage, making it accessible from any page:
 
-```javascript
+```typescript
 // In your test script, access download information
-const downloadsJSONStr = await browser.execute(() => {
+const downloadsJSONStr = await page.evaluate(() => {
     return localStorage.getItem('_DOWNLOADS_');
 });
 
@@ -73,106 +57,46 @@ const downloads = JSON.parse(downloadsJSONStr);
 
 // Verify a specific download
 const latestDownload = downloads[0];
-expect(latestDownload.fileName).to.equal('expected-file.pdf');
-expect(latestDownload.state).to.equal('complete');
+expect(latestDownload.fileName).toBe('expected-file.pdf');
+expect(latestDownload.state).toBe('complete');
 ```
 
 ### Download Object Structure
 
 Each download item contains the following properties:
 
-```javascript
-{
-    id: 123,                                    // Chrome download ID
-    fileName: 'example.pdf',                    // File name
-    filePath: '/Users/username/Downloads/example.pdf', // Full file path
-    state: 'complete',                          // Download state: 'in_progress', 'complete', 'interrupted'
-    startTime: 1609459200000,                   // Download start timestamp
-    fileUrl: 'https://example.com/example.pdf'  // Source URL (when available)
-}
-```
-
-### Integration with Selenium WebDriver
-
-```javascript
-const { Builder } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-const { getCrxBase64 } = require('@testring/download-collector-crx');
-
-async function runTest() {
-    // Create options with the extension
-    const options = new chrome.Options();
-    options.addExtensions(Buffer.from(getCrxBase64(), 'base64'));
-
-    // For headless mode
-    options.headless();
-
-    // Create driver with extension
-    const driver = await new Builder()
-        .forBrowser('chrome')
-        .setChromeOptions(options)
-        .build();
-
-    try {
-        // Navigate to download page
-        await driver.get('https://example.com/download-page');
-
-        // Click download button
-        await driver.findElement(By.id('download-button')).click();
-
-        // Wait for download to complete by polling localStorage
-        let downloadsStr;
-        let downloads;
-        const timeout = Date.now() + 15000; // 15 seconds timeout
-        do {
-            downloadsStr = await driver.executeScript(
-                'return localStorage.getItem("_DOWNLOADS_");'
-            );
-            downloads = downloadsStr ? JSON.parse(downloadsStr) : [];
-            if (downloads.length > 0 && downloads[0].state === 'complete') break;
-            await driver.sleep(500);
-        } while (Date.now() < timeout);
-
-        // Get download information
-        // downloadsStr already fetched above
-
-        const downloads = JSON.parse(downloadsStr);
-        console.log('Downloads:', downloads);
-
-        // Verify download
-        const latestDownload = downloads[0];
-        assert.equal(latestDownload.state, 'complete');
-        assert.equal(latestDownload.fileName, 'expected-file.pdf');
-
-    } finally {
-        await driver.quit();
-    }
+```typescript
+interface DownloadItem {
+    id: number;            // Chrome download ID
+    fileName: string;      // File name
+    filePath?: string;     // Full file path (when available)
+    fileUrl?: string;      // Source URL (when available)
+    state: string;         // Download state: 'in_progress', 'complete', 'interrupted'
+    startTime: number;     // Download start timestamp (milliseconds)
 }
 ```
 
 ### Integration with Playwright
 
-```javascript
-const { chromium } = require('playwright');
-const fs = require('fs');
-const path = require('path');
-const { getCrxBase64 } = require('@testring/download-collector-crx');
+```typescript
+import { chromium } from 'playwright';
+import fs from 'node:fs';
+import path from 'node:path';
+import { getCrxBase64 } from '@testring/download-collector-crx';
 
 async function runTest() {
     // Create a temporary CRX file
-    const crxPath = path.join(__dirname, 'temp-extension.crx');
+    const crxPath = path.join(import.meta.dirname, 'temp-extension.crx');
     fs.writeFileSync(crxPath, Buffer.from(getCrxBase64(), 'base64'));
 
     // Launch browser with extension
-    const browser = await chromium.launch({
-        headless: false,
+    const context = await chromium.launchPersistentContext('', {
         args: [
             `--disable-extensions-except=${crxPath}`,
-            `--load-extension=${crxPath}`
-        ]
+            `--load-extension=${crxPath}`,
+        ],
     });
 
-    const context = await browser.newContext();
     const page = await context.newPage();
 
     try {
@@ -190,16 +114,15 @@ async function runTest() {
             return localStorage.getItem('_DOWNLOADS_');
         });
 
-        const downloads = JSON.parse(downloadsStr);
+        const downloads = JSON.parse(downloadsStr!);
         console.log('Downloads:', downloads);
 
         // Verify download
         const latestDownload = downloads[0];
         expect(latestDownload.state).toBe('complete');
         expect(latestDownload.fileName).toBe('expected-file.pdf');
-
     } finally {
-        await browser.close();
+        await context.close();
         // Clean up temporary file
         fs.unlinkSync(crxPath);
     }
@@ -245,11 +168,11 @@ chrome.downloads.onChanged.addListener((downloadItem) => {
 The content script receives download events and updates localStorage:
 
 ```javascript
-const DOWNLOAD_KEY = "_DOWNLOADS_";
+const DOWNLOAD_KEY = '_DOWNLOADS_';
 const DOWNLOADS = {};
 
 chrome.runtime.onMessage.addListener((message) => {
-    const {action, downloadItem} = message;
+    const { action, downloadItem } = message;
 
     if (action === 'downloadStarted') {
         DOWNLOADS[downloadItem.id] = {
@@ -285,31 +208,18 @@ function updatePageVariable() {
 ### Module Exports
 
 ```typescript
-// Main export from index.js
+// Returns the extension's CRX file as a base64-encoded string
 export function getCrxBase64(): string;
 ```
 
 The `getCrxBase64()` function returns the extension's CRX file as a base64-encoded string, which can be used to load the extension programmatically in browser automation tools.
-
-### Download Object Structure
-
-```typescript
-interface DownloadItem {
-    id: number;           // Chrome download ID
-    fileName: string;     // File name
-    filePath?: string;    // Full file path (when available)
-    fileUrl?: string;     // Source URL (when available)
-    state: string;        // Download state: 'in_progress', 'complete', 'interrupted'
-    startTime: number;    // Download start timestamp (milliseconds)
-}
-```
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Extension not loading**:
-   - Verify the CRX file was properly generated during installation
+   - Verify the CRX file was properly generated during installation (`pnpm install`)
    - Check browser console for extension errors
    - Ensure proper permissions are granted to the extension
 
@@ -324,17 +234,15 @@ interface DownloadItem {
 
 ### Debug Tips
 
-Add debugging to your tests:
-
-```javascript
+```typescript
 // Check if extension is working
-const extensionWorking = await browser.execute(() => {
+const extensionWorking = await page.evaluate(() => {
     return typeof localStorage.getItem('_DOWNLOADS_') === 'string';
 });
 console.log('Extension working:', extensionWorking);
 
 // Log all localStorage keys
-const allKeys = await browser.execute(() => {
+const allKeys = await page.evaluate(() => {
     return Object.keys(localStorage);
 });
 console.log('All localStorage keys:', allKeys);
@@ -342,15 +250,19 @@ console.log('All localStorage keys:', allKeys);
 
 ## Dependencies
 
-- **`crx`** - Chrome extension packaging tool
-- **`shx`** - Cross-platform shell commands for Node.js
+- **`crx`** — Chrome extension packaging tool
+- **`shx`** — Cross-platform shell commands for Node.js
 
 ## Related Modules
 
-- **`@testring/plugin-selenium-driver`** - Selenium WebDriver integration
-- **`@testring/plugin-playwright-driver`** - Playwright integration
-- **`@testring/web-application`** - Web application testing utilities
+- **[@testring/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
+- **[@testring/web-application](web-application.md)** — Web application testing utilities
+
+## Requirements
+
+- **Node.js:** 22+
+- **pnpm:** 10+
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.

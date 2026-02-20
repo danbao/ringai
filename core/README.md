@@ -4,7 +4,7 @@ The `core/` directory contains the core modules of the testring testing framewor
 
 [![npm version](https://badge.fury.io/js/testring.svg)](https://www.npmjs.com/package/testring)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-[![Node.js](https://img.shields.io/badge/Node.js->=14.0.0-brightgreen)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js->=22.0.0-brightgreen)](https://nodejs.org/)
 
 ## Overview
 
@@ -13,6 +13,7 @@ The core modules form the backbone of the testring framework, providing:
 - **Multi-process test execution** with parallel processing capabilities
 - **Plugin architecture** for extensible functionality
 - **Distributed logging** system for comprehensive monitoring
+- **Test result reporting** with customizable reporters
 - **File system abstraction** for test discovery and management
 - **Inter-process communication** for coordinated test execution
 - **Configuration management** with flexible parameter handling
@@ -20,37 +21,36 @@ The core modules form the backbone of the testring framework, providing:
 ## Directory Structure
 
 ### Core Runtime Modules
-- **`api/`** - Test API controller providing the main interface for test execution
-- **`cli/`** - Command-line interface handling CLI arguments and user interaction
-- **`testring/`** - Main testring entry module and framework orchestrator
+- **`api/`** — Test API controller providing the main interface for test execution
+- **`cli/`** — Command-line interface handling CLI arguments and user interaction
+- **`testring/`** — Main testring entry module and framework orchestrator
 
 ### Test Execution Modules
-- **`test-worker/`** - Test worker processes responsible for executing tests in isolated environments
-- **`test-run-controller/`** - Test run controller managing test queues and execution flow
-- **`sandbox/`** - Sandbox environment providing isolated execution contexts for tests
+- **`test-worker/`** — Test worker processes responsible for executing tests in isolated environments
+- **`test-run-controller/`** — Test run controller managing test queues and execution flow
+- **`sandbox/`** — Sandbox environment providing isolated execution contexts for tests
+- **`reporter/`** — Test result reporter providing customizable test output and reporting
 
 ### Process and Communication Modules
-- **`child-process/`** - Child process management providing process creation and lifecycle management
-- **`transport/`** - Transport layer handling inter-process communication and message routing
+- **`child-process/`** — Child process management providing process creation and lifecycle management
+- **`transport/`** — Transport layer handling inter-process communication and message routing
 
 ### File System Modules
-- **`fs-reader/`** - File system reader responsible for discovering and reading test files
-- **`fs-store/`** - File system store providing file storage and caching capabilities
+- **`fs-reader/`** — File system reader responsible for discovering and reading test files
+- **`fs-store/`** — File system store providing file storage and caching capabilities
 
 ### Configuration and Utility Modules
-- **`cli-config/`** - CLI configuration parser handling configuration files and command-line parameters
-- **`logger/`** - Distributed logging system providing comprehensive logging across multiple processes
-- **`types/`** - TypeScript type definitions providing type safety for the entire framework
-- **`utils/`** - Collection of utility functions and helper methods
+- **`cli-config/`** — CLI configuration parser handling configuration files and command-line parameters
+- **`logger/`** — Distributed logging system providing comprehensive logging across multiple processes
+- **`types/`** — TypeScript type definitions providing type safety for the entire framework
+- **`utils/`** — Collection of utility functions and helper methods
 
 ### Plugin and Extension Modules
-- **`plugin-api/`** - Plugin API providing interfaces for plugin development and integration
-- **`pluggable-module/`** - Pluggable module base class supporting hooks and plugin mechanisms
+- **`plugin-api/`** — Plugin API providing interfaces for plugin development and integration
+- **`pluggable-module/`** — Pluggable module base class supporting hooks and plugin mechanisms
 
 ### Development and Debugging Modules
-- **`async-assert/`** - Asynchronous assertion library providing testing assertion capabilities
-- **`async-breakpoints/`** - Asynchronous breakpoints for debugging and flow control
-- **`dependencies-builder/`** - Dependency builder managing module dependency relationships
+- **`async-breakpoints/`** — Asynchronous breakpoints for debugging and flow control
 
 ## Key Features
 
@@ -71,6 +71,9 @@ Support for multiple configuration methods including files, environment variable
 
 ### 📊 Distributed Logging
 Advanced logging system supporting multi-process log aggregation and real-time monitoring.
+
+### 📋 Test Reporting
+Customizable test result reporting with support for multiple output formats and destinations.
 
 ## Usage Guidelines
 
@@ -95,48 +98,47 @@ The core modules follow a layered architecture design with 10 distinct layers, f
 ### Detailed Layered Architecture
 
 #### 🔷 Foundation Layer (Layer 0)
-- **types** - Core TypeScript type definitions, depends only on Node.js types, provides type safety for the entire framework
-- **async-breakpoints** - Asynchronous breakpoint system, standalone module for debugging and flow control
+- **types** — Core TypeScript type definitions, depends only on Node.js types, provides type safety for the entire framework
+- **async-breakpoints** — Asynchronous breakpoint system, standalone module for debugging and flow control
 
 #### 🔶 Utility Layer (Layer 1)
-- **utils** - Common utility functions collection, depends on `types`
-- **pluggable-module** - Plugin framework foundation, depends on `types`
-- **async-assert** - Asynchronous assertion library, depends on `types`
+- **utils** — Common utility functions collection, depends on `types`
+- **pluggable-module** — Plugin framework foundation, depends on `types`
 
 #### 🔷 Infrastructure Layer (Layer 2)
-- **child-process** - Child process management, depends on `types` + `utils`
-- **transport** - Transport layer for inter-process communication, depends on `child-process` + `types` + `utils`
-- **dependencies-builder** - Dependency analysis and building, depends on `types` + `utils`
+- **child-process** — Child process management, depends on `types` + `utils`
+- **transport** — Transport layer for inter-process communication, depends on `child-process` + `types` + `utils`
 
 #### 🔶 Service Layer (Layer 3)
-- **logger** - Distributed logging system, depends on `pluggable-module` + `transport` + `types` + `utils`
-- **fs-reader** - File system reader, depends on `logger` + `pluggable-module` + `types`
+- **logger** — Distributed logging system, depends on `pluggable-module` + `transport` + `types` + `utils`
+- **fs-reader** — File system reader, depends on `logger` + `pluggable-module` + `types`
 
 #### 🔷 Configuration and Storage Layer (Layer 4)
-- **cli-config** - Configuration management, depends on `logger` + `types` + `utils`
-- **fs-store** - File system storage, depends on `cli-config` + `logger` + `pluggable-module` + `transport` + `types` + `utils`
+- **cli-config** — Configuration management, depends on `logger` + `types` + `utils`
+- **fs-store** — File system storage, depends on `cli-config` + `logger` + `pluggable-module` + `transport` + `types` + `utils`
 
 #### 🔶 API Layer (Layer 5)
-- **api** - Test API controller, depends on `async-breakpoints` + `logger` + `transport` + `types` + `utils`
-- **plugin-api** - Plugin API interface, depends on `fs-store` + `logger` + `types` + `utils`
+- **api** — Test API controller, depends on `async-breakpoints` + `logger` + `transport` + `types` + `utils`
+- **plugin-api** — Plugin API interface, depends on `fs-store` + `logger` + `types` + `utils`
 
 #### 🔷 Advanced Features Layer (Layer 6)
-- **sandbox** - Code sandbox environment, depends on `api` + `types` + `utils`
-- **test-run-controller** - Test execution controller, depends on `fs-store` + `logger` + `pluggable-module` + `types` + `utils`
+- **sandbox** — Code sandbox environment, depends on `api` + `types` + `utils`
+- **test-run-controller** — Test execution controller, depends on `fs-store` + `logger` + `pluggable-module` + `types` + `utils`
+- **reporter** — Test result reporting, depends on `logger` + `pluggable-module` + `types` + `utils`
 
 #### 🔶 Execution Layer (Layer 7)
-- **test-worker** - Test worker processes (most complex package), depends on almost all other core packages:
-  - `api` + `async-breakpoints` + `child-process` + `dependencies-builder`
+- **test-worker** — Test worker processes (most complex package), depends on almost all other core packages:
+  - `api` + `async-breakpoints` + `child-process`
   - `fs-reader` + `fs-store` + `logger` + `pluggable-module`
   - `sandbox` + `transport` + `types` + `utils`
 
 #### 🔷 Interface Layer (Layer 8)
-- **cli** - Command-line interface, integrates multiple high-level packages:
+- **cli** — Command-line interface, integrates multiple high-level packages:
   - `cli-config` + `fs-reader` + `fs-store` + `logger` + `plugin-api`
   - `test-run-controller` + `test-worker` + `transport` + `types`
 
 #### 🔶 Entry Layer (Layer 9)
-- **testring** - Main entry package, depends on `api` + `cli`, serves as the unified framework entry point
+- **testring** — Main entry package, depends on `api` + `cli`, serves as the unified framework entry point
 
 ### Key Dependency Characteristics
 
@@ -169,12 +171,12 @@ testring (Entry Point)
     ├── fs-store
     ├── logger
     ├── plugin-api
+    ├── reporter
     ├── test-run-controller
     ├── test-worker (Most Complex)
     │   ├── api
     │   ├── async-breakpoints
     │   ├── child-process
-    │   ├── dependencies-builder
     │   ├── fs-reader
     │   ├── fs-store
     │   ├── logger
@@ -191,40 +193,37 @@ testring (Entry Point)
 
 ### Prerequisites
 
-- **Node.js** >= 14.0.0
-- **npm** >= 6.0.0 or **yarn** >= 1.0.0
-- **TypeScript** >= 4.0.0 (for development)
+- **Node.js** >= 22.0.0
+- **pnpm** >= 10.0.0
+- **TypeScript** >= 5.0.0 (for development)
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/ringcentral/testring.git
+git clone https://github.com/danbao/testring.git
 
 # Navigate to the project directory
 cd testring
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build all core modules
-npm run build
+pnpm run build
 
 # Run tests
-npm run test:unit
+pnpm run test:unit
 ```
 
 ### Building Individual Modules
 
 ```bash
 # Build all core modules
-npm run build:main
+pnpm run build:main
 
 # Build with watch mode for development
-npm run build:main:watch
-
-# Type checking
-npm run build:types:check
+pnpm run build:main:watch
 ```
 
 ## Testing
@@ -233,14 +232,13 @@ npm run build:types:check
 
 ```bash
 # Run all unit tests
-npm run test:unit
+pnpm run test:unit
 
 # Run tests with coverage
-npm run test:unit:coverage
+pnpm run test:unit:coverage
 
-# Run specific module tests
-cd core/[module-name]
-npm test
+# Run a specific test file
+npx vitest run path/to/file.spec.ts
 ```
 
 ### Test Structure
@@ -254,11 +252,11 @@ Each core module includes comprehensive tests:
 
 ### Development Guidelines
 
-1. **Follow the layered architecture** - Ensure new modules respect the dependency hierarchy
-2. **Maintain type safety** - All modules must include proper TypeScript definitions
-3. **Write comprehensive tests** - Include unit and integration tests for new functionality
-4. **Document APIs** - Provide clear documentation for public interfaces
-5. **Follow coding standards** - Use ESLint configuration and formatting guidelines
+1. **Follow the layered architecture** — Ensure new modules respect the dependency hierarchy
+2. **Maintain type safety** — All modules must include proper TypeScript definitions
+3. **Write comprehensive tests** — Include unit and integration tests for new functionality
+4. **Document APIs** — Provide clear documentation for public interfaces
+5. **Follow coding standards** — Use ESLint configuration and formatting guidelines
 
 ### Adding New Core Modules
 

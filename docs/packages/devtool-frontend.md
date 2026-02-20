@@ -2,9 +2,6 @@
 
 React-based frontend debugging panel for the testring framework that provides a graphical user interface for test monitoring and control. This package works in conjunction with `@testring/devtool-backend` and `@testring/devtool-extension` to enable real-time log viewing, test execution control, and browser screenshot visualization.
 
-[![npm version](https://badge.fury.io/js/@testring/devtool-frontend.svg)](https://www.npmjs.com/package/@testring/devtool-frontend)
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-
 ## Overview
 
 The devtool frontend is a React-based UI component of the testring framework, providing:
@@ -45,14 +42,7 @@ The devtool frontend is a React-based UI component of the testring framework, pr
 ## Installation
 
 ```bash
-# Using npm
-npm install --save-dev @testring/devtool-frontend
-
-# Using yarn
-yarn add @testring/devtool-frontend --dev
-
-# Using pnpm
-pnpm add @testring/devtool-frontend --dev
+pnpm add @testring/devtool-frontend --save-dev
 ```
 
 ## UI Components
@@ -66,32 +56,32 @@ import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
 export class Editor extends React.Component {
-  state = {
-    code: '// type your code...',
-    editor: {} as any,
-  };
+    state = {
+        code: '// type your code...',
+        editor: {} as any,
+    };
 
-  editorDidMount(editor, monaco) {
-    editor.focus();
-    this.setState({ editor, monaco });
-  }
+    editorDidMount(editor, monaco) {
+        editor.focus();
+        this.setState({ editor, monaco });
+    }
 
-  render() {
-    const { code } = this.state;
-    const options = { selectOnLineNumbers: true };
+    render() {
+        const { code } = this.state;
+        const options = { selectOnLineNumbers: true };
 
-    return (
-      <div className="editor-wrapper">
-        <MonacoEditor
-          language="javascript"
-          theme="vs-dark"
-          value={code}
-          options={options}
-          editorDidMount={this.editorDidMount.bind(this)}
-        />
-      </div>
-    );
-  }
+        return (
+            <div className="editor-wrapper">
+                <MonacoEditor
+                    language="javascript"
+                    theme="vs-dark"
+                    value={code}
+                    options={options}
+                    editorDidMount={this.editorDidMount.bind(this)}
+                />
+            </div>
+        );
+    }
 }
 ```
 
@@ -104,61 +94,30 @@ import React from 'react';
 import { TestWorkerAction } from '@testring/types';
 
 export class ButtonsLayout extends React.Component {
-  render() {
-    const { workerState, executeAction } = this.props;
-    const isPaused = workerState.paused || workerState.pausedTilNext;
+    render() {
+        const { workerState, executeAction } = this.props;
+        const isPaused = workerState.paused || workerState.pausedTilNext;
 
-    return (
-      <div className="buttons-container">
-        {isPaused ? (
-          <button onClick={() => executeAction(TestWorkerAction.resumeTestExecution)}>
-            Play
-          </button>
-        ) : (
-          <button onClick={() => executeAction(TestWorkerAction.pauseTestExecution)}>
-            Pause
-          </button>
-        )}
-        <button onClick={() => executeAction(TestWorkerAction.runTillNextExecution)}>
-          Next
-        </button>
-        <button onClick={() => executeAction(TestWorkerAction.releaseTest)}>
-          Forward
-        </button>
-      </div>
-    );
-  }
-}
-```
-
-## WebSocket Integration
-
-The frontend communicates with the backend using WebSocket:
-
-```typescript
-import { ClientWsTransport, ClientWsTransportEvents } from '@testring/client-ws-transport';
-import { DevtoolEvents } from '@testring/types';
-
-// Create WebSocket client
-const wsClient = new ClientWsTransport('localhost', 9001);
-wsClient.connect();
-
-// Handshake with server
-await wsClient.handshake('my-app-id');
-
-// Listen for messages
-wsClient.on(ClientWsTransportEvents.MESSAGE, (message) => {
-  if (message.type === DevtoolEvents.STORE_STATE) {
-    // Update UI with new state
-    updateUIState(message.payload);
-  }
-});
-
-// Send commands to server
-function pauseTest() {
-  wsClient.send(DevtoolEvents.WORKER_ACTION, {
-    actionType: TestWorkerAction.pauseTestExecution
-  });
+        return (
+            <div className="buttons-container">
+                {isPaused ? (
+                    <button onClick={() => executeAction(TestWorkerAction.resumeTestExecution)}>
+                        Play
+                    </button>
+                ) : (
+                    <button onClick={() => executeAction(TestWorkerAction.pauseTestExecution)}>
+                        Pause
+                    </button>
+                )}
+                <button onClick={() => executeAction(TestWorkerAction.runTillNextExecution)}>
+                    Next
+                </button>
+                <button onClick={() => executeAction(TestWorkerAction.releaseTest)}>
+                    Forward
+                </button>
+            </div>
+        );
+    }
 }
 ```
 
@@ -167,27 +126,26 @@ function pauseTest() {
 ### Basic Setup
 
 1. **Install the required packages**:
-```bash
-npm install --save-dev @testring/devtool-frontend @testring/devtool-backend
-```
+   ```bash
+   pnpm add @testring/devtool-frontend @testring/devtool-backend --save-dev
+   ```
 
 2. **Build the frontend**:
-```bash
-cd node_modules/@testring/devtool-frontend
-npm run build
-```
+   ```bash
+   pnpm run build
+   ```
 
 3. **Start the devtool server**:
-```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { transport } from '@testring/transport';
+   ```typescript
+   import { DevtoolServerController } from '@testring/devtool-backend';
+   import { transport } from '@testring/transport';
 
-const devtoolServer = new DevtoolServerController(transport);
-await devtoolServer.init();
+   const devtoolServer = new DevtoolServerController(transport);
+   await devtoolServer.init();
 
-const config = devtoolServer.getRuntimeConfiguration();
-console.log(`Devtools UI available at: http://${config.host}:${config.httpPort}`);
-```
+   const config = devtoolServer.getRuntimeConfiguration();
+   console.log(`Devtools UI available at: http://${config.host}:${config.httpPort}`);
+   ```
 
 ### Integration with Test Framework
 
@@ -204,14 +162,14 @@ const config = devtoolServer.getRuntimeConfiguration();
 // Configure test runner with devtools
 const testRunner = new TestRunController(transport);
 await testRunner.runTests({
-  tests: ['./tests/**/*.spec.ts'],
-  config: {
-    devtool: {
-      enabled: true,
-      httpPort: config.httpPort,
-      wsPort: config.wsPort
-    }
-  }
+    tests: ['./tests/**/*.spec.ts'],
+    config: {
+        devtool: {
+            enabled: true,
+            httpPort: config.httpPort,
+            wsPort: config.wsPort,
+        },
+    },
 });
 ```
 
@@ -236,10 +194,10 @@ src/
 
 ```bash
 # Development build with watch mode
-npm run build:watch
+pnpm run build:watch
 
 # Production build
-npm run build
+pnpm run build
 ```
 
 ### Output Structure
@@ -256,10 +214,8 @@ dist/
 ### Exported Module
 
 ```typescript
-// Main export from index.js
-module.exports = {
-  absolutePath: string  // Absolute path to the built frontend assets
-};
+// Main export
+export const absolutePath: string;  // Absolute path to the built frontend assets
 ```
 
 ### Component Props
@@ -268,12 +224,12 @@ module.exports = {
 
 ```typescript
 interface IPopupWsProviderProps {
-  wsClient: IClientWsTransport;  // WebSocket client for communication
+    wsClient: IClientWsTransport;  // WebSocket client for communication
 }
 
 interface IPopupWsProviderState {
-  initialized: boolean;  // Whether the provider is initialized
-  workerState: ITestControllerExecutionState;  // Current test state
+    initialized: boolean;  // Whether the provider is initialized
+    workerState: ITestControllerExecutionState;  // Current test state
 }
 ```
 
@@ -281,8 +237,8 @@ interface IPopupWsProviderState {
 
 ```typescript
 interface ButtonLayoutProps {
-  workerState: ITestControllerExecutionState;  // Current test state
-  executeAction: (action: TestWorkerAction) => Promise<void>;  // Action dispatcher
+    workerState: ITestControllerExecutionState;  // Current test state
+    executeAction: (action: TestWorkerAction) => Promise<void>;  // Action dispatcher
 }
 ```
 
@@ -311,7 +267,7 @@ const app = express();
 app.use('/devtools', express.static(absolutePath));
 
 app.listen(8080, () => {
-  console.log('Custom devtools server running at http://localhost:8080/devtools');
+    console.log('Custom devtools server running at http://localhost:8080/devtools');
 });
 ```
 
@@ -332,42 +288,30 @@ app.listen(8080, () => {
 3. **Editor not loading**:
    - Ensure Monaco editor files are properly built
    - Check for JavaScript errors in the console
-   - Verify the DOM element with ID 'rcRecorderApp' exists
-
-### Debug Mode
-
-Enable debug logging in the frontend:
-
-```typescript
-// In your component
-componentDidMount() {
-  console.log('Component mounted with props:', this.props);
-  console.log('Initial state:', this.state);
-
-  // Log WebSocket events
-  this.props.wsClient.on(ClientWsTransportEvents.MESSAGE, (msg) => {
-    console.log('WebSocket message:', msg);
-  });
-}
-```
+   - Verify the DOM element with ID `rcRecorderApp` exists
 
 ## Dependencies
 
-- **`react`** - UI component library
-- **`react-dom`** - React DOM rendering
-- **`react-monaco-editor`** - Monaco code editor for React
-- **`@testring/client-ws-transport`** - WebSocket communication
-- **`@testring/types`** - TypeScript type definitions
-- **`monaco-editor-webpack-plugin`** - Monaco editor integration
-- **`webpack`** - Module bundling and build system
+- **`react`** — UI component library
+- **`react-dom`** — React DOM rendering
+- **`react-monaco-editor`** — Monaco code editor for React
+- **`@testring/client-ws-transport`** — WebSocket communication
+- **`@testring/types`** — TypeScript type definitions
+- **`monaco-editor-webpack-plugin`** — Monaco editor integration
+- **`webpack`** — Module bundling and build system
 
 ## Related Modules
 
-- **`@testring/devtool-backend`** - Backend server for developer tools
-- **`@testring/devtool-extension`** - Chrome extension for browser integration
-- **`@testring/test-run-controller`** - Test execution controller
-- **`@testring/transport`** - Inter-process communication
+- **[@testring/devtool-backend](devtool-backend.md)** — Backend server for developer tools
+- **[@testring/devtool-extension](devtool-extension.md)** — Chrome extension for browser integration
+- **[@testring/test-run-controller](../core-modules/test-run-controller.md)** — Test execution controller
+- **[@testring/transport](../core-modules/transport.md)** — Inter-process communication
+
+## Requirements
+
+- **Node.js:** 22+
+- **pnpm:** 10+
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.

@@ -1,471 +1,367 @@
 # @testring/plugin-api
 
-Plugin API interface module that provides unified plugin development interfaces and plugin management functionality for the testring framework.
-
-## Feature Overview
-
-This module is the core of the testring plugin system, providing:
-- Unified plugin API interfaces
-- Plugin lifecycle management
-- Communication bridges between modules
-- Plugin initialization and configuration functionality
-
-## Main Components
-
-### PluginAPI
-Main plugin API class that provides plugins with unified interfaces to access various framework modules:
-
-```typescript
-export class PluginAPI {
-  constructor(pluginName: string, modules: IPluginModules)
-  
-  // Core module access interfaces
-  getLogger(): LoggerAPI
-  getFSReader(): FSReaderAPI | null
-  getTestWorker(): TestWorkerAPI
-  getTestRunController(): TestRunControllerAPI
-  getBrowserProxy(): BrowserProxyAPI
-  getHttpServer(): HttpServerAPI
-  getHttpClient(): IHttpClient
-  getFSStoreServer(): FSStoreServerAPI
-}
-```
-
-### applyPlugins
-Plugin application function responsible for initializing and applying plugins:
-
-```typescript
-const applyPlugins = (
-  pluginsDestinations: IPluginModules,
-  config: IConfig
-): void
-```
+Plugin API module that provides the plugin system infrastructure — plugin resolution, loading, initialization, and access to framework module hooks.
 
 ## Installation
 
 ```bash
-npm install --save-dev @testring/plugin-api
+pnpm add @testring/plugin-api
 ```
 
-Or using yarn:
+## Overview
 
-```bash
-yarn add @testring/plugin-api --dev
-```
+This module is the core of the testring plugin system. It provides:
 
-## Plugin Development
+- **`PluginAPI`** — the object passed to every plugin function, giving access to framework module hooks
+- **`PluginController`** — resolves, loads, and initializes plugins from configuration
+- **`applyPlugins()`** — the entry point that wires plugins to framework modules
 
-### Basic Plugin Structure
+Plugins are functions that receive a `PluginAPI` instance and optionally a config object. They use the API to register read/write hooks on framework modules (logger, test worker, test run controller, browser proxy, FS reader, FS store server).
+
+## API Reference
+
+### `applyPlugins(pluginsDestinations, config)`
+
+The main entry point for initializing plugins. Creates a `PluginController` and calls `initialize()` with the plugin list from config.
+
 ```typescript
-// my-plugin.ts
-export default (pluginAPI: PluginAPI) => {
+import { applyPlugins } from '@testring/plugin-api';
+
+applyPlugins(moduleInstances, config);
+```
+
+**Parameters:**
+
+| Parameter              | Type              | Description                                            |
+| ---------------------- | ----------------- | ------------------------------------------------------ |
+| `pluginsDestinations`  | `IPluginModules`  | Object containing framework module instances           |
+| `config`               | `IConfig`         | Full testring configuration (reads `config.plugins`)   |
+
+### `PluginController` class
+
+Handles plugin resolution, loading, validation, and initialization.
+
+```typescript
+import { PluginController } from '@testring/plugin-api';
+
+const controller = new PluginController(moduleInstances);
+controller.initialize(config.plugins);
+```
+
+#### `controller.initialize(plugins)`
+
+Iterates over the plugin list and processes each one. Accepts `undefined`, `null`, or an array. Each plugin entry can be:
+
+- **A string** — the plugin module name (resolved via `requirePlugin`)
+- **A tuple `[string, object]`** — plugin name and its configuration object
+
+```typescript
+controller.initialize([
+  'playwright-driver',                     // string form
+  ['my-custom-plugin', { timeout: 5000 }], // tuple with config
+]);
+```
+
+**Plugin resolution flow:**
+
+1. The plugin name is passed to `requirePlugin()` from `@testring/utils`
+2. `requirePlugin` tries these prefixed variants in order:
+   - `@testring/plugin-<name>`
+   - `testring-plugin-<name>`
+   - `@testring/<name>`
+   - `<name>` as-is
+3. The resolved module must export a function — if not, a `SyntaxError` is thrown
+4. The function is called with `(pluginAPI, pluginConfig)` where `pluginAPI` is a `PluginAPI` instance and `pluginConfig` is the config object (or `null`)
+
+### `PluginAPI` class
+
+The object passed to each plugin function. Provides getter methods that return module-specific API wrappers for registering hooks.
+
+```typescript
+class PluginAPI {
+  constructor(pluginName: string, modules: IPluginModules);
+
+  getLogger(): LoggerAPI;
+  getFSReader(): FSReaderAPI | null;
+  getTestWorker(): TestWorkerAPI;
+  getTestRunController(): TestRunControllerAPI;
+  getBrowserProxy(): BrowserProxyAPI;
+  getFSStoreServer(): FSStoreServerAPI;
+}
+```
+
+Each getter creates a new API wrapper bound to the plugin's name and the corresponding module instance. The plugin name is used to identify which plugin registered each hook.
+
+## Module APIs
+
+All module API classes extend `AbstractAPI`, which provides `registryReadPlugin(hookName, callback)` (read-only hooks, for observation) and `registryWritePlugin(hookName, callback)` (write hooks, can modify data flowing through the pipeline).
+
+### LoggerAPI
+
+Access via `pluginAPI.getLogger()`.
+
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `beforeLog(handler)`          | write     | Transform log entity before it is written. Receives `(logEntity, meta)`, must return modified `ILogEntity`. |
+| `onLog(handler)`              | read      | Observe log entries after they are written. Receives `(logEntity, meta)`. |
+| `onError(handler)`            | write     | Handle errors in the logger. Receives `(error, meta)`.   |
+
+```typescript
+export default (pluginAPI) => {
   const logger = pluginAPI.getLogger();
-  const testWorker = pluginAPI.getTestWorker();
-  
-  // Execute before test run
-  testWorker.beforeRun(async () => {
-    await logger.info('Plugin: Test preparation starting');
+
+  logger.beforeLog((logEntity, meta) => {
+    // Add custom metadata to every log entry
+    return { ...logEntity, extra: { plugin: 'my-plugin' } };
   });
-  
-  // Execute after test run
-  testWorker.afterRun(async () => {
-    await logger.info('Plugin: Test execution completed');
+
+  logger.onLog((logEntity, meta) => {
+    // Observe all log entries
+    console.log(`[${logEntity.logLevel}] ${logEntity.content}`);
   });
 };
 ```
 
-### Plugin Configuration
-```json
-{
-  "plugins": [
-    "./plugins/my-plugin",
-    "@my-org/testring-plugin-custom"
-  ]
-}
-```
+### FSReaderAPI
 
-## Module API Details
+Access via `pluginAPI.getFSReader()`. Returns `null` if no FS reader module is available.
 
-### Logger API
-For logging and output:
-
-```typescript
-const logger = pluginAPI.getLogger();
-
-// Basic logging
-await logger.verbose('Detailed information');
-await logger.debug('Debug information');
-await logger.info('General information');
-await logger.warn('Warning information');
-await logger.error('Error information');
-```
-
-### FS Reader API
-For file system operations:
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `onBeforeResolve(callback)`   | write     | Transform file resolution input before resolving.        |
+| `onAfterResolve(callback)`    | write     | Transform file resolution output after resolving.        |
 
 ```typescript
 const fsReader = pluginAPI.getFSReader();
 
 if (fsReader) {
-  // Pre-file resolution processing
-  fsReader.beforeResolve(async (files) => {
-    // Filter or modify file list
-    return files.filter(file => !file.path.includes('temp'));
+  fsReader.onBeforeResolve(async (files) => {
+    // Filter out temp files before resolution
+    return files.filter(f => !f.includes('/temp/'));
   });
-  
-  // Post-file resolution processing
-  fsReader.afterResolve(async (files) => {
-    // Add additional file information
-    return files.map(file => ({
-      ...file,
-      processed: true
-    }));
+
+  fsReader.onAfterResolve(async (files) => {
+    // Sort resolved files alphabetically
+    return files.sort();
   });
 }
 ```
 
-### Test Worker API
-For test worker process management:
+### TestWorkerAPI
+
+Access via `pluginAPI.getTestWorker()`.
+
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `beforeCompile(handler)`      | write     | Transform compilation inputs. Receives `(paths, filenameEntry, codeEntry)`, must return modified `paths` array. |
+| `compile(handler)`            | write     | Transform compiled code. Receives `(code, filename)`, must return modified code string. |
 
 ```typescript
 const testWorker = pluginAPI.getTestWorker();
 
-// Test execution lifecycle hooks
-testWorker.beforeRun(async () => {
-  console.log('Preparing to execute tests');
+testWorker.compile(async (code, filename) => {
+  // Transform code before execution (e.g., Babel, custom transforms)
+  return transformCode(code, filename);
 });
 
-testWorker.afterRun(async () => {
-  console.log('Test execution completed');
-});
-
-testWorker.beforeTest(async (testPath) => {
-  console.log(`Starting test execution: ${testPath}`);
-});
-
-testWorker.afterTest(async (testPath) => {
-  console.log(`Test execution completed: ${testPath}`);
+testWorker.beforeCompile(async (paths, filenameEntry, codeEntry) => {
+  // Modify the list of paths to compile
+  return paths.filter(p => !p.endsWith('.skip.ts'));
 });
 ```
 
-### Test Run Controller API
-For test run control:
+### TestRunControllerAPI
+
+Access via `pluginAPI.getTestRunController()`.
+
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `beforeRun(handler)`          | write     | Transform the test queue before execution starts. Receives `(queue: IQueuedTest[])`, must return modified queue. |
+| `beforeTest(handler)`         | write     | Called before each individual test. Receives `(test: IQueuedTest)`. |
+| `beforeTestRetry(handler)`    | write     | Called before a test retry. Receives `(test: IQueuedTest)`. |
+| `afterTest(handler)`          | write     | Called after each individual test. Receives `(test: IQueuedTest)`. |
+| `afterRun(handler)`           | write     | Called after all tests complete. Receives `(queue: IQueuedTest[])`. |
+| `shouldNotExecute(handler)`   | write     | Control whether the entire test suite should be skipped. Receives `(state: boolean, queue: IQueuedTest[])`, must return boolean. |
+| `shouldNotStart(handler)`     | write     | Control whether a specific test should be skipped. Receives `(state: boolean, test: IQueuedTest)`, must return boolean. |
+| `shouldNotRetry(handler)`     | write     | Control whether a failed test should be retried. Receives `(state: boolean, test: IQueuedTest)`, must return boolean. |
 
 ```typescript
 const controller = pluginAPI.getTestRunController();
 
-// Pre-run preparation
-controller.beforeRun(async (files) => {
-  console.log(`Preparing to run ${files.length} test files`);
+controller.beforeRun(async (queue) => {
+  console.log(`Running ${queue.length} tests`);
+  return queue; // Must return the (possibly modified) queue
 });
 
-// Pre-single test processing
-controller.beforeTest(async (test) => {
-  console.log(`Starting test: ${test.path}`);
+controller.shouldNotRetry(async (state, test) => {
+  // Don't retry tests tagged with 'no-retry'
+  if (test.path.includes('.no-retry.')) {
+    return true;
+  }
+  return state;
 });
 
-// Test retry processing
-controller.beforeTestRetry(async (test, attempt) => {
-  console.log(`Retrying test: ${test.path}, attempt ${attempt}`);
-});
-
-// Control whether tests should execute
-controller.shouldNotExecute(async (files) => {
-  // Return true to skip all tests
-  return process.env.SKIP_TESTS === 'true';
-});
-
-controller.shouldNotStart(async (test) => {
-  // Return true to skip specific test
-  return test.path.includes('.skip.');
-});
-
-controller.shouldNotRetry(async (test, error, attempt) => {
-  // Return true to not retry failed tests
-  return attempt >= 3;
+controller.afterTest(async (test) => {
+  console.log(`Finished: ${test.path}`);
 });
 ```
 
-### Browser Proxy API
-For browser proxy control:
+### BrowserProxyAPI
+
+Access via `pluginAPI.getBrowserProxy()`.
+
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `proxyPlugin(pluginPath, config)` | write | Register a browser driver plugin. Only one plugin can register — subsequent calls throw an error. |
+
+This is how browser driver plugins (like `@testring/plugin-playwright-driver`) register themselves:
 
 ```typescript
-const browserProxy = pluginAPI.getBrowserProxy();
+export default (pluginAPI, pluginConfig) => {
+  const browserProxy = pluginAPI.getBrowserProxy();
 
-// Pre-browser start processing
-browserProxy.beforeStart(async () => {
-  console.log('Preparing to start browser');
-});
-
-// Post-browser stop processing
-browserProxy.afterStop(async () => {
-  console.log('Browser has stopped');
-});
+  browserProxy.proxyPlugin(
+    '@testring/plugin-playwright-driver/driver',
+    pluginConfig || {},
+  );
+};
 ```
 
-### HTTP Server API
-For HTTP server management:
+**Note:** Only one browser proxy plugin can be active at a time. If a second plugin tries to call `proxyPlugin()`, an error is thrown indicating which plugin already registered.
 
-```typescript
-const httpServer = pluginAPI.getHttpServer();
+### FSStoreServerAPI
 
-// Pre-server start processing
-httpServer.beforeStart(async () => {
-  console.log('Preparing to start HTTP server');
-});
+Access via `pluginAPI.getFSStoreServer()`.
 
-// Post-server stop processing
-httpServer.afterStop(async () => {
-  console.log('HTTP server has stopped');
-});
-```
-
-### HTTP Client
-For HTTP requests:
-
-```typescript
-const httpClient = pluginAPI.getHttpClient();
-
-// Send HTTP requests
-const response = await httpClient.get('/api/status');
-const data = await httpClient.post('/api/data', { key: 'value' });
-```
-
-### FS Store Server API
-For file storage service:
+| Method                        | Hook Type | Description                                              |
+| ----------------------------- | --------- | -------------------------------------------------------- |
+| `onFileNameAssign(handler)`   | write     | Transform the file name when a file is created in the FS store. Receives `(fileName, fileMetaData)`, must return the new file name string. |
+| `onRelease(handler)`          | read      | Observe when a file is released from the FS store. Receives `(data: IOnFileReleaseHookData)`. |
 
 ```typescript
 const fsStore = pluginAPI.getFSStoreServer();
 
-// File creation processing
-fsStore.onFileCreated(async (file) => {
-  console.log(`File created: ${file.path}`);
+fsStore.onFileNameAssign(async (fileName, metadata) => {
+  // Customize file names for screenshots
+  if (metadata.type === 'screenshot') {
+    return `screenshots/${Date.now()}-${fileName}`;
+  }
+  return fileName;
 });
 
-// File release processing
-fsStore.onFileReleased(async (file) => {
-  console.log(`File released: ${file.path}`);
+fsStore.onRelease((data) => {
+  console.log(`File released: ${data.fileName}`);
 });
 ```
 
-## Real Plugin Examples
+## Plugin Development
 
-### Test Reporter Plugin
+### Basic Plugin Structure
+
+A plugin is a function exported as the default export of a module:
+
 ```typescript
-// plugins/test-reporter.ts
-export default (pluginAPI) => {
+// my-plugin.ts
+import type { PluginAPI } from '@testring/plugin-api';
+
+export default (pluginAPI: PluginAPI, config: any) => {
   const logger = pluginAPI.getLogger();
   const controller = pluginAPI.getTestRunController();
-  
-  let startTime: number;
-  let testResults: Array<any> = [];
-  
-  // Test start
-  controller.beforeRun(async (files) => {
-    startTime = Date.now();
-    testResults = [];
-    await logger.info(`Starting execution of ${files.length} test files`);
+
+  controller.beforeRun(async (queue) => {
+    console.log(`[my-plugin] Starting ${queue.length} tests`);
+    return queue;
   });
-  
-  // Single test completion
-  controller.afterTest(async (test, result) => {
-    testResults.push({
-      path: test.path,
-      success: !result.error,
-      duration: result.duration,
-      error: result.error
-    });
-  });
-  
-  // All tests completed
-  controller.afterRun(async () => {
-    const duration = Date.now() - startTime;
-    const passed = testResults.filter(r => r.success).length;
-    const failed = testResults.length - passed;
-    
-    await logger.info(`Test Report:`);
-    await logger.info(`  Total: ${testResults.length}`);
-    await logger.info(`  Passed: ${passed}`);
-    await logger.info(`  Failed: ${failed}`);
-    await logger.info(`  Duration: ${duration}ms`);
+
+  logger.onLog((logEntity, meta) => {
+    // Custom log processing
   });
 };
 ```
-
-### Screenshot Plugin
-```typescript
-// plugins/screenshot.ts
-export default (pluginAPI) => {
-  const browserProxy = pluginAPI.getBrowserProxy();
-  const fsStore = pluginAPI.getFSStoreServer();
-  const logger = pluginAPI.getLogger();
-  
-  // Auto-screenshot on test failure
-  browserProxy.onTestFailure(async (test, error) => {
-    try {
-      const screenshot = await browserProxy.takeScreenshot();
-      const file = await fsStore.createFile({
-        content: screenshot,
-        ext: 'png',
-        name: `failure-${test.name}-${Date.now()}`
-      });
-      
-      await logger.info(`Test failure screenshot saved: ${file.path}`);
-    } catch (screenshotError) {
-      await logger.error('Screenshot save failed:', screenshotError);
-    }
-  });
-};
-```
-
-### Environment Setup Plugin
-```typescript
-// plugins/env-setup.ts
-export default (pluginAPI) => {
-  const testWorker = pluginAPI.getTestWorker();
-  const httpClient = pluginAPI.getHttpClient();
-  const logger = pluginAPI.getLogger();
-  
-  // Prepare environment before tests
-  testWorker.beforeRun(async () => {
-    await logger.info('Preparing test environment...');
-    
-    // Clean test data
-    await httpClient.delete('/api/test-data');
-    
-    // Initialize test data
-    await httpClient.post('/api/test-data/init', {
-      users: ['testuser1', 'testuser2'],
-      settings: { debug: true }
-    });
-    
-    await logger.info('Test environment preparation completed');
-  });
-  
-  // Clean environment after tests
-  testWorker.afterRun(async () => {
-    await logger.info('Cleaning test environment...');
-    await httpClient.delete('/api/test-data');
-    await logger.info('Test environment cleanup completed');
-  });
-};
-```
-
-## Plugin Management
 
 ### Plugin Configuration
+
+Plugins are configured in the testring configuration file (`.testringrc`, `.testringrc.js`, or `.testringrc.cjs`):
+
 ```javascript
-// .testringrc
-module.exports = {
+// .testringrc.js
+export default {
   plugins: [
-    // Local plugins
-    './plugins/test-reporter',
-    './plugins/screenshot',
-    
-    // NPM package plugins
-    '@testring/plugin-selenium-driver',
-    '@mycompany/testring-plugin-custom',
-    
-    // Plugin with configuration
-    {
-      name: './plugins/env-setup',
-      config: {
-        apiUrl: 'http://localhost:3000',
-        timeout: 5000
-      }
-    }
-  ]
+    // String form — no config
+    'playwright-driver',
+
+    // Tuple form — with config
+    ['my-custom-plugin', { timeout: 5000, retries: 3 }],
+
+    // Local plugin path
+    './plugins/my-local-plugin',
+
+    // Scoped package
+    '@my-org/testring-plugin-reporter',
+  ],
 };
 ```
 
-### Plugin Loading Order
-Plugins are loaded and initialized in the order specified in the configuration. Hook function execution order follows:
-- `before*` hooks: Execute in plugin loading order
-- `after*` hooks: Execute in reverse plugin loading order
+### Complete Plugin Example: Test Reporter
 
-## Best Practices
-
-### Plugin Naming Conventions
-- Use descriptive plugin names
-- Follow `testring-plugin-*` naming convention
-- Use meaningful log prefixes within plugins
-
-### Error Handling
 ```typescript
-export default (pluginAPI) => {
+// plugins/reporter.ts
+import type { PluginAPI } from '@testring/plugin-api';
+import type { IQueuedTest } from '@testring/types';
+
+export default (pluginAPI: PluginAPI) => {
+  const controller = pluginAPI.getTestRunController();
   const logger = pluginAPI.getLogger();
-  
-  // Always handle errors in async operations
-  controller.beforeTest(async (test) => {
-    try {
-      await setupTest(test);
-    } catch (error) {
-      await logger.error(`Plugin error: ${error.message}`);
-      throw error; // Re-throw to stop test
-    }
-  });
-};
-```
 
-### Resource Cleanup
-```typescript
-export default (pluginAPI) => {
-  let resources: any[] = [];
-  
-  // Create resources
-  controller.beforeRun(async () => {
-    resources = await createResources();
+  let startTime: number;
+  let totalTests = 0;
+
+  controller.beforeRun(async (queue) => {
+    startTime = Date.now();
+    totalTests = queue.length;
+    return queue;
   });
-  
-  // Ensure resources are cleaned up
-  controller.afterRun(async () => {
-    try {
-      await cleanupResources(resources);
-    } catch (error) {
-      // Log cleanup failure but don't affect test results
-      await logger.warn(`Resource cleanup failed: ${error.message}`);
-    }
+
+  controller.afterTest(async (test) => {
+    // Log each test completion
+  });
+
+  controller.afterRun(async (queue) => {
+    const duration = Date.now() - startTime;
+    console.log(`Completed ${totalTests} tests in ${duration}ms`);
   });
 };
 ```
 
 ## Type Definitions
 
-Main types used in plugin development:
-
 ```typescript
+// Plugin descriptor in config
+type ConfigPluginDescriptor = string | [string, object];
+
+// Framework modules passed to PluginAPI
 interface IPluginModules {
-  logger: ILogger;
-  fsReader?: IFSReader;
-  testWorker: ITestWorker;
-  testRunController: ITestRunController;
-  browserProxy: IBrowserProxy;
-  httpServer: IHttpServer;
-  httpClientInstance: IHttpClient;
-  fsStoreServer: IFSStoreServer;
+  logger: IPluggableModule;
+  fsReader?: IPluggableModule;
+  testWorker: IPluggableModule;
+  testRunController: IPluggableModule;
+  browserProxy: IPluggableModule;
+  fsStoreServer: IPluggableModule;
 }
 
-type PluginFunction = (api: PluginAPI) => void | Promise<void>;
-```
-
-## Installation
-
-```bash
-npm install @testring/plugin-api
+// Plugin function signature
+type PluginFunction = (api: PluginAPI, config: object | null) => void;
 ```
 
 ## Dependencies
 
-- `@testring/logger` - Logging functionality
-- `@testring/pluggable-module` - Plugin system foundation
-- `@testring/types` - Type definitions
+- `@testring/types` — Type definitions (`IConfig`, `IPluginModules`, `ConfigPluginDescriptor`)
+- `@testring/utils` — `requirePlugin` for plugin resolution and loading
+- `@testring/fs-store` — `fsStoreServerHooks` constants for FS store hook names
 
 ## Related Modules
 
-- `@testring/plugins` - Plugin collection
-- `@testring/cli-config` - Configuration management
-- `@testring/transport` - Inter-process communication
-
-## License
-
-MIT License
+- [`@testring/utils`](./utils.md) — Plugin resolution (`requirePlugin`)
+- [`@testring/pluggable-module`](./pluggable-module.md) — Hook system foundation
+- [`@testring/cli-config`](./cli-config.md) — Configuration management
+- [`@testring/transport`](./transport.md) — Inter-process communication

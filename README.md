@@ -1,94 +1,116 @@
 # testring
 
-[![license](https://img.shields.io/github/license/ringcentral/testring.svg)](https://github.com/ringcentral/testring/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/danbao/testring.svg)](https://github.com/danbao/testring/blob/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/testring.svg)](https://www.npmjs.com/package/testring)
-[![Node.js CI](https://github.com/ringcentral/testring/actions/workflows/node.js.yml/badge.svg)](https://github.com/ringcentral/testring/actions/workflows/node.js.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ringcentral_testring&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ringcentral_testring)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ringcentral_testring&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ringcentral_testring)
+[![CI](https://github.com/danbao/testring/actions/workflows/ci.yml/badge.svg)](https://github.com/danbao/testring/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=danbao_testring&metric=coverage)](https://sonarcloud.io/summary/new_code?id=danbao_testring)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=danbao_testring&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=danbao_testring)
 
-A simple, powerful automated UI testing framework based on Node.js.
+A modern, high-performance automated UI testing framework for Node.js 22+.
 
 ## Project Overview
 
-testring is a modern testing framework specifically designed for automated testing of web applications. It provides:
+testring is a testing framework designed for automated testing of web applications. It provides:
 
-- 🚀 **High Performance** - Multi-process parallel test execution
-- 🔧 **Extensible** - Rich plugin system architecture
-- 🌐 **Multi-Browser** - Support for Chrome, Firefox, Safari, Edge
-- 📱 **Modern** - Support for both Selenium and Playwright drivers
-- 🛠️ **Developer Friendly** - Complete development toolchain
+- 🚀 **High Performance** — Multi-process parallel test execution
+- 🔧 **Extensible** — Rich plugin system architecture
+- 🌐 **Multi-Browser** — Chrome, Firefox, Safari, and Edge via Playwright
+- 🛠️ **Developer Friendly** — ESM-first, TypeScript-native, complete development toolchain
 
 ## Project Structure
 
 ```
 testring/
-├── core/              # Core modules - Framework foundation
+├── core/              # Core modules (~20 packages) — Framework foundation
 │   ├── api/           # Test API controllers
-│   ├── cli/           # Command line interface
+│   ├── cli/           # Command-line interface (citty)
 │   ├── logger/        # Distributed logging system
 │   ├── transport/     # Inter-process communication
 │   ├── test-worker/   # Test worker processes
-│   └── ...           # Other core modules
-├── packages/          # Extension packages - Plugins and tools
-│   ├── plugin-selenium-driver/    # Selenium driver plugin
-│   ├── plugin-playwright-driver/  # Playwright driver plugin
+│   ├── reporter/      # Test result reporting
+│   └── ...            # Other core modules
+├── packages/          # Extension packages — Plugins and tools
+│   ├── plugin-playwright-driver/  # Playwright browser driver
+│   ├── plugin-babel/              # Babel transpilation plugin
+│   ├── plugin-fs-store/           # File system store plugin
 │   ├── web-application/           # Web application testing
 │   ├── devtool-frontend/          # Developer tools frontend
-│   └── ...                       # Other extension packages
-├── docs/              # Documentation directory
-├── utils/             # Build and maintenance tools
-└── README.md          # Project documentation
+│   └── ...                        # Other extension packages
+├── docs/              # Documentation
+├── utils/             # Build and maintenance utilities
+└── README.md
 ```
 
 ### Core Modules (core/)
 
 Core modules provide the framework's foundational functionality:
 
-- **API Layer** - Test execution and control interfaces
-- **CLI Tools** - Command line interface and argument processing
-- **Process Management** - Multi-process test execution and communication
-- **File System** - Test file discovery and reading
-- **Logging System** - Distributed logging and management
-- **Plugin System** - Extensible plugin architecture
+- **API Layer** — Test execution and control interfaces
+- **CLI** — Command-line interface built with citty (subcommands: `run`, `init`, `plugin`)
+- **Process Management** — Multi-process test execution and communication
+- **File System** — Test file discovery and reading
+- **Logging System** — Distributed logging and management
+- **Plugin System** — Extensible plugin architecture
+- **Reporter** — Test result reporting and output formatting
 
 ### Extension Packages (packages/)
 
-Extension packages provide additional functionality and tools:
+Extension packages provide additional functionality:
 
-- **Browser Drivers** - Selenium and Playwright support
-- **Web Testing** - Web application-specific testing features
-- **Developer Tools** - Debugging and monitoring tools
-- **Network Communication** - WebSocket and HTTP support
-- **File Handling** - File upload, download, and storage
+- **Playwright Driver** — Browser automation via Playwright
+- **Babel Plugin** — Test file transpilation
+- **FS Store** — File system storage for test artifacts
+- **Web Application** — Web application-specific testing features
+- **Developer Tools** — Debugging and monitoring tools
 
 ## Quick Start
+
+### Prerequisites
+
+- Node.js 22 or later
+- pnpm 10+
 
 ### Installation
 
 ```bash
 # Install the main framework
-npm install testring
+pnpm add testring
 
-# Install Selenium driver (recommended)
-npm install @testring/plugin-selenium-driver
+# Install Playwright driver
+pnpm add @testring/plugin-playwright-driver
 
-# Or install Playwright driver
-npm install @testring/plugin-playwright-driver
+# Optional: Babel plugin for transpilation
+pnpm add @testring/plugin-babel
+
+# Optional: File system store
+pnpm add @testring/plugin-fs-store
 ```
 
 ### Basic Configuration
 
-Create a `.testringrc` configuration file:
+Create a `.testringrc` configuration file (JSON):
 
 ```json
 {
   "tests": "./tests/**/*.spec.js",
   "plugins": [
-    "@testring/plugin-selenium-driver"
+    "@testring/plugin-playwright-driver"
   ],
   "workerLimit": 2,
   "retryCount": 3
 }
+```
+
+Or use `.testringrc.js` / `.testringrc.cjs` for JavaScript configuration:
+
+```js
+// .testringrc.js
+export default {
+  tests: './tests/**/*.spec.js',
+  plugins: ['@testring/plugin-playwright-driver'],
+  workerLimit: 2,
+  retryCount: 3,
+};
 ```
 
 ### Writing Tests
@@ -121,31 +143,22 @@ testring run --workerLimit 4
 testring run --logLevel debug
 ```
 
-## Documentation
-
-For detailed documentation, please refer to:
-
-- [API Reference](docs/api/README.md) - Framework API documentation
-- [Configuration Reference](docs/configuration/README.md) - Complete configuration options
-- [Plugin Development Guide](docs/guides/plugin-development.md) - Plugin development guide
-- [Complete Documentation](docs/README.md) - Full documentation index
-
 ## Key Features
 
 ### Multi-Process Parallel Execution
-- Support for running multiple tests simultaneously
-- Process isolation to prevent test interference
+- Run multiple tests simultaneously across isolated worker processes
 - Intelligent load balancing
+- Process isolation prevents test interference
 
-### Multi-Browser Support
+### Multi-Browser Support via Playwright
 - Chrome, Firefox, Safari, Edge
 - Headless mode support
-- Mobile browser testing
+- Mobile browser emulation
 
 ### Plugin System
-- Rich official plugins
-- Simple plugin development API
-- Community plugin support
+- Official plugins for common use cases
+- Simple plugin development API (`@testring/plugin-api`)
+- Composable plugin architecture
 
 ### Development Tools
 - Visual debugging interface
@@ -155,18 +168,59 @@ For detailed documentation, please refer to:
 ## Development
 
 ### Project Setup
+
 ```bash
 # Clone the project
-git clone https://github.com/ringcentral/testring.git
+git clone https://github.com/danbao/testring.git
+cd testring
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build the project
-npm run build
+pnpm run build:main
 
-# Run tests
-npm test
+# Run unit tests
+pnpm run test:unit
+
+# Run all tests (unit + E2E headless)
+pnpm test
+```
+
+### Build Commands
+
+```bash
+# Full build (all packages, uses turbo)
+pnpm run build
+
+# Build main packages only (excludes e2e, devtool)
+pnpm run build:main
+```
+
+### Test Commands
+
+```bash
+# Unit tests (vitest)
+pnpm run test:unit
+
+# Unit tests in watch mode
+pnpm run test:unit:watch
+
+# Unit tests with coverage
+pnpm run test:unit:coverage
+
+# E2E tests with coverage
+pnpm run test:e2e:coverage:lcov
+```
+
+### Linting
+
+```bash
+# Lint all files (eslint)
+pnpm run lint
+
+# Auto-fix lint issues
+pnpm run lint:fix
 ```
 
 ### Contributing
@@ -179,13 +233,14 @@ Contributions are welcome! Please follow these steps:
 
 ## License
 
-MIT License - See the [LICENSE](LICENSE) file for details.
+MIT License — See the [LICENSE](LICENSE) file for details.
 
 ## Support
 
 - 📖 [Documentation](docs/)
-- 🐛 [Issue Reporting](https://github.com/ringcentral/testring/issues)
-- 💬 [Discussions](https://github.com/ringcentral/testring/discussions)
+- 🐛 [Issue Reporting](https://github.com/danbao/testring/issues)
+- 💬 [Discussions](https://github.com/danbao/testring/discussions)
+
 ## 🌍 Cloudflare Worker for Test Fixtures
 
 这个项目包含一个独立的 Cloudflare Worker，提供在线测试环境：
@@ -204,9 +259,9 @@ cloudflare-worker/
 
 ```bash
 cd cloudflare-worker
-npm install
-npm run build
-npm run deploy
+pnpm install
+pnpm run build
+pnpm run deploy
 ```
 
 详细信息请查看 [cloudflare-worker/README.md](cloudflare-worker/README.md)

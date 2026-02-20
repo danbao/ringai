@@ -5,11 +5,11 @@
 ## Phase 1 - 基础设施现代化（工具链层）
 - [x] 1.1 迁移到 pnpm（workspace + lockfile）
 - [x] 1.2 引入 Turborepo（turbo.json + pipeline）
-- [x] 1.3 迁移构建到 tsup（dual build / tsc noEmit）
+- [x] 1.3 迁移构建到 tsup（dual build / tsc noEmit）✅ tsup ESM-only build confirmed
 - [x] 1.4 引入 Changesets（.changeset + config）
 - [x] 1.5 升级 ESLint 9（flat config + working rules/plugins）
 - [x] 1.6 升级 TypeScript 目标（ES2022 baseline）
-- [x] 1.7 迁移内部测试到 Vitest（unit tests runnable）
+- [x] 1.7 迁移内部测试到 Vitest（unit tests runnable）✅ Vitest with v8 coverage provider
 
 ## Phase 2 - 删除与替换（减法阶段）
 - [x] 2.1 删除 `core/async-assert` → 用 `node:assert` + Chai
@@ -22,7 +22,7 @@
   - 注意：logger 深度集成了 pluggable-module 和 transport，替换需要重写输出管线
 
 ## Phase 3 - ESM 迁移 + Sandbox 重写
-- [x] 3.1 全量 ESM 迁移（package.json type/module + exports）
+- [x] 3.1 全量 ESM 迁移（package.json type/module + exports）✅ 全部 32 包已设置 `"type": "module"`
   - [x] 30/32 包已迁移到 ESM（tsup format: esm, type: module）
   - [x] tsup.config.base.ts 输出格式改为 esm
   - [x] tsconfig.base.json module 改为 ES2022, moduleResolution 改为 bundler
@@ -47,7 +47,8 @@
 ## Phase 4 - 核心架构现代化
 - [x] 4.1 重写插件系统 → `hookable`（生命周期 hook + 强类型）
 - [ ] 4.2 重写配置系统 → `c12` + `citty`（defineConfig + TS-first）
-  - 注意：c12/citty 已在 package.json 但源码仍用 yargs
+  - [x] citty CLI 框架已集成 ✅ CLI 子命令使用 citty（run, init, plugin）
+  - [ ] c12 配置加载未完成（源码仍用 yargs 解析参数）
 - [x] 4.3 重写 TestWorker → `Tinypool`（worker_threads 池）
 - [x] 4.4 简化 BrowserProxy → 直接调用 Playwright API
 - [x] 4.5 简化 WebApplication → 薄封装 Playwright Page
@@ -69,6 +70,21 @@
 - [x] 6.5 CI/CD 模板与 Docker 优化
 
 ---
+
+## 近期完成项（v0.8.0+ 提交记录）
+
+以下项目已通过最近的提交确认完成：
+
+| 项目 | 状态 | 提交 |
+|------|------|------|
+| ESM 迁移（type: "module"） | ✅ 完成 | `e74dcd53` Phase 3.1-3.3 全量 ESM 迁移 |
+| tsup 构建系统 | ✅ 完成 | `5b97b955` build:main 构建通过 |
+| citty CLI 框架 | ✅ 完成 | `a7aa389e` Phase 6.1 CLI 子命令 |
+| Vitest 测试框架 | ✅ 完成 | `d122bf4f` 77 文件 1294 测试通过 |
+| tsx TypeScript 运行器 | ✅ 完成 | `b83af275` ts-node → tsx 替换 |
+| Node 20 从 CI 移除 | ✅ 完成 | `c707f230` CI 移除 Node 20 |
+| Windows 兼容性修复 | ✅ 完成 | `80583c69` `58793a07` fork 测试和 turbo flags |
+| SonarQube 升级到 v7 | ✅ 完成 | `7cf24a77` SonarQube v5 → v7 |
 
 ## 构建状态
 
@@ -99,6 +115,6 @@
 |------|--------|------|
 | 2.7 logger → pino | 高 | 需重写 logger-server 输出管线，保持 pluggable-module hook 兼容 |
 | 3.5 Transport → birpc | 高 | 需替换整个 IPC 传输层 |
-| 4.2 配置系统 → c12+citty | 高 | 需重写 cli-config 源码从 yargs 迁移 |
+| 4.2 配置系统 → c12 | 中 | citty CLI 已完成，c12 配置加载需重写 cli-config 源码从 yargs 迁移 |
 | devtool webpack → vite | 中 | devtool-extension/frontend 需从 webpack 迁移到 vite |
 | 测试修复 | 中 | sinon-chai → vitest spy, Vitest 4 done() 弃用, fork + ESM TypeScript |

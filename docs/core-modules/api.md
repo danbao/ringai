@@ -1,446 +1,320 @@
 # @testring/api
 
-Test API controller module that provides the core API interface and test execution control functionality for the testring framework.
-
-## Overview
-
-This module serves as the core API layer of the testring framework, responsible for:
-- Providing the main entry points and lifecycle management for test execution
-- Managing test state, parameters, and environment variables
-- Handling test event publishing and subscription
-- Providing test context and tools (HTTP client, web applications, etc.)
-- Integrating asynchronous breakpoints and logging functionality
-
-## Key Features
-
-### Test Lifecycle Management
-- **Complete test lifecycle control**: Full process management from test start to finish
-- **Callback mechanism**: Support for beforeRun and afterRun callback registration
-- **Asynchronous breakpoint support**: Integration with @testring/async-breakpoints
-
-### Test State Management
-- **Test ID management**: Unique identification for each test
-- **Parameter management**: Support for setting and getting test parameters and environment parameters
-- **Event bus**: Unified event publishing and subscription mechanism
-
-### Test Context
-- **Integrated tools**: HTTP client, web applications, logging, etc.
-- **Custom applications**: Support for custom web application instances
-- **Parameter access**: Convenient access to parameters and environment variables
+Test API module that provides the core test execution interface, test lifecycle management, and test context for the testring framework.
 
 ## Installation
 
 ```bash
-npm install @testring/api
+pnpm add @testring/api
 ```
 
-## Main Components
+## Overview
 
-### 1. TestAPIController
+This module serves as the primary API layer for writing and executing tests in testring. It provides:
 
-Test API controller that manages test execution state and parameters:
+- The `run()` function — the main entry point for test execution
+- `beforeRun()` and `afterRun()` lifecycle callbacks
+- `TestAPIController` — manages test ID, parameters, environment, and event bus
+- `TestContext` — the `api` object passed into every test function, providing logging, web application access, and parameter retrieval
+- Re-export of `WebApplication` from `@testring/web-application`
+
+## API Reference
+
+### `run(...tests)`
+
+The main entry point for test execution. Accepts one or more test functions, creates a `TestContext` instance, and runs each test sequentially.
 
 ```typescript
-import { testAPIController } from '@testring/api';
+import { run } from '@testring/api';
 
-// Set test ID
-testAPIController.setTestID('user-login-test');
+type TestFunction = (api: TestContext) => void | Promise<void>;
 
-// Set test parameters
-testAPIController.setTestParameters({
-  username: 'testuser',
-  password: 'testpass',
-  timeout: 5000
-});
-
-// Set environment parameters
-testAPIController.setEnvironmentParameters({
-  baseUrl: 'https://api.example.com',
-  apiKey: 'secret-key'
-});
-
-// Get current test ID
-const testId = testAPIController.getTestID();
-
-// Get test parameters
-const params = testAPIController.getTestParameters();
-
-// Get environment parameters
-const env = testAPIController.getEnvironmentParameters();
+async function run(...tests: Array<TestFunction>): Promise<void>;
 ```
 
-### 2. BusEmitter
+**Execution flow:**
 
-Event bus that handles test event publishing and subscription:
-
-```typescript
-import { testAPIController } from '@testring/api';
-
-const bus = testAPIController.getBus();
-
-// Listen to test events
-bus.on('started', () => {
-  console.log('Test execution started');
-});
-
-bus.on('finished', () => {
-  console.log('Test execution completed');
-});
-
-bus.on('failed', (error: Error) => {
-  console.error('Test execution failed:', error.message);
-});
-
-// Manually trigger events
-await bus.startedTest();
-await bus.finishedTest();
-await bus.failedTest(new Error('Test failed'));
-```
-
-### 3. run Function
-
-Main entry point for test execution:
+1. Emits `started` event on the bus
+2. Flushes all registered `beforeRun` callbacks
+3. Starts a logger step for the current test ID
+4. Calls each test function sequentially with the `TestContext` as both `this` and the first argument
+5. On success: ends the logger step with "Test passed", emits `finished` event
+6. On failure: restructures the error, ends the logger step with "Test failed", emits `failed` event with the error
+7. In all cases: the `afterRun` callbacks include `api.end()` which stops all web application instances
 
 ```typescript
-import { run, beforeRun, afterRun } from '@testring/api';
+import { run } from '@testring/api';
 
-// Register lifecycle callbacks
-beforeRun(() => {
-  console.log('Preparing to execute test');
-});
-
-afterRun(() => {
-  console.log('Test execution completed');
-});
-
-// Define test function
-const loginTest = async (api) => {
-  await api.log('Starting login test');
-
-  // Use HTTP client
-  const response = await api.http.post('/login', {
-    username: 'testuser',
-    password: 'testpass'
-  });
-
-  await api.log('Login request completed', response.status);
-
-  // Use web application
-  await api.application.url('https://example.com/dashboard');
-  const title = await api.application.getTitle();
-
-  await api.log('Page title:', title);
-};
-
-// Execute test
-await run(loginTest);
-```
-
-### 4. TestContext
-
-Test context class that provides test environment and tools:
-
-```typescript
-// Use in test function
-const myTest = async (api) => {
-  // HTTP client
-  const response = await api.http.get('/api/users');
-
-  // Web application operations
+await run(async (api) => {
   await api.application.url('https://example.com');
-  const element = await api.application.findElement('#login-button');
-  await element.click();
-
-  // Logging
-  await api.log('User operation completed');
-  await api.logWarning('This is a warning');
-  await api.logError('This is an error');
-
-  // Business logging
-  await api.logBusiness('User login flow');
-  // ... execute business logic
-  await api.stopLogBusiness();
-
-  // Get parameters
-  const params = api.getParameters();
-  const env = api.getEnvironment();
-
-  // Custom application
-  const customApp = api.initCustomApplication(MyCustomWebApp);
-  await customApp.doSomething();
-};
+  await api.log('Page loaded');
+});
 ```
 
-## Complete Usage Examples
-
-### Basic Test Example
-
-```typescript
-import { run, testAPIController, beforeRun, afterRun } from '@testring/api';
-
-// Set test configuration
-testAPIController.setTestID('e2e-user-workflow');
-testAPIController.setTestParameters({
-  username: 'testuser@example.com',
-  password: 'securepass123',
-  timeout: 10000
-});
-
-testAPIController.setEnvironmentParameters({
-  baseUrl: 'https://staging.example.com',
-  apiKey: 'staging-api-key'
-});
-
-// Register lifecycle callbacks
-beforeRun(async () => {
-  console.log('Test preparation phase');
-  // Initialize test data
-  await setupTestData();
-});
-
-afterRun(async () => {
-  console.log('Test cleanup phase');
-  // Clean up test data
-  await cleanupTestData();
-});
-
-// Define test function
-const userRegistrationTest = async (api) => {
-  await api.logBusiness('User registration flow test');
-
-  try {
-    // Step 1: Visit registration page
-    await api.application.url(`${api.getEnvironment().baseUrl}/register`);
-    await api.log('Visited registration page');
-
-    // Step 2: Fill registration form
-    const params = api.getParameters();
-    await api.application.setValue('#email', params.username);
-    await api.application.setValue('#password', params.password);
-    await api.application.click('#register-btn');
-
-    // Step 3: Verify registration success
-    const successMessage = await api.application.getText('.success-message');
-    await api.log('Registration success message:', successMessage);
-
-    // Step 4: API verification
-    const response = await api.http.get('/api/user/profile', {
-      headers: {
-        'Authorization': `Bearer ${api.getEnvironment().apiKey}`
-      }
-    });
-
-    await api.log('User profile retrieved successfully', response.data);
-
-  } catch (error) {
-    await api.logError('Test execution failed:', error);
-    throw error;
-  } finally {
-    await api.stopLogBusiness();
-  }
-};
-
-// Execute test
-await run(userRegistrationTest);
-```
-
-### Multiple Test Functions Example
+#### Running Multiple Tests Sequentially
 
 ```typescript
 import { run } from '@testring/api';
 
 const loginTest = async (api) => {
-  await api.logBusiness('User login test');
-
   await api.application.url('/login');
   await api.application.setValue('#username', 'testuser');
-  await api.application.setValue('#password', 'testpass');
+  await api.application.setValue('#password', 'secret');
   await api.application.click('#login-btn');
-
-  const dashboard = await api.application.findElement('.dashboard');
-  await api.log('Login successful, entered dashboard');
-
-  await api.stopLogBusiness();
 };
 
-const profileTest = async (api) => {
-  await api.logBusiness('User profile test');
-
-  await api.application.click('#profile-link');
-  const profileData = await api.application.getText('.profile-info');
-  await api.log('User profile:', profileData);
-
-  await api.stopLogBusiness();
+const dashboardTest = async (api) => {
+  await api.log('Checking dashboard');
+  const title = await api.application.getTitle();
+  await api.log('Dashboard title:', title);
 };
 
-const logoutTest = async (api) => {
-  await api.logBusiness('User logout test');
-
-  await api.application.click('#logout-btn');
-  const loginForm = await api.application.findElement('#login-form');
-  await api.log('Logout successful, returned to login page');
-
-  await api.stopLogBusiness();
-};
-
-// Execute multiple tests in sequence
-await run(loginTest, profileTest, logoutTest);
+await run(loginTest, dashboardTest);
 ```
 
-### Custom Application Example
+### `beforeRun(callback)` / `afterRun(callback)`
+
+Register lifecycle callbacks that run before/after the test functions.
+
+```typescript
+import { beforeRun, afterRun } from '@testring/api';
+
+beforeRun(async () => {
+  // Runs before the first test function
+  console.log('Setting up test environment');
+});
+
+afterRun(async () => {
+  // Runs after all test functions complete (or on failure)
+  console.log('Cleaning up');
+});
+```
+
+`beforeRun` callbacks are flushed (executed and cleared) at the start of `run()`, after the `started` event. They are wrapped with `@testring/async-breakpoints` for debugger support.
+
+The `run()` function automatically registers an `afterRun` callback that calls `api.end()` to stop all web application instances.
+
+### `TestAPIController` class
+
+Manages the test state: test ID, parameters, environment parameters, lifecycle callbacks, and the event bus.
+
+```typescript
+import { testAPIController } from '@testring/api';
+```
+
+#### `testAPIController.setTestID(testID)` / `testAPIController.getTestID()`
+
+Set and get the unique identifier for the current test.
+
+```typescript
+testAPIController.setTestID('user-login-e2e');
+const id = testAPIController.getTestID(); // 'user-login-e2e'
+```
+
+#### `testAPIController.setTestParameters(params)` / `testAPIController.getTestParameters()`
+
+Set and get test-specific parameters (arbitrary object).
+
+```typescript
+testAPIController.setTestParameters({
+  username: 'testuser',
+  timeout: 5000,
+});
+
+const params = testAPIController.getTestParameters();
+```
+
+#### `testAPIController.setEnvironmentParameters(params)` / `testAPIController.getEnvironmentParameters()`
+
+Set and get environment-specific parameters (arbitrary object).
+
+```typescript
+testAPIController.setEnvironmentParameters({
+  baseUrl: 'https://staging.example.com',
+});
+
+const env = testAPIController.getEnvironmentParameters();
+```
+
+#### `testAPIController.getBus()`
+
+Returns the `BusEmitter` instance for the current test. The bus emits these events:
+
+| Event      | Payload         | When                                 |
+| ---------- | --------------- | ------------------------------------ |
+| `started`  | —               | Test execution begins                |
+| `finished` | —               | All test functions completed successfully |
+| `failed`   | `Error`         | A test function threw an error       |
+
+```typescript
+const bus = testAPIController.getBus();
+bus.on('failed', (error) => {
+  console.error('Test failed:', error.message);
+});
+```
+
+The `BusEmitter` extends `EventEmitter` and provides typed methods:
+
+```typescript
+class BusEmitter extends EventEmitter {
+  async startedTest(): Promise<void>;
+  async finishedTest(): Promise<void>;
+  async failedTest(error: Error): Promise<void>;
+}
+```
+
+#### `testAPIController.registerBeforeRunCallback(callback)` / `testAPIController.registerAfterRunCallback(callback)`
+
+Low-level registration of lifecycle callbacks. Prefer using `beforeRun()` and `afterRun()` from the top-level exports.
+
+#### `testAPIController.flushBeforeRunCallbacks()` / `testAPIController.flushAfterRunCallbacks()`
+
+Executes all registered callbacks in order and clears the list. Both methods integrate with `@testring/async-breakpoints` (waiting before and after instruction breakpoints).
+
+### `testAPIController` singleton
+
+A pre-created instance exported from the module:
+
+```typescript
+import { testAPIController } from '@testring/api';
+```
+
+### `TestContext` class
+
+The test context object passed as the `api` argument to each test function. Provides web application access, logging, parameter access, and custom application management.
+
+#### `api.application`
+
+A lazily-created `WebApplication` instance bound to the current test ID and transport. Created on first access.
+
+```typescript
+await api.application.url('https://example.com');
+await api.application.click('#submit');
+const text = await api.application.getText('.result');
+```
+
+#### `api.log(...message)` / `api.logError(...message)` / `api.logWarning(...message)`
+
+Log messages at info, error, and warning levels. All messages are prefixed with `[logged inside test]`.
+
+```typescript
+await api.log('Step completed:', stepName);
+await api.logWarning('Slow response detected');
+await api.logError('Element not found:', selector);
+```
+
+#### `api.logBusiness(message)` / `api.stopLogBusiness()`
+
+Start and stop a named business-level logging step. Calling `logBusiness()` again automatically stops the previous step.
+
+```typescript
+await api.logBusiness('User registration flow');
+// ... test steps ...
+await api.stopLogBusiness();
+```
+
+#### `api.getParameters()` / `api.getEnvironment()`
+
+Retrieve the test parameters and environment parameters from the `TestAPIController`.
+
+```typescript
+const params = api.getParameters();
+const env = api.getEnvironment();
+const baseUrl = env.baseUrl;
+```
+
+#### `api.initCustomApplication<T>(Constructor)`
+
+Creates a custom `WebApplication` subclass instance, bound to the current test ID and transport.
 
 ```typescript
 import { WebApplication } from '@testring/web-application';
 
-class CustomWebApp extends WebApplication {
-  async loginWithCredentials(username: string, password: string) {
-    await this.url('/login');
-    await this.setValue('#username', username);
-    await this.setValue('#password', password);
-    await this.click('#login-btn');
-
-    // Wait for login completion
-    await this.waitForElement('.dashboard', 5000);
-  }
-
-  async getUnreadNotifications() {
-    const notifications = await this.findElements('.notification.unread');
-    return notifications.length;
+class AdminApp extends WebApplication {
+  async loginAsAdmin() {
+    await this.url('/admin/login');
+    await this.setValue('#user', 'admin');
+    await this.click('#login');
   }
 }
 
-const customAppTest = async (api) => {
-  const customApp = api.initCustomApplication(CustomWebApp);
-
-  await customApp.loginWithCredentials('testuser', 'testpass');
-  const unreadCount = await customApp.getUnreadNotifications();
-
-  await api.log(`Unread notification count: ${unreadCount}`);
-
-  // Access custom application list
-  const customApps = api.getCustomApplicationsList();
-  await api.log(`Custom application count: ${customApps.length}`);
-};
+const admin = api.initCustomApplication(AdminApp);
+await admin.loginAsAdmin();
 ```
 
-## Error Handling
+#### `api.getCustomApplicationsList()`
+
+Returns an array of all custom `WebApplication` instances created via `initCustomApplication()`.
+
+#### `api.end()`
+
+Stops the default `application` and all custom applications. Called automatically during `afterRun`. Returns a `Promise` that resolves when all applications have ended.
+
+#### `api.cloneInstance<O>(obj)`
+
+Creates a shallow clone of the `TestContext` merged with the provided object. Useful for extending the context.
+
+### `WebApplication` re-export
+
+The `WebApplication` class from `@testring/web-application` is re-exported for convenience:
 
 ```typescript
-import { run, testAPIController } from '@testring/api';
+import { WebApplication } from '@testring/api';
+```
 
-// Listen to test failure events
-const bus = testAPIController.getBus();
-bus.on('failed', (error: Error) => {
-  console.error('Test failure details:', {
-    testId: testAPIController.getTestID(),
-    error: error.message,
-    stack: error.stack
-  });
+## Complete Example
+
+```typescript
+import { run, beforeRun, afterRun, testAPIController } from '@testring/api';
+
+testAPIController.setTestParameters({
+  username: 'testuser@example.com',
+  password: 'secure123',
 });
 
-const errorHandlingTest = async (api) => {
-  try {
-    await api.logBusiness('Error handling test');
+testAPIController.setEnvironmentParameters({
+  baseUrl: 'https://staging.example.com',
+});
 
-    // Operation that might fail
-    await api.application.url('/invalid-url');
+beforeRun(async () => {
+  console.log('Test starting:', testAPIController.getTestID());
+});
 
-  } catch (error) {
-    await api.logError('Caught error:', error);
-
-    // Can choose to re-throw or handle the error
-    throw error;
-  } finally {
-    await api.stopLogBusiness();
-  }
-};
-
-await run(errorHandlingTest);
-```
-
-## Performance Optimization
-
-### HTTP Request Optimization
-```typescript
-const optimizedHttpTest = async (api) => {
-  // Configure HTTP client
-  const httpOptions = {
-    timeout: 5000,
-    retries: 3,
-    headers: {
-      'User-Agent': 'testring-test-client'
-    }
-  };
-
-  // Concurrent requests
-  const [user, posts, comments] = await Promise.all([
-    api.http.get('/api/user', httpOptions),
-    api.http.get('/api/posts', httpOptions),
-    api.http.get('/api/comments', httpOptions)
-  ]);
-
-  await api.log('Concurrent requests completed');
-};
-```
-
-### Resource Cleanup
-```typescript
 afterRun(async () => {
-  // Ensure all resources are properly cleaned up
-  await api.end();
+  console.log('Test completed');
 });
-```
 
-## Configuration Options
+await run(async (api) => {
+  const { baseUrl } = api.getEnvironment();
+  const { username, password } = api.getParameters();
 
-### TestAPIController Configuration
-```typescript
-interface TestAPIControllerOptions {
-  testID: string;                    // Test ID
-  testParameters: object;            // Test parameters
-  environmentParameters: object;     // Environment parameters
-}
-```
+  await api.logBusiness('Login flow');
+  await api.application.url(`${baseUrl}/login`);
+  await api.application.setValue('#email', username);
+  await api.application.setValue('#password', password);
+  await api.application.click('#login-btn');
+  await api.log('Login submitted');
+  await api.stopLogBusiness();
 
-### TestContext Configuration
-```typescript
-interface TestContextConfig {
-  httpThrottle?: number;             // HTTP request throttling
-  runData?: ITestQueuedTestRunData;  // Run data
-}
-```
-
-## Event Types
-
-```typescript
-enum TestEvents {
-  started = 'started',               // Test started
-  finished = 'finished',             // Test completed
-  failed = 'failed'                  // Test failed
-}
+  await api.logBusiness('Dashboard verification');
+  const title = await api.application.getTitle();
+  await api.log('Dashboard title:', title);
+  await api.stopLogBusiness();
+});
 ```
 
 ## Dependencies
 
-- `@testring/web-application` - Web application testing functionality
-- `@testring/async-breakpoints` - Asynchronous breakpoint support
-- `@testring/logger` - Logging system
-- `@testring/http-api` - HTTP client
-- `@testring/transport` - Transport layer
-- `@testring/utils` - Utility functions
-- `@testring/types` - Type definitions
+- `@testring/web-application` — `WebApplication` class
+- `@testring/async-breakpoints` — Async breakpoint integration in lifecycle callbacks
+- `@testring/logger` — `loggerClient` for logging and step management
+- `@testring/transport` — `transport` singleton for web application IPC
+- `@testring/utils` — `restructureError` for error normalization
+- `@testring/types` — Type definitions (`TestEvents`, `ITestQueuedTestRunData`)
 
 ## Related Modules
 
-- `@testring/test-run-controller` - Test run controller
-- `@testring/test-worker` - Test worker process
-- `@testring/cli` - Command line interface
-- `@testring/async-assert` - Asynchronous assertion library
-
-## Best Practices
-
-1. **Set meaningful test IDs**: Use descriptive test IDs for easy log tracking
-2. **Parameter management**: Separate variable parameters and environment variables
-3. **Lifecycle callbacks**: Use beforeRun and afterRun appropriately for initialization and cleanup
-4. **Error handling**: Listen to test events and implement comprehensive error handling mechanisms
-5. **Resource cleanup**: Ensure all resources are properly cleaned up when tests end
+- [`@testring/test-worker`](./test-worker.md) — Runs test files in worker processes (invokes `run()`)
+- [`@testring/test-run-controller`](./test-run-controller.md) — Orchestrates test execution
+- [`@testring/web-application`](../packages/web-application.md) — Web application abstraction
+- [`@testring/async-breakpoints`](./async-breakpoints.md) — Debugger breakpoint support

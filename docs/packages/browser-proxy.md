@@ -1,307 +1,346 @@
 # @testring/browser-proxy
 
-Browser proxy service that provides a communication bridge between the main test process and browser plugins. This module spawns independent Node.js child processes and communicates with the main framework through `@testring/transport`.
-
-[![npm version](https://badge.fury.io/js/@testring/browser-proxy.svg)](https://www.npmjs.com/package/@testring/browser-proxy)
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-
-## Overview
-
-The browser proxy acts as an intermediary layer between the testring framework and browser automation plugins, enabling:
-
-- **Process Isolation** - Runs browser operations in separate processes to reduce main process load
-- **Plugin Management** - Manages browser plugin lifecycles and configurations
-- **Message Forwarding** - Provides reliable message routing between processes
-- **Multi-Instance Support** - Supports multiple proxy instances for different plugins
-- **Debug Support** - Enables debugging mode for development and troubleshooting
-
-## Key Features
-
-### 🔄 Process Management
-- Spawns and manages independent Node.js child processes for browser operations
-- Handles process lifecycle including startup, execution, and cleanup
-- Supports both local and remote worker configurations
-
-### 📡 Communication Bridge
-- Provides reliable message forwarding between main process and browser plugins
-- Implements command-response pattern for synchronous operations
-- Supports asynchronous event broadcasting
-
-### 🔌 Plugin Integration
-- Seamless integration with browser automation plugins (Selenium, Playwright)
-- Dynamic plugin loading and configuration
-- Standardized plugin interface for consistent behavior
-
-### 🛠️ Development Support
-- Debug mode for enhanced development experience
-- Comprehensive logging and error handling
-- Worker pool management for optimal resource utilization
+Browser proxy module providing the bridge between the testring framework and browser automation. Offers two architectures: the legacy controller-based approach using child process isolation with IPC, and the new simplified `BrowserProxyPlaywright` class that calls Playwright APIs directly.
 
 ## Installation
 
 ```bash
-# Using npm
-npm install --save-dev @testring/browser-proxy
-
-# Using yarn
-yarn add @testring/browser-proxy --dev
-
-# Using pnpm
 pnpm add @testring/browser-proxy --dev
 ```
 
-## Basic Usage
+## Architecture Overview
 
-### Creating a Browser Proxy Controller
+The module provides two distinct approaches to browser automation:
 
-```typescript
-import { browserProxyControllerFactory } from '@testring/browser-proxy';
-import { transport } from '@testring/transport';
+### Legacy Architecture (Controller + Worker + Plugin)
 
-// Create controller instance
-const controller = browserProxyControllerFactory(transport);
-
-// Initialize the controller
-await controller.init();
+```
+Main Process                          Child Process (forked)
+┌──────────────────────────┐          ┌─────────────────────────┐
+│  BrowserProxyController  │          │  browser-proxy/index.ts │
+│    extends PluggableModule          │    BrowserProxy          │
+│                          │          │      loads plugin        │
+│  BrowserProxyWorker ─────┼─ fork ──→│      dispatches commands │
+│    (manages child proc)  │          │                         │
+│                          │          │  IBrowserProxyPlugin     │
+│  BrowserProxyLocalWorker │          │    (e.g., Playwright,   │
+│    (in-process variant)  │          │     Selenium driver)    │
+└──────────────────────────┘          └─────────────────────────┘
 ```
 
-### Plugin Registration
+### New Architecture (Direct Playwright)
+
+```
+Main Process
+┌────────────────────────────────┐
+│  BrowserProxyPlaywright        │
+│    implements IBrowserProxyPlugin│
+│                                │
+│    Playwright Browser          │
+│      → BrowserContext          │
+│        → Page                  │
+│          → Locator API         │
+└────────────────────────────────┘
+```
+
+## BrowserProxyPlaywright Class (Recommended)
+
+Direct Playwright integration without child process overhead. Implements `IBrowserProxyPlugin` with all standard browser actions.
 
 ```typescript
-import { BrowserProxyAPI } from '@testring/plugin-api';
+import { BrowserProxyPlaywright, createBrowserProxyPlaywright } from '@testring/browser-proxy';
+```
 
-// In your plugin
-class MyBrowserPlugin {
-    constructor(api: BrowserProxyAPI) {
-        // Register browser proxy plugin
-        api.proxyPlugin('./path/to/browser-plugin', {
-            workerLimit: 2,
-            debug: false
-        });
-    }
+### Constructor
+
+```typescript
+class BrowserProxyPlaywright implements IBrowserProxyPlugin {
+    constructor(config?: {
+        browserName?: 'chromium' | 'firefox' | 'webkit';
+        launchOptions?: {
+            headless?: boolean;
+            args?: string[];
+            executablePath?: string;
+            devtools?: boolean;
+            [key: string]: any;
+        };
+        contextOptions?: {
+            viewport?: { width: number; height: number };
+            ignoreHTTPSErrors?: boolean;
+            recordVideo?: { dir: string };
+            [key: string]: any;
+        };
+    })
 }
 ```
 
-### Executing Browser Commands
+Defaults:
+- `browserName`: `'chromium'`
+- `launchOptions`: `{ headless: true, args: [] }`
+- `contextOptions`: `{}`
+
+### Lifecycle Methods
+
+| Method | Description |
+|--------|-------------|
+| `init()` | Launches browser, creates context and page. No-op if already initialized. |
+| `kill()` | Closes page, context, and browser. |
+| `end(applicant)` | Alias for `kill()`. |
+
+### Navigation
+
+| Method | Description |
+|--------|-------------|
+| `url(applicant, val)` | Navigate to URL via `page.goto(val)` |
+| `getTitle(applicant)` | Returns `page.title()` |
+| `refresh(applicant)` | Reloads page via `page.reload()` |
+| `getSource(applicant)` | Returns full page HTML via `page.content()` |
+
+### Element Interactions
+
+| Method | Description |
+|--------|-------------|
+| `click(applicant, selector)` | Click element via Playwright locator |
+| `doubleClick(applicant, selector)` | Double-click via `locator.dblclick()` |
+| `getText(applicant, selector)` | Get `textContent()` |
+| `getValue(applicant, selector)` | Get `inputValue()` |
+| `setValue(applicant, selector, value)` | Fill input via `locator.fill()` |
+| `clearValue(applicant, selector)` | Clear input via `locator.clear()` |
+| `keys(applicant, value)` | Type text via `page.keyboard.type()` |
+| `moveToObject(applicant, selector, x, y)` | Hover element via `locator.hover()` |
+| `dragAndDrop(applicant, source, dest)` | Drag via `locator.dragTo()` |
+
+### Element State
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `isVisible(applicant, selector)` | `boolean` | `locator.isVisible()` |
+| `isEnabled(applicant, selector)` | `boolean` | `locator.isEnabled()` |
+| `isSelected(applicant, selector)` | `boolean` | `locator.isChecked()` |
+| `isExisting(applicant, selector)` | `boolean` | `locator.count() > 0` |
+
+### Waiting
+
+| Method | Description |
+|--------|-------------|
+| `waitForExist(applicant, selector, timeout?)` | Wait for element attached (default 30s) |
+| `waitForVisible(applicant, selector, timeout?)` | Wait for element visible (default 30s) |
+| `waitForValue(applicant, selector, timeout?, reverse?)` | Wait for visible/hidden state |
+| `waitForSelected(applicant, selector, timeout?, reverse?)` | Wait for visible/hidden state |
+| `waitUntil(applicant, condition, timeout?, msg?, interval?)` | Poll condition until true |
+
+### Script Execution
+
+| Method | Description |
+|--------|-------------|
+| `execute(applicant, fn, args)` | `page.evaluate(fn, ...args)` |
+| `executeAsync(applicant, fn, args)` | Wraps function with callback pattern |
+
+### Select Operations
+
+| Method | Description |
+|--------|-------------|
+| `selectByIndex(applicant, selector, index)` | Select option by index |
+| `selectByValue(applicant, selector, value)` | Select option by value |
+| `selectByVisibleText(applicant, selector, text)` | Select option by label |
+| `selectByAttribute(applicant, selector, attr, value)` | Select option by attribute |
+
+### Attribute & Style
+
+| Method | Description |
+|--------|-------------|
+| `getAttribute(applicant, selector, attr)` | Get element attribute |
+| `getHTML(applicant, selector)` | Get `innerHTML()` |
+| `getCssProperty(applicant, selector, prop)` | Get computed CSS property |
+| `getSize(applicant, selector)` | Get `boundingBox()` dimensions |
+| `getTagName(applicant, selector)` | Get tag name (lowercase) |
+
+### Window/Tab Operations
+
+| Method | Description |
+|--------|-------------|
+| `newWindow(applicant, url, name, features)` | Opens new page in context |
+| `getCurrentTabId(applicant)` | Returns current page index |
+| `getTabIds(applicant)` | Returns array of page indices |
+| `switchTab(applicant, tabId)` | Switches active page by index |
+| `close(applicant, tabId)` | Closes page by index |
+| `windowHandles(applicant)` | Alias for getting page indices |
+
+### Cookie Operations
+
+| Method | Description |
+|--------|-------------|
+| `setCookie(applicant, cookie)` | Add cookie via `context.addCookies()` |
+| `getCookie(applicant, name?)` | Get cookie(s) via `context.cookies()` |
+| `deleteCookie(applicant, name)` | Clear cookie via `context.clearCookies()` |
+
+### Other Operations
+
+| Method | Description |
+|--------|-------------|
+| `makeScreenshot(applicant)` | Returns base64-encoded screenshot |
+| `scroll(applicant, selector, x, y)` | Scroll element |
+| `scrollIntoView(applicant, selector)` | `locator.scrollIntoViewIfNeeded()` |
+| `frame(applicant, frameID)` | Switch to frame by name or URL |
+| `elements(applicant, xpath)` | Returns array of element indices |
+
+### Factory Function
 
 ```typescript
-import { BrowserProxyActions } from '@testring/types';
-
-// Execute browser commands through the proxy
-const result = await controller.execute('test-session-1', {
-    action: BrowserProxyActions.click,
-    args: ['#submit-button', { timeout: 5000 }]
-});
-
-// Navigate to URL
-await controller.execute('test-session-1', {
-    action: BrowserProxyActions.url,
-    args: ['https://example.com']
-});
-
-// Wait for element
-await controller.execute('test-session-1', {
-    action: BrowserProxyActions.waitForExist,
-    args: ['#loading-indicator', 10000]
-});
+function createBrowserProxyPlaywright(config?: {
+    browserName?: 'chromium' | 'firefox' | 'webkit';
+    launchOptions?: { ... };
+    contextOptions?: { ... };
+}): BrowserProxyPlaywright
 ```
 
-## Configuration
-
-### Worker Configuration
+### Usage Example
 
 ```typescript
-interface IBrowserProxyWorkerConfig {
-    plugin: string;           // Plugin path or name
-    config: {
-        workerLimit?: number | 'local';  // Number of workers or 'local' mode
-        debug?: boolean;                 // Enable debug mode
-        timeout?: number;                // Command timeout in milliseconds
-        retries?: number;                // Number of retry attempts
-    };
+import { createBrowserProxyPlaywright } from '@testring/browser-proxy';
+
+const browser = createBrowserProxyPlaywright({
+    browserName: 'chromium',
+    launchOptions: { headless: true },
+    contextOptions: { viewport: { width: 1280, height: 720 } },
+});
+
+await browser.init();
+await browser.url('test-1', 'https://example.com');
+const title = await browser.getTitle('test-1');
+await browser.click('test-1', '#submit-button');
+await browser.kill();
+```
+
+## BrowserProxyController Class (Legacy)
+
+Extends `PluggableModule`. Manages a pool of `BrowserProxyWorker` instances that communicate with browser plugins via forked child processes.
+
+```typescript
+import { BrowserProxyController, browserProxyControllerFactory } from '@testring/browser-proxy';
+```
+
+### Constructor
+
+```typescript
+class BrowserProxyController extends PluggableModule implements IBrowserProxyController {
+    constructor(
+        transport: ITransport,
+        workerCreator: (pluginPath: string, config: any) => ChildProcess | Promise<ChildProcess>
+    )
 }
 ```
 
-### Debug Mode
+### Plugin Hook
+
+| Hook | Enum | Description |
+|------|------|-------------|
+| `getPlugin` | `BrowserProxyPlugins.getPlugin` | Resolves the external browser plugin configuration |
+
+### Methods
+
+| Method | Description |
+|--------|-------------|
+| `init()` | Loads plugin config via hook, sets worker limit, creates local worker if `workerLimit === 'local'` |
+| `execute(applicant, command)` | Routes command to appropriate worker. Manages worker pool with round-robin assignment. |
+| `kill()` | Terminates all workers and resets state. |
+
+### Worker Pool Behavior
+
+- Workers are created on-demand up to `workerLimit`
+- Each applicant (test session) is mapped to a specific worker
+- Round-robin assignment when pool is full
+- `BrowserProxyActions.end` releases the applicant-worker mapping
+- `workerLimit: 'local'` uses `BrowserProxyLocalWorker` (in-process)
+
+### browserProxyControllerFactory (Deprecated)
 
 ```typescript
-const controller = browserProxyControllerFactory(transport);
-
-// Enable debug mode for detailed logging
-await controller.init();
-
-// Execute with debug information
-const result = await controller.execute('debug-session', {
-    action: BrowserProxyActions.click,
-    args: ['#debug-button']
-});
-```
-
-## Advanced Usage
-
-### Custom Plugin Implementation
-
-```typescript
-import { IBrowserProxyPlugin } from '@testring/types';
-
-class CustomBrowserPlugin implements IBrowserProxyPlugin {
-    async click(applicant: string, selector: string, options?: any): Promise<any> {
-        // Custom click implementation
-        console.log(`Clicking ${selector} for ${applicant}`);
-        // ... browser automation logic
-        return { success: true };
-    }
-
-    async url(applicant: string, url: string): Promise<any> {
-        // Custom navigation implementation
-        console.log(`Navigating to ${url} for ${applicant}`);
-        // ... navigation logic
-        return { currentUrl: url };
-    }
-
-    async waitForExist(applicant: string, selector: string, timeout: number): Promise<any> {
-        // Custom wait implementation
-        console.log(`Waiting for ${selector} (timeout: ${timeout}ms)`);
-        // ... wait logic
-        return { found: true };
-    }
-
-    async end(applicant: string): Promise<any> {
-        // Cleanup for specific session
-        console.log(`Ending session for ${applicant}`);
-        return { ended: true };
-    }
-
-    kill(): void {
-        // Global cleanup
-        console.log('Killing browser plugin');
-    }
-}
-
-// Export plugin factory
-module.exports = (config: any) => new CustomBrowserPlugin();
-```
-
-### Worker Pool Management
-
-```typescript
-// Configure worker pool
-const controller = browserProxyControllerFactory(transport);
-
-// Set worker limit
-await controller.init(); // Uses plugin configuration
-
-// Execute commands across multiple workers
-const promises = [
-    controller.execute('session-1', { action: BrowserProxyActions.url, args: ['https://site1.com'] }),
-    controller.execute('session-2', { action: BrowserProxyActions.url, args: ['https://site2.com'] }),
-    controller.execute('session-3', { action: BrowserProxyActions.url, args: ['https://site3.com'] })
-];
-
-const results = await Promise.all(promises);
-```
-
-## API Reference
-
-### BrowserProxyController
-
-#### Methods
-
-- **`init(): Promise<void>`** - Initialize the controller and load plugins
-- **`execute(applicant: string, command: IBrowserProxyCommand): Promise<any>`** - Execute browser command
-- **`kill(): Promise<void>`** - Terminate all workers and cleanup resources
-
-### browserProxyControllerFactory
-
-Factory function that creates a new `BrowserProxyController` instance.
-
-```typescript
+/** @deprecated Use createBrowserProxyPlaywright for simplified Playwright-only implementation */
 function browserProxyControllerFactory(transport: ITransport): BrowserProxyController
 ```
 
-## Integration with Testing Frameworks
+Creates a `BrowserProxyController` with `fork()` from `@testring/child-process` as the worker creator.
 
-### With Selenium Driver
+## BrowserProxyWorker Class (Internal)
+
+Manages a single forked child process running a browser plugin. Handles IPC via transport with command-response pattern.
 
 ```typescript
-// In your test configuration
-{
-  "plugins": [
-    "@testring/plugin-selenium-driver"
-  ],
-  "selenium": {
-    "browsers": ["chrome"],
-    "workerLimit": 2
-  }
+class BrowserProxyWorker implements IBrowserProxyWorker {
+    constructor(
+        transport: ITransport,
+        workerCreator: (pluginPath: string, config: any) => ChildProcess | Promise<ChildProcess>,
+        spawnConfig: IBrowserProxyWorkerConfig
+    )
 }
 ```
 
-### With Playwright Driver
+Key behaviors:
+- Lazy spawning: process is forked on first `execute()` call
+- Command queuing: commands sent before spawn completes are queued
+- Auto-reconnect: if the child process exits unexpectedly, it re-spawns and replays queued commands
+- Each command gets a unique ID and is tracked in a pending pool
+
+## BrowserProxyLocalWorker Class (Internal)
+
+In-process worker alternative. Creates a `BrowserProxy` instance directly without forking. Uses transport broadcasting instead of per-child IPC.
 
 ```typescript
-// In your test configuration
-{
-  "plugins": [
-    "@testring/plugin-playwright-driver"
-  ],
-  "playwright": {
-    "browsers": ["chromium"],
-    "workerLimit": 3
-  }
+class BrowserProxyLocalWorker implements IBrowserProxyWorker {
+    constructor(transport: ITransport, spawnConfig: IBrowserProxyWorkerConfig)
 }
 ```
 
-## Error Handling
+## BrowserProxy Class (Internal, Child Process)
+
+Runs inside the forked child process. Loads a browser plugin dynamically and dispatches commands to it.
 
 ```typescript
-try {
-    const result = await controller.execute('test-session', {
-        action: BrowserProxyActions.click,
-        args: ['#non-existent-element']
-    });
-} catch (error) {
-    console.error('Browser command failed:', error);
-    // Handle error appropriately
+class BrowserProxy {
+    constructor(transport: ITransport, pluginPath: string, pluginConfig: any)
 }
 ```
 
-## Troubleshooting
+- Loads plugin via `requirePlugin()` from `@testring/utils`
+- Plugin must export a factory function: `(config) => IBrowserProxyPlugin`
+- Listens for `BrowserProxyMessageTypes.execute` messages
+- Calls the corresponding method on the plugin instance
+- Sends responses back via `BrowserProxyMessageTypes.response`
 
-### Common Issues
-
-1. **Plugin Loading Errors**
-   - Ensure plugin path is correct
-   - Verify plugin exports a factory function
-   - Check plugin dependencies are installed
-
-2. **Worker Spawn Failures**
-   - Check Node.js version compatibility
-   - Verify sufficient system resources
-   - Review debug logs for detailed error information
-
-3. **Communication Timeouts**
-   - Increase timeout values in configuration
-   - Check network connectivity for remote workers
-   - Monitor system resource usage
-
-### Debug Logging
-
-Enable debug mode for detailed logging:
+## Message Protocol
 
 ```typescript
-const controller = browserProxyControllerFactory(transport);
-// Debug information will be logged automatically when debug: true in config
+const enum BrowserProxyMessageTypes {
+    execute = 'BrowserProxy/EXEC',       // Command from controller to worker
+    response = 'BrowserProxy/RESPONSE',  // Response from worker to controller
+    exception = 'BrowserProxy/EXCEPTION' // Fatal error from worker
+}
+
+interface IBrowserProxyCommand {
+    action: BrowserProxyActions;  // Method name to call on plugin
+    args: any[];                  // Arguments to pass
+}
+
+interface IBrowserProxyCommandResponse {
+    uid: string;          // Command correlation ID
+    response: any;        // Return value from plugin method
+    error: Error | null;  // Error if command failed
+}
 ```
 
 ## Dependencies
 
-- `@testring/child-process` - Child process management
-- `@testring/logger` - Logging functionality
-- `@testring/pluggable-module` - Plugin architecture
-- `@testring/transport` - Inter-process communication
-- `@testring/types` - TypeScript type definitions
-- `@testring/utils` - Utility functions
+- `@testring/child-process` — `fork()` for spawning browser proxy workers
+- `@testring/transport` — IPC message passing
+- `@testring/pluggable-module` — Plugin hook system
+- `@testring/logger` — Logging
+- `@testring/utils` — `generateUniqId()`, `requirePlugin()`
+- `@testring/types` — Type definitions and enums
+- `playwright` — Browser automation (for `BrowserProxyPlaywright`)
 
-## License
+## Related Modules
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+- [`@testring/plugin-playwright-driver`](./plugin-playwright-driver.md) — Playwright plugin for the legacy controller architecture
+- [`@testring/transport`](../core-modules/transport.md) — Inter-process communication layer
+- [`@testring/plugin-api`](../core-modules/plugin-api.md) — Plugin registration API

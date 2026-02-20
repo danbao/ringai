@@ -4,22 +4,23 @@ Get up and running with testring in just a few minutes.
 
 ## Prerequisites
 
-Make sure you have [installed testring](installation.md) before proceeding.
+Make sure you have [installed testring](./installation.md) before proceeding.
 
 ## Step 1: Initialize Your Project
 
-Create a new directory for your tests:
+Create a new directory and initialize it:
 
 ```bash
 mkdir my-testring-tests
 cd my-testring-tests
-npm init -y
+pnpm init
 ```
 
-Install testring:
+Install testring and the Playwright driver:
 
 ```bash
-npm install --save-dev testring
+pnpm add -D testring @testring/plugin-playwright-driver
+npx playwright install
 ```
 
 ## Step 2: Create Your First Test
@@ -27,41 +28,28 @@ npm install --save-dev testring
 Create a test file `test/example.spec.js`:
 
 ```javascript
-// test/example.spec.js
-describe('My First Test', () => {
-    it('should load a webpage', async () => {
-        await browser.url('https://example.com');
-        
-        const title = await browser.getTitle();
-        expect(title).to.contain('Example');
-    });
-    
-    it('should find an element', async () => {
-        await browser.url('https://example.com');
-        
-        const heading = await browser.$('h1');
-        const text = await heading.getText();
-        expect(text).to.not.be.empty;
-    });
+import { run } from 'testring';
+
+run(async (api) => {
+    await api.application.url('https://example.com');
+    const title = await api.application.getTitle();
 });
 ```
 
+testring uses its own `run()` API where each test file calls `run()` with an async callback that receives the test API context.
+
 ## Step 3: Create Configuration
 
-Create a testring configuration file `.testringrc`:
+Create a testring configuration file `.testringrc` in your project root:
 
 ```json
 {
     "tests": "./test/**/*.spec.js",
     "plugins": [
-        ["@testring/plugin-playwright-driver", {
-            "browser": "chromium",
-            "headless": true
-        }]
+        ["@testring/plugin-playwright-driver", { "headless": true }],
+        "@testring/plugin-babel"
     ],
-    "workerLimit": 2,
-    "retryCount": 1,
-    "timeout": 30000
+    "workerLimit": 2
 }
 ```
 
@@ -73,86 +61,59 @@ Execute your tests:
 npx testring run
 ```
 
-You should see output similar to:
-
-```
-✓ My First Test should load a webpage
-✓ My First Test should find an element
-
-2 passing (1.2s)
-```
-
-## Step 5: Add More Advanced Features
+## Step 5: Add More Features
 
 ### Add Babel Support
 
-For modern JavaScript features:
+For transpilation support with modern JavaScript features:
 
 ```bash
-npm install --save-dev @testring/plugin-babel babel-preset-env
+pnpm add -D @testring/plugin-babel @babel/preset-env
 ```
 
-Create `.babelrc`:
+Create a `.babelrc` file:
 
 ```json
 {
-    "presets": ["env"]
+    "presets": ["@babel/preset-env"]
 }
 ```
 
-Update `.testringrc`:
+Make sure `@testring/plugin-babel` is listed in the `plugins` array of your `.testringrc` (as shown in Step 3).
+
+### Add File Storage
+
+For screenshots and test artifacts:
+
+```bash
+pnpm add -D @testring/plugin-fs-store
+```
+
+Update `.testringrc` to include the plugin:
 
 ```json
 {
     "tests": "./test/**/*.spec.js",
     "plugins": [
         "@testring/plugin-babel",
-        ["@testring/plugin-playwright-driver", {
-            "browser": "chromium",
-            "headless": true
-        }]
-    ]
-}
-```
-
-### Add File Storage
-
-For screenshots and artifacts:
-
-```bash
-npm install --save-dev @testring/plugin-fs-store
-```
-
-Update configuration:
-
-```json
-{
-    "plugins": [
-        "@testring/plugin-babel",
         "@testring/plugin-fs-store",
-        ["@testring/plugin-playwright-driver", {
-            "browser": "chromium",
-            "headless": true
-        }]
-    ]
+        ["@testring/plugin-playwright-driver", { "headless": true }]
+    ],
+    "workerLimit": 2,
+    "screenshots": "afterError",
+    "screenshotPath": "./_tmp/"
 }
 ```
 
 ## Next Steps
 
-- [Configuration Guide](../configuration/.md) - Learn about all configuration options
-- [API Reference](../api/.md) - Explore the full testring API
-- [Plugin Development](../guides/plugin-development.md) - Create custom plugins
-- [Best Practices](../guides/testing-best-practices.md) - Learn testing best practices
-
-## Example Projects
-
-Check out example projects in the repository:
-- [E2E Test App](../packages/e2e-test-app.md) - Complete example application
-- [Plugin Examples](../packages/.md) - Various plugin usage examples
+- [Configuration Guide](../configuration/index.md) — Learn about all configuration options
+- [API Reference](../api/index.md) — Explore the full testring API
+- [Plugin Development](../guides/plugin-development.md) — Create custom plugins
+- [Best Practices](../guides/testing-best-practices.md) — Learn testing best practices
 
 ## Need Help?
 
 - [Troubleshooting Guide](../guides/troubleshooting.md)
-- [GitHub Issues](https://github.com/ringcentral/testring/issues)
+- [GitHub Issues](https://github.com/danbao/testring/issues)
 - [Documentation Index](../README.md)

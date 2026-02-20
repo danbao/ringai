@@ -2,9 +2,6 @@
 
 Browser extension component for the testring framework that provides in-browser debugging and testing capabilities. This Chrome extension integrates with the testring developer tools to enable real-time test monitoring, element highlighting, and browser interaction recording directly within web pages.
 
-[![npm version](https://badge.fury.io/js/@testring/devtool-extension.svg)](https://www.npmjs.com/package/@testring/devtool-extension)
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
-
 ## Overview
 
 The devtool extension is a Chrome browser extension that serves as the bridge between web pages and the testring framework, providing:
@@ -43,14 +40,7 @@ The devtool extension is a Chrome browser extension that serves as the bridge be
 ## Installation
 
 ```bash
-# Using npm
-npm install --save-dev @testring/devtool-extension
-
-# Using yarn
-yarn add @testring/devtool-extension --dev
-
-# Using pnpm
-pnpm add @testring/devtool-extension --dev
+pnpm add @testring/devtool-extension --save-dev
 ```
 
 ## Extension Architecture
@@ -79,14 +69,14 @@ const elementHighlightController = new ElementHighlightController(window);
 
 // Listen for highlighting commands
 window.addEventListener('message', (event) => {
-  switch (event.data.type) {
-    case 'ADD_XPATH_HIGHLIGHT':
-      elementHighlightController.addXpathSelector(event.data.xpath);
-      break;
-    case 'CLEAR_HIGHLIGHTS':
-      elementHighlightController.clearHighlights();
-      break;
-  }
+    switch (event.data.type) {
+        case 'ADD_XPATH_HIGHLIGHT':
+            elementHighlightController.addXpathSelector(event.data.xpath);
+            break;
+        case 'CLEAR_HIGHLIGHTS':
+            elementHighlightController.clearHighlights();
+            break;
+    }
 });
 ```
 
@@ -99,9 +89,9 @@ import { BackgroundChromeClient } from './extension/chrome-transport/chrome-clie
 const client = new BackgroundChromeClient();
 
 function renderPopup(config) {
-  const iframe = document.createElement('iframe');
-  iframe.src = `http://${config.host}:${config.httpPort}/popup?appId=${config.appId}`;
-  document.body.appendChild(iframe);
+    const iframe = document.createElement('iframe');
+    iframe.src = `http://${config.host}:${config.httpPort}/popup?appId=${config.appId}`;
+    document.body.appendChild(iframe);
 }
 ```
 
@@ -110,15 +100,14 @@ function renderPopup(config) {
 ### Basic Setup
 
 1. **Install the extension package**:
-```bash
-npm install --save-dev @testring/devtool-extension
-```
+   ```bash
+   pnpm add @testring/devtool-extension --save-dev
+   ```
 
 2. **Build the extension**:
-```bash
-cd node_modules/@testring/devtool-extension
-npm run build
-```
+   ```bash
+   pnpm run build
+   ```
 
 3. **Load the extension in Chrome**:
    - Open Chrome and navigate to `chrome://extensions/`
@@ -147,22 +136,28 @@ console.log('Extension ID:', config.extensionId);
 
 ```typescript
 import {
-  extensionId,
-  absoluteExtensionPath,
-  extensionCRXPath
+    extensionId,
+    absoluteExtensionPath,
+    extensionCRXPath,
 } from '@testring/devtool-extension';
 
 // Extension metadata
 console.log('Extension ID:', extensionId);
 console.log('Extension Path:', absoluteExtensionPath);
 console.log('CRX File:', extensionCRXPath);
+```
 
-// Use with browser automation
-const browser = await puppeteer.launch({
-  args: [
-    `--load-extension=${absoluteExtensionPath}`,
-    `--disable-extensions-except=${absoluteExtensionPath}`
-  ]
+### With Playwright
+
+```typescript
+import { chromium } from 'playwright';
+import { absoluteExtensionPath } from '@testring/devtool-extension';
+
+const browser = await chromium.launchPersistentContext('', {
+    args: [
+        `--load-extension=${absoluteExtensionPath}`,
+        `--disable-extensions-except=${absoluteExtensionPath}`,
+    ],
 });
 ```
 
@@ -174,24 +169,24 @@ The extension uses a standard Chrome extension manifest:
 
 ```json
 {
-  "manifest_version": 2,
-  "name": "TestRing",
-  "description": "TestRing recording extension",
-  "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "activeTab",
-    "contextMenus",
-    "tabs"
-  ],
-  "content_scripts": [{
-    "matches": ["*://*/*"],
-    "js": ["content.bundle.js"]
-  }],
-  "background": {
-    "scripts": ["background.bundle.js"],
-    "persistent": true
-  }
+    "manifest_version": 2,
+    "name": "TestRing",
+    "description": "TestRing recording extension",
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "activeTab",
+        "contextMenus",
+        "tabs"
+    ],
+    "content_scripts": [{
+        "matches": ["*://*/*"],
+        "js": ["content.bundle.js"]
+    }],
+    "background": {
+        "scripts": ["background.bundle.js"],
+        "persistent": true
+    }
 }
 ```
 
@@ -200,19 +195,19 @@ The extension uses a standard Chrome extension manifest:
 Configure the extension through the options page or programmatically:
 
 ```typescript
-import { IExtensionApplicationConfig } from '@testring/types';
+import type { IExtensionApplicationConfig } from '@testring/types';
 
 const config: IExtensionApplicationConfig = {
-  host: 'localhost',
-  httpPort: 9000,
-  wsPort: 9001,
-  appId: 'my-test-app'
+    host: 'localhost',
+    httpPort: 9000,
+    wsPort: 9001,
+    appId: 'my-test-app',
 };
 
 // Set configuration through extension messaging
 chrome.runtime.sendMessage({
-  type: 'SET_EXTENSION_OPTIONS',
-  payload: config
+    type: 'SET_EXTENSION_OPTIONS',
+    payload: config,
 });
 ```
 
@@ -234,14 +229,14 @@ export const reportPath: string;
 
 ```typescript
 enum ExtensionPostMessageTypes {
-  CLEAR_HIGHLIGHTS = 'CLEAR_HIGHLIGHTS',
-  ADD_XPATH_HIGHLIGHT = 'ADD_XPATH_HIGHLIGHT',
-  REMOVE_XPATH_HIGHLIGHT = 'REMOVE_XPATH_HIGHLIGHT'
+    CLEAR_HIGHLIGHTS = 'CLEAR_HIGHLIGHTS',
+    ADD_XPATH_HIGHLIGHT = 'ADD_XPATH_HIGHLIGHT',
+    REMOVE_XPATH_HIGHLIGHT = 'REMOVE_XPATH_HIGHLIGHT',
 }
 
 enum ExtensionMessagingTransportTypes {
-  WAIT_FOR_READY = 'WAIT_FOR_READY',
-  SET_EXTENSION_OPTIONS = 'SET_EXTENSION_OPTIONS'
+    WAIT_FOR_READY = 'WAIT_FOR_READY',
+    SET_EXTENSION_OPTIONS = 'SET_EXTENSION_OPTIONS',
 }
 ```
 
@@ -249,14 +244,14 @@ enum ExtensionMessagingTransportTypes {
 
 ```typescript
 class ElementHighlightController {
-  // Add XPath-based element highlighting
-  addXpathSelector(xpath: string): void;
+    // Add XPath-based element highlighting
+    addXpathSelector(xpath: string): void;
 
-  // Remove specific XPath highlighting
-  removeXpathSelector(xpath: string): void;
+    // Remove specific XPath highlighting
+    removeXpathSelector(xpath: string): void;
 
-  // Clear all highlights
-  clearHighlights(): void;
+    // Clear all highlights
+    clearHighlights(): void;
 }
 ```
 
@@ -266,10 +261,10 @@ class ElementHighlightController {
 
 ```bash
 # Development build with watch mode
-npm run build:watch
+pnpm run build:watch
 
 # Production build
-npm run build
+pnpm run build
 ```
 
 ### Extension Structure
@@ -280,75 +275,10 @@ dist/
 ├── content.bundle.js       # Content script
 ├── popup.bundle.js         # Popup interface
 ├── options.bundle.js       # Options page
-├── manifest.json          # Extension manifest
-├── popup.html             # Popup HTML
-├── options.html           # Options HTML
-└── icon.png              # Extension icon
-```
-
-### Testing the Extension
-
-1. **Load in Chrome**:
-   ```bash
-   # Build the extension
-   npm run build
-
-   # Load unpacked extension from dist/ folder
-   ```
-
-2. **Test with testring**:
-   ```typescript
-   import { DevtoolServerController } from '@testring/devtool-backend';
-
-   const devtools = new DevtoolServerController(transport);
-   await devtools.init();
-
-   // Extension should automatically connect
-   ```
-
-## Integration Examples
-
-### With Selenium WebDriver
-
-```typescript
-import { Builder } from 'selenium-webdriver';
-import { absoluteExtensionPath } from '@testring/devtool-extension';
-
-const driver = await new Builder()
-  .forBrowser('chrome')
-  .setChromeOptions(
-    new chrome.Options()
-      .addArguments(`--load-extension=${absoluteExtensionPath}`)
-  )
-  .build();
-```
-
-### With Playwright
-
-```typescript
-import { chromium } from 'playwright';
-import { absoluteExtensionPath } from '@testring/devtool-extension';
-
-const browser = await chromium.launchPersistentContext('', {
-  args: [
-    `--load-extension=${absoluteExtensionPath}`,
-    `--disable-extensions-except=${absoluteExtensionPath}`
-  ]
-});
-```
-
-### With Puppeteer
-
-```typescript
-import puppeteer from 'puppeteer';
-import { absoluteExtensionPath } from '@testring/devtool-extension';
-
-const browser = await puppeteer.launch({
-  args: [
-    `--load-extension=${absoluteExtensionPath}`,
-    `--disable-extensions-except=${absoluteExtensionPath}`
-  ]
-});
+├── manifest.json           # Extension manifest
+├── popup.html              # Popup HTML
+├── options.html            # Options HTML
+└── icon.png                # Extension icon
 ```
 
 ## Troubleshooting
@@ -356,7 +286,7 @@ const browser = await puppeteer.launch({
 ### Common Issues
 
 1. **Extension not loading**:
-   - Ensure the extension is built (`npm run build`)
+   - Ensure the extension is built (`pnpm run build`)
    - Check Chrome developer mode is enabled
    - Verify manifest.json is valid
 
@@ -370,38 +300,26 @@ const browser = await puppeteer.launch({
    - Verify XPath selectors are valid
    - Ensure page allows script execution
 
-### Debug Mode
-
-Enable debug logging in the extension:
-
-```typescript
-// In background script
-console.log('Extension background loaded');
-
-// In content script
-console.log('Content script injected');
-
-// Check extension status
-chrome.management.getSelf((info) => {
-  console.log('Extension info:', info);
-});
-```
-
 ## Dependencies
 
-- **`@testring/client-ws-transport`** - WebSocket communication
-- **`@testring/types`** - TypeScript type definitions
-- **`@testring/utils`** - Utility functions
-- **`chrome-launcher`** - Chrome browser automation
-- **`webpack`** - Module bundling and build system
+- **`@testring/client-ws-transport`** — WebSocket communication
+- **`@testring/types`** — TypeScript type definitions
+- **`@testring/utils`** — Utility functions
+- **`chrome-launcher`** — Chrome browser automation
+- **`webpack`** — Module bundling and build system
 
 ## Related Modules
 
-- **`@testring/devtool-backend`** - Backend server for developer tools
-- **`@testring/devtool-frontend`** - Frontend interface for developer tools
-- **`@testring/plugin-selenium-driver`** - Selenium WebDriver integration
-- **`@testring/plugin-playwright-driver`** - Playwright integration
+- **[@testring/devtool-backend](devtool-backend.md)** — Backend server for developer tools
+- **[@testring/devtool-frontend](devtool-frontend.md)** — Frontend interface for developer tools
+- **[@testring/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
+
+## Requirements
+
+- **Node.js:** 22+
+- **pnpm:** 10+
+- **Chrome:** Latest stable
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.

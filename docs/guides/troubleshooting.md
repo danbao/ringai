@@ -1,293 +1,471 @@
 # Troubleshooting Guide
 
-This guide helps you resolve common issues when using testring.
+This guide helps resolve common issues when working with testring.
+
+## Environment Requirements
+
+testring requires:
+- **Node.js 22+** (ES2022 features, native ESM support)
+- **pnpm 10+** (package manager)
+- **TypeScript 5+** (ES2022 target)
+
+```bash
+node --version   # Should show v22.0.0 or higher
+pnpm --version   # Should show 10.0.0 or higher
+```
 
 ## Installation Issues
 
-### Node.js Version Compatibility
+### pnpm Workspace Errors
 
-**Problem:** testring fails to install or run
-**Solution:** Ensure you're using Node.js 16.0 or higher
+**Problem:** Dependencies fail to install or resolve in the monorepo.
 
 ```bash
-node --version  # Should show v16.0.0 or higher
-npm --version   # Should show 7.0.0 or higher
+# Clean install from scratch
+pnpm run cleanup
+pnpm install
+
+# Or full reinstall
+pnpm run reinstall
 ```
 
 ### Permission Errors
 
-**Problem:** Permission denied during installation
-**Solution:** Use proper npm configuration or sudo (not recommended)
+**Problem:** Permission denied during global installation.
 
 ```bash
-# Preferred: Configure npm to use a different directory
-npm config set prefix ~/.npm-global
-export PATH=~/.npm-global/bin:$PATH
-
-# Alternative: Use sudo (not recommended)
-sudo npm install -g testring
+# Use pnpm's built-in global management (no sudo needed)
+pnpm setup
+pnpm add -g @testring/cli
 ```
 
-### Network/Proxy Issues
+### Peer Dependency Conflicts
 
-**Problem:** Installation fails due to network issues
-**Solution:** Configure npm proxy settings
+**Problem:** pnpm strict mode rejects mismatched peer dependencies.
+
+Check `pnpm-workspace.yaml` and ensure all workspace packages use consistent dependency versions:
 
 ```bash
-npm config set proxy http://proxy.company.com:8080
-npm config set https-proxy http://proxy.company.com:8080
-npm config set registry https://registry.npmjs.org/
+pnpm run deps:validate
+pnpm run deps:find-updates
 ```
 
-## Configuration Issues
+## ESM-Specific Issues
 
-### Invalid Configuration File
+### "require is not defined" / "module is not defined"
 
-**Problem:** testring fails to start with configuration errors
-**Solution:** Validate your `.testringrc` file
+**Problem:** Code uses CommonJS syntax in an ESM package.
 
-```bash
-# Check JSON syntax
-node -e "console.log(JSON.parse(require('fs').readFileSync('.testringrc', 'utf8')))"
+All testring packages use `"type": "module"` in `package.json`. Use ESM imports:
 
-# Use JavaScript config for complex setups
-mv .testringrc testring.config.js
+```typescript
+// ❌ Wrong
+const { Sandbox } = require('@testring/sandbox');
+
+// ✅ Correct
+import { Sandbox } from '@testring/sandbox';
 ```
 
-### Plugin Loading Errors
+### `__dirname` / `__filename` Not Available
 
-**Problem:** Plugins fail to load
-**Solution:** Verify plugin installation and configuration
+**Problem:** ESM modules don't have `__dirname` or `__filename` globals.
 
-```bash
-# Check if plugin is installed
-npm list @testring/plugin-playwright-driver
+```typescript
+// ✅ ESM equivalent
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-# Reinstall if missing
-npm install --save-dev @testring/plugin-playwright-driver
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 ```
 
-## Browser Driver Issues
+### Configuration File Format
 
-### Playwright Browser Installation
+**Problem:** `.testringrc.js` fails to load with ESM errors.
 
-**Problem:** Playwright browsers not found
-**Solution:** Install browsers explicitly
+testring supports these config formats:
+- `.testringrc` — JSON (always works)
+- `.testringrc.js` — Must use ESM syntax (`export default { ... }`)
+- `.testringrc.cjs` — Use for CommonJS config (`module.exports = { ... }`)
+
+```javascript
+// .testringrc.js (ESM)
+export default {
+    plugins: ['@testring/plugin-playwright-driver'],
+    workerLimit: 4,
+};
+```
+
+```javascript
+// .testringrc.cjs (CommonJS fallback)
+module.exports = {
+    plugins: ['@testring/plugin-playwright-driver'],
+    workerLimit: 4,
+};
+```
+
+### Dynamic Imports
+
+**Problem:** `import()` paths need to be file URLs on Windows.
+
+```typescript
+// ❌ May fail on Windows
+const mod = await import('/absolute/path/to/module.js');
+
+// ✅ Cross-platform
+import { pathToFileURL } from 'node:url';
+const mod = await import(pathToFileURL('/absolute/path/to/module.js').href);
+```
+
+## TypeScript Issues
+
+### Using tsx Instead of ts-node
+
+**Problem:** `ts-node` doesn't work well with ESM + TypeScript.
+
+testring uses `tsx` as the TypeScript ESM loader:
 
 ```bash
+# ❌ ts-node often fails with ESM
+npx ts-node --esm script.ts
+
+# ✅ Use tsx instead
+npx tsx script.ts
+```
+
+For running scripts that need TypeScript support:
+```bash
+node --import tsx/esm script.ts
+```
+
+### TypeScript Compilation Errors
+
+**Problem:** Build fails with type errors.
+
+```bash
+# Build all packages (turbo handles dependency order)
+pnpm run build
+
+# Build main packages only
+pnpm run build:main
+```
+
+Ensure your `tsconfig.json` extends the base config:
+```json
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src"
+    }
+}
+```
+
+## Build System Issues
+
+### turbo Cache Issues
+
+**Problem:** Build seems stuck or uses stale output.
+
+```bash
+# Clear turbo cache
+rm -rf .turbo
+rm -rf node_modules/.cache/turbo
+
+# Force rebuild without cache
+npx turbo run build --force
+
+# Or clean everything and rebuild
+pnpm run cleanup
+pnpm install
+pnpm run build
+```
+
+### tsup Build Failures
+
+**Problem:** Individual package build fails.
+
+```bash
+# Build a specific package
+cd core/sandbox
+npx tsup
+
+# Check the package's tsup.config.ts matches the base pattern
+```
+
+Ensure each package's `tsup.config.ts` imports from the base config:
+```typescript
+import { createTsupConfig } from '../../tsup.config.base';
+export default createTsupConfig();
+```
+
+### Missing dist/ Directory
+
+**Problem:** Package cannot be imported because `dist/` doesn't exist.
+
+```bash
+# Build the specific package and its dependencies
+pnpm run build
+
+# Or build just main packages
+pnpm run build:main
+```
+
+## Testing Issues
+
+### Vitest Configuration
+
+**Problem:** Tests fail to run or can't find test files.
+
+The root `vitest.config.ts` configures all test paths. Run tests with:
+
+```bash
+# All unit tests
+pnpm run test:unit
+
+# Single test file
+npx vitest run path/to/file.spec.ts
+
+# Watch mode
+pnpm run test:unit:watch
+
+# With coverage
+pnpm run test:unit:coverage
+```
+
+### Test Isolation Failures
+
+**Problem:** Tests interfere with each other or share state.
+
+The `SandboxWorkerThreads` class creates a fresh `Worker` thread per execution. If you see state leaking:
+
+1. Check that `SandboxWorkerThreads.clearCache()` is called after tests
+2. Ensure test files don't modify global state
+3. Run problematic tests in isolation: `npx vitest run --no-threads path/to/test.spec.ts`
+
+### E2E Test Failures
+
+**Problem:** E2E tests fail in headless mode.
+
+```bash
+# Run E2E tests
+pnpm run test:e2e:headless
+
+# Debug by running headed
+# Set headless: false in the Playwright config
+```
+
+## Playwright Browser Issues
+
+### Browsers Not Installed
+
+**Problem:** `browserType.launch: Executable doesn't exist`
+
+```bash
+# Install all Playwright browsers
 npx playwright install
-npx playwright install chromium  # Install specific browser
+
+# Install specific browser
+npx playwright install chromium
+npx playwright install firefox
+npx playwright install webkit
+
+# Install with system dependencies (Linux CI)
+npx playwright install --with-deps
 ```
 
-### Selenium WebDriver Issues
+### Browser Launch Failures in CI
 
-**Problem:** WebDriver executable not found
-**Solution:** Install and configure drivers
+**Problem:** Browsers crash on startup in Docker/CI environments.
 
 ```bash
-# Install ChromeDriver
-npm install --save-dev chromedriver
+# Install system dependencies
+npx playwright install-deps
 
-# Or use webdriver-manager
-npm install -g webdriver-manager
-webdriver-manager update
+# Use appropriate launch args
 ```
 
-### Headless Mode Issues
+For Docker, ensure your configuration includes sandbox-disabling args:
 
-**Problem:** Tests fail in headless mode but work in headed mode
-**Solution:** Debug display and environment issues
+```typescript
+const browser = createBrowserProxyPlaywright({
+    browserName: 'chromium',
+    launchOptions: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    },
+});
+```
+
+### Playwright Version Mismatch
+
+**Problem:** `browserType.launch: Browser was downloaded for a different version`
 
 ```bash
-# Run in headed mode for debugging
-testring run --headed
-
-# Check display environment (Linux)
-export DISPLAY=:0
+# Reinstall browsers matching the installed Playwright version
+npx playwright install
 ```
 
-## Test Execution Issues
+## Windows-Specific Issues
 
-### Tests Timing Out
+### Path Separator Issues
 
-**Problem:** Tests consistently timeout
-**Solution:** Increase timeout values and optimize selectors
+**Problem:** File paths use backslashes that break ESM `import()`.
+
+testring handles this internally by converting to `file://` URLs, but in custom code:
+
+```typescript
+import { pathToFileURL } from 'node:url';
+
+// ❌ Breaks on Windows
+const mod = await import('C:\\project\\module.js');
+
+// ✅ Works cross-platform
+const mod = await import(pathToFileURL('C:\\project\\module.js').href);
+```
+
+### Line Ending Issues
+
+**Problem:** Git checkout changes line endings, causing test snapshots to fail.
+
+```bash
+# Configure git for consistent line endings
+git config core.autocrlf input
+```
+
+### Long Path Issues
+
+**Problem:** `ENAMETOOLONG` errors in `node_modules`.
+
+```bash
+# Enable long paths on Windows
+git config core.longpaths true
+```
+
+## Worker Process Issues
+
+### Worker Spawn Failures
+
+**Problem:** `fork()` fails with `ENOENT` or `ENOMEM`.
+
+- Check that the build is up to date (`pnpm run build`)
+- Verify the worker entry point exists: `core/test-worker/dist/worker.js`
+- Reduce `workerLimit` if running out of memory
+
+### IPC Communication Errors
+
+**Problem:** `Transport error` or `IPC channel closed`
+
+This usually means a worker process crashed. Check:
+
+1. Worker stderr output in logs (prefixed with `[worker/<id>]`)
+2. Compilation errors (check `TestWorkerPlugin.compile` hooks)
+3. Sandbox execution errors (test code syntax/runtime errors)
+
+### Worker Timeout
+
+**Problem:** Tests hang and eventually timeout.
 
 ```json
 {
     "timeout": 60000,
-    "retryCount": 2,
-    "plugins": [
-        ["@testring/plugin-playwright-driver", {
-            "timeout": 30000,
-            "navigationTimeout": 30000
-        }]
-    ]
+    "workerLimit": 2
 }
 ```
 
-### Element Not Found Errors
+- Reduce `workerLimit` to avoid resource exhaustion
+- Check for unresolved promises in test code
+- Use `waitForRelease: false` unless debugging with devtools
 
-**Problem:** Elements cannot be located
-**Solution:** Improve selectors and add waits
+## Linting Issues
 
-```javascript
-// Bad: Immediate selection
-const element = await browser.$('#my-element');
+### ESLint Flat Config
 
-// Good: Wait for element
-const element = await browser.$('#my-element');
-await element.waitForDisplayed({ timeout: 5000 });
+**Problem:** Linting fails or ignores files.
 
-// Better: Use data attributes
-const element = await browser.$('[data-test-id="my-element"]');
+testring uses ESLint flat config (`eslint.config.js`):
+
+```bash
+# Run linting
+pnpm run lint
+
+# Auto-fix
+pnpm run lint:fix
 ```
 
-### Memory Issues
-
-**Problem:** Tests consume too much memory
-**Solution:** Optimize worker configuration
-
-```json
-{
-    "workerLimit": 2,  // Reduce parallel workers
-    "retryCount": 1,   // Reduce retries
-    "timeout": 30000   // Reduce timeout
-}
-```
-
-## Performance Issues
-
-### Slow Test Execution
-
-**Problem:** Tests run slowly
-**Solution:** Optimize configuration and test structure
-
-```json
-{
-    "workerLimit": 4,  // Increase parallel workers
-    "plugins": [
-        ["@testring/plugin-playwright-driver", {
-            "headless": true,  // Use headless mode
-            "devtools": false  // Disable devtools
-        }]
-    ]
-}
-```
-
-### High CPU Usage
-
-**Problem:** High CPU usage during test execution
-**Solution:** Limit concurrent processes
-
-```json
-{
-    "workerLimit": 2,  // Reduce from default
-    "concurrency": 1   // Run tests sequentially if needed
-}
-```
-
-## Debugging Tips
+## Debug Tips
 
 ### Enable Debug Logging
 
 ```bash
-# Enable debug output
-DEBUG=testring:* testring run
+# Run with debug logging
+DEBUG=testring:* pnpm run test:unit
 
-# Enable specific module debugging
-DEBUG=testring:worker testring run
+# Debug specific module
+DEBUG=testring:worker pnpm run test:unit
 ```
 
-### Use Browser DevTools
+### Use Local Worker Mode
 
-```javascript
-// Add breakpoints in tests
-await browser.debug();  // Pauses execution
+For easier debugging, set `localWorker: true` in the worker config. This runs tests in the main process where breakpoints and stack traces work directly.
 
-// Take screenshots for debugging
-await browser.saveScreenshot('./debug-screenshot.png');
+### Inspect Worker Processes
+
+```bash
+# Run with Node.js inspector
+node --inspect-brk node_modules/.bin/vitest run path/to/test.spec.ts
 ```
 
-### Inspect Test Environment
+### Check Package Versions
 
-```javascript
-// Log browser information
-console.log('Browser:', await browser.getCapabilities());
-console.log('URL:', await browser.getUrl());
-console.log('Title:', await browser.getTitle());
+```bash
+# Verify all testring packages are at consistent versions
+pnpm run deps:validate
+
+# List installed testring packages
+pnpm list --filter "@testring/*" --depth 0
 ```
 
 ## Common Error Messages
 
 ### "Cannot find module '@testring/...'"
 
-**Cause:** Missing dependency
-**Solution:** Install the required package
+**Cause:** Package not installed or not built.
 
 ```bash
-npm install --save-dev @testring/plugin-playwright-driver
+pnpm install
+pnpm run build
 ```
 
-### "Port already in use"
+### "SandboxWorkerThreads: worker exited with code 1"
 
-**Cause:** Another process is using the required port
-**Solution:** Kill the process or use a different port
+**Cause:** Test code has a runtime error.
+
+Check the worker logs for the actual error. Common causes:
+- Missing dependencies in the sandbox `DependencyDict`
+- Syntax errors in test files
+- `require()` calls for modules not in the dependency map
+
+### "Plugin is not a function"
+
+**Cause:** Browser plugin doesn't export a factory function.
+
+Plugins must export: `(config) => IBrowserProxyPlugin`
+
+### "Executable doesn't exist at ..."
+
+**Cause:** Playwright browsers not installed.
 
 ```bash
-# Find process using port 8080
-lsof -ti:8080
-
-# Kill the process
-kill -9 $(lsof -ti:8080)
-
-# Or configure different port
-testring run --port 8081
-```
-
-### "Browser process crashed"
-
-**Cause:** Browser instability or resource issues
-**Solution:** Reduce load and add stability measures
-
-```json
-{
-    "workerLimit": 1,
-    "retryCount": 3,
-    "plugins": [
-        ["@testring/plugin-playwright-driver", {
-            "args": ["--no-sandbox", "--disable-dev-shm-usage"]
-        }]
-    ]
-}
+npx playwright install
 ```
 
 ## Getting Help
 
 If you're still experiencing issues:
 
-1. Check the [GitHub Issues](https://github.com/ringcentral/testring/issues)
-2. Review the [API Documentation](../api/.md)
-3. Look at [example configurations](../packages/e2e-test-app.md)
+1. Check the [GitHub Issues](https://github.com/nicholasrq/testring/issues)
+2. Review the [API Documentation](../core-modules/api.md)
+3. Run with debug logging enabled
 4. Create a minimal reproduction case
-5. Open a new issue with detailed information
-
-## Useful Commands
-
-```bash
-# Check testring version
-testring --version
-
-# Validate configuration
-testring run --dry-run
-
-# Run with verbose output
-testring run --verbose
-
-# Run specific test file
-testring run --tests "./test/specific.spec.js"
-
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
+5. Open a new issue with Node.js version, OS, and full error output

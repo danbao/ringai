@@ -1,585 +1,932 @@
 # @testring/types
 
-TypeScript type definition module that provides complete type support and interface definitions for the testring framework.
-
-## Overview
-
-This module is the type definition center for the testring framework, containing:
-- TypeScript interface definitions for all core modules
-- Common types and enum definitions
-- Configuration object type specifications
-- Type support for plugin development
-- Test-related data structure definitions
-
-## Key Features
-
-### Complete Type Support
-- Type definitions covering all framework modules
-- Strict TypeScript type checking
-- Comprehensive generic support
-- Detailed interface documentation
-
-### Modular Design
-- Type definitions organized by functional modules
-- Clear namespace separation
-- Easy to extend and maintain
-- Supports selective imports
-
-### Developer-Friendly
-- IDE intelligent hints
-- Compile-time type checking
-- Detailed type annotations
-- Examples and usage instructions
+Central type definition package for the testring framework. Contains all shared TypeScript interfaces, enums, and type aliases organized by module.
 
 ## Installation
 
 ```bash
-npm install --save-dev @testring/types
+pnpm add @testring/types
 ```
 
-Or using yarn:
-
-```bash
-yarn add @testring/types --dev
-```
-
-## Main Type Categories
-
-### Configuration Types
-Defines framework configuration related interfaces:
+All types are re-exported from the package root:
 
 ```typescript
-// Main configuration interface
-interface IConfig {
-  tests: string;                    // Test file glob pattern
-  plugins: Array<string | IPlugin>; // Plugin list
-  workerLimit: number | 'local';    // Worker process limit
-  retryCount: number;               // Retry count
-  retryDelay: number;               // Retry delay
-  logLevel: LogLevel;               // Log level
-  bail: boolean;                    // Stop immediately on failure
-  testTimeout: number;              // Test timeout
-  debug: boolean;                   // Debug mode
-}
+import { IConfig, LogLevel, ITransport, ITestWorker } from '@testring/types';
+```
 
-// Logger configuration
+---
+
+## Config Types
+
+**Source:** `src/config.ts`
+
+```typescript
+type ScreenshotsConfig = 'disable' | 'enable' | 'afterError';
+
+type ConfigPluginDescriptor = string | [string] | [string, PluginConfig];
+
 interface IConfigLogger {
   logLevel: LogLevel;
   silent: boolean;
 }
 
-// Plugin configuration
-interface IPlugin {
-  name: string;
-  config?: any;
-}
-```
-
-### Test-Related Types
-Defines interfaces for test execution and management:
-
-```typescript
-// Test file interface
-interface IFile {
-  path: string;           // File path
-  content: string;        // File content
-  dependencies?: string[]; // Dependency list
-}
-
-// Queued test item
-interface IQueuedTest {
-  path: string;           // Test file path
-  content?: string;       // Test content
-  retryCount?: number;    // Current retry count
-  maxRetryCount?: number; // Maximum retry count
-}
-
-// Test execution result
-interface ITestExecutionResult {
-  success: boolean;       // Whether successful
-  error?: Error;         // Error information
-  duration?: number;     // Execution duration
-  retryCount?: number;   // Retry count
-}
-```
-
-### Inter-Process Communication Types
-Defines interfaces for inter-process communication:
-
-```typescript
-// Transport layer interface
-interface ITransport {
-  send<T>(processID: string, messageType: string, payload: T): Promise<void>;
-  broadcast<T>(messageType: string, payload: T): void;
-  on<T>(messageType: string, callback: TransportMessageHandler<T>): void;
-  once<T>(messageType: string, callback: TransportMessageHandler<T>): void;
-  registerChild(processID: string, child: IWorkerEmitter): void;
-  getProcessesList(): string[];
-}
-
-// Message handler
-type TransportMessageHandler<T> = (message: T, processID?: string) => void;
-
-// Direct transport message format
-interface ITransportDirectMessage {
-  type: string;
-  payload: any;
-}
-```
-
-### Worker Process Types
-Defines interfaces for test worker processes:
-
-```typescript
-// Test worker process instance
-interface ITestWorkerInstance {
-  getWorkerID(): string;
-  execute(test: IQueuedTest): Promise<void>;
-  kill(): Promise<void>;
-}
-
-// Child process fork options
-interface IChildProcessForkOptions {
+interface IConfig extends IConfigLogger {
+  devtool: boolean;
+  restartWorker: boolean;
+  screenshots: ScreenshotsConfig;
+  screenshotPath: string;
+  config: string;
   debug: boolean;
-  debugPort?: number;
-  debugPortRange?: number[];
-  execArgv?: string[];
-  silent?: boolean;
-}
-
-// Fork result
-interface IChildProcessFork {
-  send(message: any): void;
-  on(event: string, callback: Function): void;
-  kill(signal?: string): void;
-  debugPort?: number;
+  bail: boolean;
+  workerLimit: number | 'local';
+  maxWriteThreadCount?: number;
+  retryCount: number;
+  retryDelay: number;
+  testTimeout: number;
+  tests: string;
+  envConfig?: string;
+  envParameters?: any;
+  plugins: Array<ConfigPluginDescriptor>;
 }
 ```
 
-### File Storage Types
-Defines interfaces for the file storage system:
+---
+
+## Plugin Types
+
+**Source:** `src/plugin.ts`
 
 ```typescript
-// File storage client
-interface IFSStoreClient {
-  createTextFile(options: IFSStoreTextFileOptions): Promise<IFSStoreTextFile>;
-  createBinaryFile(options: IFSStoreBinaryFileOptions): Promise<IFSStoreBinaryFile>;
-  createScreenshotFile(options: IFSStoreScreenshotFileOptions): Promise<IFSStoreScreenshotFile>;
-}
+type PluginConfig = object | null;
 
-// File storage options
-interface IFSStoreFileOptions {
-  ext?: string;           // File extension
-  name?: string;          // File name
-  content?: any;          // File content
-}
+type Plugin = (pluginAPI: any, config: PluginConfig) => void;
 
-// File storage file interface
-interface IFSStoreFile {
-  fullPath: string;       // Full path
-  write(content: any): Promise<void>;
-  read(): Promise<any>;
-  release(): Promise<void>;
-}
-```
-
-### Browser Proxy Types
-Defines interfaces for browser automation:
-
-```typescript
-// Browser proxy interface
-interface IBrowserProxy {
-  start(): Promise<void>;
-  stop(): Promise<void>;
-  execute(command: IBrowserCommand): Promise<any>;
-  takeScreenshot(): Promise<Buffer>;
-}
-
-// Browser command
-interface IBrowserCommand {
-  type: string;
-  args: any[];
-  timeout?: number;
-}
-
-// Browser options
-interface IBrowserProxyOptions {
-  headless: boolean;
-  width: number;
-  height: number;
-  userAgent?: string;
-  proxy?: string;
-}
-```
-
-### HTTP-Related Types
-Defines HTTP service and client interfaces:
-
-```typescript
-// HTTP client interface
-interface IHttpClient {
-  get(url: string, options?: any): Promise<any>;
-  post(url: string, data?: any, options?: any): Promise<any>;
-  put(url: string, data?: any, options?: any): Promise<any>;
-  delete(url: string, options?: any): Promise<any>;
-  request(options: any): Promise<any>;
-}
-
-// HTTP server interface
-interface IHttpServer {
-  start(port?: number): Promise<void>;
-  stop(): Promise<void>;
-  addRoute(method: string, path: string, handler: Function): void;
-  getPort(): number;
-}
-
-// HTTP request options
-interface IHttpRequestOptions {
-  url: string;
-  method: string;
-  headers?: Record<string, string>;
-  data?: any;
-  timeout?: number;
-}
-```
-
-### Plugin System Types
-Defines interfaces for plugin development:
-
-```typescript
-// Plugin module collection
 interface IPluginModules {
-  logger: ILogger;
-  fsReader?: IFSReader;
-  testWorker: ITestWorker;
-  testRunController: ITestRunController;
-  browserProxy: IBrowserProxy;
-  httpServer: IHttpServer;
-  httpClientInstance: IHttpClient;
-  fsStoreServer: IFSStoreServer;
-}
-
-// Plugin function type
-type PluginFunction = (api: IPluginAPI) => void | Promise<void>;
-
-// Plugin API interface
-interface IPluginAPI {
-  getLogger(): ILoggerAPI;
-  getFSReader(): IFSReaderAPI | null;
-  getTestWorker(): ITestWorkerAPI;
-  getTestRunController(): ITestRunControllerAPI;
-  getBrowserProxy(): IBrowserProxyAPI;
-  getHttpServer(): IHttpServerAPI;
-  getHttpClient(): IHttpClient;
-  getFSStoreServer(): IFSStoreServerAPI;
+  logger: ILoggerServer & IPluggableModule;
+  fsReader?: IFSReader & IPluggableModule;
+  testWorker: ITestWorker & IPluggableModule;
+  testRunController: ITestRunController & IPluggableModule;
+  browserProxy: IBrowserProxyController & IPluggableModule;
+  fsStoreServer: IPluggableModule;
 }
 ```
 
-### Logging System Types
-Defines interfaces for logging:
+---
+
+## Transport Types
+
+**Source:** `src/transport/`
+
+### Enums
 
 ```typescript
-// Log level enumeration
-enum LogLevel {
-  verbose = 'verbose',
-  debug = 'debug',
-  info = 'info',
-  warning = 'warning',
-  error = 'error',
-  silent = 'silent'
+const enum TransportInternalMessageType {
+  messageResponse = '_messageResponse_',
+}
+```
+
+### Structs
+
+```typescript
+type TransportMessageHandler<T = unknown> = (payload: T, source?: string) => void;
+
+type TransportSerializer = (v: unknown) => ITransportSerializedStruct;
+
+type TransportDeserializer = (struct: ITransportSerializedStruct) => unknown;
+
+interface ITransportSerializedStruct {
+  $key: string;
+  [key: string]: unknown;
 }
 
-// Logger client interface
-interface ILoggerClient {
-  verbose(...args: any[]): void;
-  debug(...args: any[]): void;
+interface ITransportMessage<T = unknown> {
+  type: string;
+  payload: T;
+}
+
+interface ITransportDirectMessage extends ITransportMessage {
+  uid: string;
+}
+
+type ITransportBroadcastMessage = ITransportMessage;
+```
+
+### Interfaces
+
+```typescript
+type WorkerMessage = { type: string; payload: unknown };
+
+type WorkerEvents = {
+  close: [code: number, signal: string];
+  disconnect: [];
+  error: [err: Error];
+  exit: [code: number, signal: string];
+};
+
+interface IWorkerEmitter extends EventEmitter {
+  send(message: WorkerMessage, callback?: (error: Error | null) => void): boolean;
+  kill(signal?: NodeJS.Signals): void;
+  // Type-safe addListener/on/once/emit/prependListener/prependOnceListener
+  // overloads for 'close', 'disconnect', 'error', 'exit' events
+}
+
+interface ITransport {
+  getProcessesList(): Array<string>;
+  send<T = unknown>(processID: string, messageType: string, payload: T): Promise<void>;
+  broadcast<T = unknown>(messageType: string, payload: T): void;
+  broadcastLocal<T = unknown>(messageType: string, payload: T): void;
+  broadcastUniversally<T = unknown>(messageType: string, payload: T): void;
+  isChildProcess(): boolean;
+  registerChild(processID: string, child: IWorkerEmitter): void;
+  on<T = unknown>(messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
+  once<T = unknown>(messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
+  onceFrom<T = unknown>(processID: string, messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
+}
+```
+
+---
+
+## Logger Types
+
+**Source:** `src/logger/`
+
+### Enums
+
+```typescript
+const enum LogStepTypes { log, info, debug, warning, error, success }
+
+const enum LogTypes { log, info, warning, error, debug, step, screenshot, file, media, success }
+
+const enum LogLevel { verbose, debug, info, warning, error, silent }
+
+const enum LoggerMessageTypes { REPORT = 'logger/REPORT' }
+
+const enum LogQueueStatus { EMPTY, RUNNING }
+
+const enum LoggerPlugins { beforeLog, onLog, onError }
+```
+
+### Interfaces
+
+```typescript
+type LogEntityStepUidType = string | null;
+type LogEntityPrefixType = string | null;
+type LogEntityMarkerType = string | number | null;
+
+interface ILogEntity {
+  time: Date;
+  type: LogTypes;
+  logLevel: LogLevel;
+  content: Array<any>;
+  stepUid: LogEntityStepUidType;
+  stepType: LogStepTypes | null;
+  parentStep: LogEntityStepUidType;
+  prefix: LogEntityPrefixType;
+  marker: LogEntityMarkerType;
+  muteStdout?: boolean;
+}
+
+interface ILogMeta {
+  processID?: string;
+}
+
+interface ILogQueue {
+  logEntity: ILogEntity;
+  meta: ILogMeta;
+}
+
+interface ILoggerServer {
+  getQueueStatus(): LogQueueStatus;
+}
+
+interface ILoggerClient<Transport, Prefix, Marker, Stack> {
+  log(...args: any[]): void;
   info(...args: any[]): void;
   warn(...args: any[]): void;
   error(...args: any[]): void;
+  debug(...args: any[]): void;
+  verbose(...args: any[]): void;
+  success(...args: any[]): void;
+  startStep(message: any, stepType?: LogStepTypes): void;
+  startStepLog(message: any): void;
+  startStepInfo(message: any): void;
+  startStepDebug(message: any): void;
+  startStepSuccess(message: any): void;
+  startStepWarning(message: any): void;
+  startStepError(message: any): void;
+  endStep(stepUid: string): void;
+  endAllSteps(): void;
+  step(message: string, callback: () => Promise<any> | any, stepType?: LogStepTypes): Promise<any>;
+  stepLog(message: any, callback: () => Promise<any> | any): Promise<any>;
+  stepInfo(message: any, callback: () => Promise<any> | any): Promise<any>;
+  stepDebug(message: any, callback: () => Promise<any> | any): Promise<any>;
+  stepSuccess(message: any, callback: () => Promise<any> | any): Promise<any>;
+  stepWarning(message: any, callback: () => Promise<any> | any): Promise<any>;
+  stepError(message: any, callback: () => Promise<any> | any): Promise<any>;
+  withPrefix(prefix: Prefix): ILoggerClient<Transport, Prefix, Marker, Stack>;
+  withMarker(marker: Marker): ILoggerClient<Transport, Prefix, Marker, Stack>;
+  createNewLogger(prefix: Prefix, mark: Marker, stepStack: Stack): ILoggerClient<Transport, Prefix, Marker, Stack>;
+}
+```
+
+---
+
+## Test Worker Types
+
+**Source:** `src/test-worker/`
+
+### Enums
+
+```typescript
+const enum TestWorkerPlugin { beforeCompile, compile }
+
+const enum TestEvents {
+  started = 'test/started',
+  finished = 'test/finished',
+  failed = 'test/failed',
 }
 
-// Log entity
-interface ILogEntity {
+const enum TestStatus { idle, done, failed }
+
+const enum TestWorkerAction {
+  executeTest, executionComplete,
+  register, updateExecutionState, unregister,
+  evaluateCode, releaseTest,
+  pauseTestExecution, resumeTestExecution, runTillNextExecution,
+}
+```
+
+### Structs
+
+```typescript
+type FileCompiler = (source: string, filename: string) => Promise<string>;
+
+interface ITestExecutionMessage extends IFile {
+  waitForRelease: boolean;
+  dependencies: Record<string, unknown>;
+  parameters: Record<string, unknown>;
+  envParameters: Record<string, unknown>;
+}
+
+type ITestEvaluationMessage = IFile;
+
+interface ITestExecutionCompleteMessage {
+  status: TestStatus;
+  error: Error | null;
+}
+
+interface ITestControllerExecutionState {
+  paused: boolean;
+  pausedTilNext: boolean;
+  pending: boolean;
+}
+```
+
+### Interfaces
+
+```typescript
+interface ITestWorkerInstance {
+  getWorkerID(): string;
+  execute(file: IFile, parameters: any, envParameters: any): Promise<any>;
+  kill(signal?: NodeJS.Signals): Promise<void>;
+}
+
+interface ITestWorkerCallbackMeta {
+  processID: string;
+  isLocal: boolean;
+}
+
+interface ITestWorkerConfig {
+  screenshots: ScreenshotsConfig;
+  waitForRelease: boolean;
+  localWorker: boolean;
+}
+
+interface ITestWorker {
+  spawn(): ITestWorkerInstance;
+}
+```
+
+---
+
+## Test Run Controller Types
+
+**Source:** `src/test-run-controller/`
+
+```typescript
+const enum TestRunControllerPlugins {
+  beforeRun, beforeTest, afterTest,
+  beforeTestRetry, afterRun,
+  shouldNotExecute, shouldNotStart, shouldNotRetry,
+}
+
+interface ITestQueuedTestRunData {
+  debug: boolean;
   logLevel: LogLevel;
-  content: any[];
-  timestamp: number;
-  processID?: string;
+  screenshotsEnabled: boolean;
+  isRetryRun: boolean;
+  devtool: IDevtoolRuntimeConfiguration | null;
+  screenshotPath: string;
+}
+
+interface IQueuedTest {
+  retryCount: number;
+  retryErrors: Array<any>;
+  test: IFile;
+  parameters: any;
+  envParameters: any;
+}
+
+interface ITestRunController {
+  runQueue(testSet: Array<IFile>): Promise<Error[] | null>;
+  kill(): Promise<void>;
 }
 ```
 
-## Usage Examples
+---
 
-### Using Types in Projects
+## Browser Proxy Types
+
+**Source:** `src/browser-proxy/`
+
+### Enums
+
 ```typescript
-import {
-  IConfig,
-  IQueuedTest,
-  ITestWorkerInstance,
-  LogLevel
-} from '@testring/types';
+const enum BrowserProxyMessageTypes {
+  execute = 'BrowserProxy/EXEC',
+  response = 'BrowserProxy/RESPONSE',
+  exception = 'BrowserProxy/EXCEPTION',
+}
 
-// Configuration object
-const config: IConfig = {
-  tests: './tests/**/*.spec.js',
-  plugins: ['@testring/plugin-selenium-driver'],
-  workerLimit: 2,
-  retryCount: 3,
-  retryDelay: 1000,
-  logLevel: LogLevel.info,
-  bail: false,
-  testTimeout: 30000,
-  debug: false
+const enum BrowserProxyPlugins { getPlugin }
+
+const enum BrowserProxyActions {
+  refresh, click, execute, executeAsync, url, newWindow,
+  waitForExist, waitForVisible, isVisible, moveToObject,
+  getTitle, clearValue, keys, elementIdText, elements,
+  getValue, setValue, getSize, selectByIndex, selectByValue,
+  selectByVisibleText, getAttribute, windowHandleMaximize,
+  isEnabled, scroll, scrollIntoView, isAlertOpen, alertAccept,
+  alertDismiss, alertText, dragAndDrop, frame, frameParent,
+  setCookie, getCookie, deleteCookie, getHTML, getCurrentTabId,
+  switchTab, close, getTabIds, window, windowHandles,
+  getTagName, isSelected, getText, elementIdSelected,
+  makeScreenshot, uploadFile, end, kill, getCssProperty,
+  getSource, isExisting, waitForValue, waitForSelected,
+  waitUntil, selectByAttribute, gridTestSession,
+  keysOnElement, mock, getMockData, getCdpCoverageFile,
+  emulateDevice, getHubConfig, status, back, forward,
+  getActiveElement, getLocation, setTimeZone, getWindowSize,
+  savePDF, addValue, doubleClick, isClickable, waitForClickable,
+  isFocused, isStable, waitForEnabled, waitForStable,
+  setCustomBrowserClientConfig, getCustomBrowserClientConfig,
+}
+```
+
+### Structs
+
+```typescript
+interface IBrowserProxyCommand {
+  action: BrowserProxyActions;
+  args: Array<any>;
+}
+
+interface IBrowserProxyMessage {
+  uid: string;
+  applicant: string;
+  command: IBrowserProxyCommand;
+}
+
+interface IBrowserProxyCommandResponse {
+  uid: string;
+  response: any;
+  error: Error | null;
+}
+
+interface IBrowserProxyPendingCommand {
+  resolve: (data?: any) => void;
+  reject: (exception: Error) => void;
+  command: IBrowserProxyCommand;
+  applicant: string;
+  uid: string;
+}
+
+interface IBrowserProxyWorkerConfig {
+  plugin: string;
+  config: any;
+}
+```
+
+### Interfaces
+
+```typescript
+interface IBrowserProxyController {
+  init(): Promise<void>;
+  execute(applicant: string, command: IBrowserProxyCommand): Promise<any>;
+  kill(): Promise<void>;
+}
+
+interface IBrowserProxyWorker {
+  spawn(): Promise<void>;
+  execute(applicant: string, command: IBrowserProxyCommand): Promise<any>;
+  kill(): Promise<void>;
+}
+
+interface IBrowserProxyPlugin {
+  kill(): void;
+  end(applicant: string): Promise<any>;
+  refresh(applicant: string): Promise<any>;
+  click(applicant: string, selector: string, options?: any): Promise<any>;
+  url(applicant: string, val: string): Promise<any>;
+  newWindow(applicant: string, val: string, windowName: string, windowFeatures: WindowFeaturesConfig): Promise<any>;
+  waitForExist(applicant: string, xpath: string, timeout: number): Promise<any>;
+  waitForVisible(applicant: string, xpath: string, timeout: number): Promise<any>;
+  isVisible(applicant: string, xpath: string): Promise<any>;
+  moveToObject(applicant: string, xpath: string, x: number, y: number): Promise<any>;
+  execute(applicant: string, fn: any, args: Array<any>): Promise<any>;
+  executeAsync(applicant: string, fn: any, args: Array<any>): Promise<any>;
+  frame(applicant: string, frameID: any): Promise<any>;
+  frameParent(applicant: string): Promise<any>;
+  getTitle(applicant: string): Promise<any>;
+  clearValue(applicant: string, xpath: string): Promise<any>;
+  keys(applicant: string, value: any): Promise<any>;
+  elementIdText(applicant: string, elementId: string): Promise<any>;
+  elements(applicant: string, xpath: string): Promise<any>;
+  getValue(applicant: string, xpath: string): Promise<any>;
+  setValue(applicant: string, xpath: string, value: any): Promise<any>;
+  selectByIndex(applicant: string, xpath: string, value: any): Promise<any>;
+  selectByValue(applicant: string, xpath: string, value: any): Promise<any>;
+  selectByVisibleText(applicant: string, xpath: string, str: string): Promise<any>;
+  getAttribute(applicant: string, xpath: string, attr: any): Promise<any>;
+  windowHandleMaximize(applicant: string): Promise<any>;
+  isEnabled(applicant: string, xpath: string): Promise<any>;
+  scroll(applicant: string, xpath: string, x: number, y: number): Promise<any>;
+  scrollIntoView(applicant: string, xpath: string, scrollIntoViewOptions?: boolean): Promise<any>;
+  isAlertOpen(applicant: string): Promise<any>;
+  alertAccept(applicant: string): Promise<any>;
+  alertDismiss(applicant: string): Promise<any>;
+  alertText(applicant: string): Promise<any>;
+  dragAndDrop(applicant: string, xpathSource: string, xpathDestination: string): Promise<any>;
+  setCookie(applicant: string, cookieName: any): Promise<any>;
+  getCookie(applicant: string, cookieName?: string): Promise<any>;
+  deleteCookie(applicant: string, cookieName: string): Promise<any>;
+  getHTML(applicant: string, xpath: string, b: any): Promise<any>;
+  getSize(applicant: string, xpath: string): Promise<any>;
+  getCurrentTabId(applicant: string): Promise<any>;
+  switchTab(applicant: string, tabId: string): Promise<any>;
+  close(applicant: string, tabId: string): Promise<any>;
+  getTabIds(applicant: string): Promise<any>;
+  window(applicant: string, fn: any): Promise<any>;
+  windowHandles(applicant: string): Promise<any>;
+  getTagName(applicant: string, xpath: string): Promise<any>;
+  isSelected(applicant: string, xpath: string): Promise<any>;
+  getText(applicant: string, xpath: string): Promise<any>;
+  elementIdSelected(applicant: string, id: string): Promise<any>;
+  makeScreenshot(applicant: string): Promise<string | void>;
+  uploadFile(applicant: string, filePath: string): Promise<string | void>;
+  getCssProperty(applicant: string, xpath: string, cssProperty: string): Promise<any>;
+  getSource(applicant: string): Promise<any>;
+  isExisting(applicant: string, xpath: string): Promise<any>;
+  waitForValue(applicant: string, xpath: string, timeout: number, reverse: boolean): Promise<any>;
+  waitForSelected(applicant: string, xpath: string, timeout: number, reverse: boolean): Promise<any>;
+  waitUntil(applicant: string, condition: () => boolean | Promise<boolean>, timeout?: number, timeoutMsg?: string, interval?: number): Promise<any>;
+  selectByAttribute(applicant: string, xpath: string, attribute: string, value: string): Promise<any>;
+  gridTestSession(applicant: string): Promise<any>;
+  getHubConfig(applicant: string): Promise<any>;
+}
+```
+
+---
+
+## File Types
+
+### FS Reader (`src/fs-reader/`)
+
+```typescript
+const enum FSReaderPlugins { beforeResolve, afterResolve }
+
+interface IFile {
+  path: string;
+  content: string;
+}
+
+interface IFSReader {
+  find(pattern: string): Promise<IFile[]>;
+}
+```
+
+### FS Store (`src/fs-store/`)
+
+```typescript
+const enum FSFileType { BINARY = 0, TEXT = 1 }
+
+const enum FSFileLogType { SCREENSHOT = 1, TEXT = 2 }
+
+const enum FSFileEncoding { NONE = 0, BASE64 = 1 }
+
+enum fsReqType { access = 1, lock, unlink, release }
+
+enum FSFileUniqPolicy { global, worker }
+
+enum FSStoreType {
+  screenshot = 'screenshot',
+  globalText = 'globalText',
+  globalBin = 'globalBin',
+  text = 'text',
+  bin = 'bin',
+}
+
+interface IFSFile {
+  path: string;
+  type: FSFileType;
+  encoding: FSFileEncoding;
+  content: string;
+}
+
+interface IFSStoreFile {
+  lock(): Promise<void>;
+  unlock(options: FSActionOptions): Promise<boolean>;
+  read(): Promise<Buffer>;
+  write(arg0: Buffer): Promise<string>;
+  append(arg0: Buffer): Promise<string>;
+  isLocked(): boolean;
+  unlink(): Promise<boolean>;
+  waitForUnlock(): Promise<void>;
+  transaction(cb: () => Promise<void>): Promise<void>;
+}
+
+interface ILockPool {
+  acquire(workerId: string, requestId?: string): Promise<boolean>;
+  release(workerId: string, requestId?: string): boolean;
+  clean(workerId: string, requestId?: string): void;
+  getState(): { curLocks: number; maxLocks: number; lockQueueLen: number; locks: Map<string, number> };
+}
+
+type requestMeta = {
+  type?: FSStoreType;
+  subtype?: string | string[];
+  extraPath?: string;
+  global?: boolean;
+  preserveName?: boolean;
+  uniqPolicy?: FSFileUniqPolicy;
+  workerId?: string;
+  fileName?: string;
+  ext?: string;
 };
 
-// Test queue item
-const queuedTest: IQueuedTest = {
-  path: './tests/login.spec.js',
-  retryCount: 0,
-  maxRetryCount: 3
+type FSStoreDataOptions = { lock?: boolean; fsOptions?: { encoding: BufferEncoding; flag?: string }; fsStorePrefix?: string };
+type FSStoreOptions = FSStoreDataOptions & { meta: requestMeta };
+type FSActionOptions = { doUnlink?: boolean; waitForUnlink?: boolean };
+
+interface IFSStoreReq { requestId: string; action: fsReqType; meta: requestMeta }
+interface IFSStoreResp { requestId: string; action: fsReqType; fullPath: string; status: string }
+
+interface IQueAcqReq { requestId: string }
+interface IQueAcqResp { requestId: string }
+type IQueStateReq = IQueAcqReq;
+interface IQueStateResp { requestId: string; state: Record<string, any> }
+interface IChgAcqReq { requestId: string; fileName?: string }
+interface IChgAcqResp { requestId: string; fileName: string }
+interface IDelAcqReq { requestId: string; fileName: string }
+interface IDelAcqResp { requestId: string; fileName: string }
+
+interface IOnFileReleaseHookData { workerId: string; requestId: string }
+interface IOnFileNameHookData { workerId: string; requestId: string; fileName: string; meta: requestMeta }
+```
+
+---
+
+## Web Application Types
+
+**Source:** `src/web-application/`
+
+### Enums
+
+```typescript
+const enum WebApplicationMessageType {
+  execute = 'WebApplication/execute',
+  response = 'WebApplication/response',
+}
+
+const enum WebApplicationDevtoolActions {
+  register, registerComplete, unregister, unregisterComplete,
+}
+
+const enum WebApplicationControllerEventType {
+  execute, response, afterResponse, error,
+}
+```
+
+### Interfaces
+
+```typescript
+type WindowFeatureBoolean = 'yes' | 'no';
+type WindowFeaturesConfig = string | IWindowFeatures;
+
+interface IWindowFeatures {
+  top?: number;
+  left?: number;
+  width?: number;
+  height?: number;
+  status?: WindowFeatureBoolean;
+  toolbar?: WindowFeatureBoolean;
+  menubar?: WindowFeatureBoolean;
+  location?: WindowFeatureBoolean;
+  resizable?: WindowFeatureBoolean;
+  scrollbars?: WindowFeatureBoolean;
+}
+
+interface IWebApplicationRegisterMessage { id: string }
+interface IWebApplicationRegisterCompleteMessage { id: string; error: null | Error }
+
+interface IWebApplicationExecuteMessage {
+  uid: string;
+  applicant: string;
+  command: IBrowserProxyCommand;
+}
+
+interface IWebApplicationResponseMessage {
+  uid: string;
+  response: any;
+  error: Error | null;
+}
+
+type IWebApplicationClient = {
+  [K in keyof IBrowserProxyPlugin]: (...args: Array<any>) => Promise<any>;
+};
+
+interface IWebApplicationConfig {
+  screenshotsEnabled: boolean;
+  screenshotPath: string;
+  devtool: null | IDevtoolRuntimeConfiguration;
+}
+
+type WebApplicationDevtoolCallback = (err: null | Error) => void;
+
+type SavePdfOptions = {
+  filepath: string;
+  orientation: string;
+  scale: number;
+  background: boolean;
+  width: number;
+  height: number;
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+  shrinkToFit: boolean;
+  pageRanges: Array<any>;
 };
 ```
 
-### Implementing Interfaces
+---
+
+## Devtool Types
+
+### Devtool Backend (`src/devtool-backend/`)
+
 ```typescript
-import { ITestWorkerInstance, IQueuedTest } from '@testring/types';
+const enum DevtoolWSServerEvents { CONNECTION, ERROR, MESSAGE, CLOSE }
+const enum DevtoolWorkerMessages { START_SERVER, START_SERVER_COMPLETE }
+const enum DevtoolProxyMessages { TO_WORKER, FROM_WORKER }
+const enum DevtoolPluginHooks { beforeStart, afterStart, beforeStop, afterStop }
 
-class MyTestWorker implements ITestWorkerInstance {
-  private workerID: string;
-
-  constructor(id: string) {
-    this.workerID = id;
-  }
-
-  getWorkerID(): string {
-    return this.workerID;
-  }
-
-  async execute(test: IQueuedTest): Promise<void> {
-    console.log(`Executing test: ${test.path}`);
-    // Test execution logic
-  }
-
-  async kill(): Promise<void> {
-    console.log(`Stopping worker process: ${this.workerID}`);
-    // Cleanup logic
-  }
+interface IDevtoolRuntimeConfiguration {
+  host: string;
+  httpPort: number;
+  wsPort: number;
+  extensionId: string;
 }
+
+interface IDevtoolServerConfig {
+  host: string;
+  httpPort: number;
+  wsPort: number;
+  router: IDevtoolServerRoute[];
+  staticRoutes: IDevtoolStaticRoutes;
+}
+
+interface IDevtoolServerRoute { method: string; mask: string; handler: string; windowProps?: { width: number; height: number; position: number } }
+type DevtoolHttpRouteHandler = (req: any, res: any, context: any, appId: string, options?: any) => Promise<void> | void;
+type DevtoolHttpContextResolver = (req: any, res: any) => Promise<{ context: object; key: string }>;
+interface IDevtoolHttpRoute { method: string; mask: string; handler: DevtoolHttpRouteHandler; options?: any; windowProps?: { width: number; height: number; position: number } }
+interface IDevtoolStaticRoutes { [key: string]: { rootPath: string; directory: string; options?: {} } }
+
+interface IHttpServerController { kill: () => void }
+interface IDevtoolServerController { init: () => Promise<void>; kill: () => Promise<void> }
+interface IServer { run: () => Promise<void>; stop: () => Promise<void>; getUrl: () => string }
+
+interface IDevtoolProxyCleanedMessage { source: null | string; messageData: any }
+interface IDevtoolProxyMessage extends IDevtoolProxyCleanedMessage { messageType: string }
+interface IDevtoolWorkerRegisterMessage extends IDevtoolProxyCleanedMessage { messageData: ITestControllerExecutionState }
+interface IDevtoolWorkerUpdateStateMessage extends IDevtoolProxyCleanedMessage { messageData: ITestControllerExecutionState }
+interface IDevtoolWebAppRegisterMessage extends IDevtoolProxyCleanedMessage { messageData: IWebApplicationRegisterMessage }
+interface IDevtoolWebAppRegisterCompleteMessage extends IDevtoolProxyCleanedMessage { messageData: IWebApplicationRegisterCompleteMessage }
+
+interface IDevtoolWSMeta { connectionId: string }
+
+// WebSocket message union type
+type IDevtoolWSMessage =
+  | IDevtoolWSHandshakeResponseMessage
+  | IDevtoolWSHandshakeRequestMessage
+  | IDevtoolWSGetStoreStateMessage
+  | IDevtoolWSUpdateStoreStateMessage
+  | IDevtoolWSCallWorkerAction;
+
+interface IDevtoolWSHandshakeRequestMessage { type: DevtoolEvents.HANDSHAKE_REQUEST; payload: { appId: string } }
+interface IDevtoolWSHandshakeResponseMessage { type: DevtoolEvents.HANDSHAKE_RESPONSE; payload: { appId: string; connectionId: string; error: null | Error | string } }
+interface IDevtoolWSGetStoreStateMessage { type: DevtoolEvents.GET_STORE; payload: void }
+interface IDevtoolWSUpdateStoreStateMessage { type: DevtoolEvents.STORE_STATE; payload: any }
+interface IDevtoolWSCallWorkerAction { type: DevtoolEvents.WORKER_ACTION; payload: { actionType: TestWorkerAction } }
 ```
 
-### Plugin Development Type Support
+### Devtool Extension (`src/devtool-extension/`)
+
 ```typescript
-import { PluginFunction, IPluginAPI } from '@testring/types';
+const enum DevtoolEvents {
+  HANDSHAKE_REQUEST, HANDSHAKE_RESPONSE,
+  WORKER_ACTION, STORE_STATE, GET_STORE,
+}
 
-const myPlugin: PluginFunction = (api: IPluginAPI) => {
-  const logger = api.getLogger();
-  const testWorker = api.getTestWorker();
+const enum ExtensionMessagingTransportEvents { CONNECT, DISCONNECT, MESSAGE }
 
-  testWorker.beforeRun(async () => {
-    await logger.info('Plugin initialization completed');
-  });
+const enum ExtensionMessagingTransportTypes {
+  SET_EXTENSION_OPTIONS, WAIT_FOR_READY, DISPATCH_ACTION, IS_READY,
+}
+
+const enum ClientWsTransportEvents { OPEN, CLOSE, ERROR, MESSAGE }
+
+const enum ExtensionPostMessageTypes {
+  CLEAR_HIGHLIGHTS, ADD_XPATH_HIGHLIGHT, REMOVE_XPATH_HIGHLIGHT,
+}
+
+type ElementSummary = {
+  tagName: string;
+  attributes: { [name: string]: string };
+  innerText?: string;
+  value?: string;
+  children?: ElementSummary[];
 };
 
-export default myPlugin;
+interface IExtensionNetworkConfig { httpPort: number; wsPort: number; host: string }
+interface IExtensionApplicationConfig extends IExtensionNetworkConfig { appId: string }
+interface IExtensionMessagingTransportMessage { type: ExtensionMessagingTransportTypes; payload: any }
 ```
 
-### Generic Usage
+### Client WS Transport (`src/client-ws-transport/`)
+
 ```typescript
-import { Queue, IQueue } from '@testring/types';
-
-// Create type-safe queue
-const testQueue: IQueue<IQueuedTest> = new Queue<IQueuedTest>();
-
-testQueue.push({
-  path: './test1.spec.js',
-  retryCount: 0
-});
-
-const nextTest = testQueue.shift(); // Type is IQueuedTest | void
-```
-
-## Enumeration Definitions
-
-### Log Levels
-```typescript
-enum LogLevel {
-  verbose = 'verbose',
-  debug = 'debug',
-  info = 'info',
-  warning = 'warning',
-  error = 'error',
-  silent = 'silent'
+interface IClientWsTransport extends EventEmitter {
+  // Type-safe event methods for OPEN, MESSAGE, CLOSE, ERROR events
+  addListener(event: ClientWsTransportEvents.OPEN, listener: (arg: void) => void): this;
+  addListener(event: ClientWsTransportEvents.MESSAGE, listener: (arg: IDevtoolWSMessage) => void): this;
+  addListener(event: ClientWsTransportEvents.CLOSE, listener: (arg: void) => void): this;
+  addListener(event: ClientWsTransportEvents.ERROR, listener: (arg: Error) => void): this;
+  send(event: IDevtoolWSMessage['type'], payload: IDevtoolWSMessage['payload']): Promise<void>;
 }
 ```
 
-### Breakpoint Types
+---
+
+## Reporter Types
+
+**Source:** `src/reporter/`
+
 ```typescript
-enum BreakpointsTypes {
-  beforeInstruction = 'beforeInstruction',
-  afterInstruction = 'afterInstruction'
+const enum ReporterPlugins {
+  onStart, onTestPass, onTestFail, onTestSkip, onTestPending, onEnd, onError,
+}
+
+interface IReporterConfig {
+  reporter: string;
+  options?: Record<string, unknown>;
+}
+
+interface ITestResult {
+  id: string;
+  title: string;
+  fullTitle: string;
+  state: 'passed' | 'failed' | 'pending' | 'skipped';
+  duration: number;
+  error?: Error;
+  retries: number;
+  startTime: number;
+  endTime: number;
+}
+
+interface ITestStats {
+  suites: number;
+  tests: number;
+  passes: number;
+  failures: number;
+  skipped: number;
+  pending: number;
+  retries: number;
+  startTime: string;
+  endTime: string;
+  duration: number;
+}
+
+interface ITestReport {
+  stats: ITestStats;
+  tests: ITestResult[];
+  success: boolean;
+  error?: string;
 }
 ```
 
-### Browser Events
+---
+
+## CLI Types
+
+**Source:** `src/cli/`
+
 ```typescript
-enum BrowserProxyEvents {
-  beforeStart = 'beforeStart',
-  afterStart = 'afterStart',
-  beforeStop = 'beforeStop',
-  afterStop = 'afterStop'
+interface ICLICommand {
+  execute(): Promise<void>;
+  shutdown(): Promise<void>;
+}
+
+type CLICommandRunner = (config: IConfig, stdout: NodeJS.WritableStream) => ICLICommand;
+```
+
+---
+
+## Pluggable Module Types
+
+**Source:** `src/pluggable-module/`
+
+```typescript
+interface IPluggableModule<T = any> {
+  getHook(name: string): T | void;
 }
 ```
 
-### HTTP Methods
+---
+
+## Child Process Types
+
+**Source:** `src/child-process/`
+
 ```typescript
-enum HttpMethods {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-  PATCH = 'PATCH',
-  HEAD = 'HEAD',
-  OPTIONS = 'OPTIONS'
+interface IChildProcessForkOptions {
+  debug: boolean;
+  debugPortRange: number[];
+}
+
+interface IChildProcessFork extends ChildProcess {
+  debugPort: number | null;
 }
 ```
+
+---
+
+## Async Assert Types
+
+**Source:** `src/async-assert/`
+
+```typescript
+interface IAssertionSuccessMeta {
+  isSoft: boolean;
+  successMessage?: string;
+  assertMessage?: string;
+  originalMethod: string;
+  args: any[];
+}
+
+interface IAssertionErrorMeta extends IAssertionSuccessMeta {
+  errorMessage?: string;
+  error?: Error;
+}
+
+interface IAssertionOptions {
+  isSoft?: boolean;
+  onSuccess?: (arg0: IAssertionSuccessMeta) => void | Promise<void>;
+  onError?: (arg0: IAssertionErrorMeta) => void | Error | Promise<void | Error>;
+  plugins?: ChaiPlugin[];
+}
+```
+
+---
 
 ## Utility Types
 
-### Queue and Stack
+**Source:** `src/utils/`
+
 ```typescript
-// Queue interface
+interface IStack<T> {
+  push(element: T): void;
+  pop(): T | void;
+  clean(): void;
+  getLastElement(offset?: number): T | null;
+  length: number;
+}
+
 interface IQueue<T> {
-  push(...elements: T[]): void;
+  push(...elements: Array<T>): void;
   shift(): T | void;
   clean(): void;
-  remove(fn: (item: T, index: number) => boolean): number;
-  extract(fn: (item: T, index: number) => boolean): T[];
   getFirstElement(offset?: number): T | null;
   length: number;
 }
-
-// Stack interface
-interface IStack<T> {
-  push(...elements: T[]): void;
-  pop(): T | void;
-  clean(): void;
-  length: number;
-}
 ```
-
-### Dependency Dictionary
-```typescript
-// Dependency dictionary type
-type DependencyDict = IDependencyDictionary<IDependencyDictionary<IDependencyDictionaryNode>>;
-
-// Dependency dictionary interface
-interface IDependencyDictionary<T> {
-  [key: string]: T;
-}
-
-// Dependency node
-interface IDependencyDictionaryNode {
-  path: string;
-  content: string;
-}
-
-// Dependency tree node
-interface IDependencyTreeNode {
-  path: string;
-  content: string;
-  nodes: IDependencyDictionary<IDependencyTreeNode> | null;
-}
-```
-
-### Hooks and Callbacks
-```typescript
-// Hook callback type
-type HookCallback<T> = (payload: T) => Promise<void> | void;
-
-// Breakpoint callback type
-type HasBreakpointCallback = (hasBreakpoint: boolean) => Promise<void> | void;
-
-// File reader type
-type DependencyFileReader = (path: string) => Promise<string>;
-
-// Message handler type
-type TransportMessageHandler<T> = (message: T, processID?: string) => void;
-```
-
-## Extended Types
-
-### Custom Configuration Extension
-```typescript
-// Extend base configuration
-interface ICustomConfig extends IConfig {
-  customOption: string;
-  advancedSettings: {
-    cacheEnabled: boolean;
-    maxCacheSize: number;
-  };
-}
-```
-
-### Custom Plugin Modules
-```typescript
-// Extend plugin module collection
-interface IExtendedPluginModules extends IPluginModules {
-  customModule: ICustomModule;
-}
-```
-
-## Best Practices
-
-### Type Safety
-```typescript
-// Use strict type checking
-function createTestWorker(config: IConfig): ITestWorkerInstance {
-  // Implementation ensures type safety
-  return new TestWorker(config);
-}
-
-// Use type guards
-function isQueuedTest(obj: any): obj is IQueuedTest {
-  return obj && typeof obj.path === 'string';
-}
-```
-
-### Generic Usage
-```typescript
-// Create type-safe generic functions
-function processQueue<T>(queue: IQueue<T>, processor: (item: T) => void): void {
-  let item = queue.shift();
-  while (item) {
-    processor(item);
-    item = queue.shift();
-  }
-}
-```
-
-### Interface Extension
-```typescript
-// Properly extend interfaces
-interface IEnhancedLogger extends ILoggerClient {
-  logWithTimestamp(level: LogLevel, ...args: any[]): void;
-  getLogHistory(): ILogEntity[];
-}
-```
-
-## Module Dependencies
-
-This module is a pure type definition module that contains no runtime code. It can be safely used in any TypeScript project without adding runtime overhead.
-
-## Version Compatibility
-
-Type definitions follow semantic versioning:
-- **Major version**: Breaking type changes
-- **Minor version**: New type definitions
-- **Patch version**: Type fixes and optimizations
-
-## IDE Support
-
-This module provides complete type support for the following IDEs:
-- Visual Studio Code
-- WebStorm / IntelliJ IDEA
-- Sublime Text (with TypeScript plugin)
-- Atom (with TypeScript plugin)
-- Vim/Neovim (with appropriate plugins)

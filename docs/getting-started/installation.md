@@ -6,109 +6,73 @@ This guide will help you install and set up testring for your project.
 
 Before installing testring, ensure you have:
 
-- **Node.js** 16.0 or higher
-- **npm** 7.0 or higher (or **yarn** 1.22+)
+- **Node.js** 22.0 or higher
+- **pnpm** 9.0 or higher
 - A supported operating system (Windows, macOS, Linux)
 
-## Installation Methods
+## Installation
 
-### Method 1: Install Complete Framework
-
-Install the complete testring framework with all core features:
+Install the testring framework as a dev dependency:
 
 ```bash
-npm install --save-dev testring
-```
-
-Or using yarn:
-
-```bash
-yarn add --dev testring
-```
-
-### Method 2: Install Core Only
-
-For minimal installations, install just the core framework:
-
-```bash
-npm install --save-dev @testring/cli @testring/api
-```
-
-### Method 3: Custom Installation
-
-Install specific modules based on your needs:
-
-```bash
-# Core framework
-npm install --save-dev @testring/cli @testring/api
-
-# Add Playwright driver
-npm install --save-dev @testring/plugin-playwright-driver
-
-# Add Selenium driver
-npm install --save-dev @testring/plugin-selenium-driver
-
-# Add additional plugins as needed
-npm install --save-dev @testring/plugin-babel @testring/plugin-fs-store
+pnpm add -D testring
 ```
 
 ## Browser Driver Setup
 
 ### Playwright Driver (Recommended)
 
-For modern browser automation with Playwright:
+testring uses Playwright for browser automation. Install the Playwright driver plugin and browser binaries:
 
 ```bash
-npm install --save-dev @testring/plugin-playwright-driver
+pnpm add -D @testring/plugin-playwright-driver
 npx playwright install
 ```
 
-See the [Playwright Driver Installation Guide](../playwright-driver/installation.md) for detailed setup.
+See the [Playwright Driver Guide](../playwright-driver/installation.md) for detailed setup and configuration options.
 
-### Selenium Driver
+## Optional Plugins
 
-For traditional Selenium WebDriver:
+Install additional plugins based on your needs:
 
 ```bash
-npm install --save-dev @testring/plugin-selenium-driver
-```
+# Babel transpilation for tests
+pnpm add -D @testring/plugin-babel
 
-You'll also need to install browser drivers separately (ChromeDriver, GeckoDriver, etc.).
+# Filesystem storage for screenshots and artifacts
+pnpm add -D @testring/plugin-fs-store
+```
 
 ## Verification
 
 Verify your installation by running:
 
 ```bash
-npx testring --version
+npx testring run --help
 ```
 
-You should see the testring version number displayed.
+You should see the testring CLI help output with available options.
 
 ## Next Steps
 
-1. [Quick Start Guide](quick-start.md) - Create your first test
-2. [Configuration](../configuration/.md) - Configure testring for your project
-3. [API Reference](../api/.md) - Learn the testring API
+1. [Quick Start Guide](./quick-start.md) — Create and run your first test
+2. [Configuration](../configuration/index.md) — Configure testring for your project
+3. [API Reference](../api/index.md) — Learn the testring API
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Permission errors on macOS/Linux:**
-```bash
-sudo npm install -g testring
-```
-
 **Node.js version issues:**
 ```bash
-node --version  # Should be 16.0+
-npm --version   # Should be 7.0+
+node --version  # Should be 22.0+
+pnpm --version  # Should be 9.0+
 ```
 
-**Installation timeout:**
+**Playwright browser installation issues:**
 ```bash
-npm install --save-dev testring --timeout=60000
+# Reinstall Playwright browsers
+npx playwright install
 ```
 
-For more help, see the [troubleshooting guide](../guides/troubleshooting.md).
+For more help, see the [Troubleshooting Guide](../guides/troubleshooting.md).

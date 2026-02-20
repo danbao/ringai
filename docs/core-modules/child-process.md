@@ -2,537 +2,240 @@
 
 Child process management module that provides cross-platform child process creation and management capabilities, supporting direct execution of JavaScript and TypeScript files.
 
+## Installation
+
+```bash
+pnpm add @testring/child-process
+```
+
 ## Overview
 
 This module provides enhanced child process management features, including:
-- Support for direct execution of JavaScript and TypeScript files
-- Cross-platform compatibility (Windows, Linux, macOS)
-- Debug mode support
-- Inter-process communication (IPC)
-- Automatic port allocation
-- Process state detection
 
-## Main Features
+- Direct execution of JavaScript and TypeScript files
+- Cross-platform compatibility (Windows, Linux, macOS) with `pathToFileURL` for Windows path handling
+- Debug mode support with automatic port allocation
+- Inter-process communication (IPC) via Node.js `child_process`
+- TypeScript execution via **tsx** (ESM loader)
+- Process state detection (`isChildProcess`)
 
-### fork
-Enhanced child process creation function supporting multiple file types:
+## API Reference
+
+### `fork(filePath, args?, options?)`
+
+Creates a child process to execute the given file. For `.ts` files, automatically configures the **tsx** ESM loader via `NODE_OPTIONS`. Returns an `IChildProcessFork` (a `ChildProcess` extended with a `debugPort` property).
+
+The fork function injects a `--testring-parent-pid=<pid>` argument into the child process argv, which is used by `isChildProcess()` to detect whether the current process was spawned by testring.
 
 ```typescript
-export async function fork(
+import { fork } from '@testring/child-process';
+
+async function fork(
   filePath: string,
   args?: Array<string>,
-  options?: Partial<IChildProcessForkOptions>
-): Promise<IChildProcessFork>
+  options?: Partial<IChildProcessForkOptions>,
+): Promise<IChildProcessFork>;
 ```
 
-### spawn
-Basic child process launch functionality:
+**Parameters:**
+
+| Parameter  | Type                                | Default | Description                                |
+| ---------- | ----------------------------------- | ------- | ------------------------------------------ |
+| `filePath` | `string`                            | —       | Path to the `.js` or `.ts` file to execute |
+| `args`     | `Array<string>`                     | `[]`    | Additional arguments passed to the child   |
+| `options`  | `Partial<IChildProcessForkOptions>` | `{}`    | Fork configuration options                 |
+
+**`IChildProcessForkOptions`:**
+
+| Property         | Type             | Default                                           | Description                                 |
+| ---------------- | ---------------- | ------------------------------------------------- | ------------------------------------------- |
+| `debug`          | `boolean`        | `false`                                           | Enable `--inspect-brk` debugging            |
+| `debugPortRange` | `Array<number>`  | `[9229, 9222, 9230–9240]`                         | Preferred ports for the debug inspector     |
+
+**`IChildProcessFork`** (extends `ChildProcess`):
+
+| Property    | Type             | Description                                       |
+| ----------- | ---------------- | ------------------------------------------------- |
+| `debugPort` | `number \| null` | The allocated debug port, or `null` if not in debug mode |
+
+#### TypeScript Execution with tsx
+
+When `filePath` has a `.ts` extension, `fork` resolves the **tsx** ESM loader path using `createRequire` and converts it to a `file://` URL via `pathToFileURL()` for Windows compatibility. The resulting URL is injected as `NODE_OPTIONS="--import <tsx-url>"` into the child process environment.
+
+The tsx path resolution strategy is:
+
+1. Try resolving `tsx/esm` from the project root (`process.cwd()`)
+2. Fall back to resolving from the current module (`import.meta.url`)
+3. Fall back to the bare specifier `tsx/esm`
+
+The resolved path is cached after the first resolution.
+
+### `spawn(command, args?, env?)`
+
+Spawns a child process with IPC support. The process is spawned in detached mode with an IPC channel (`stdio: [null, null, null, 'ipc']`).
 
 ```typescript
-export function spawn(
+import { spawn } from '@testring/child-process';
+
+function spawn(
   command: string,
-  args?: Array<string>
-): childProcess.ChildProcess
+  args?: Array<string>,
+  env?: Record<string, string | undefined>,
+): ChildProcess;
 ```
 
-### spawnWithPipes
-Child process launch with pipes:
+**Parameters:**
+
+| Parameter | Type                                    | Default       | Description                                          |
+| --------- | --------------------------------------- | ------------- | ---------------------------------------------------- |
+| `command` | `string`                                | —             | The command to execute (e.g., `process.execPath`)    |
+| `args`    | `Array<string>`                         | `[]`          | Arguments to pass to the command                     |
+| `env`     | `Record<string, string \| undefined>`   | `undefined`   | Optional environment variables merged with `process.env` |
+
+When `env` is provided, it is merged with `process.env` (`{ ...process.env, ...env }`). When omitted, `process.env` is used directly.
+
+The spawned process uses `process.cwd()` as the working directory and runs in detached mode.
+
+### `spawnWithPipes(command, args?)`
+
+Spawns a child process with piped stdio (`stdin`, `stdout`, `stderr`). Unlike `spawn`, this function uses attached mode (`detached: false`), hides the console window on Windows (`windowsHide: true`), and calls `child.unref()` so the child does not keep the parent's event loop active.
 
 ```typescript
-export function spawnWithPipes(
+import { spawnWithPipes } from '@testring/child-process';
+
+function spawnWithPipes(
   command: string,
-  args?: Array<string>
-): childProcess.ChildProcess
+  args?: Array<string>,
+): ChildProcess;
 ```
 
-### isChildProcess
-Check if the current process is a child process:
+**Parameters:**
+
+| Parameter | Type              | Default | Description                      |
+| --------- | ----------------- | ------- | -------------------------------- |
+| `command` | `string`          | —       | The command to execute           |
+| `args`    | `Array<string>`   | `[]`   | Arguments to pass to the command |
+
+**Key differences from `spawn`:**
+
+| Feature        | `spawn`                          | `spawnWithPipes`                  |
+| -------------- | -------------------------------- | --------------------------------- |
+| stdio          | `[null, null, null, 'ipc']`      | `['pipe', 'pipe', 'pipe']`       |
+| detached       | `true`                           | `false`                           |
+| IPC channel    | Yes                              | No                                |
+| `windowsHide`  | No                               | `true`                            |
+| `unref()`      | No                               | Yes                               |
+
+### `isChildProcess(argv?)`
+
+Checks whether the current process was spawned by testring by looking for a `--testring-parent-pid=` argument in the process argv.
 
 ```typescript
-export function isChildProcess(argv?: string[]): boolean
+import { isChildProcess } from '@testring/child-process';
+
+function isChildProcess(argv?: string[]): boolean;
 ```
 
-## Usage
+**Parameters:**
 
-### Basic Usage
+| Parameter | Type             | Default         | Description                               |
+| --------- | ---------------- | --------------- | ----------------------------------------- |
+| `argv`    | `string[]`       | `process.argv`  | The argument array to search              |
 
-#### Execute JavaScript Files
+Returns `true` if any element in `argv` starts with `--testring-parent-pid=`.
+
+## Usage Examples
+
+### Execute a JavaScript File
+
 ```typescript
 import { fork } from '@testring/child-process';
 
-// Execute JavaScript file
-const childProcess = await fork('./worker.js');
+const child = await fork('./worker.js');
 
-childProcess.on('message', (data) => {
-  console.log('Received message:', data);
+child.on('message', (data) => {
+  console.log('Received:', data);
 });
 
-childProcess.send({ type: 'start', data: 'hello' });
+child.send({ type: 'start' });
 ```
 
-#### Execute TypeScript Files
+### Execute a TypeScript File
+
 ```typescript
 import { fork } from '@testring/child-process';
 
-// Directly execute TypeScript file (automatically handles ts-node)
-const childProcess = await fork('./worker.ts');
+// Automatically uses tsx ESM loader for .ts files
+const child = await fork('./worker.ts');
 
-childProcess.on('message', (data) => {
-  console.log('Received message:', data);
+child.on('message', (data) => {
+  console.log('Received:', data);
 });
 ```
 
-#### Pass Arguments
+### Fork with Debug Mode
+
 ```typescript
 import { fork } from '@testring/child-process';
 
-// Pass command line arguments
-const childProcess = await fork('./worker.js', ['--mode', 'production']);
-
-// Access arguments in child process
-// process.argv contains the passed arguments
-```
-
-### Debug Mode
-
-#### Enable Debugging
-```typescript
-import { fork } from '@testring/child-process';
-
-// Enable debug mode
-const childProcess = await fork('./worker.js', [], {
-  debug: true
-});
-
-// Access debug port
-console.log('Debug port:', childProcess.debugPort);
-// You can use Chrome DevTools or VS Code to connect to this port
-```
-
-#### Custom Debug Port Range
-```typescript
-import { fork } from '@testring/child-process';
-
-const childProcess = await fork('./worker.js', [], {
+const child = await fork('./worker.js', [], {
   debug: true,
-  debugPortRange: [9229, 9230, 9231, 9232]
+  debugPortRange: [9229, 9230, 9231, 9232],
 });
+
+console.log(`Debug at: chrome://inspect → localhost:${child.debugPort}`);
 ```
 
-### Inter-Process Communication
+### Detect Child Process
 
-#### Parent Process Code
-```typescript
-import { fork } from '@testring/child-process';
-
-const childProcess = await fork('./worker.js');
-
-// Send message to child process
-childProcess.send({
-  type: 'task',
-  data: { id: 1, action: 'process' }
-});
-
-// Listen for child process messages
-childProcess.on('message', (message) => {
-  if (message.type === 'result') {
-    console.log('Task result:', message.data);
-  }
-});
-
-// Listen for child process exit
-childProcess.on('exit', (code, signal) => {
-  console.log(`Child process exited: code=${code}, signal=${signal}`);
-});
-```
-
-#### Child Process Code (worker.js)
-```javascript
-// Listen for parent process messages
-process.on('message', (message) => {
-  if (message.type === 'task') {
-    const result = processTask(message.data);
-    
-    // Send result back to parent process
-    process.send({
-      type: 'result',
-      data: result
-    });
-  }
-});
-
-function processTask(data) {
-  // Process task logic
-  return { id: data.id, status: 'completed' };
-}
-```
-
-### Process State Detection
-
-#### Check if Running in Child Process
 ```typescript
 import { isChildProcess } from '@testring/child-process';
 
 if (isChildProcess()) {
-  console.log('Running in child process');
-  // Child process specific logic
+  // Running inside a testring-forked child process
+  process.on('message', (msg) => {
+    process.send?.({ result: 'done' });
+  });
 } else {
-  console.log('Running in main process');
-  // Main process specific logic
+  // Running as the main process
+  console.log('Main process');
 }
 ```
 
-#### Check Specific Parameters
-```typescript
-import { isChildProcess } from '@testring/child-process';
+### Spawn with Pipes
 
-// Check custom parameters
-const customArgs = ['--testring-parent-pid=12345'];
-if (isChildProcess(customArgs)) {
-  console.log('This is a testring child process');
-}
-```
-
-### Using spawn Functionality
-
-#### Basic spawn
-```typescript
-import { spawn } from '@testring/child-process';
-
-// Start basic child process
-const childProcess = spawn('node', ['--version']);
-
-childProcess.stdout.on('data', (data) => {
-  console.log(`Output: ${data}`);
-});
-
-childProcess.stderr.on('data', (data) => {
-  console.error(`Error: ${data}`);
-});
-```
-
-#### spawn with Pipes
 ```typescript
 import { spawnWithPipes } from '@testring/child-process';
 
-// Start child process with pipes
-const childProcess = spawnWithPipes('node', ['script.js']);
+const child = spawnWithPipes('node', ['--version']);
 
-// Send data to child process
-childProcess.stdin.write('hello\n');
-childProcess.stdin.end();
-
-// Read output
-childProcess.stdout.on('data', (data) => {
+child.stdout?.on('data', (data) => {
   console.log(`Output: ${data}`);
 });
 ```
 
-## Cross-Platform Support
-
-### Windows Special Handling
-The module automatically handles Windows platform differences:
+### Spawn with Custom Environment
 
 ```typescript
-// On Windows, 'node' command will be used automatically
-// On Unix systems, ts-node or node will be used based on file type
-const childProcess = await fork('./worker.ts');
-```
+import { spawn } from '@testring/child-process';
 
-### TypeScript Support
-Automatically detect and handle TypeScript files:
-
-```typescript
-// .ts files will automatically use ts-node for execution
-const tsProcess = await fork('./worker.ts');
-
-// .js files use node for execution
-const jsProcess = await fork('./worker.js');
-
-// Files without extension are automatically selected based on environment
-const process = await fork('./worker');
-```
-
-## Configuration Options
-
-### IChildProcessForkOptions
-```typescript
-interface IChildProcessForkOptions {
-  debug: boolean;                    // Whether to enable debug mode
-  debugPortRange: Array<number>;     // Debug port range
-}
-```
-
-### Default Configuration
-```typescript
-const DEFAULT_FORK_OPTIONS = {
-  debug: false,
-  debugPortRange: [9229, 9222, ...getNumberRange(9230, 9240)]
-};
-```
-
-## Real-World Application Scenarios
-
-### Test Worker Process
-```typescript
-import { fork } from '@testring/child-process';
-
-// Create test worker process
-const createTestWorker = async (testFile: string) => {
-  const worker = await fork('./test-runner.js', [testFile]);
-  
-  return new Promise((resolve, reject) => {
-    worker.on('message', (message) => {
-      if (message.type === 'test-result') {
-        resolve(message.data);
-      } else if (message.type === 'test-error') {
-        reject(new Error(message.error));
-      }
-    });
-    
-    worker.on('exit', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Worker process exited abnormally: ${code}`));
-      }
-    });
-  });
-};
-
-// Usage
-const result = await createTestWorker('./my-test.spec.js');
-```
-
-### Parallel Task Processing
-```typescript
-import { fork } from '@testring/child-process';
-
-const processTasks = async (tasks: any[]) => {
-  const workers = await Promise.all(
-    tasks.map(task => fork('./task-worker.js'))
-  );
-  
-  const results = await Promise.all(
-    workers.map((worker, index) => {
-      return new Promise((resolve) => {
-        worker.on('message', (result) => {
-          resolve(result);
-        });
-        
-        worker.send(tasks[index]);
-      });
-    })
-  );
-  
-  // Clean up worker processes
-  workers.forEach(worker => worker.kill());
-  
-  return results;
-};
-```
-
-### Debug Support
-```typescript
-import { fork } from '@testring/child-process';
-
-const createDebugWorker = async (script: string) => {
-  const worker = await fork(script, [], {
-    debug: true,
-    debugPortRange: [9229, 9230, 9231]
-  });
-  
-  console.log(`Debug port: ${worker.debugPort}`);
-  console.log(`You can use the following commands to connect the debugger:`);
-  console.log(`chrome://inspect or VS Code connect to localhost:${worker.debugPort}`);
-  
-  return worker;
-};
-```
-
-## Error Handling
-
-### Process Exception Handling
-```typescript
-import { fork } from '@testring/child-process';
-
-const createRobustWorker = async (script: string) => {
-  try {
-    const worker = await fork(script);
-    
-    worker.on('error', (error) => {
-      console.error('Process error:', error);
-    });
-    
-    worker.on('exit', (code, signal) => {
-      if (code !== 0) {
-        console.error(`Process exited abnormally: code=${code}, signal=${signal}`);
-      }
-    });
-    
-    return worker;
-  } catch (error) {
-    console.error('Failed to create process:', error);
-    throw error;
-  }
-};
-```
-
-### Timeout Handling
-```typescript
-import { fork } from '@testring/child-process';
-
-const createWorkerWithTimeout = async (script: string, timeout: number) => {
-  const worker = await fork(script);
-  
-  const timeoutId = setTimeout(() => {
-    console.log('Process timeout, force termination');
-    worker.kill('SIGTERM');
-  }, timeout);
-  
-  worker.on('exit', () => {
-    clearTimeout(timeoutId);
-  });
-  
-  return worker;
-};
-```
-
-## Performance Optimization
-
-### Process Pool Management
-```typescript
-import { fork } from '@testring/child-process';
-
-class WorkerPool {
-  private workers: any[] = [];
-  private maxWorkers: number;
-  
-  constructor(maxWorkers: number = 4) {
-    this.maxWorkers = maxWorkers;
-  }
-  
-  async getWorker(script: string) {
-    if (this.workers.length < this.maxWorkers) {
-      const worker = await fork(script);
-      this.workers.push(worker);
-      return worker;
-    }
-    
-    // Reuse existing worker process
-    return this.workers[this.workers.length - 1];
-  }
-  
-  async cleanup() {
-    await Promise.all(
-      this.workers.map(worker => 
-        new Promise(resolve => {
-          worker.on('exit', resolve);
-          worker.kill();
-        })
-      )
-    );
-    this.workers = [];
-  }
-}
-```
-
-### Memory Management
-```typescript
-import { fork } from '@testring/child-process';
-
-const createManagedWorker = async (script: string) => {
-  const worker = await fork(script);
-  
-  // Monitor memory usage
-  const memoryCheck = setInterval(() => {
-    const usage = process.memoryUsage();
-    if (usage.heapUsed > 100 * 1024 * 1024) { // 100MB
-      console.warn('Memory usage too high, consider restarting process');
-    }
-  }, 5000);
-  
-  worker.on('exit', () => {
-    clearInterval(memoryCheck);
-  });
-  
-  return worker;
-};
-```
-
-## Best Practices
-
-### 1. Process Lifecycle Management
-```typescript
-// Ensure processes are properly cleaned up
-process.on('exit', () => {
-  // Clean up all child processes
-  workers.forEach(worker => worker.kill());
+const child = spawn('node', ['script.js'], {
+  MY_VAR: 'hello',
+  DEBUG: 'true',
 });
 
-process.on('SIGTERM', () => {
-  // Graceful shutdown
-  workers.forEach(worker => worker.kill('SIGTERM'));
+child.on('message', (msg) => {
+  console.log('IPC message:', msg);
 });
-```
-
-### 2. Error Boundaries
-```typescript
-// Use error boundaries to protect main process
-const safeExecute = async (script: string, data: any) => {
-  try {
-    const worker = await fork(script);
-    
-    return await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        worker.kill();
-        reject(new Error('Execution timeout'));
-      }, 30000);
-      
-      worker.on('message', (result) => {
-        clearTimeout(timeout);
-        resolve(result);
-      });
-      
-      worker.on('error', (error) => {
-        clearTimeout(timeout);
-        reject(error);
-      });
-      
-      worker.send(data);
-    });
-  } catch (error) {
-    console.error('Execution failed:', error);
-    throw error;
-  }
-};
-```
-
-### 3. Debug-Friendly
-```typescript
-// Enable debugging in development mode
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-const worker = await fork('./worker.js', [], {
-  debug: isDevelopment
-});
-
-if (isDevelopment && worker.debugPort) {
-  console.log(`🐛 Debug port: ${worker.debugPort}`);
-}
-```
-
-## Installation
-
-```bash
-npm install @testring/child-process
 ```
 
 ## Dependencies
 
-- `@testring/utils` - Utility functions (port detection, etc.)
-- `@testring/types` - Type definitions
+- `@testring/types` — Type definitions (`IChildProcessForkOptions`, `IChildProcessFork`)
+- `@testring/utils` — Utility functions (`getAvailablePort`)
 
 ## Related Modules
 
-- `@testring/test-worker` - Test worker process management
-- `@testring/transport` - Inter-process communication
-- `@testring/utils` - Utility functions
+- [`@testring/test-worker`](./test-worker.md) — Test worker process management (uses `fork` internally)
+- [`@testring/transport`](./transport.md) — Inter-process communication layer
+- [`@testring/utils`](./utils.md) — Utility functions
