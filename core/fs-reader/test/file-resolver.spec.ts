@@ -26,8 +26,7 @@ describe('resolve tests', () => {
             })
             .catch(() => {
                 resolve();
-            })
-            .catch(callback);
+            });
     }));
 
     it('should throw error if empty array passed', () => new Promise<void>((resolve, reject) => {
@@ -37,8 +36,7 @@ describe('resolve tests', () => {
             })
             .catch(() => {
                 resolve();
-            })
-            .catch(callback);
+            });
     }));
 
     it('should resolve array of objects that contain ', async () => {
@@ -71,7 +69,6 @@ describe('resolve tests', () => {
             })
             .catch(() => {
                 resolve();
-            })
-            .catch(callback);
+            });
     }));
 });

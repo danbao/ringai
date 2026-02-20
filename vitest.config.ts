@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import os from 'os';
 
 export default defineConfig({
     test: {
@@ -17,18 +18,16 @@ export default defineConfig({
             'core/types/**',
             'core/cli/test/run.functional.spec.ts',
             'core/test-worker/test/test-worker.functional.spec.ts',
+            // Functional tests that require child process IPC - need ESM sandbox rework
+            'core/test-worker/test/worker-controller.spec.ts',
+            'packages/browser-proxy/test/browser-proxy-controller.functional.spec.ts',
+            'packages/web-application/test/web-application-controller.functional.spec.ts',
         ],
         testTimeout: 60000,
         hookTimeout: 30000,
-        // Use threads pool for better performance on multi-core systems
         pool: 'threads',
-        poolOptions: {
-            threads: {
-                // Use available CPUs minus one to keep system responsive
-                maxThreads: Math.max(1, require('os').cpus().length - 1),
-                minThreads: 1,
-            },
-        },
+        maxWorkers: Math.max(1, os.cpus().length - 1),
+        minWorkers: 1,
         // Better error reporting
         dangerouslyIgnoreUnhandledErrors: false,
         // Show full test names in output

@@ -1,5 +1,7 @@
-import * as yargs from 'yargs';
+import * as yargsHelpers from 'yargs/helpers';
 import {IConfig} from '@testring/types';
+
+const Parser = yargsHelpers.Parser;
 
 const RESTRICTED_FIELDS = ['_', '$0', 'version', 'help'];
 
@@ -21,7 +23,7 @@ function normalizeArg(arg: any): any {
     }
 }
 
-function normalize(args: yargs.Arguments, isRoot: boolean): Partial<IConfig> {
+function normalize(args: Record<string, any>, isRoot: boolean): Partial<IConfig> {
     const normalizedArgs: Record<string, any> = {};
 
     let arg;
@@ -59,7 +61,8 @@ export function getArguments(argv: Array<string>): Partial<IConfig> | null {
         return null;
     }
 
-    const args = (yargs as unknown as { parseSync(argv: string[]): yargs.Arguments }).parseSync(argv);
+    const parse = (Parser as any).default || Parser;
+    const args = parse(argv);
 
     return normalize(args, true);
 }

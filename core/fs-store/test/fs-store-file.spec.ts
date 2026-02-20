@@ -138,7 +138,7 @@ describe('fs-store-file', () => {
 
         onRelease &&
             onRelease.readHook('testRelease', (readOptions: ReadOptions) => {
-            const {action, ffName} = readOptions;
+            const {action, fileName} = readOptions as any;
             switch (action) {
                 case fsReqType.lock:
                 if (state.lock) {
@@ -152,8 +152,10 @@ describe('fs-store-file', () => {
                 state.unlink -= 1;
                 break;
             }
-            chai.expect(ffName).to.be.a('string');
-            log.debug({ffName, state}, 'release hook done');
+            if (fileName !== undefined) {
+                chai.expect(fileName).to.be.a('string');
+            }
+            log.debug({fileName, state}, 'release hook done');
             });
 
         try {

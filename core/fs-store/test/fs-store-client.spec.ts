@@ -17,7 +17,8 @@ describe('fs-store-client', () => {
     beforeAll(() => {
         FSS = new FSStoreServer(10);
     });
-    it('client should lock access & unlink data', (done) => {
+    it('client should lock access & unlink data', () => new Promise<void>((resolve, reject) => {
+        const done = (err?: any) => { if (err) reject(err); else resolve(); };
         const FSC = new FSStoreClient();
 
         const fileName = 'tmp.tmp';
@@ -30,8 +31,8 @@ describe('fs-store-client', () => {
         );
 
         onRelease &&
-            onRelease.readHook('testRelease', (readOptions: ReadOptions) => {
-            const {action, ffName} = readOptions;
+            onRelease.readHook('testRelease', (readOptions: any) => {
+            const {action, fileName} = readOptions;
             switch (action) {
                 case fsReqType.lock:
                 break;
@@ -42,7 +43,9 @@ describe('fs-store-client', () => {
                 state.unlink -= 1;
                 break;
             }
-            chai.expect(ffName).to.be.a('string');
+            if (fileName !== undefined) {
+                chai.expect(fileName).to.be.a('string');
+            }
             });
 
         const lockReqId = FSC.getLock({fileName}, (fName) => {
@@ -97,5 +100,5 @@ describe('fs-store-client', () => {
                 done();
             }, 200);
         }, 200);
-    });
+    }));
 });

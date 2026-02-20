@@ -1,8 +1,12 @@
 
+import * as chai from 'chai';
 import { expect } from 'chai';
+import sinonChai from 'sinon-chai';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
 import { createBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
 import * as sinon from 'sinon';
+
+chai.use(sinonChai);
 
 /**
  * These tests demonstrate how to use the PluginCompatibilityTester

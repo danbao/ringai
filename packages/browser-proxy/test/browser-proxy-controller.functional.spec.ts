@@ -103,7 +103,7 @@ describe('Browser proxy controller functional test', () => {
                         reject(e);
                     });
             })
-            .catch(callback);
+            .catch(reject);
     }));
 
     it('should throw exception if proxy response contains non-empty "exception" field', () => new Promise<void>((resolve, reject) => {
@@ -134,7 +134,7 @@ describe('Browser proxy controller functional test', () => {
                         resolve();
                     });
             })
-            .catch(callback);
+            .catch(reject);
     }));
 
     it('should be able to run multiple workers', async () => {

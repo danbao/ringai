@@ -1,9 +1,13 @@
 
+import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
 import { IBrowserProxyPlugin } from '@testring/types';
 import { createBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
+
+chai.use(sinonChai);
 
 describe('PluginCompatibilityTester', () => {
     let mockPlugin: sinon.SinonStubbedInstance<IBrowserProxyPlugin>;

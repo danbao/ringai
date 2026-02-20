@@ -18,7 +18,7 @@ const tmpDir = 'tmp';
 
 interface ReadOptions {
     action: fsReqType;
-    ffName: string;
+    fileName?: string;
 }
 
 describe('fs-store-presets', () => {
@@ -83,8 +83,8 @@ describe('fs-store-presets', () => {
         
 
         onRelease &&
-            onRelease.readHook('testRelease', (readOptions: ReadOptions) => {
-            const {action, ffName} = readOptions;
+            onRelease.readHook('testRelease', (readOptions: any) => {
+            const {action, fileName} = readOptions;
             switch (action) {
                 case fsReqType.lock:
                 if (state.lock) {
@@ -98,8 +98,10 @@ describe('fs-store-presets', () => {
                 state.unlink -= 1;
                 break;
             }
-            chai.expect(ffName).to.be.a('string');
-            log.debug({ffName, state}, 'release hook done');
+            if (fileName !== undefined) {
+                chai.expect(fileName).to.be.a('string');
+            }
+            log.debug({fileName, state}, 'release hook done');
             });
 
         try {

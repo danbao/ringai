@@ -35,7 +35,7 @@ describe('Async Breakpoints', () => {
         ).to.be.equal(false);
     });
 
-    it('Before break call', (done) => {
+    it('Before break call', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addBeforeInstructionBreakpoint();
@@ -43,14 +43,14 @@ describe('Async Breakpoints', () => {
         asyncBreakpoint.waitBeforeInstructionBreakpoint().catch((err) => {
             try {
                 chai.expect(err).to.be.instanceOf(BreakStackError);
-                done();
+                resolve();
             } catch (e) {
-                done(e);
+                reject(e);
             }
         });
 
         asyncBreakpoint.breakStack();
-    });
+    }));
 
     it('After instruction breakpoint', async () => {
         const asyncBreakpoint = new AsyncBreakpoints();
@@ -76,7 +76,7 @@ describe('Async Breakpoints', () => {
         ).to.be.equal(false);
     });
 
-    it('After break call', (done) => {
+    it('After break call', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addAfterInstructionBreakpoint();
@@ -84,16 +84,16 @@ describe('Async Breakpoints', () => {
         asyncBreakpoint.waitAfterInstructionBreakpoint().catch((err) => {
             try {
                 chai.expect(err).to.be.instanceOf(BreakStackError);
-                done();
+                resolve();
             } catch (e) {
-                done(e);
+                reject(e);
             }
         });
 
         asyncBreakpoint.breakStack();
-    });
+    }));
 
-    it('Concurrent same breakpoint call', (done) => {
+    it('Concurrent same breakpoint call', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addBeforeInstructionBreakpoint();
@@ -102,14 +102,14 @@ describe('Async Breakpoints', () => {
             asyncBreakpoint.waitBeforeInstructionBreakpoint(),
             asyncBreakpoint.waitBeforeInstructionBreakpoint(),
         ])
-            .then(() => done())
-            .catch(() => done('Not finished'));
+            .then(() => resolve())
+            .catch(() => reject(new Error('Not finished')));
 
         asyncBreakpoint.resolveBeforeInstructionBreakpoint();
         asyncBreakpoint.resolveAfterInstructionBreakpoint();
-    });
+    }));
 
-    it('Concurrent different breakpoint break', (done) => {
+    it('Concurrent different breakpoint break', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addAfterInstructionBreakpoint();
@@ -120,16 +120,16 @@ describe('Async Breakpoints', () => {
         ]).catch((err) => {
             try {
                 chai.expect(err).to.be.instanceOf(BreakStackError);
-                done();
+                resolve();
             } catch (e) {
-                done(e);
+                reject(e);
             }
         });
 
         asyncBreakpoint.breakStack();
-    });
+    }));
 
-    it('Concurrent different breakpoint call', (done) => {
+    it('Concurrent different breakpoint call', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addBeforeInstructionBreakpoint();
@@ -139,14 +139,14 @@ describe('Async Breakpoints', () => {
             asyncBreakpoint.waitBeforeInstructionBreakpoint(),
             asyncBreakpoint.waitAfterInstructionBreakpoint(),
         ])
-            .then(() => done())
-            .catch(() => done('Not finished'));
+            .then(() => resolve())
+            .catch(() => reject(new Error('Not finished')));
 
         asyncBreakpoint.resolveBeforeInstructionBreakpoint();
         asyncBreakpoint.resolveAfterInstructionBreakpoint();
-    });
+    }));
 
-    it('Concurrent different breakpoint break', (done) => {
+    it('Concurrent different breakpoint break', () => new Promise<void>((resolve, reject) => {
         const asyncBreakpoint = new AsyncBreakpoints();
 
         asyncBreakpoint.addBeforeInstructionBreakpoint();
@@ -158,12 +158,12 @@ describe('Async Breakpoints', () => {
         ]).catch((err) => {
             try {
                 chai.expect(err).to.be.instanceOf(BreakStackError);
-                done();
+                resolve();
             } catch (e) {
-                done(e);
+                reject(e);
             }
         });
 
         asyncBreakpoint.breakStack();
-    });
+    }));
 });

@@ -1,6 +1,6 @@
 import {Transport} from '@testring/transport';
 import {WebApplication} from '../../src/web-application';
-import {ELEMENT_NAME, TEST_NAME} from './constants';
+import {ELEMENT_NAME, TEST_NAME} from './constants.ts';
 
 const transport = new Transport();
 const application = new WebApplication(TEST_NAME, transport);

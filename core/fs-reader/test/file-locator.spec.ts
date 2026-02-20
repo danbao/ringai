@@ -5,10 +5,10 @@ import * as chai from 'chai';
 
 import {locateFiles} from '../src/file-locator';
 
-const exactTestPath = './test/fixtures/testfiles/foo.test.js';
-const globTestPath = './test/fixtures/testfiles/**/**/*.test.js';
-const falseGlobTestPath = './test/fixtures/testfiles/**/**/*.spec.js';
-const excludedPath = './test/fixtures/testfiles/qux.js';
+const exactTestPath = './core/fs-reader/test/fixtures/testfiles/foo.test.js';
+const globTestPath = './core/fs-reader/test/fixtures/testfiles/**/**/*.test.js';
+const falseGlobTestPath = './core/fs-reader/test/fixtures/testfiles/**/**/*.spec.js';
+const excludedPath = './core/fs-reader/test/fixtures/testfiles/qux.js';
 
 describe('testFilesLocator', () => {
     it('should return empty set if no searchpath passed', async () => {

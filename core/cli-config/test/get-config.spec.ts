@@ -1,6 +1,7 @@
 
 import * as chai from 'chai';
 import * as path from 'path';
+import * as fs from 'fs';
 
 import {getConfig, defaultConfiguration} from '../src';
 
@@ -11,8 +12,8 @@ const envConfigWithExtendPath = path.resolve(
     './fixtures/envConfig_extend.json',
 );
 
-const fileConfig = require('./fixtures/fileConfig.json');
-const envConfig = require('./fixtures/envConfig.json');
+const fileConfig = JSON.parse(fs.readFileSync(fileConfigPath, 'utf-8'));
+const envConfig = JSON.parse(fs.readFileSync(envConfigPath, 'utf-8'));
 
 describe('Get config', () => {
     it('should return default configuration if nothing else passed', async () => {

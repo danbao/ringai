@@ -1,5 +1,5 @@
-const { expect } = require('chai');
-const TIMEOUTS = require('../index.js');
+import { expect } from 'chai';
+import TIMEOUTS from '../index.js';
 
 describe('@testring/timeout-config', () => {
   it('should export timeout configuration', () => {
@@ -27,4 +27,4 @@ describe('@testring/timeout-config', () => {
     expect(customTimeout).to.be.a('number');
     expect(customTimeout).to.be.greaterThan(0);
   });
-}); 
+});

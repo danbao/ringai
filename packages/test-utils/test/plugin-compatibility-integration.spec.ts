@@ -1,8 +1,12 @@
 
+import * as chai from 'chai';
 import { expect } from 'chai';
+import sinonChai from 'sinon-chai';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
 import { createBrowserProxyPluginMock, createFailingBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
 import * as sinon from 'sinon';
+
+chai.use(sinonChai);
 
 describe('PluginCompatibilityTester Integration Tests', () => {
     let sandbox: sinon.SinonSandbox;

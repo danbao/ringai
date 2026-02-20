@@ -58,8 +58,7 @@ describe('lock-pool', () => {
 
         return Promise.resolve();
     });
-    it('should wait for lock acquire', (done) => {
+    it('should wait for lock acquire', () => {
         expect(1).to.be.equal(1);
-        done();
     });
 });

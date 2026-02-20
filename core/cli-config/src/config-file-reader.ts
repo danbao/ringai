@@ -83,6 +83,8 @@ async function readConfig(
 
     switch (extension) {
         case '.js':
+        case '.cjs':
+        case '.mjs':
             configData = await readJSConfig(configPath, config);
             break;
 

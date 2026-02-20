@@ -49,21 +49,25 @@ export function getCursor(
     });
 
     if (wasCursorFound) {
+        let loc: { line: number; column: number } | undefined;
+
         if (t.isArrowFunctionExpression(wasCursorFound.node)) {
             const arrowExpression = wasCursorFound.findParent((parentPath) =>
                 t.isExpressionStatement(parentPath.node),
             );
-
-            return arrowExpression.node.loc.end;
+            loc = arrowExpression.node.loc.end;
+        } else {
+            const externalNode = wasCursorFound.findParent(
+                (parentPath) =>
+                    t.isBlockStatement(parentPath.parent) ||
+                    t.isProgram(parentPath.parent),
+            );
+            loc = externalNode.node.loc.end;
         }
 
-        const externalNode = wasCursorFound.findParent(
-            (parentPath) =>
-                t.isBlockStatement(parentPath.parent) ||
-                t.isProgram(parentPath.parent),
-        );
-
-        return externalNode.node.loc.end;
+        if (loc) {
+            return { line: loc.line, column: loc.column };
+        }
     }
 
     return null;

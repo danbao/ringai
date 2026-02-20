@@ -5,8 +5,8 @@ import * as chai from 'chai';
 import {getFileConfig} from '../src/config-file-reader';
 
 describe('config-file-reader', () => {
-    it('should load config as promise from .js', async () => {
-        const filePath = path.join(__dirname, './fixtures/testringrc.js');
+    it('should load config as promise from .cjs', async () => {
+        const filePath = path.join(__dirname, './fixtures/testringrc.cjs');
         const config = await getFileConfig(filePath, {} as any);
 
         chai.expect(config).to.be.deep.equal({
@@ -14,8 +14,8 @@ describe('config-file-reader', () => {
         });
     });
 
-    it('should load config as object from .js', async () => {
-        const filePath = path.join(__dirname, './fixtures/testringrc_obj.js');
+    it('should load config as object from .cjs', async () => {
+        const filePath = path.join(__dirname, './fixtures/testringrc_obj.cjs');
         const config = await getFileConfig(filePath, {} as any);
 
         chai.expect(config).to.be.deep.equal({

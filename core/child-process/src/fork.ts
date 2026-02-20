@@ -1,8 +1,8 @@
 import * as path from 'node:path';
 import process from 'node:process';
+import { createRequire } from 'node:module';
 import {getAvailablePort} from '@testring/utils';
 import {IChildProcessForkOptions, IChildProcessFork} from '@testring/types';
-import {resolveBinary} from './resolve-binary';
 import {spawn} from './spawn';
 import {ChildProcess} from 'child_process';
 
@@ -16,56 +16,46 @@ function getNumberRange(start: number, end: number): Array<number> {
     return Array.from({length}, (_, i) => i + start);
 }
 
+let _tsxPath: string | null = null;
+function resolveTsxImportPath(): string {
+    if (_tsxPath) return _tsxPath;
+    try {
+        const esmRequire = createRequire(new URL('file://' + process.cwd() + '/package.json'));
+        _tsxPath = esmRequire.resolve('tsx/esm');
+        return _tsxPath;
+    } catch {
+        // fallback
+    }
+    try {
+        const esmRequire = createRequire(import.meta.url);
+        _tsxPath = esmRequire.resolve('tsx/esm');
+        return _tsxPath;
+    } catch {
+        // fallback
+    }
+    _tsxPath = 'tsx/esm';
+    return _tsxPath;
+}
+
 const PREFERRED_DEBUG_PORTS: Array<number> = [
-    /* Default debug ports */
     9229,
     9222,
-    /* A few ports from 9230 - 9240 */
     ...getNumberRange(9230, 9240),
 ];
-const IS_WIN = process.platform === 'win32';
-const EMPTY_PARAMETERS: Array<string> = [];
-const REQUIRE_TS_NODE = ['-r', 'ts-node/register'];
-
 const DEFAULT_FORK_OPTIONS: IChildProcessForkOptions = {
     debug: false,
     debugPortRange: PREFERRED_DEBUG_PORTS,
 };
 
-function getAdditionalParameters(filePath: string): Array<string> {
+function getTsEnv(filePath: string): Record<string, string | undefined> | undefined {
     const extension = path.extname(filePath);
-
-    switch (extension) {
-        case '.js':
-            return EMPTY_PARAMETERS;
-
-        case '.ts':
-            return REQUIRE_TS_NODE;
-
-        case '':
-            return EMPTY_PARAMETERS;
-
-        default:
-            return EMPTY_PARAMETERS;
+    if (extension === '.ts') {
+        const tsxPath = resolveTsxImportPath();
+        return {
+            NODE_OPTIONS: `--import ${tsxPath}`,
+        };
     }
-}
-
-function getExecutor(filePath: string): string {
-    const extension = path.extname(filePath);
-
-    switch (extension) {
-        case '.js':
-            return process.execPath;
-
-        case '.ts':
-            return resolveBinary('ts-node');
-
-        case '':
-            return process.execPath;
-
-        default:
-            return process.execPath;
-    }
+    return undefined;
 }
 
 const getForkOptions = (
@@ -88,30 +78,19 @@ export async function fork(
 
     if (mergedOptions.debug) {
         debugPort = await getAvailablePort(mergedOptions.debugPortRange);
-
         processArgs.push(`--inspect-brk=${debugPort}`);
     }
 
-    let childProcess: ChildProcess;
-    if (IS_WIN) {
-        childProcess = spawn('node', [
-            ...processArgs,
-            ...getAdditionalParameters(filePath),
-            filePath,
-            childArg,
-            ...args,
-        ]);
-    } else {
-        childProcess = spawn(getExecutor(filePath), [
-            ...processArgs,
-            filePath,
-            childArg,
-            ...args,
-        ]);
-    }
+    const env = getTsEnv(filePath);
+
+    const childProcess: ChildProcess = spawn(process.execPath, [
+        ...processArgs,
+        filePath,
+        childArg,
+        ...args,
+    ], env);
 
     const childProcessExtended = childProcess as ChildProcessExtension;
-
     childProcessExtended.debugPort = debugPort;
 
     return childProcessExtended;
