@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { createRequire } from 'node:module';
-import * as resolve from 'resolve';
+import resolveModule from 'resolve';
 
 const esmRequire = createRequire(import.meta.url);
 
@@ -34,7 +34,7 @@ export function resolvePackage(
 
         return requireResolveById(modulePath);
     } catch {
-        return resolve.sync(modulePath, {
+        return resolveModule.sync(modulePath, {
             basedir: process.cwd(),
         });
     }

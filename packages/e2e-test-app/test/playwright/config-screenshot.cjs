@@ -1,4 +1,4 @@
-const playwrightConfig = require('./config');
+const playwrightConfig = require('./config.cjs');
 
 module.exports = async (config) => {
     const defConfig = await playwrightConfig(config);

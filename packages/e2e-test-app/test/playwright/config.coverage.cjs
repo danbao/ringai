@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 // 导入统一的timeout配置
-const TIMEOUTS = require('../../timeout-config.js');
+const TIMEOUTS = require('../../timeout-config.cjs');
 
 module.exports = async (config) => {
     const local = !config.headless;

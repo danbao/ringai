@@ -6,7 +6,7 @@
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "bin": {
-    "testring": "./bin/testring.js"
+    "testring": "./bin/testring.cjs"
   },
   "repository": {
     "type": "git",

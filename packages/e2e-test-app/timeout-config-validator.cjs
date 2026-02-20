@@ -3,7 +3,7 @@
  * 验证timeout配置的合理性和一致性
  */
 
-const TIMEOUTS = require('./timeout-config.js');
+const TIMEOUTS = require('./timeout-config.cjs');
 
 /**
  * 验证timeout值是否合理

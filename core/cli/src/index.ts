@@ -67,13 +67,7 @@ const cli = createMain(mainCommand);
  * Backward-compatible programmatic entry.
  */
 export async function runCLI(argv: string[]): Promise<void> {
-    await cli({ rawArgs: argv });
+    await cli({ rawArgs: argv.slice(2) });
 }
 
-// If executed directly
-if (process.argv[1] && process.argv[1].includes('testring')) {
-    cli({ rawArgs: process.argv }).catch((error) => {
-        console.error(kleur.red('Error:'), error.message);
-        process.exit(1);
-    });
-}
+
