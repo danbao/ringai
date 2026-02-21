@@ -62,7 +62,7 @@ describe('Process Cleanup Integration Tests', function() {
             };
 
             // Run a single simple test (alert test)
-            const testProcess = spawn('npm', ['run', 'test:playwright'], {
+            const testProcess = spawn('pnpm', ['run', 'test:playwright'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe',
                 env: { ...process.env, TESTRING_FILTER: 'alert' }
@@ -144,7 +144,7 @@ describe('Process Cleanup Integration Tests', function() {
             };
 
             // Start test process focused on title test
-            const testProcess = spawn('npm', ['run', 'test:e2e'], {
+            const testProcess = spawn('pnpm', ['run', 'test:e2e'], {
                 cwd: path.resolve(__dirname, '../../..'),
                 stdio: 'pipe',
                 detached: false,
@@ -242,7 +242,7 @@ describe('Process Cleanup Integration Tests', function() {
             
             // Run a quick test
             try {
-                await execAsync('npm run test:simple', {
+                await execAsync('pnpm run test:simple', {
                     cwd: path.resolve(__dirname, '../..'),
                     timeout: 30000
                 });

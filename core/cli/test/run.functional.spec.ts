@@ -78,7 +78,7 @@ describe('testring CLI', () => {
 
             try {
                 // Run a test that should fail (basic-verification.spec.js has a failing assertion)
-                await execAsync('npm run test:e2e:coverage', {
+                await execAsync('pnpm run test:e2e:coverage', {
                     cwd: path.resolve(__dirname, '../../../packages/e2e-test-app'),
                     timeout: 50000
                 });

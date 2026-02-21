@@ -8,7 +8,7 @@ The `@testring/plugin-playwright-driver` plugin provides advanced capabilities f
 
 ```bash
 # Enable debug mode with environment variable
-PLAYWRIGHT_DEBUG=1 npm test
+PLAYWRIGHT_DEBUG=1 pnpm test
 ```
 
 When `PLAYWRIGHT_DEBUG=1` is set:

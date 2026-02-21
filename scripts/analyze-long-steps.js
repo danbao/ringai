@@ -99,7 +99,7 @@ function runTestsAndCaptureLog() {
 
         // Run tests and capture output
         const testCommand =
-            'cd packages/e2e-test-app && npm run test:playwright:headless';
+            'cd packages/e2e-test-app && pnpm run test:playwright:headless';
 
         try {
             const output = execSync(testCommand, {

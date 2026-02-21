@@ -58,7 +58,7 @@ The project includes reusable workflows in `.github/workflows/templates/`:
 
 - `test.yml` - Run test suite
 - `docker.yml` - Build and push Docker images
-- `publish.yml` - Publish packages to npm
+- `publish.yml` - Publish packages to npm registry
 
 Example usage in your workflow:
 

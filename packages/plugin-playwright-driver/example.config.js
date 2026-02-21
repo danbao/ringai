@@ -5,8 +5,8 @@
 // - Set PLAYWRIGHT_DEBUG=1 environment variable to run in non-headless mode with slow motion for debugging
 //
 // Usage examples:
-// - npm test (headless mode)
-// - PLAYWRIGHT_DEBUG=1 npm test (non-headless mode for debugging)
+// - pnpm test (headless mode)
+// - PLAYWRIGHT_DEBUG=1 pnpm test (non-headless mode for debugging)
 
 module.exports = {
     plugins: [

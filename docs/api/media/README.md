@@ -6,31 +6,31 @@ This directory contains the complete documentation for Testring, built with [Vit
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
+- Node.js 22+ 
+- pnpm 10+
 
 ### Local Development
 
 1. **Install dependencies**:
    ```bash
    cd docs
-   npm install
+   pnpm install
    ```
 
 2. **Start development server**:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
    The site will be available at http://localhost:5173 (VitePress default port)
 
 3. **Build for production**:
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 4. **Preview production build**:
    ```bash
-   npm run preview
+   pnpm run preview
    ```
 
 ## Documentation Structure
@@ -63,7 +63,7 @@ To deploy manually:
 
 1. Build the documentation:
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 2. The built files will be in `.vitepress/dist/`
@@ -129,5 +129,5 @@ When contributing to the documentation:
 ### Getting Help
 
 - [VitePress Documentation](https://vitepress.dev/)
-- [GitHub Issues](https://github.com/ringcentral/testring/issues)
-- [Community Discussions](https://github.com/ringcentral/testring/discussions)
+- [GitHub Issues](https://github.com/danbao/testring/issues)
+- [Community Discussions](https://github.com/danbao/testring/discussions)

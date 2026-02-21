@@ -18,10 +18,10 @@ The `@testring/plugin-playwright-driver` plugin offers:
 
 ```bash
 # Install with automatic browser download
-npm install --save-dev @testring/plugin-playwright-driver
+pnpm add -D @testring/plugin-playwright-driver
 
 # Skip browser installation (for CI/CD)
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --save-dev @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ### Basic Configuration

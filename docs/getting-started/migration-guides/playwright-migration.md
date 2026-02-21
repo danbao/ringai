@@ -63,7 +63,7 @@ Supports the following environment variables:
 If you encounter situations where Chromium processes don't terminate correctly, you can use:
 
 ```bash
-npm run cleanup:playwright
+pnpm run cleanup:playwright
 ```
 
 ## Compatibility
@@ -107,7 +107,7 @@ If you find that Chromium processes don't terminate correctly:
 
 1. Run cleanup command:
    ```bash
-   npm run cleanup:playwright
+   pnpm run cleanup:playwright
    ```
 
 2. Manually check for remaining processes:
@@ -189,7 +189,7 @@ If you encounter issues during migration, please:
 
 1. Consult the troubleshooting section of this document
 2. Check GitHub Issues
-3. Run `npm run cleanup:playwright` to clean up possible remaining processes
+3. Run `pnpm run cleanup:playwright` to clean up possible remaining processes
 4. Provide detailed error information and reproduction steps
 
 ## Version History

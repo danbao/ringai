@@ -23,7 +23,7 @@ This will automatically install the following browsers:
 If you don't want to automatically install browsers:
 
 ```bash
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ### Install Specific Browsers
@@ -48,15 +48,15 @@ If you need to manually manage browsers:
 
 ```bash
 # Install all browsers
-npm run install-browsers
+pnpm run install-browsers
 
 # Uninstall all browsers
-npm run uninstall-browsers
+pnpm run uninstall-browsers
 
 # Use Playwright command to install specific browsers
-npx playwright install msedge
-npx playwright install firefox
-npx playwright install webkit
+pnpm exec playwright install msedge
+pnpm exec playwright install firefox
+pnpm exec playwright install webkit
 ```
 
 ## 🌐 CI/CD Environment
@@ -111,7 +111,7 @@ PLAYWRIGHT_BROWSERS=chromium,firefox pnpm add @testring/plugin-playwright-driver
 
 ```bash
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ## 🐛 Troubleshooting
@@ -120,17 +120,17 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add @testring/plugin-playwright-driver
 
 ```bash
 # Manually reinstall browsers
-npm run install-browsers
+pnpm run install-browsers
 
 # Or force reinstall
-npx playwright install --force
+pnpm exec playwright install --force
 ```
 
 ### 2. Microsoft Edge Installation Issue
 
 ```bash
 # Force reinstall Edge
-npx playwright install --force msedge
+pnpm exec playwright install --force msedge
 ```
 
 ### 3. Permission Issue
@@ -144,10 +144,10 @@ chmod +x node_modules/@testring/plugin-playwright-driver/scripts/install-browser
 
 ```bash
 # Force browser installation in CI
-PLAYWRIGHT_INSTALL_IN_CI=1 pnpm add
+PLAYWRIGHT_INSTALL_IN_CI=1 pnpm install
 
 # Or install system dependencies
-npx playwright install-deps
+pnpm exec playwright install-deps
 ```
 
 ## 📊 Verify Installation
@@ -156,10 +156,10 @@ After the installation, verify if the browsers are properly installed:
 
 ```bash
 # Check installed browsers
-npx playwright install --list
+pnpm exec playwright install --list
 
 # Run test verification
-npm test
+pnpm test
 ```
 
 ## 🎨 Custom Configuration
@@ -178,13 +178,13 @@ When upgrading from an older version:
 
 ```bash
 # Uninstall old browsers
-npm run uninstall-browsers
+pnpm run uninstall-browsers
 
 # Reinstall
-pnpm add
+pnpm install
 
 # Verify installation
-npm run install-browsers
+pnpm run install-browsers
 ```
 
 ## 💡 Best Practices

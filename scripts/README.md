@@ -14,13 +14,13 @@ Run scripts from the project root directory:
 
 ```bash
 # Run tests and analyze performance (recommended)
-npm run analyze:performance
+pnpm run analyze:performance
 
 # Analyze existing log files only
-npm run analyze:performance:logs-only
+pnpm run analyze:performance:logs-only
 
 # For CI environments (includes additional logging)
-npm run analyze:performance:ci
+pnpm run analyze:performance:ci
 
 # Or run scripts directly
 node scripts/run-tests-and-analyze.js
@@ -103,7 +103,7 @@ The CI integration is configured in `.github/workflows/node.js.yml`:
 ```yaml
 - name: Analyze Test Performance
   if: ${{ matrix.os=='ubuntu-latest' && matrix.node-version=='22'}}
-  run: npm run analyze:performance:ci
+  run: pnpm run analyze:performance:ci
   continue-on-error: true
 
 - name: Upload Performance Analysis Report
@@ -159,5 +159,5 @@ If reports aren't generated:
 
 If CI performance analysis fails:
 1. Check GitHub Actions logs for specific errors
-2. Verify npm scripts are correctly configured
+2. Verify pnpm scripts are correctly configured
 3. Ensure artifact upload permissions are set

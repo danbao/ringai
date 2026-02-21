@@ -12,7 +12,7 @@ const path = require('path');
 const CONFIG = {
     logFile: path.join(__dirname, '..', 'packages', 'e2e-test-app', 'performance-test.log'),
     testTimeout: 300000, // 5 minutes
-    testCommand: 'npm run test:playwright:headless',
+    testCommand: 'pnpm run test:playwright:headless',
     testWorkingDir: path.join(__dirname, '..', 'packages', 'e2e-test-app')
 };
 
@@ -39,7 +39,7 @@ function runTestsWithLogging() {
         const logStream = fs.createWriteStream(CONFIG.logFile, { flags: 'w' });
         
         // 启动测试进程
-        const testProcess = spawn('npm', ['run', 'test:playwright:headless'], {
+        const testProcess = spawn('pnpm', ['run', 'test:playwright:headless'], {
             cwd: CONFIG.testWorkingDir,
             stdio: ['inherit', 'pipe', 'pipe']
         });

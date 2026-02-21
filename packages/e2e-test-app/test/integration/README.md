@@ -33,11 +33,11 @@
 
 ```bash
 # 运行所有集成测试
-npm run test:integration
+pnpm run test:integration
 
 # 运行特定类别的测试
-npm run test:integration -- --grep "Process"
-npm run test:integration -- --grep "Config"
+pnpm run test:integration -- --grep "Process"
+pnpm run test:integration -- --grep "Config"
 ```
 
 ## 设计原则
