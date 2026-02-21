@@ -10,7 +10,7 @@ const excludeList = ['@testring/devtool-frontend', '@testring/devtool-backend', 
 function getWorkspacePackages() {
     const rootDir = path.resolve(__dirname, '..');
     const workspaceYaml = fs.readFileSync(path.join(rootDir, 'pnpm-workspace.yaml'), 'utf8');
-    const patterns = workspaceYaml.match(/-\s+'([^']+)'/g)?.map(m => m.replace(/-\s+'/, '').replace(/'/, '')) || [];
+    const patterns = [...workspaceYaml.matchAll(/-\s+'([^']+)'/g)].map(m => m[1]);
 
     const packages = [];
     for (const pattern of patterns) {
