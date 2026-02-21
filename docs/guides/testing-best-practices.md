@@ -419,6 +419,117 @@ describe('User Registration Workflow', () => {
 
 Keep track of test coverage and scenarios in documentation.
 
+## Testring E2E Test Patterns
+
+### Basic Test Structure
+
+All testring E2E tests use the `run()` pattern with `api.application`:
+
+```javascript
+import { run } from 'testring';
+import { getTargetUrl } from './utils';
+
+run(async (api) => {
+    const app = api.application;
+    await app.url(getTargetUrl(api, 'your-page.html'));
+
+    // Use data-test-automation-id selectors via app.root
+    await app.click(app.root.container.submitButton);
+
+    // Hard assertions — stop on failure
+    const title = await app.getTitle();
+    await app.assert.equal(title, 'Expected Title');
+});
+```
+
+### Using Assertions
+
+```javascript
+run(async (api) => {
+    const app = api.application;
+    await app.url(getTargetUrl(api, 'form.html'));
+
+    // Type checks
+    const text = await app.getText(app.root.heading);
+    await app.assert.isString(text);
+
+    // Collection checks
+    const items = await app.getTexts(app.root.listItem);
+    await app.assert.lengthOf(items, 3);
+    await app.assert.include(items, 'Expected Item');
+
+    // Boolean checks
+    const isVisible = await app.isVisible(app.root.element);
+    await app.assert.isTrue(isVisible);
+});
+```
+
+### Using Soft Assertions
+
+Soft assertions collect failures without stopping the test:
+
+```javascript
+run(async (api) => {
+    const app = api.application;
+    await app.url(getTargetUrl(api, 'dashboard.html'));
+
+    // These won't throw even if they fail
+    await app.softAssert.equal(await app.getText(app.root.name), 'John');
+    await app.softAssert.isTrue(await app.isVisible(app.root.avatar));
+    await app.softAssert.isAbove(await app.getElementsCount(app.root.item), 0);
+
+    // Check collected errors at the end
+    const errors = app.softAssert._errorMessages;
+    await app.assert.isEmpty(errors);
+});
+```
+
+### Wait Patterns
+
+```javascript
+run(async (api) => {
+    const app = api.application;
+
+    // Wait for element to exist
+    await app.waitForExist(app.root.dynamicElement);
+
+    // Wait for visibility transition
+    await app.click(app.root.showButton);
+    const becameVisible = await app.isBecomeVisible(app.root.panel);
+    await app.assert.isTrue(becameVisible);
+
+    // Custom wait condition
+    await app.waitUntil(async () => {
+        const value = await app.getValue(app.root.input);
+        return value !== '';
+    });
+});
+```
+
+### HTML Fixture Pattern
+
+Create typed fixture functions in `src/static-fixtures/`:
+
+```typescript
+import { Context } from 'hono';
+
+export function getMyPageHtml(c: Context) {
+    const html = `<!DOCTYPE html>
+<html><body data-test-automation-id="root">
+    <div data-test-automation-id="container">
+        <input data-test-automation-id="nameInput" type="text">
+        <button data-test-automation-id="submitButton">Submit</button>
+    </div>
+</body></html>`;
+    return c.html(html);
+}
+```
+
+Register in `shared-routes.ts`:
+```typescript
+app.get('/static/my-page.html', getMyPageHtml);
+```
+
 ## Summary
 
 Following these best practices will help you:

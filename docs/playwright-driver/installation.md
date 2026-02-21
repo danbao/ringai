@@ -2,14 +2,14 @@
 
 ## Overview
 
-Starting from v0.8.0, `@testring/plugin-playwright-driver` supports automatic installation of all required browsers during `npm install`, eliminating the need for manual execution of additional commands.
+Starting from v0.8.0, `@testring/plugin-playwright-driver` supports automatic installation of all required browsers during `pnpm add`, eliminating the need for manual execution of additional commands.
 
 ## 🎯 Quick Start
 
 ### Default Installation (Recommended)
 
 ```bash
-npm install @testring/plugin-playwright-driver
+pnpm add @testring/plugin-playwright-driver
 ```
 
 This will automatically install the following browsers:
@@ -23,7 +23,7 @@ This will automatically install the following browsers:
 If you don't want to automatically install browsers:
 
 ```bash
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add @testring/plugin-playwright-driver
 ```
 
 ### Install Specific Browsers
@@ -31,7 +31,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-drive
 Install only the browsers you need:
 
 ```bash
-PLAYWRIGHT_BROWSERS=chromium,msedge npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add @testring/plugin-playwright-driver
 ```
 
 ## 🔧 Environment Variable Control
@@ -65,13 +65,13 @@ npx playwright install webkit
 
 ```yaml
 - name: Install dependencies
-  run: npm install
+  run: pnpm add
   env:
     PLAYWRIGHT_INSTALL_IN_CI: 1  # Force browser installation in CI
 
 # Or skip auto-install and control manually
 - name: Install dependencies  
-  run: npm install
+  run: pnpm add
   env:
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
@@ -84,7 +84,7 @@ npx playwright install webkit
 ```dockerfile
 # Skip automatic installation
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-RUN npm install
+RUN pnpm add
 
 # Manually install system dependencies and browsers
 RUN npx playwright install-deps
@@ -97,21 +97,21 @@ RUN npx playwright install chromium firefox
 
 ```bash
 # Full installation with all browsers
-npm install @testring/plugin-playwright-driver
+pnpm add @testring/plugin-playwright-driver
 ```
 
 ### Test Environment
 
 ```bash
 # Install only Chromium and Firefox
-PLAYWRIGHT_BROWSERS=chromium,firefox npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,firefox pnpm add @testring/plugin-playwright-driver
 ```
 
 ### Production Build
 
 ```bash
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add @testring/plugin-playwright-driver
 ```
 
 ## 🐛 Troubleshooting
@@ -144,7 +144,7 @@ chmod +x node_modules/@testring/plugin-playwright-driver/scripts/install-browser
 
 ```bash
 # Force browser installation in CI
-PLAYWRIGHT_INSTALL_IN_CI=1 npm install
+PLAYWRIGHT_INSTALL_IN_CI=1 pnpm add
 
 # Or install system dependencies
 npx playwright install-deps
@@ -181,7 +181,7 @@ When upgrading from an older version:
 npm run uninstall-browsers
 
 # Reinstall
-npm install
+pnpm add
 
 # Verify installation
 npm run install-browsers

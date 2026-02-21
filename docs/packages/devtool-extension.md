@@ -322,4 +322,4 @@ dist/
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.

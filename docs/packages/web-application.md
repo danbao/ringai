@@ -113,6 +113,7 @@ await app.keys(value: string | string[])
 
 // Reading
 await app.getText(xpath, trim?, timeout?): Promise<string>
+await app.getTextWithoutFocus(xpath, trim?, timeout?): Promise<string>
 await app.getTexts(xpath, trim?, timeout?): Promise<string[]>
 await app.getValue(xpath, timeout?): Promise<any>
 await app.getAttribute(xpath, attr, timeout?): Promise<any>
@@ -120,6 +121,7 @@ await app.getHTML(xpath, timeout?): Promise<string>
 await app.getCssProperty(xpath, property, timeout?): Promise<any>
 await app.getSize(xpath, timeout?): Promise<{ width, height }>
 await app.getLocation(xpath, timeout?): Promise<any>
+await app.getTagName(xpath, timeout?): Promise<string>
 await app.getPlaceHolderValue(xpath): Promise<any>
 
 // Select/dropdown
@@ -130,6 +132,7 @@ await app.selectByAttribute(xpath, attribute, value, timeout?)
 await app.getSelectedText(xpath, timeout?): Promise<string>
 await app.getSelectTexts(xpath, trim?, timeout?): Promise<string[]>
 await app.getSelectValues(xpath, timeout?): Promise<any[]>
+await app.getOptionsProperty(xpath, property, timeout?): Promise<any[]>
 await app.selectNotCurrent(xpath, timeout?)
 
 // Checkbox
@@ -245,7 +248,8 @@ Screenshots are saved via `FSScreenshotFactory` from `@testring/fs-store` and lo
 ### Other
 
 ```typescript
-await app.execute(fn, ...args)       // run JS in browser
+await app.execute(fn, ...args)       // run sync JS in browser
+await app.executeAsync(fn, ...args)  // run async JS in browser (callback pattern)
 await app.pause(ms)                  // delay
 await app.uploadFile(fullPath)
 await app.savePDF(options: SavePdfOptions)

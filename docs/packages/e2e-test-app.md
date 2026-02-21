@@ -1,180 +1,188 @@
 # @testring/e2e-test-app
 
-End-to-end test application for the testring framework that provides comprehensive test examples, mock web server, and demonstration of testing capabilities. This package serves as both a testing ground for the testring framework itself and a reference implementation for users learning how to write effective e2e tests.
-
-[![npm version](https://badge.fury.io/js/@testring/e2e-test-app.svg)](https://www.npmjs.com/package/@testring/e2e-test-app)
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
+End-to-end test application for the testring framework. This private package serves as both the integration test suite for the framework itself and a reference implementation for writing effective E2E tests with testring.
 
 ## Overview
 
-The e2e-test-app is a comprehensive testing application that demonstrates the full capabilities of the testring framework, providing:
+The e2e-test-app provides:
 
-- **Complete test suite examples** for both Selenium and Playwright drivers
-- **Mock web server** with static fixtures and API endpoints for testing
-- **Real-world test scenarios** covering common web application testing patterns
-- **Performance and timeout optimization** examples
-- **Screenshot and visual testing** demonstrations
-- **File upload/download testing** capabilities
-- **Cross-browser testing** configurations
-
-## Key Features
-
-### 🧪 Comprehensive Test Examples
-- Basic navigation and page interaction tests
-- Form handling and input validation
-- Element selection and manipulation
-- Screenshot capture and comparison
-- File upload and download testing
-- Mock API integration testing
-
-### 🖥️ Mock Web Server
-- Express-based mock server for isolated testing
-- Static HTML fixtures for consistent test scenarios
-- File upload endpoint for testing file operations
-- Selenium hub mock for testing grid configurations
-- Configurable endpoints and responses
-
-### 🔧 Multiple Driver Support
-- Selenium WebDriver test examples
-- Playwright driver test examples
-- Cross-browser compatibility testing
-- Headless and headed mode configurations
-
-### ⚡ Performance Optimization
-- Optimized timeout configurations for different environments
-- Environment-specific timeout adjustments (local, CI, debug)
-- Performance monitoring and measurement examples
-
-## Installation
-
-```bash
-# Using npm
-npm install --save-dev @testring/e2e-test-app
-
-# Using yarn
-yarn add @testring/e2e-test-app --dev
-
-# Using pnpm
-pnpm add @testring/e2e-test-app --dev
-```
+- **37 Playwright-based E2E test specs** covering all WebApplication methods
+- **Hono-based mock web server** with 27 static HTML fixtures
+- **Cloudflare Worker deployment** for online test environments
+- **Screenshot testing** configuration examples
+- **Complete test patterns** for assertions, soft assertions, form handling, navigation, etc.
 
 ## Project Structure
 
 ```
 e2e-test-app/
 ├── src/
-│   ├── mock-web-server.ts      # Express mock server
-│   └── test-runner.ts          # Test execution wrapper
+│   ├── mock-web-server.ts        # Hono mock server (port 8080)
+│   ├── test-runner.ts            # E2E test execution wrapper
+│   ├── shared-routes.ts          # Route registration for all HTML fixtures
+│   └── static-fixtures/          # 27 HTML fixture generators (TypeScript)
+│       ├── alert.ts
+│       ├── assert-demo.ts
+│       ├── click.ts
+│       ├── cookie.ts
+│       ├── css.ts
+│       ├── drag-and-drop.ts
+│       ├── elements.ts
+│       ├── focus-stable.ts
+│       ├── form.ts
+│       ├── frame.ts
+│       ├── get-size.ts
+│       ├── get-source.ts
+│       ├── html-and-text.ts
+│       ├── iframe1.ts / iframe2.ts
+│       ├── location-size.ts
+│       ├── mock.ts
+│       ├── screenshot.ts
+│       ├── scroll.ts
+│       ├── simulate-field.ts
+│       ├── tag-name.ts
+│       ├── timezone.ts
+│       ├── title.ts
+│       ├── upload.ts
+│       ├── wait-for-exist.ts
+│       ├── wait-for-visible.ts
+│       └── wait-until.ts
 ├── test/
-│   ├── playwright/             # Playwright-specific tests
-│   │   ├── config.js           # Playwright configuration
-│   │   ├── env.json            # Environment settings
-│   │   └── test/               # Test files
-│   ├── selenium/               # Selenium-specific tests
-│   │   └── test/               # Test files
-│   └── simple/                 # Simple test examples
-│       └── .testringrc         # Basic configuration
-├── static-fixtures/            # HTML test fixtures
-└── Timeout Guide                                    # Timeout optimization examples included
+│   ├── playwright/
+│   │   ├── config.cjs            # Playwright test configuration
+│   │   ├── config-screenshot.cjs # Screenshot-enabled config
+│   │   ├── env.json              # Environment parameters
+│   │   ├── test/                 # 33 spec files
+│   │   │   ├── utils.js          # getTargetUrl helper
+│   │   │   ├── alert.spec.js
+│   │   │   ├── assert-methods.spec.js
+│   │   │   ├── basic-custom-config.spec.js
+│   │   │   ├── basic-verification.spec.js
+│   │   │   ├── click.spec.js
+│   │   │   ├── cookie.spec.js
+│   │   │   ├── css.spec.js
+│   │   │   ├── drag-and-drop.spec.js
+│   │   │   ├── elements.spec.js
+│   │   │   ├── focus-stable.spec.js
+│   │   │   ├── form.spec.js
+│   │   │   ├── frame.spec.js
+│   │   │   ├── get-html-and-texts.spec.js
+│   │   │   ├── get-size.spec.js
+│   │   │   ├── get-source.spec.js
+│   │   │   ├── location-and-window.spec.js
+│   │   │   ├── screenshot-control.spec.js
+│   │   │   ├── screenshots-disabled.spec.js
+│   │   │   ├── scroll-and-move.spec.js
+│   │   │   ├── select.spec.js
+│   │   │   ├── simulate-field.spec.js
+│   │   │   ├── soft-assert.spec.js
+│   │   │   ├── tag-name-and-execute.spec.js
+│   │   │   ├── title.spec.js
+│   │   │   ├── upload.spec.js
+│   │   │   ├── wait-for-exist.spec.js
+│   │   │   ├── wait-for-visible.spec.js
+│   │   │   ├── wait-methods-extended.spec.js
+│   │   │   ├── wait-until.spec.js
+│   │   │   ├── windows.spec.js
+│   │   │   └── webdriver-protocol/   # 4 protocol-level specs
+│   │   │       ├── elements.spec.js
+│   │   │       ├── save-pdf.spec.js
+│   │   │       ├── set-timezone.spec.js
+│   │   │       └── status-back-forward.spec.js
+│   │   └── test-screenshots/     # Screenshot comparison specs
+│   ├── simple/                   # Simple test examples
+│   └── integration/              # Integration tests (mocha)
+├── timeout-config.cjs            # Centralized timeout constants
+└── package.json
 ```
 
-## Usage
+## Mock Web Server
 
-### Running Tests
-
-The package provides several npm scripts for running different test suites:
-
-```bash
-# Run all tests
-npm test
-
-# Run simple tests with basic configuration
-npm run test:simple
-
-# Run Playwright tests
-npm run test:playwright
-
-# Run Playwright tests in headless mode
-npm run test:playwright:headless
-
-# Run screenshot tests
-npm run test:screenshots
-```
-
-### Mock Web Server
-
-The mock web server provides a controlled environment for testing:
+The mock server uses **Hono** (lightweight web framework) with `@hono/node-server`:
 
 ```typescript
 import { MockWebServer } from './src/mock-web-server';
 
 const server = new MockWebServer();
-
-// Start the server
 await server.start(); // Runs on port 8080
 
-// Server provides:
-// - Static HTML fixtures at http://localhost:8080/
-// - File upload endpoint at http://localhost:8080/upload
-// - Selenium Grid hub at http://localhost:4444/wd/hub/*
-// - Headers inspection at http://localhost:8080/selenium-headers
+// Endpoints:
+// GET  /static/*.html  — 27 HTML test fixture pages
+// POST /upload         — File upload endpoint
+// GET  /health         — Health check
+// GET  /               — Server info
 
-// Stop the server
 server.stop();
 ```
 
-## Test Examples
+The same Hono app is exported for **Cloudflare Worker** deployment:
 
-### Basic Navigation Test
-
-```javascript
-import { run } from 'testring';
-
-run(async (api) => {
-    const app = api.application;
-
-    // Navigate to a page
-    await app.url('https://captive.apple.com');
-
-    // Verify page title
-    const title = await app.getTitle();
-    await app.assert.include(title, 'Success');
-
-    // Test navigation methods
-    await app.refresh();
-
-    // Verify page content
-    const pageSource = await app.getSource();
-    await app.assert.include(pageSource, 'html');
-});
+```typescript
+export default app; // Cloudflare Workers entry point
 ```
 
-### Element Interaction Test
+## Running Tests
 
-```javascript
-import { run } from 'testring';
-import { getTargetUrl } from './utils';
+```bash
+# Run E2E tests (headless Chromium)
+pnpm run test:e2e
 
-run(async (api) => {
-    const app = api.application;
-    await app.url(getTargetUrl(api, 'click.html'));
+# Run E2E tests with visible browser
+pnpm run test:playwright
 
-    // Click a button
-    await app.click(app.root.button);
+# Run screenshot comparison tests
+pnpm run test:screenshots
 
-    // Verify the result
-    const outputText = await app.getText(app.root.output);
-    await app.assert.equal(outputText, 'success');
+# Run simple unit tests
+pnpm run test:simple
 
-    // Test coordinate-based clicking
-    await app.clickCoordinates(app.root.halfHoveredButton, {
-        x: 'right',
-        y: 'center',
-    });
-});
+# Run integration tests
+pnpm run test:integration
 ```
 
-### Form Handling Test
+All E2E tests are executed via `tsx src/test-runner.ts` which starts the mock web server and runs the testring CLI.
+
+## Configuration
+
+### Playwright Config (`test/playwright/config.cjs`)
+
+```javascript
+module.exports = async (config) => {
+    const local = !config.headless;
+    return {
+        screenshotPath: './_tmp/',
+        workerLimit: local ? 'local' : 5,
+        maxWriteThreadCount: 2,
+        screenshots: 'disable',
+        retryCount: local ? 0 : 2,
+        tests: 'test/playwright/test/**/*.spec.js',
+        plugins: [
+            ['playwright-driver', {
+                browserName: 'chromium',
+                launchOptions: {
+                    headless: !local,
+                    args: local ? [] : ['--no-sandbox'],
+                },
+            }],
+            ['babel', { presets: [['@babel/preset-env', { targets: { node: 'current' } }]] }],
+        ],
+    };
+};
+```
+
+### Environment Config (`test/playwright/env.json`)
+
+```json
+{
+    "envParameters": {
+        "baseUrl": "http://localhost:8080/static/"
+    }
+}
+```
+
+## Writing Tests
+
+All E2E specs follow the `run(async (api) => { ... })` pattern:
 
 ```javascript
 import { run } from 'testring';
@@ -184,332 +192,125 @@ run(async (api) => {
     const app = api.application;
     await app.url(getTargetUrl(api, 'form.html'));
 
-    // Fill form fields
-    await app.setValue(app.root.textInput, 'test value');
-    await app.selectByValue(app.root.dropdown, 'option2');
-    await app.click(app.root.checkbox);
+    // Interact with elements using data-test-automation-id selectors
+    await app.setValue(app.root.form.nameInput, 'test');
+    const value = await app.getValue(app.root.form.nameInput);
 
-    // Submit form
-    await app.click(app.root.submitButton);
+    // Hard assertions — stop on failure
+    await app.assert.equal(value, 'test');
 
-    // Verify form submission
-    const result = await app.getText(app.root.result);
-    await app.assert.include(result, 'Form submitted');
+    // Soft assertions — collect errors, continue
+    await app.softAssert.isString(value);
 });
 ```
 
-### Screenshot Testing
+### URL Helper
 
 ```javascript
-import { run } from 'testring';
-import { getTargetUrl } from './utils';
-
-run(async (api) => {
-    const app = api.application;
-    await app.url(getTargetUrl(api, 'visual-test.html'));
-
-    // Take a screenshot
-    const screenshot = await app.takeScreenshot();
-
-    // Save screenshot with custom name
-    await app.saveScreenshot('custom-screenshot.png');
-
-    // Compare with baseline (if configured)
-    await app.assert.visualMatch('baseline-screenshot.png');
-});
-```
-
-## Configuration Examples
-
-### Playwright Configuration
-
-```javascript
-// test/playwright/config.js
-module.exports = {
-    plugins: [
-        '@testring/plugin-playwright-driver'
-    ],
-    playwright: {
-        browsers: ['chromium', 'firefox', 'webkit'],
-        headless: process.env.HEADLESS !== 'false',
-        viewport: { width: 1280, height: 720 },
-        timeout: 30000
-    },
-    tests: './test/playwright/test/**/*.spec.js',
-    workerLimit: 2
+// test/playwright/test/utils.js
+export const getTargetUrl = (api, urlPath) => {
+    let { baseUrl } = api.getEnvironment();
+    if (!baseUrl.endsWith('/')) baseUrl += '/';
+    if (urlPath.startsWith('/')) urlPath = urlPath.slice(1);
+    return `${baseUrl}${urlPath}`;
 };
-```
-
-### Environment Configuration
-
-```json
-// test/playwright/env.json
-{
-    "host": "http://localhost:8080",
-    "timeout": {
-        "default": 10000,
-        "navigation": 30000,
-        "element": 5000
-    },
-    "screenshots": {
-        "enabled": true,
-        "path": "./screenshots",
-        "onFailure": true
-    }
-}
-```
-
-### Simple Test Configuration
-
-```json
-// test/simple/.testringrc
-{
-    "tests": "test/simple/*.spec.js",
-    "plugins": ["babel"],
-    "envParameters": {
-        "test": 1,
-        "host": "http://localhost:8080"
-    },
-    "workerLimit": 1,
-    "retryCount": 2
-}
-```
-
-## Static Test Fixtures
-
-The package includes HTML fixtures for consistent testing:
-
-### Basic HTML Fixture
-
-```html
-<!-- static-fixtures/basic.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Basic Test Page</title>
-</head>
-<body data-test-automation-id="root">
-    <h1 data-test-automation-id="title">Test Page</h1>
-    <button data-test-automation-id="button">Click Me</button>
-    <div data-test-automation-id="output"></div>
-</body>
-</html>
-```
-
-### Form Testing Fixture
-
-```html
-<!-- static-fixtures/form.html -->
-<!DOCTYPE html>
-<html>
-<body data-test-automation-id="root">
-    <form data-test-automation-id="form">
-        <input type="text" data-test-automation-id="textInput" />
-        <select data-test-automation-id="dropdown">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-        </select>
-        <input type="checkbox" data-test-automation-id="checkbox" />
-        <button type="submit" data-test-automation-id="submitButton">Submit</button>
-    </form>
-    <div data-test-automation-id="result"></div>
-</body>
-</html>
-```
-
-## Timeout Optimization
-
-The package includes comprehensive timeout optimization with environment-specific adjustments:
-
-### Timeout Configuration
-
-```javascript
-// Example timeout configuration
-const TIMEOUTS = {
-    // Fast operations (< 5 seconds)
-    CLICK: 2000,
-    HOVER: 1000,
-    FILL: 3000,
-    KEY: 1000,
-
-    // Medium operations (5-15 seconds)
-    WAIT_FOR_ELEMENT: 10000,
-    WAIT_FOR_VISIBLE: 10000,
-    WAIT_FOR_CLICKABLE: 8000,
-    CONDITION: 5000,
-
-    // Slow operations (15-60 seconds)
-    PAGE_LOAD: 30000,
-    NAVIGATION: 20000,
-    NETWORK_REQUEST: 15000,
-
-    // Environment-specific adjustments
-    custom: (environment, operation, baseTimeout) => {
-        const multipliers = {
-            local: 1.5,    // Longer timeouts for debugging
-            ci: 0.8,       // Shorter timeouts for CI speed
-            debug: 5.0     // Much longer for debugging
-        };
-        return baseTimeout * (multipliers[environment] || 1.0);
-    }
-};
-```
-
-### Usage in Tests
-
-```javascript
-// Using optimized timeouts
-await app.click(selector, { timeout: TIMEOUTS.CLICK });
-await app.waitForElement(selector, { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
-
-// Environment-specific timeout
-const customTimeout = TIMEOUTS.custom('local', 'hover', 2000);
-await app.hover(selector, { timeout: customTimeout });
-```
-
-## Development and Testing
-
-### Running the Test Suite
-
-```bash
-# Install dependencies
-npm install
-
-# Start mock server and run all tests
-npm test
-
-# Run specific test suites
-npm run test:simple
-npm run test:playwright
-npm run test:screenshots
-
-# Run with custom configuration
-npm run test:playwright -- --config custom-config.js
 ```
 
 ### Adding New Tests
 
-1. **Create test file** in the appropriate directory (`test/playwright/test/` or `test/selenium/test/`)
+1. Create an HTML fixture in `src/static-fixtures/your-page.ts`:
+   ```typescript
+   import { Context } from 'hono';
 
-2. **Use the test template**:
-```javascript
-import { run } from 'testring';
-import { getTargetUrl } from './utils';
+   export function getYourPageHtml(c: Context) {
+       const html = `<!DOCTYPE html>
+   <html><body data-test-automation-id="root">
+       <div data-test-automation-id="element">Content</div>
+   </body></html>`;
+       return c.html(html);
+   }
+   ```
 
-run(async (api) => {
-    const app = api.application;
+2. Register the route in `src/shared-routes.ts`:
+   ```typescript
+   import { getYourPageHtml } from './static-fixtures/your-page';
+   // ...
+   app.get('/static/your-page.html', getYourPageHtml);
+   ```
 
-    // Your test logic here
-    await app.url(getTargetUrl(api, 'your-fixture.html'));
-    // ... test steps
-});
-```
+3. Create the spec file in `test/playwright/test/your-test.spec.js`:
+   ```javascript
+   import { run } from 'testring';
+   import { getTargetUrl } from './utils';
 
-3. **Add corresponding HTML fixture** in `static-fixtures/` if needed
+   run(async (api) => {
+       const app = api.application;
+       await app.url(getTargetUrl(api, 'your-page.html'));
+       // ... test logic
+   });
+   ```
 
-4. **Update configuration** if new plugins or settings are required
+## Test Coverage by Category
 
-### Creating Custom Fixtures
+### Assertions (`assert-methods.spec.js`)
+33 chai.assert methods: equal, notEqual, strictEqual, deepEqual, isTrue, isFalse, ok, isNotOk, typeOf, isString, isNumber, isBoolean, isArray, isObject, isNull, isNotNull, isUndefined, isDefined, include, notInclude, match, isAbove, isBelow, isAtLeast, isAtMost, lengthOf, isEmpty, isNotEmpty, property, notProperty, exists, notExists, throws, doesNotThrow
 
-```html
-<!-- static-fixtures/custom-test.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Custom Test</title>
-</head>
-<body data-test-automation-id="root">
-    <!-- Use data-test-automation-id for element identification -->
-    <div data-test-automation-id="customElement">Custom Content</div>
-</body>
-</html>
-```
+### Soft Assertions (`soft-assert.spec.js`)
+Non-throwing failure collection, `_errorMessages` array, mixed assert/softAssert scenarios
 
-## API Reference
+### Form & Input (`form.spec.js`, `simulate-field.spec.js`)
+setValue, getValue, clearValue, clearElement, addValue, keys, isEnabled, isDisabled, isReadOnly, isChecked, setChecked, getPlaceHolderValue, simulateJSFieldClear, simulateJSFieldChange
 
-### MockWebServer
+### Select (`select.spec.js`)
+selectByValue, selectByIndex, selectByVisibleText, selectByAttribute, selectNotCurrent, getSelectedText, getSelectTexts, getSelectValues, getOptionsProperty
 
-```typescript
-class MockWebServer {
-    start(): Promise<void>;           // Start server on port 8080
-    stop(): void;                     // Stop the server
+### Click & Navigation (`click.spec.js`, `title.spec.js`)
+click, clickButton, clickCoordinates, doubleClick, url, getTitle, refresh
 
-    // Available endpoints:
-    // GET  /                         - Static fixtures
-    // POST /upload                   - File upload testing
-    // ALL  /wd/hub/*                 - Mock Selenium hub
-    // GET  /selenium-headers         - Inspect request headers
-}
-```
+### Elements (`elements.spec.js`)
+isElementsExist, notExists, isExisting, getElementsCount, getElementsIds, isElementSelected
 
-### Test Utilities
+### Wait Methods (`wait-for-exist.spec.js`, `wait-for-visible.spec.js`, `wait-until.spec.js`, `wait-methods-extended.spec.js`)
+waitForExist, waitForNotExists, waitForVisible, waitForNotVisible, waitForRoot, waitForValue, waitForAlert, waitUntil, isBecomeVisible, isBecomeHidden
 
-```javascript
-// Available in test files
-import { getTargetUrl } from './utils';
+### Window/Tab (`windows.spec.js`)
+getMainTabId, getTabIds, getCurrentTabId, switchTab, setActiveTab, newWindow, window, windowHandles, closeCurrentTab, closeBrowserWindow, closeAllOtherTabs, closeFirstSiblingTab, switchToFirstSiblingTab, switchToMainSiblingTab, maximizeWindow, getWindowSize, refresh
 
-// Get URL for static fixture
-const url = getTargetUrl(api, 'fixture-name.html');
-// Returns: http://localhost:8080/fixture-name.html
-```
+### Position & Size (`get-size.spec.js`, `location-and-window.spec.js`)
+getSize, getLocation, getWindowSize, getActiveElement
 
-## Troubleshooting
+### Scroll & Mouse (`scroll-and-move.spec.js`)
+scroll, scrollIntoView, scrollIntoViewIfNeeded, moveToObject
 
-### Common Issues
+### Tag Name & JS Execution (`tag-name-and-execute.spec.js`)
+getTagName, execute (sync), executeAsync (async callback)
 
-1. **Mock server not starting**:
-   - Check if port 8080 is available
-   - Ensure all dependencies are installed
-   - Verify Express server configuration
-
-2. **Tests timing out**:
-   - Review timeout configuration in the test examples and code comments
-   - Adjust environment-specific timeouts
-   - Check network connectivity to mock server
-
-3. **Element not found errors**:
-   - Verify `data-test-automation-id` attributes in fixtures
-   - Check element path configuration
-   - Ensure page is fully loaded before interaction
-
-4. **Screenshot tests failing**:
-   - Verify screenshot directory exists
-   - Check viewport and browser settings
-   - Ensure consistent rendering environment
-
-### Debug Mode
-
-Enable debug mode for detailed logging:
-
-```bash
-# Run with debug output
-DEBUG=true npm run test:playwright
-
-# Run with Playwright debug mode
-PLAYWRIGHT_DEBUG=1 npm run test:playwright
-
-# Run with extended timeouts for debugging
-NODE_ENV=development npm run test:playwright
-```
+### Other Specs
+- `alert.spec.js` — alertAccept, alertDismiss, alertText, isAlertOpen
+- `cookie.spec.js` — setCookie, getCookie, deleteCookie
+- `css.spec.js` — getCssProperty, isCSSClassExists, getAttribute
+- `drag-and-drop.spec.js` — dragAndDrop
+- `frame.spec.js` — switchToFrame, switchToParentFrame
+- `get-html-and-texts.spec.js` — getHTML, getText, getTexts, getTextWithoutFocus
+- `get-source.spec.js` — getSource
+- `screenshot-control.spec.js` — disableScreenshots, enableScreenshots, makeScreenshot
+- `upload.spec.js` — uploadFile
+- `focus-stable.spec.js` — isFocused, isStable, waitForStable, isClickable, waitForClickable
+- `webdriver-protocol/` — savePDF, setTimeZone, status, back, forward
 
 ## Dependencies
 
-- **`testring`** - Main testing framework
-- **`@testring/cli`** - Command-line interface
-- **`@testring/plugin-playwright-driver`** - Playwright integration
-- **`@testring/plugin-babel`** - Babel transformation
-- **`@testring/web-application`** - Web testing utilities
-- **`express`** - Mock web server
-- **`multer`** - File upload handling
-- **`concurrently`** - Parallel process execution
+- **`hono`** + **`@hono/node-server`** — Mock web server
+- **`testring`** — Main framework
+- **`@testring/plugin-playwright-driver`** — Playwright browser driver
+- **`@testring/plugin-babel`** — Babel transpilation for spec files
+- **`@testring/plugin-fs-store`** — Screenshot storage
+- **`@babel/preset-env`** — Babel preset for Node.js target
+- **`c8`** — E2E code coverage
+- **`concurrently`** — Parallel process execution
 
 ## Related Modules
 
-- **`@testring/web-application`** - Core web testing functionality
-- **`@testring/plugin-selenium-driver`** - Selenium WebDriver integration
-- **`@testring/plugin-playwright-driver`** - Playwright integration
-- **`@testring/element-path`** - Element location utilities
-
-## License
-
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+- [`@testring/web-application`](web-application.md) — Core web testing API
+- [`@testring/plugin-playwright-driver`](plugin-playwright-driver.md) — Playwright integration
+- [`@testring/element-path`](element-path.md) — Element selector system

@@ -24,7 +24,7 @@ Main Process                          Child Process (forked)
 │    (manages child proc)  │          │                         │
 │                          │          │  IBrowserProxyPlugin     │
 │  BrowserProxyLocalWorker │          │    (e.g., Playwright,   │
-│    (in-process variant)  │          │     Selenium driver)    │
+│    (in-process variant)  │          │     Playwright driver)  │
 └──────────────────────────┘          └─────────────────────────┘
 ```
 
