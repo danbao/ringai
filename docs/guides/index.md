@@ -31,15 +31,15 @@ Comprehensive guides for using and extending testring.
 If you need additional guidance:
 
 1. Check the [troubleshooting guide](troubleshooting.md)
-2. Review the [API documentation](../api/.md)
-3. Look at the [examples in packages](../packages/.md)
+2. Review the [API documentation](../core-modules/api.md)
+3. Look at the [examples in packages](../packages/index.md)
 4. Review the [contributing guide](contributing.md) for development questions
 5. Open an issue on GitHub
 
 ## Quick Links
 
 - [Main Documentation](../README.md)
-- [Getting Started](../getting-started/.md)
-- [API Reference](../api/.md)
-- [Configuration](../configuration/.md)
-- [Core Modules](../core-modules/.md) 
+- [Getting Started](../getting-started/index.md)
+- [API Reference](../core-modules/api.md)
+- [Configuration](../configuration/index.md)
+- [Core Modules](../core-modules/index.md) 

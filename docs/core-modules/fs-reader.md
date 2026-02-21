@@ -10,7 +10,7 @@ pnpm add @testring/fs-reader
 
 ## Overview
 
-`FSReader` extends [`PluggableModule`](/docs/core-modules/pluggable-module.md) and provides a two-step pipeline:
+`FSReader` extends [`PluggableModule`](./pluggable-module.md) and provides a two-step pipeline:
 
 1. **Locate** — resolve a glob pattern to a list of file paths using [`tinyglobby`](https://github.com/SuperchupuDev/tinyglobby)
 2. **Resolve** — read file contents from disk with concurrency limiting via [`p-limit`](https://github.com/sindresorhus/p-limit) (max 10 concurrent reads)
@@ -154,6 +154,6 @@ Reads a single file, resolving its path to absolute. Returns `{ path, content }`
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](/docs/core-modules/pluggable-module.md) — Base class for `FSReader`
-- [`@testring/plugin-api`](/docs/core-modules/plugin-api.md) — Exposes `getFSReader()` with `onBeforeResolve` / `onAfterResolve` methods
-- [`@testring/test-run-controller`](/docs/core-modules/test-run-controller.md) — Uses `FSReader` to discover test files
+- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `FSReader`
+- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getFSReader()` with `onBeforeResolve` / `onAfterResolve` methods
+- [`@testring/test-run-controller`](./test-run-controller.md) — Uses `FSReader` to discover test files

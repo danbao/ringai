@@ -57,7 +57,7 @@ You should see the testring CLI help output with available options.
 
 1. [Quick Start Guide](./quick-start.md) — Create and run your first test
 2. [Configuration](../configuration/index.md) — Configure testring for your project
-3. [API Reference](../api/index.md) — Learn the testring API
+3. [API Reference](../core-modules/api.md) — Learn the testring API
 
 ## Troubleshooting
 

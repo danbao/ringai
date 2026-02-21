@@ -11,5 +11,5 @@ This directory contains guides to help you get started with testring.
 ## Quick Links
 
 - [Main Documentation](../README.md)
-- [API Reference](../api/.md)
+- [API Reference](../core-modules/api.md)
 - [Configuration](../configuration/.md) 

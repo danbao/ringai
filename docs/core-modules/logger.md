@@ -20,7 +20,7 @@ The logger module has a **client-server** architecture:
 
 ### `LoggerServer` class
 
-Extends [`PluggableModule`](/docs/core-modules/pluggable-module.md). Processes and outputs log entries from all processes.
+Extends [`PluggableModule`](./pluggable-module.md). Processes and outputs log entries from all processes.
 
 ```typescript
 import { LoggerServer } from '@testring/logger';
@@ -277,6 +277,6 @@ export default (pluginAPI) => {
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](/docs/core-modules/pluggable-module.md) — Base class for `LoggerServer`
-- [`@testring/transport`](/docs/core-modules/transport.md) — Delivers log entries from workers to server
-- [`@testring/plugin-api`](/docs/core-modules/plugin-api.md) — Exposes `getLogger()` for plugin authors
+- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `LoggerServer`
+- [`@testring/transport`](./transport.md) — Delivers log entries from workers to server
+- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getLogger()` for plugin authors
