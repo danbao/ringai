@@ -132,8 +132,9 @@ run(async (api) => {
     await app.setActiveTab(newTabId);
     await app.assert.equal(await app.getCurrentTabId(), newTabId);
 
-    // closeBrowserWindow — close window and focus returns
-    await app.closeBrowserWindow(currentTabId);
+    // closeBrowserWindow — close the extra tab, focus should stay on currentTabId
+    await app.setActiveTab(currentTabId);
+    await app.closeBrowserWindow(newTabId);
     await app.assert.equal(await app.getCurrentTabId(), currentTabId);
     let afterCloseTabIds = await app.getTabIds();
     await app.assert.lengthOf(afterCloseTabIds, 1);

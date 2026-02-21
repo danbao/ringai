@@ -259,6 +259,7 @@ console.log('Extension ID:', extensionId);
 
 ```typescript
 import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { absolutePath } from '@testring/devtool-frontend';
 
@@ -266,6 +267,10 @@ const app = new Hono();
 
 // Serve the frontend assets
 app.use('/devtools/*', serveStatic({ root: absolutePath }));
+
+serve({ fetch: app.fetch, port: 8080 }, (info) => {
+    console.log(`Custom devtools server running at http://localhost:${info.port}/devtools`);
+});
 ```
 
 ## Troubleshooting

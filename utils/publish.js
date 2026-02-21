@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const {execSync} = require('child_process');
 const {npmPublish} = require('@jsdevtools/npm-publish');
 
 const token = process.env.NPM_TOKEN;

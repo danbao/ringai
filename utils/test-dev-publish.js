@@ -49,7 +49,25 @@ function createDevPackageJson(pkg) {
         devName = packageJson.name;
     }
 
-    return { ...packageJson, name: devName, version: devVersion };
+    const devPackageJson = { ...packageJson, name: devName, version: devVersion };
+
+    for (const depType of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
+        if (devPackageJson[depType]) {
+            const newDeps = {};
+            for (const [depName, depVersion] of Object.entries(devPackageJson[depType])) {
+                if (depName === 'testring') {
+                    newDeps['testring-dev'] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
+                } else if (depName.startsWith('@testring/') && !depName.startsWith('@testring-dev/')) {
+                    newDeps[depName.replace('@testring/', '@testring-dev/')] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
+                } else {
+                    newDeps[depName] = depVersion;
+                }
+            }
+            devPackageJson[depType] = newDeps;
+        }
+    }
+
+    return devPackageJson;
 }
 
 async function testDevPublish() {
@@ -63,6 +81,12 @@ async function testDevPublish() {
     for (const pkg of filtered) {
         const devPkg = createDevPackageJson(pkg);
         console.log(`${pkg.name} -> ${devPkg.name}@${devPkg.version}`);
+
+        const transformedDeps = Object.entries(devPkg.dependencies || {})
+            .filter(([name]) => name.startsWith('@testring-dev/') || name === 'testring-dev');
+        if (transformedDeps.length > 0) {
+            transformedDeps.forEach(([name, version]) => console.log(`  dep: ${name}@${version}`));
+        }
     }
 
     console.log('\nDev publish logic test completed successfully!');

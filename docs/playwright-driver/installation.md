@@ -65,18 +65,18 @@ npx playwright install webkit
 
 ```yaml
 - name: Install dependencies
-  run: pnpm add
+  run: pnpm install --frozen-lockfile
   env:
     PLAYWRIGHT_INSTALL_IN_CI: 1  # Force browser installation in CI
 
 # Or skip auto-install and control manually
 - name: Install dependencies  
-  run: pnpm add
+  run: pnpm install --frozen-lockfile
   env:
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
 - name: Install specific browsers
-  run: npx playwright install chromium firefox
+  run: pnpm exec playwright install chromium firefox
 ```
 
 ### Docker
@@ -84,11 +84,11 @@ npx playwright install webkit
 ```dockerfile
 # Skip automatic installation
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-RUN pnpm add
+RUN pnpm install --frozen-lockfile
 
 # Manually install system dependencies and browsers
-RUN npx playwright install-deps
-RUN npx playwright install chromium firefox
+RUN pnpm exec playwright install-deps
+RUN pnpm exec playwright install chromium firefox
 ```
 
 ## 📋 Common Scenarios
