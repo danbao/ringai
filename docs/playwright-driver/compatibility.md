@@ -268,11 +268,11 @@ The plugin includes comprehensive compatibility tests:
 
 ```bash
 # Run compatibility tests
-npm test -- --grep "compatibility"
+pnpm test -- --grep "compatibility"
 
 # Test specific scenarios
-npm test -- --grep "selenium-grid"
-npm test -- --grep "cross-plugin"
+pnpm test -- --grep "selenium-grid"
+pnpm test -- --grep "cross-plugin"
 ```
 
 ### Test Scenarios
@@ -316,7 +316,7 @@ seleniumGrid: {
 ```bash
 # Error: Browser not found
 # Solution: Install browsers or check executable path
-npx playwright install chromium
+pnpm exec playwright install chromium
 # or
 launchOptions: {
     executablePath: '/path/to/browser'
@@ -328,7 +328,7 @@ launchOptions: {
 Enable debug mode to see detailed compatibility information:
 
 ```bash
-PLAYWRIGHT_DEBUG=1 npm test
+PLAYWRIGHT_DEBUG=1 pnpm test
 ```
 
 This will show:

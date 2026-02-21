@@ -17,5 +17,5 @@ This directory contains guides for migrating to testring from other testing fram
 
 If you need assistance with migration, please:
 - Check the [troubleshooting guide](../../guides/troubleshooting.md)
-- Review the [API documentation](../../api/.md)
+- Review the [API documentation](../../core-modules/api.md)
 - Open an issue on GitHub

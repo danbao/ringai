@@ -53,7 +53,7 @@ import {
 
 ### `FSStoreServer` class
 
-Extends [`PluggableModule`](/docs/core-modules/pluggable-module.md). Runs in the main process and coordinates all file operations.
+Extends [`PluggableModule`](./pluggable-module.md). Runs in the main process and coordinates all file operations.
 
 ```typescript
 new FSStoreServer(threadCount?: number, msgNamePrefix?: string)
@@ -348,7 +348,7 @@ enum FSFileUniqPolicy {
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](/docs/core-modules/pluggable-module.md) — Base class for `FSStoreServer`
-- [`@testring/transport`](/docs/core-modules/transport.md) — Message passing between server and clients
-- [`@testring/plugin-api`](/docs/core-modules/plugin-api.md) — Exposes `getFSStore()` for plugin authors
-- [`@testring/plugin-fs-store`](/docs/packages/plugin-fs-store.md) — Default fs-store plugin implementation
+- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `FSStoreServer`
+- [`@testring/transport`](./transport.md) — Message passing between server and clients
+- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getFSStore()` for plugin authors
+- [`@testring/plugin-fs-store`](../packages/plugin-fs-store.md) — Default fs-store plugin implementation

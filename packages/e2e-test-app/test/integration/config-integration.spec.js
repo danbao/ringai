@@ -8,7 +8,7 @@ describe('Configuration Integration Tests', function() {
 
     describe('Plugin Loading', function() {
         it('should load all required plugins successfully', function(done) {
-            const testProcess = spawn('npm', ['run', 'test:simple'], {
+            const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -109,7 +109,7 @@ describe('Configuration Integration Tests', function() {
 
     describe('Environment Configuration', function() {
         it('should respect environment-specific settings', function(done) {
-            const testProcess = spawn('npm', ['run', 'test:simple'], {
+            const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe',
                 env: {

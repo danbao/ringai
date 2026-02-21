@@ -259,7 +259,7 @@ testring run --reporter=json --reporter-output=results.json
 
 2. **Switch to pnpm:**
    ```bash
-   npm install -g pnpm
+   corepack enable pnpm
    pnpm import   # converts package-lock.json to pnpm-lock.yaml
    ```
 

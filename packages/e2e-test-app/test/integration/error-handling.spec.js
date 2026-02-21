@@ -215,7 +215,7 @@ describe('Error Handling Integration Tests', function() {
 
     describe('Resource Cleanup on Errors', function() {
         it('should clean up resources when tests fail', function(done) {
-            const testProcess = spawn('npm', ['run', 'test:simple'], {
+            const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });

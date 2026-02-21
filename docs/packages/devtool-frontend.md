@@ -258,16 +258,18 @@ console.log('Extension ID:', extensionId);
 ### With Custom Backend
 
 ```typescript
-import express from 'express';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
 import { absolutePath } from '@testring/devtool-frontend';
 
-const app = express();
+const app = new Hono();
 
 // Serve the frontend assets
-app.use('/devtools', express.static(absolutePath));
+app.use('/devtools/*', serveStatic({ root: absolutePath }));
 
-app.listen(8080, () => {
-    console.log('Custom devtools server running at http://localhost:8080/devtools');
+serve({ fetch: app.fetch, port: 8080 }, (info) => {
+    console.log(`Custom devtools server running at http://localhost:${info.port}/devtools`);
 });
 ```
 
@@ -314,4 +316,4 @@ app.listen(8080, () => {
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.

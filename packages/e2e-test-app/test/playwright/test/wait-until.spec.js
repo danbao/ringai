@@ -38,4 +38,15 @@ run(async (api) => {
         return select ? select.selectedIndex : -1;
     });
     await app.assert.equal(finalSelectedIndex, 1);
+
+    // waitUntil — custom condition function
+    // Reset input and wait until it has a value again
+    await app.url(getTargetUrl(api, 'wait-until.html'));
+    await app.click(app.root.addInputValueButton);
+    await app.waitUntil(async () => {
+        const val = await app.getValue(app.root.inputElement);
+        return val !== '';
+    });
+    const waitedValue = await app.getValue(app.root.inputElement);
+    await app.assert.equal(waitedValue, 'Input Value');
 });

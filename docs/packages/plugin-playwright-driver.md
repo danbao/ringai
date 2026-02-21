@@ -43,32 +43,26 @@ The Playwright driver plugin brings modern browser automation to testring, lever
 ## Installation
 
 ```bash
-# Using npm
-npm install --save-dev @testring/plugin-playwright-driver
-
-# Using yarn
-yarn add --dev @testring/plugin-playwright-driver
-
-# Using pnpm
-pnpm add --save-dev @testring/plugin-playwright-driver
+# Using pnpm (recommended)
+pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ### 🚀 Automatic Browser Installation
 
-**Automatic Mode**: Browsers are automatically installed during `npm install` with no additional steps required!
+**Automatic Mode**: Browsers are automatically installed during `pnpm install` with no additional steps required!
 
 ```bash
 # Install all browsers automatically (chromium, firefox, webkit, msedge)
-npm install @testring/plugin-playwright-driver
+pnpm add -D @testring/plugin-playwright-driver
 
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 
 # Install only specific browsers
-PLAYWRIGHT_BROWSERS=chromium,msedge npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add -D @testring/plugin-playwright-driver
 
 # Force browser installation in CI environments
-PLAYWRIGHT_INSTALL_IN_CI=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_INSTALL_IN_CI=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ### Manual Browser Management
@@ -77,16 +71,16 @@ If you need to manage browsers manually:
 
 ```bash
 # Manually install all browsers
-npm run install-browsers
+pnpm run install-browsers
 
 # Uninstall all browsers
-npm run uninstall-browsers
+pnpm run uninstall-browsers
 
 # Use Playwright commands to install specific browsers
-npx playwright install msedge  # Microsoft Edge
-npx playwright install firefox # Firefox
-npx playwright install webkit  # Safari/WebKit
-npx playwright install chromium # Chromium
+pnpm exec playwright install msedge  # Microsoft Edge
+pnpm exec playwright install firefox # Firefox
+pnpm exec playwright install webkit  # Safari/WebKit
+pnpm exec playwright install chromium # Chromium
 ```
 
 ### Environment Variables
@@ -595,7 +589,7 @@ module.exports = {
 Enable debug logging:
 
 ```bash
-DEBUG=testring:playwright npm test
+DEBUG=testring:playwright pnpm test
 ```
 
 ### Environment Variables
@@ -604,13 +598,13 @@ Useful environment variables for debugging:
 
 ```bash
 # Playwright debug mode
-DEBUG=pw:api npm test
+DEBUG=pw:api pnpm test
 
 # Show browser (override headless)
-HEADED=1 npm test
+HEADED=1 pnpm test
 
 # Slow down execution
-SLOWMO=1000 npm test
+SLOWMO=1000 pnpm test
 ```
 
 ## API Reference

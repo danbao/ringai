@@ -2,14 +2,14 @@
 
 ## Overview
 
-Starting from v0.8.0, `@testring/plugin-playwright-driver` supports automatic installation of all required browsers during `npm install`, eliminating the need for manual execution of additional commands.
+Starting from v0.8.0, `@testring/plugin-playwright-driver` supports automatic installation of all required browsers during `pnpm add`, eliminating the need for manual execution of additional commands.
 
 ## 🎯 Quick Start
 
 ### Default Installation (Recommended)
 
 ```bash
-npm install @testring/plugin-playwright-driver
+pnpm add @testring/plugin-playwright-driver
 ```
 
 This will automatically install the following browsers:
@@ -23,7 +23,7 @@ This will automatically install the following browsers:
 If you don't want to automatically install browsers:
 
 ```bash
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ### Install Specific Browsers
@@ -31,7 +31,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-drive
 Install only the browsers you need:
 
 ```bash
-PLAYWRIGHT_BROWSERS=chromium,msedge npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add @testring/plugin-playwright-driver
 ```
 
 ## 🔧 Environment Variable Control
@@ -48,15 +48,15 @@ If you need to manually manage browsers:
 
 ```bash
 # Install all browsers
-npm run install-browsers
+pnpm run install-browsers
 
 # Uninstall all browsers
-npm run uninstall-browsers
+pnpm run uninstall-browsers
 
 # Use Playwright command to install specific browsers
-npx playwright install msedge
-npx playwright install firefox
-npx playwright install webkit
+pnpm exec playwright install msedge
+pnpm exec playwright install firefox
+pnpm exec playwright install webkit
 ```
 
 ## 🌐 CI/CD Environment
@@ -65,18 +65,18 @@ npx playwright install webkit
 
 ```yaml
 - name: Install dependencies
-  run: npm install
+  run: pnpm install --frozen-lockfile
   env:
     PLAYWRIGHT_INSTALL_IN_CI: 1  # Force browser installation in CI
 
 # Or skip auto-install and control manually
 - name: Install dependencies  
-  run: npm install
+  run: pnpm install --frozen-lockfile
   env:
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
 - name: Install specific browsers
-  run: npx playwright install chromium firefox
+  run: pnpm exec playwright install chromium firefox
 ```
 
 ### Docker
@@ -84,11 +84,11 @@ npx playwright install webkit
 ```dockerfile
 # Skip automatic installation
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-RUN npm install
+RUN pnpm install --frozen-lockfile
 
 # Manually install system dependencies and browsers
-RUN npx playwright install-deps
-RUN npx playwright install chromium firefox
+RUN pnpm exec playwright install-deps
+RUN pnpm exec playwright install chromium firefox
 ```
 
 ## 📋 Common Scenarios
@@ -97,21 +97,21 @@ RUN npx playwright install chromium firefox
 
 ```bash
 # Full installation with all browsers
-npm install @testring/plugin-playwright-driver
+pnpm add @testring/plugin-playwright-driver
 ```
 
 ### Test Environment
 
 ```bash
 # Install only Chromium and Firefox
-PLAYWRIGHT_BROWSERS=chromium,firefox npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,firefox pnpm add @testring/plugin-playwright-driver
 ```
 
 ### Production Build
 
 ```bash
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
 ```
 
 ## 🐛 Troubleshooting
@@ -120,17 +120,17 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install @testring/plugin-playwright-drive
 
 ```bash
 # Manually reinstall browsers
-npm run install-browsers
+pnpm run install-browsers
 
 # Or force reinstall
-npx playwright install --force
+pnpm exec playwright install --force
 ```
 
 ### 2. Microsoft Edge Installation Issue
 
 ```bash
 # Force reinstall Edge
-npx playwright install --force msedge
+pnpm exec playwright install --force msedge
 ```
 
 ### 3. Permission Issue
@@ -144,10 +144,10 @@ chmod +x node_modules/@testring/plugin-playwright-driver/scripts/install-browser
 
 ```bash
 # Force browser installation in CI
-PLAYWRIGHT_INSTALL_IN_CI=1 npm install
+PLAYWRIGHT_INSTALL_IN_CI=1 pnpm install
 
 # Or install system dependencies
-npx playwright install-deps
+pnpm exec playwright install-deps
 ```
 
 ## 📊 Verify Installation
@@ -156,10 +156,10 @@ After the installation, verify if the browsers are properly installed:
 
 ```bash
 # Check installed browsers
-npx playwright install --list
+pnpm exec playwright install --list
 
 # Run test verification
-npm test
+pnpm test
 ```
 
 ## 🎨 Custom Configuration
@@ -178,13 +178,13 @@ When upgrading from an older version:
 
 ```bash
 # Uninstall old browsers
-npm run uninstall-browsers
+pnpm run uninstall-browsers
 
 # Reinstall
-npm install
+pnpm install
 
 # Verify installation
-npm run install-browsers
+pnpm run install-browsers
 ```
 
 ## 💡 Best Practices

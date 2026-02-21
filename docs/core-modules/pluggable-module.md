@@ -256,6 +256,6 @@ The original stack trace is preserved on the wrapped error.
 
 ## Related Modules
 
-- [`@testring/plugin-api`](/docs/core-modules/plugin-api.md) — Plugin registration API that uses `getHook()` to wire plugins into core modules
-- [`@testring/logger`](/docs/core-modules/logger.md) — Extends `PluggableModule` with logging hooks
-- [`@testring/fs-reader`](/docs/core-modules/fs-reader.md) — Extends `PluggableModule` with file resolution hooks
+- [`@testring/plugin-api`](./plugin-api.md) — Plugin registration API that uses `getHook()` to wire plugins into core modules
+- [`@testring/logger`](./logger.md) — Extends `PluggableModule` with logging hooks
+- [`@testring/fs-reader`](./fs-reader.md) — Extends `PluggableModule` with file resolution hooks

@@ -108,7 +108,7 @@ docker-compose -f selenium-grid.yml up -d
 curl http://localhost:4444/wd/hub/status
 
 # Run tests
-npm test
+pnpm test
 
 # Stop Grid
 docker-compose -f selenium-grid.yml down

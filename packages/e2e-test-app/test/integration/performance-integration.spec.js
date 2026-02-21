@@ -8,7 +8,7 @@ describe('Performance Integration Tests', function() {
 
     describe('Memory Usage', function() {
         it('should not exceed reasonable memory limits during test execution', function(done) {
-            const testProcess = spawn('npm', ['run', 'test:simple'], {
+            const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -61,7 +61,7 @@ describe('Performance Integration Tests', function() {
         it('should complete simple tests within reasonable time', function(done) {
             const startTime = Date.now();
             
-            const testProcess = spawn('npm', ['run', 'test:simple'], {
+            const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -111,7 +111,7 @@ describe('Performance Integration Tests', function() {
             console.log(`Starting ${numProcesses} concurrent test processes...`);
 
             for (let i = 0; i < numProcesses; i++) {
-                const testProcess = spawn('npm', ['run', 'test:simple'], {
+                const testProcess = spawn('pnpm', ['run', 'test:simple'], {
                     cwd: path.resolve(__dirname, '../..'),
                     stdio: 'pipe',
                     env: {
@@ -185,7 +185,7 @@ describe('Performance Integration Tests', function() {
             const measurements = [];
             let currentTest = 0;
             const testConfigs = [
-                { name: 'simple', command: ['npm', 'run', 'test:simple'] },
+                { name: 'simple', command: ['pnpm', 'run', 'test:simple'] },
                 // Add more test configurations as needed
             ];
 

@@ -7,7 +7,7 @@ Developer tools backend service module that serves as the core debugging and dev
 The developer tools backend service module is the debugging center of the testring framework, providing:
 
 - **Complete test debugging and recording server** for test development
-- **Express-based web service and routing system** for HTTP endpoints
+- **HTTP web service and routing system** for endpoints
 - **WebSocket real-time communication and message proxy** for bidirectional data flow
 - **Frontend interface integration and static resource serving** for UI components
 - **Test process lifecycle management** for controlling test execution
@@ -47,7 +47,7 @@ class DevtoolServerController extends PluggableModule implements IDevtoolServerC
 ### How It Works
 
 1. **`init()`** calls the `beforeStart` hook, then forks a child worker process via `@testring/child-process`
-2. The worker process starts an Express HTTP server and WebSocket server
+2. The worker process starts an HTTP server and WebSocket server
 3. The controller registers the worker with the transport layer for IPC
 4. Message proxying is set up for test worker events (`register`, `updateExecutionState`, `unregister`) and web application devtool events
 5. The `afterStart` hook fires once the server is ready
@@ -224,4 +224,4 @@ Solution: Ensure the `@testring/devtool-frontend` package is installed and built
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.

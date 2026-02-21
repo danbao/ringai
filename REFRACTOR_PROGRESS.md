@@ -85,29 +85,21 @@
 | Node 20 从 CI 移除 | ✅ 完成 | `c707f230` CI 移除 Node 20 |
 | Windows 兼容性修复 | ✅ 完成 | `80583c69` `58793a07` fork 测试和 turbo flags |
 | SonarQube 升级到 v7 | ✅ 完成 | `7cf24a77` SonarQube v5 → v7 |
+| 文档全面更新 | ✅ 完成 | `2c3117fa` 45 文件更新 |
+| E2E 全覆盖测试 | ✅ 完成 | `d7b286ed` 7 新 spec，4 新 fixture，37 E2E 测试通过 |
 
 ## 构建状态
 
 | 状态 | 说明 |
 |------|------|
-| ✅ 12/15 构建通过 | tsup ESM 输出，tsc declaration emit |
-| ❌ devtool-extension | webpack + strict TS + chrome API 类型不兼容，需迁移到 vite |
-| ❌ devtool-frontend | 依赖 devtool-extension，级联失败 |
-| ❌ devtool-backend | 依赖 devtool-frontend，级联失败 |
-| ⚠️ timeout-config | 无构建脚本（纯配置包） |
+| ✅ 31/31 构建通过 | tsup ESM 输出，turbo 编排，全部包通过（含 devtool-*） |
 
 ## 测试状态
 
 | 状态 | 说明 |
 |------|------|
-| ✅ 60/72 测试文件通过 | 1194/1240 个测试用例通过 |
-| ❌ test-utils (20 tests) | sinon-chai 插件缺失 (pre-existing) |
-| ❌ transport.functional (1 test) | fork + ESM TypeScript 需要 tsx loader |
-| ❌ devtool-backend/get-cursor (3 tests) | babel-traverse 升级不完全 (pre-existing) |
-| ❌ async-breakpoints (errors) | Vitest 4 done() callback 弃用 (pre-existing) |
-| ❌ plugin-require (2 tests) | createRequire 路径解析差异 |
-| ❌ fs-reader (5 tests) | 测试 fixture 路径解析 |
-| ❌ browser-proxy functional | fork + ESM 超时 |
+| ✅ 77/77 单元测试文件通过 | 1294 个测试用例全部通过（Vitest） |
+| ✅ 37/37 E2E 测试通过 | Playwright headless Chromium（33 specs + 4 webdriver-protocol specs） |
 
 ## 待完成项汇总
 

@@ -48,8 +48,8 @@ class IntegrationTestUtils {
     }
 
     /**
-     * Run an npm script and capture output
-     * @param {string} script - NPM script name
+     * Run a pnpm script and capture output
+     * @param {string} script - pnpm script name
      * @param {Object} options - Spawn options
      * @returns {Promise<{code: number, stdout: string, stderr: string}>}
      */
@@ -61,7 +61,7 @@ class IntegrationTestUtils {
                 ...options
             };
 
-            const process = spawn('npm', ['run', script], defaultOptions);
+            const process = spawn('pnpm', ['run', script], defaultOptions);
             
             let stdout = '';
             let stderr = '';

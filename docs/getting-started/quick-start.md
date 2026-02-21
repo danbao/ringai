@@ -108,7 +108,7 @@ Update `.testringrc` to include the plugin:
 ## Next Steps
 
 - [Configuration Guide](../configuration/index.md) — Learn about all configuration options
-- [API Reference](../api/index.md) — Explore the full testring API
+- [API Reference](../core-modules/api.md) — Explore the full testring API
 - [Plugin Development](../guides/plugin-development.md) — Create custom plugins
 - [Best Practices](../guides/testing-best-practices.md) — Learn testing best practices
 

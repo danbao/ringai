@@ -17,16 +17,10 @@ function generateFile(file) {
 ${pkg.description ? `> ${pkg.description}` : ''}
 
 ## Install
-Using npm:
+Using pnpm:
 
 \`\`\`
-npm install --save-dev ${pkg.name}
-\`\`\`
-
-or using yarn:
-
-\`\`\`
-yarn add ${pkg.name} --dev
+pnpm add -D ${pkg.name}
 \`\`\`
 `;
 
