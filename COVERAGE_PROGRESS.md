@@ -22,8 +22,8 @@
 
 | # | 任务 | 模块 | 状态 | 提交 |
 |---|------|------|------|------|
-| 1.1 | core/api run() 调用顺序测试 | core/api | ⏳ | - |
-| 1.2 | TestContext 默认值/生命周期 | core/api | ⏳ | - |
+| 1.1 | core/api run() 调用顺序测试 | core/api | ✅ | b0c72b7d |
+| 1.2 | TestContext 默认值/生命周期 | core/api | ✅ | af96a250 |
 | 1.3 | TestApiController 调用契约 (mock) | core/api | ⏳ | - |
 | 1.4 | runCommand 参数组合测试 | core/cli | ⏳ | - |
 | 1.5 | 错误路径测试 | core/cli | ⏳ | - |
