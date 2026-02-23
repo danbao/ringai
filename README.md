@@ -1,16 +1,16 @@
-# testring
+# ringai
 
-[![license](https://img.shields.io/github/license/danbao/testring.svg)](https://github.com/danbao/testring/blob/master/LICENSE)
-[![npm](https://img.shields.io/npm/v/testring.svg)](https://www.npmjs.com/package/testring)
-[![CI](https://github.com/danbao/testring/actions/workflows/ci.yml/badge.svg)](https://github.com/danbao/testring/actions/workflows/ci.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=danbao_testring&metric=coverage)](https://sonarcloud.io/summary/new_code?id=danbao_testring)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=danbao_testring&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=danbao_testring)
+[![license](https://img.shields.io/github/license/danbao/ringai.svg)](https://github.com/danbao/ringai/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/v/ringai.svg)](https://www.npmjs.com/package/ringai)
+[![CI](https://github.com/danbao/ringai/actions/workflows/ci.yml/badge.svg)](https://github.com/danbao/ringai/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=danbao_ringai&metric=coverage)](https://sonarcloud.io/summary/new_code?id=danbao_ringai)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=danbao_ringai&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=danbao_ringai)
 
 A modern, high-performance automated UI testing framework for Node.js 22+.
 
 ## Project Overview
 
-testring is a testing framework designed for automated testing of web applications. It provides:
+ringai is a testing framework designed for automated testing of web applications. It provides:
 
 - 🚀 **High Performance** — Multi-process parallel test execution
 - 🔧 **Extensible** — Rich plugin system architecture
@@ -20,7 +20,7 @@ testring is a testing framework designed for automated testing of web applicatio
 ## Project Structure
 
 ```
-testring/
+ringai/
 ├── core/              # Core modules (~20 packages) — Framework foundation
 │   ├── api/           # Test API controllers
 │   ├── cli/           # Command-line interface (citty)
@@ -74,40 +74,40 @@ Extension packages provide additional functionality:
 
 ```bash
 # Install the main framework
-pnpm add testring
+pnpm add ringai
 
 # Install Playwright driver
-pnpm add @testring/plugin-playwright-driver
+pnpm add @ringai/plugin-playwright-driver
 
 # Optional: Babel plugin for transpilation
-pnpm add @testring/plugin-babel
+pnpm add @ringai/plugin-babel
 
 # Optional: File system store
-pnpm add @testring/plugin-fs-store
+pnpm add @ringai/plugin-fs-store
 ```
 
 ### Basic Configuration
 
-Create a `.testringrc` configuration file (JSON):
+Create a `.ringairc` configuration file (JSON):
 
 ```json
 {
   "tests": "./tests/**/*.spec.js",
   "plugins": [
-    "@testring/plugin-playwright-driver"
+    "@ringai/plugin-playwright-driver"
   ],
   "workerLimit": 2,
   "retryCount": 3
 }
 ```
 
-Or use `.testringrc.js` / `.testringrc.cjs` for JavaScript configuration:
+Or use `.ringairc.js` / `.ringairc.cjs` for JavaScript configuration:
 
 ```js
-// .testringrc.js
+// .ringairc.js
 export default {
   tests: './tests/**/*.spec.js',
-  plugins: ['@testring/plugin-playwright-driver'],
+  plugins: ['@ringai/plugin-playwright-driver'],
   workerLimit: 2,
   retryCount: 3,
 };
@@ -131,16 +131,16 @@ describe('Example Test', () => {
 
 ```bash
 # Run all tests
-testring run
+ringai run
 
 # Run specific tests
-testring run --tests "./tests/login.spec.js"
+ringai run --tests "./tests/login.spec.js"
 
 # Set parallel execution
-testring run --workerLimit 4
+ringai run --workerLimit 4
 
 # Debug mode
-testring run --logLevel debug
+ringai run --logLevel debug
 ```
 
 ## Key Features
@@ -157,7 +157,7 @@ testring run --logLevel debug
 
 ### Plugin System
 - Official plugins for common use cases
-- Simple plugin development API (`@testring/plugin-api`)
+- Simple plugin development API (`@ringai/plugin-api`)
 - Composable plugin architecture
 
 ### Development Tools
@@ -171,8 +171,8 @@ testring run --logLevel debug
 
 ```bash
 # Clone the project
-git clone https://github.com/danbao/testring.git
-cd testring
+git clone https://github.com/danbao/ringai.git
+cd ringai
 
 # Install dependencies
 pnpm install
@@ -238,8 +238,8 @@ MIT License — See the [LICENSE](LICENSE) file for details.
 ## Support
 
 - 📖 [Documentation](docs/)
-- 🐛 [Issue Reporting](https://github.com/danbao/testring/issues)
-- 💬 [Discussions](https://github.com/danbao/testring/discussions)
+- 🐛 [Issue Reporting](https://github.com/danbao/ringai/issues)
+- 💬 [Discussions](https://github.com/danbao/ringai/discussions)
 
 ## 🌍 Cloudflare Worker for Test Fixtures
 

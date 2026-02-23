@@ -1,6 +1,6 @@
 # Async Assertions
 
-> **Note:** The standalone `@testring/async-assert` package was removed in v0.8.0. The assertion system now lives inside `@testring/web-application` as `src/async-assert.ts` and is accessed through `app.assert` and `app.softAssert`.
+> **Note:** The standalone `@ringai/async-assert` package was removed in v0.8.0. The assertion system now lives inside `@ringai/web-application` as `src/async-assert.ts` and is accessed through `app.assert` and `app.softAssert`.
 
 ## Overview
 
@@ -16,10 +16,10 @@ The async assertion system wraps `chai.assert` in an asynchronous Proxy, providi
 
 ### `createAssertion(options?): AsyncAssertionApi`
 
-Creates an assertion instance. Located in `@testring/web-application/src/async-assert.ts`.
+Creates an assertion instance. Located in `@ringai/web-application/src/async-assert.ts`.
 
 ```typescript
-import { createAssertion, type AsyncAssertionApi } from '@testring/web-application';
+import { createAssertion, type AsyncAssertionApi } from '@ringai/web-application';
 
 interface IAssertionOptions {
     isSoft?: boolean;
@@ -166,5 +166,5 @@ const assert = createAssertion({
 
 ## Related
 
-- [`@testring/web-application`](../packages/web-application.md) — Where `app.assert` and `app.softAssert` are created
-- [`@testring/types`](types.md) — `IAssertionOptions`, `IAssertionSuccessMeta`, `IAssertionErrorMeta`
+- [`@ringai/web-application`](../packages/web-application.md) — Where `app.assert` and `app.softAssert` are created
+- [`@ringai/types`](types.md) — `IAssertionOptions`, `IAssertionSuccessMeta`, `IAssertionErrorMeta`

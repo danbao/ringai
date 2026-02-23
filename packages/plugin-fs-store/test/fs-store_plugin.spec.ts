@@ -1,6 +1,6 @@
 
 import * as chai from 'chai';
-import {FSFileUniqPolicy} from '@testring/types';
+import {FSFileUniqPolicy} from '@ringai/types';
 
 import {cbGen} from '../src/onFileName';
 

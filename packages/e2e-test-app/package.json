@@ -1,11 +1,11 @@
 {
-  "name": "@testring/e2e-test-app",
+  "name": "@ringai/e2e-test-app",
   "private": true,
   "version": "0.8.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "test:all": "pnpm run test:unit && pnpm run test:e2e:full && pnpm run test:integration",
     "test:watch": "echo \"test:watch skipped\"",
     "test:unit": "pnpm run test:simple",
-    "test:simple": "testring run --config test/simple/.testringrc --env-parameters.test 10 --rc.tags-list=#P0,#P1",
+    "test:simple": "ringai run --config test/simple/.ringairc --env-parameters.test 10 --rc.tags-list=#P0,#P1",
     "test:e2e": "pnpm run test:playwright:headless",
     "test:e2e:full": "pnpm run test:playwright:headless && pnpm run test:screenshots",
     "test:playwright": "tsx src/test-runner.ts --config ./test/playwright/config.cjs --env-config=./test/playwright/env.json",
@@ -34,11 +34,11 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.12.2",
-    "@testring/cli": "workspace:*",
-    "@testring/plugin-babel": "workspace:*",
-    "@testring/plugin-fs-store": "workspace:*",
-    "@testring/plugin-playwright-driver": "workspace:*",
-    "@testring/web-application": "workspace:*",
+    "@ringai/cli": "workspace:*",
+    "@ringai/plugin-babel": "workspace:*",
+    "@ringai/plugin-fs-store": "workspace:*",
+    "@ringai/plugin-playwright-driver": "workspace:*",
+    "@ringai/web-application": "workspace:*",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^10.0.0",
     "@babel/preset-env": "^7.26.0",
@@ -48,7 +48,7 @@
     "concurrently": "9.0.1",
     "hono": "^4.6.3",
     "mocha": "^10.0.0",
-    "testring": "workspace:*",
+    "ringai": "workspace:*",
     "ts-node": "10.9.2"
   },
   "devDependencies": {

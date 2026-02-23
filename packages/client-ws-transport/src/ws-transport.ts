@@ -5,10 +5,10 @@ import {
     IClientWsTransport,
     IDevtoolWSHandshakeResponseMessage,
     DevtoolEvents,
-} from '@testring/types';
+} from '@ringai/types';
 
 import {EventEmitter} from 'events';
-import {Queue} from '@testring/utils';
+import {Queue} from '@ringai/utils';
 
 interface IQueuedMessage {
     type: DevtoolEvents;

@@ -1,6 +1,6 @@
-# @testring/e2e-test-app
+# @ringai/e2e-test-app
 
-End-to-end test application for the testring framework. This private package serves as both the integration test suite for the framework itself and a reference implementation for writing effective E2E tests with testring.
+End-to-end test application for the ringai framework. This private package serves as both the integration test suite for the framework itself and a reference implementation for writing effective E2E tests with ringai.
 
 ## Overview
 
@@ -140,7 +140,7 @@ pnpm run test:simple
 pnpm run test:integration
 ```
 
-All E2E tests are executed via `tsx src/test-runner.ts` which starts the mock web server and runs the testring CLI.
+All E2E tests are executed via `tsx src/test-runner.ts` which starts the mock web server and runs the ringai CLI.
 
 ## Configuration
 
@@ -185,7 +185,7 @@ module.exports = async (config) => {
 All E2E specs follow the `run(async (api) => { ... })` pattern:
 
 ```javascript
-import { run } from 'testring';
+import { run } from 'ringai';
 import { getTargetUrl } from './utils';
 
 run(async (api) => {
@@ -240,7 +240,7 @@ export const getTargetUrl = (api, urlPath) => {
 
 3. Create the spec file in `test/playwright/test/your-test.spec.js`:
    ```javascript
-   import { run } from 'testring';
+   import { run } from 'ringai';
    import { getTargetUrl } from './utils';
 
    run(async (api) => {
@@ -301,16 +301,16 @@ getTagName, execute (sync), executeAsync (async callback)
 ## Dependencies
 
 - **`hono`** + **`@hono/node-server`** — Mock web server
-- **`testring`** — Main framework
-- **`@testring/plugin-playwright-driver`** — Playwright browser driver
-- **`@testring/plugin-babel`** — Babel transpilation for spec files
-- **`@testring/plugin-fs-store`** — Screenshot storage
+- **`ringai`** — Main framework
+- **`@ringai/plugin-playwright-driver`** — Playwright browser driver
+- **`@ringai/plugin-babel`** — Babel transpilation for spec files
+- **`@ringai/plugin-fs-store`** — Screenshot storage
 - **`@babel/preset-env`** — Babel preset for Node.js target
 - **`c8`** — E2E code coverage
 - **`concurrently`** — Parallel process execution
 
 ## Related Modules
 
-- [`@testring/web-application`](web-application.md) — Core web testing API
-- [`@testring/plugin-playwright-driver`](plugin-playwright-driver.md) — Playwright integration
-- [`@testring/element-path`](element-path.md) — Element selector system
+- [`@ringai/web-application`](web-application.md) — Core web testing API
+- [`@ringai/plugin-playwright-driver`](plugin-playwright-driver.md) — Playwright integration
+- [`@ringai/element-path`](element-path.md) — Element selector system

@@ -1,4 +1,4 @@
-import {IConfig, IPluginModules} from '@testring/types';
+import {IConfig, IPluginModules} from '@ringai/types';
 import {PluginController} from './plugin-controller';
 import {PluginAPI} from './plugin-api';
 

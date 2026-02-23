@@ -1,10 +1,10 @@
-# @testring/devtool-backend
+# @ringai/devtool-backend
 
-Developer tools backend service module that serves as the core debugging and development tool for the testring framework, providing comprehensive test debugging, recording, playback, and real-time monitoring capabilities. This module integrates a web server, WebSocket communication, message proxy, and frontend interface to provide a complete solution for test development and debugging.
+Developer tools backend service module that serves as the core debugging and development tool for the ringai framework, providing comprehensive test debugging, recording, playback, and real-time monitoring capabilities. This module integrates a web server, WebSocket communication, message proxy, and frontend interface to provide a complete solution for test development and debugging.
 
 ## Overview
 
-The developer tools backend service module is the debugging center of the testring framework, providing:
+The developer tools backend service module is the debugging center of the ringai framework, providing:
 
 - **Complete test debugging and recording server** for test development
 - **HTTP web service and routing system** for endpoints
@@ -18,7 +18,7 @@ The developer tools backend service module is the debugging center of the testri
 ## Installation
 
 ```bash
-pnpm add @testring/devtool-backend --save-dev
+pnpm add @ringai/devtool-backend --save-dev
 ```
 
 ## Core Architecture
@@ -28,7 +28,7 @@ pnpm add @testring/devtool-backend --save-dev
 The main class is `DevtoolServerController`, which extends `PluggableModule` and manages the devtool server lifecycle. It forks a child process for the actual HTTP/WebSocket server and proxies messages between the test framework transport and the devtool worker.
 
 ```typescript
-import { PluggableModule } from '@testring/pluggable-module';
+import { PluggableModule } from '@ringai/pluggable-module';
 
 class DevtoolServerController extends PluggableModule implements IDevtoolServerController {
     constructor(transport: ITransport);
@@ -46,7 +46,7 @@ class DevtoolServerController extends PluggableModule implements IDevtoolServerC
 
 ### How It Works
 
-1. **`init()`** calls the `beforeStart` hook, then forks a child worker process via `@testring/child-process`
+1. **`init()`** calls the `beforeStart` hook, then forks a child worker process via `@ringai/child-process`
 2. The worker process starts an HTTP server and WebSocket server
 3. The controller registers the worker with the transport layer for IPC
 4. Message proxying is set up for test worker events (`register`, `updateExecutionState`, `unregister`) and web application devtool events
@@ -64,7 +64,7 @@ interface IDevtoolServerConfig {
 }
 
 interface IDevtoolRuntimeConfiguration {
-    extensionId: string;        // Browser extension ID (from @testring/devtool-extension)
+    extensionId: string;        // Browser extension ID (from @ringai/devtool-extension)
     httpPort: number;           // HTTP service port
     wsPort: number;             // WebSocket service port
     host: string;               // Server host address
@@ -89,8 +89,8 @@ enum DevtoolPluginHooks {
 ### Creating a Developer Tools Server
 
 ```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { transport } from '@testring/transport';
+import { DevtoolServerController } from '@ringai/devtool-backend';
+import { transport } from '@ringai/transport';
 
 // Create developer tools server
 const devtoolServer = new DevtoolServerController(transport);
@@ -119,8 +119,8 @@ process.on('SIGINT', async () => {
 ### Integration with Test Runner
 
 ```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { transport } from '@testring/transport';
+import { DevtoolServerController } from '@ringai/devtool-backend';
+import { transport } from '@ringai/transport';
 
 const devtoolServer = new DevtoolServerController(transport);
 await devtoolServer.init();
@@ -150,9 +150,9 @@ This enables the devtool frontend (served by the worker) to monitor and control 
 ### Registering Hooks
 
 ```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { DevtoolPluginHooks } from '@testring/types';
-import { transport } from '@testring/transport';
+import { DevtoolServerController } from '@ringai/devtool-backend';
+import { DevtoolPluginHooks } from '@ringai/types';
+import { transport } from '@ringai/transport';
 
 const devtoolServer = new DevtoolServerController(transport);
 
@@ -196,26 +196,26 @@ Solution: Check transport layer configuration, child process status, and message
 
 #### Frontend Resource Loading Failure
 ```
-Error: Cannot find module '@testring/devtool-frontend'
+Error: Cannot find module '@ringai/devtool-frontend'
 ```
-Solution: Ensure the `@testring/devtool-frontend` package is installed and built.
+Solution: Ensure the `@ringai/devtool-frontend` package is installed and built.
 
 ## Dependencies
 
-- **`@testring/pluggable-module`** — Hookable-based plugin system
-- **`@testring/transport`** — Transport layer communication
-- **`@testring/logger`** — Logging system
-- **`@testring/child-process`** — Child process forking
-- **`@testring/devtool-frontend`** — Frontend interface assets
-- **`@testring/devtool-extension`** — Browser extension (provides `extensionId`)
-- **`@testring/utils`** — Utility functions (`generateUniqId`)
+- **`@ringai/pluggable-module`** — Hookable-based plugin system
+- **`@ringai/transport`** — Transport layer communication
+- **`@ringai/logger`** — Logging system
+- **`@ringai/child-process`** — Child process forking
+- **`@ringai/devtool-frontend`** — Frontend interface assets
+- **`@ringai/devtool-extension`** — Browser extension (provides `extensionId`)
+- **`@ringai/utils`** — Utility functions (`generateUniqId`)
 
 ## Related Modules
 
-- **[@testring/devtool-frontend](devtool-frontend.md)** — Developer tools frontend interface
-- **[@testring/devtool-extension](devtool-extension.md)** — Browser extension
-- **[@testring/pluggable-module](../core-modules/pluggable-module.md)** — Plugin hook system
-- **[@testring/transport](../core-modules/transport.md)** — Inter-process communication
+- **[@ringai/devtool-frontend](devtool-frontend.md)** — Developer tools frontend interface
+- **[@ringai/devtool-extension](devtool-extension.md)** — Browser extension
+- **[@ringai/pluggable-module](../core-modules/pluggable-module.md)** — Plugin hook system
+- **[@ringai/transport](../core-modules/transport.md)** — Inter-process communication
 
 ## Requirements
 
@@ -224,4 +224,4 @@ Solution: Ensure the `@testring/devtool-frontend` package is installed and built
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/ringai/blob/master/LICENSE) file for details.

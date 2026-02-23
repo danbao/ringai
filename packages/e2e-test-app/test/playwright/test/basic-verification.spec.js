@@ -1,4 +1,4 @@
-import {run} from 'testring';
+import {run} from 'ringai';
 
 run(async (api) => {
     const app = api.application;

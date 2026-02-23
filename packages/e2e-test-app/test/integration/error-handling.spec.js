@@ -11,7 +11,7 @@ describe('Error Handling Integration Tests', function() {
             // Create a test file that has both passing and failing tests
             const tempTestPath = path.resolve(__dirname, '../temp-error-test.spec.js');
             const testContent = `
-                const { run } = require('@testring/e2e-test-app/test/utils');
+                const { run } = require('@ringai/e2e-test-app/test/utils');
 
                 run(async (api) => {
                     const app = api.application;
@@ -28,7 +28,7 @@ describe('Error Handling Integration Tests', function() {
 
             fs.writeFileSync(tempTestPath, testContent);
 
-            const testProcess = spawn('testring', ['run', '--config', 'test/simple/.testringrc', tempTestPath], {
+            const testProcess = spawn('ringai', ['run', '--config', 'test/simple/.ringairc', tempTestPath], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -82,7 +82,7 @@ describe('Error Handling Integration Tests', function() {
             const configContent = `
                 module.exports = {
                     plugins: [
-                        ['@testring/plugin-playwright-driver', {
+                        ['@ringai/plugin-playwright-driver', {
                             browser: 'nonexistent-browser',
                             headless: true
                         }]
@@ -92,7 +92,7 @@ describe('Error Handling Integration Tests', function() {
 
             fs.writeFileSync(tempConfigPath, configContent);
 
-            const testProcess = spawn('testring', ['run', '--config', tempConfigPath, 'test/simple/test-1.spec.js'], {
+            const testProcess = spawn('ringai', ['run', '--config', tempConfigPath, 'test/simple/test-1.spec.js'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -149,7 +149,7 @@ describe('Error Handling Integration Tests', function() {
             // Create a test that will timeout
             const tempTestPath = path.resolve(__dirname, '../timeout-test.spec.js');
             const testContent = `
-                const { run } = require('@testring/e2e-test-app/test/utils');
+                const { run } = require('@ringai/e2e-test-app/test/utils');
 
                 run(async (api) => {
                     const app = api.application;
@@ -161,7 +161,7 @@ describe('Error Handling Integration Tests', function() {
 
             fs.writeFileSync(tempTestPath, testContent);
 
-            const testProcess = spawn('testring', ['run', '--config', 'test/simple/.testringrc', '--timeout', '2000', tempTestPath], {
+            const testProcess = spawn('ringai', ['run', '--config', 'test/simple/.ringairc', '--timeout', '2000', tempTestPath], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });

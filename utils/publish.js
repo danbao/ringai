@@ -81,16 +81,16 @@ function replacePackageReferences(pkgLocation) {
         try {
             let content = fs.readFileSync(file, 'utf8');
             let modified = false;
-            if (content.includes('@testring/')) {
-                content = content.replace(/@testring\//g, '@testring-dev/');
+            if (content.includes('@ringai/')) {
+                content = content.replace(/@ringai\//g, '@ringai-dev/');
                 modified = true;
             }
-            if (content.includes("'testring'")) {
-                content = content.replace(/'testring'/g, "'testring-dev'");
+            if (content.includes("'ringai'")) {
+                content = content.replace(/'ringai'/g, "'ringai-dev'");
                 modified = true;
             }
-            if (content.includes('"testring"')) {
-                content = content.replace(/"testring"/g, '"testring-dev"');
+            if (content.includes('"ringai"')) {
+                content = content.replace(/"ringai"/g, '"ringai-dev"');
                 modified = true;
             }
             if (modified) {
@@ -108,16 +108,16 @@ function restorePackageReferences(pkgLocation) {
         try {
             let content = fs.readFileSync(file, 'utf8');
             let modified = false;
-            if (content.includes('@testring-dev/')) {
-                content = content.replace(/@testring-dev\//g, '@testring/');
+            if (content.includes('@ringai-dev/')) {
+                content = content.replace(/@ringai-dev\//g, '@ringai/');
                 modified = true;
             }
-            if (content.includes("'testring-dev'")) {
-                content = content.replace(/'testring-dev'/g, "'testring'");
+            if (content.includes("'ringai-dev'")) {
+                content = content.replace(/'ringai-dev'/g, "'ringai'");
                 modified = true;
             }
-            if (content.includes('"testring-dev"')) {
-                content = content.replace(/"testring-dev"/g, '"testring"');
+            if (content.includes('"ringai-dev"')) {
+                content = content.replace(/"ringai-dev"/g, '"ringai"');
                 modified = true;
             }
             if (modified) {
@@ -135,10 +135,10 @@ function createDevPackageJson(pkg) {
     const devVersion = `${packageJson.version}-${githubUsername}-${commitId}`;
 
     let devName;
-    if (packageJson.name === 'testring') {
-        devName = 'testring-dev';
-    } else if (packageJson.name.startsWith('@testring/')) {
-        devName = packageJson.name.replace('@testring/', '@testring-dev/');
+    if (packageJson.name === 'ringai') {
+        devName = 'ringai-dev';
+    } else if (packageJson.name.startsWith('@ringai/')) {
+        devName = packageJson.name.replace('@ringai/', '@ringai-dev/');
     } else {
         devName = packageJson.name;
     }
@@ -149,10 +149,10 @@ function createDevPackageJson(pkg) {
         if (devPackageJson[depType]) {
             const newDeps = {};
             for (const [depName, depVersion] of Object.entries(devPackageJson[depType])) {
-                if (depName === 'testring') {
-                    newDeps['testring-dev'] = `${depVersion}-${githubUsername}-${commitId}`;
-                } else if (depName.startsWith('@testring/') && !depName.startsWith('@testring-dev/')) {
-                    const devDepName = depName.replace('@testring/', '@testring-dev/');
+                if (depName === 'ringai') {
+                    newDeps['ringai-dev'] = `${depVersion}-${githubUsername}-${commitId}`;
+                } else if (depName.startsWith('@ringai/') && !depName.startsWith('@ringai-dev/')) {
+                    const devDepName = depName.replace('@ringai/', '@ringai-dev/');
                     newDeps[devDepName] = `${depVersion}-${githubUsername}-${commitId}`;
                 } else {
                     newDeps[depName] = depVersion;

@@ -6,7 +6,7 @@ export class HighlightElement {
     }
 
     private createHighlightBlock(): void {
-        this.htmlBlock = document.createElement('testring-highlight-block');
+        this.htmlBlock = document.createElement('ringai-highlight-block');
 
         this.htmlBlock.setAttribute('class', 'highlight');
 

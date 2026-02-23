@@ -1,7 +1,7 @@
 import * as vm from 'node:vm';
 import * as path from 'node:path';
 type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
-import {requirePackage} from '@testring/utils';
+import {requirePackage} from '@ringai/utils';
 import {Script} from './script';
 
 class Sandbox {

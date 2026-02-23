@@ -1,5 +1,5 @@
 import {Action} from 'redux';
-import {IDevtoolServerConfig} from '@testring/types';
+import {IDevtoolServerConfig} from '@ringai/types';
 
 export enum devtoolConfigActions {
     UPDATE = 'CONFIG@UPDATE_CONFIG',

@@ -1,7 +1,7 @@
 import {describe, it, beforeEach, afterEach} from 'vitest';
 import {strict as assert} from 'node:assert';
 
-import {ClientWsTransportEvents, DevtoolEvents} from '@testring/types';
+import {ClientWsTransportEvents, DevtoolEvents} from '@ringai/types';
 import {ClientWsTransport} from '../src/ws-transport.js';
 
 class FakeWebSocket {

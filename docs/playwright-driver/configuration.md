@@ -1,6 +1,6 @@
 # Configuration Guide
 
-Complete configuration options for the `@testring/plugin-playwright-driver` plugin.
+Complete configuration options for the `@ringai/plugin-playwright-driver` plugin.
 
 ## Basic Configuration
 
@@ -9,7 +9,7 @@ Complete configuration options for the `@testring/plugin-playwright-driver` plug
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium'
         }]
     ],
@@ -22,7 +22,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true,
@@ -267,7 +267,7 @@ launchOptions: {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: false,  // Visible browser for debugging
@@ -289,7 +289,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true,
@@ -314,7 +314,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             seleniumGrid: {
                 gridUrl: 'http://selenium-hub:4444',

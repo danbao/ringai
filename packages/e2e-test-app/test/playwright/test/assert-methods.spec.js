@@ -1,4 +1,4 @@
-import {run} from 'testring';
+import {run} from 'ringai';
 import {getTargetUrl} from './utils';
 
 run(async (api) => {
@@ -62,7 +62,7 @@ run(async (api) => {
     await app.assert.isEmpty([]);
 
     // --- Property assertions ---
-    const obj = {name: 'testring', version: '0.8.0'};
+    const obj = {name: 'ringai', version: '0.8.0'};
     await app.assert.property(obj, 'name');
     await app.assert.notProperty(obj, 'missing');
 

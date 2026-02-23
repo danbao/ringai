@@ -1,14 +1,14 @@
 import {describe, expect, it, vi, beforeEach} from 'vitest';
 
 // Mock heavy deps used inside RunCommand.execute
-vi.mock('@testring/logger', () => {
+vi.mock('@ringai/logger', () => {
     return {
         loggerClient: {info: vi.fn(), error: vi.fn()},
         LoggerServer: vi.fn(),
     };
 });
 
-vi.mock('@testring/test-run-controller', () => {
+vi.mock('@ringai/test-run-controller', () => {
     class TestRunController {
         runQueue = vi.fn().mockResolvedValue(null);
         kill = vi.fn().mockResolvedValue(undefined);
@@ -17,22 +17,22 @@ vi.mock('@testring/test-run-controller', () => {
     return {TestRunController};
 });
 
-vi.mock('@testring/plugin-api', () => ({applyPlugins: vi.fn()}));
+vi.mock('@ringai/plugin-api', () => ({applyPlugins: vi.fn()}));
 
-vi.mock('@testring/fs-reader', () => {
+vi.mock('@ringai/fs-reader', () => {
     class FSReader {
         find = vi.fn().mockResolvedValue(['a.test.ts', 'b.test.ts']);
     }
     return {FSReader};
 });
 
-vi.mock('@testring/test-worker', () => {
+vi.mock('@ringai/test-worker', () => {
     return {
         TestWorker: vi.fn(),
     };
 });
 
-vi.mock('@testring/web-application', () => {
+vi.mock('@ringai/web-application', () => {
     class WebApplicationController {
         init = vi.fn();
         kill = vi.fn();
@@ -41,7 +41,7 @@ vi.mock('@testring/web-application', () => {
     return {WebApplicationController};
 });
 
-vi.mock('@testring/browser-proxy', () => {
+vi.mock('@ringai/browser-proxy', () => {
     return {
         browserProxyControllerFactory: vi.fn().mockImplementation(() => ({
             init: vi.fn().mockResolvedValue(undefined),
@@ -50,7 +50,7 @@ vi.mock('@testring/browser-proxy', () => {
     };
 });
 
-vi.mock('@testring/fs-store', () => {
+vi.mock('@ringai/fs-store', () => {
     class FSStoreServer {
         cleanUpTransport = vi.fn();
         constructor(_maxWriteThreadCount?: number) {}
@@ -80,7 +80,7 @@ describe('core/cli runCommand', () => {
     });
 
     it('should pass mapping of workerLimit/screenshots into TestWorker options', async () => {
-        const {TestWorker} = await import('@testring/test-worker');
+        const {TestWorker} = await import('@ringai/test-worker');
 
         const config = {
             tests: 'tests/**/*.test.ts',
@@ -102,7 +102,7 @@ describe('core/cli runCommand', () => {
     });
 
     it('should map workerLimit != local into localWorker=false', async () => {
-        const {TestWorker} = await import('@testring/test-worker');
+        const {TestWorker} = await import('@ringai/test-worker');
 
         const config = {
             tests: 'tests/**/*.test.ts',

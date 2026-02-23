@@ -1,11 +1,11 @@
 
 import * as path from 'path';
 import * as chai from 'chai';
-import {fork} from '@testring/child-process';
-import {Transport} from '@testring/transport';
-import {WebApplicationControllerEventType} from '@testring/types';
-import {BrowserProxyControllerMock} from '@testring/test-utils';
-import {generateUniqId} from '@testring/utils';
+import {fork} from '@ringai/child-process';
+import {Transport} from '@ringai/transport';
+import {WebApplicationControllerEventType} from '@ringai/types';
+import {BrowserProxyControllerMock} from '@ringai/test-utils';
+import {generateUniqId} from '@ringai/utils';
 import {WebApplicationController} from '../src/web-application-controller';
 import {ELEMENT_NAME, TEST_NAME} from './fixtures/constants';
 

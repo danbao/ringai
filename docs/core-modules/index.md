@@ -1,11 +1,11 @@
 # Core Modules
 
-The `core/` directory contains the 18 foundational modules that make up the testring framework. These modules follow a strict 10-layer dependency architecture — each layer may only depend on modules in the same or lower layers.
+The `core/` directory contains the 18 foundational modules that make up the ringai framework. These modules follow a strict 10-layer dependency architecture — each layer may only depend on modules in the same or lower layers.
 
 ## Architecture Overview
 
 ```
-Layer 9 ─ testring              (entry point)
+Layer 9 ─ ringai              (entry point)
 Layer 8 ─ cli                   (command line interface)
 Layer 7 ─ test-worker           (test execution)
 Layer 6 ─ sandbox, test-run-controller, reporter
@@ -52,10 +52,10 @@ Layer 0 ─ types, async-breakpoints   (base)
 - [test-worker](./test-worker.md) — Worker processes that execute individual tests
 
 ### Layer 8 — Interface
-- [cli](./cli.md) — Command line interface built with citty (`testring run`, `testring init`, `testring plugin`)
+- [cli](./cli.md) — Command line interface built with citty (`ringai run`, `ringai init`, `ringai plugin`)
 
 ### Layer 9 — Entry
-- [testring](./testring.md) — Main entry point that wires all modules together
+- [ringai](./ringai.md) — Main entry point that wires all modules together
 
 ## Quick Links
 

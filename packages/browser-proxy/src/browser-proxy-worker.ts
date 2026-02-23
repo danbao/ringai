@@ -9,9 +9,9 @@ import {
     IBrowserProxyWorker,
     IBrowserProxyWorkerConfig,
     ITransport,
-} from '@testring/types';
-import {generateUniqId} from '@testring/utils';
-import {loggerClient} from '@testring/logger';
+} from '@ringai/types';
+import {generateUniqId} from '@ringai/utils';
+import {loggerClient} from '@ringai/logger';
 
 export class BrowserProxyWorker implements IBrowserProxyWorker {
     private pendingCommandsQueue: Set<IBrowserProxyPendingCommand> = new Set();

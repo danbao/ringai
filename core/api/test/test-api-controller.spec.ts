@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-vi.mock('@testring/async-breakpoints', () => {
+vi.mock('@ringai/async-breakpoints', () => {
     return {
         asyncBreakpoints: {
             waitBeforeInstructionBreakpoint: vi.fn(async () => undefined),
@@ -9,8 +9,8 @@ vi.mock('@testring/async-breakpoints', () => {
     };
 });
 
-import {asyncBreakpoints} from '@testring/async-breakpoints';
-import {TestEvents} from '@testring/types';
+import {asyncBreakpoints} from '@ringai/async-breakpoints';
+import {TestEvents} from '@ringai/types';
 
 import {BusEmitter, TestAPIController} from '../src/test-api-controller';
 

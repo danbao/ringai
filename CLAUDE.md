@@ -5,7 +5,7 @@ This file provides guidance to AI coding assistants when working with code in th
 
 ## Project Overview
 
-testring is a modern, ESM-first Node.js automated UI testing framework for web applications. It provides multi-process parallel test execution, a rich plugin system, multi-browser support (Chrome, Firefox, Safari, Edge) via Playwright, and a TypeScript-native development experience.
+ringai is a modern, ESM-first Node.js automated UI testing framework for web applications. It provides multi-process parallel test execution, a rich plugin system, multi-browser support (Chrome, Firefox, Safari, Edge) via Playwright, and a TypeScript-native development experience.
 
 - **Version:** 0.8.x
 - **Node.js:** 22+
@@ -38,7 +38,7 @@ The core modules follow a strict layered architecture with clear dependency hier
 **Layer 6 (Advanced):** `sandbox`, `test-run-controller`, `reporter`
 **Layer 7 (Execution):** `test-worker`
 **Layer 8 (Interface):** `cli`
-**Layer 9 (Entry):** `testring`
+**Layer 9 (Entry):** `ringai`
 
 ## Development Commands
 
@@ -132,7 +132,7 @@ pnpm run deps:validate
 ### CLI
 - Built with **citty** (lightweight CLI framework)
 - Subcommands: `run`, `init`, `plugin`
-- Configuration files: `.testringrc` (JSON), `.testringrc.js` (ESM), `.testringrc.cjs` (CJS)
+- Configuration files: `.ringairc` (JSON), `.ringairc.js` (ESM), `.ringairc.cjs` (CJS)
 
 ### Package Structure
 Each package follows a consistent structure:
@@ -158,8 +158,8 @@ Use the `plugin-api` package for creating new plugins. Follow existing plugin pa
 ## Common Patterns
 
 ### Error Handling
-The framework uses a `TestringError` hierarchy with specialized error types:
-- `TestringError` — Base error class
+The framework uses a `RingaiError` hierarchy with specialized error types:
+- `RingaiError` — Base error class
 - `TransportError` — IPC/transport errors
 - `PluginError` — Plugin lifecycle errors
 - `ConfigError` — Configuration validation errors

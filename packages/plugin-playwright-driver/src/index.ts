@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { PlaywrightPluginConfig } from './types.js';
-import { PluginAPI } from '@testring/plugin-api';
+import { PluginAPI } from '@ringai/plugin-api';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

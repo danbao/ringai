@@ -2,8 +2,8 @@ import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import process from 'node:process';
 import { createRequire } from 'node:module';
-import {getAvailablePort} from '@testring/utils';
-import {IChildProcessForkOptions, IChildProcessFork} from '@testring/types';
+import {getAvailablePort} from '@ringai/utils';
+import {IChildProcessForkOptions, IChildProcessFork} from '@ringai/types';
 import {spawn} from './spawn';
 import {ChildProcess} from 'child_process';
 
@@ -73,7 +73,7 @@ export async function fork(
     options: Partial<IChildProcessForkOptions> = {},
 ): Promise<IChildProcessFork> {
     const mergedOptions = getForkOptions(options);
-    const childArg = `--testring-parent-pid=${process.pid}`;
+    const childArg = `--ringai-parent-pid=${process.pid}`;
 
     const processArgs: Array<string> = [];
     let debugPort: number | null = null;

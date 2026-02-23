@@ -1,11 +1,11 @@
-# @testring/sandbox
+# @ringai/sandbox
 
 Code sandbox module providing isolated JavaScript execution environments for test files. Offers two implementations: a legacy `vm`-based sandbox and a modern `worker_threads`-based sandbox, plus ESM loader hooks for module mocking and instrumentation.
 
 ## Installation
 
 ```bash
-pnpm add @testring/sandbox --dev
+pnpm add @ringai/sandbox --dev
 ```
 
 ## Architecture Overview
@@ -16,14 +16,14 @@ The sandbox module provides three main subsystems:
 2. **SandboxWorkerThreads** — Modern `worker_threads`-based execution (async, isolated per-thread)
 3. **ESMLoaderHooks** — Hook registry for intercepting ESM module loading, enabling mocking and code instrumentation
 
-The `WorkerController` in `@testring/test-worker` uses `SandboxWorkerThreads` as its default execution engine.
+The `WorkerController` in `@ringai/test-worker` uses `SandboxWorkerThreads` as its default execution engine.
 
 ## Sandbox Class (Legacy VM)
 
 The `Sandbox` class executes source code inside a `vm.createContext()` with a custom `require()` implementation that resolves dependencies from a pre-built `DependencyDict`.
 
 ```typescript
-import { Sandbox } from '@testring/sandbox';
+import { Sandbox } from '@ringai/sandbox';
 
 type DependencyDict = Record<string, Record<string, { path: string; content: string }>>;
 ```
@@ -76,12 +76,12 @@ The `require()` implementation:
 
 1. Looks up the requested path in `dependencies[currentFilename]`
 2. If found, creates a new `Sandbox` for the dependency (or uses cached) and calls `.execute()`
-3. If not found, falls back to `requirePackage()` from `@testring/utils` for Node.js built-ins and installed packages
+3. If not found, falls back to `requirePackage()` from `@ringai/utils` for Node.js built-ins and installed packages
 
 ### Usage Example
 
 ```typescript
-import { Sandbox } from '@testring/sandbox';
+import { Sandbox } from '@ringai/sandbox';
 
 const dependencies = {
     '/tests/main.js': {
@@ -110,7 +110,7 @@ Sandbox.clearCache();
 The `SandboxWorkerThreads` class runs test code in an isolated `worker_threads.Worker`. Internally it spawns a worker that recreates the legacy VM sandbox logic inside the thread, providing process-level isolation without the overhead of `child_process.fork()`.
 
 ```typescript
-import { SandboxWorkerThreads, createSandboxWorkerThreads } from '@testring/sandbox';
+import { SandboxWorkerThreads, createSandboxWorkerThreads } from '@ringai/sandbox';
 ```
 
 ### Constructor
@@ -153,7 +153,7 @@ function createSandboxWorkerThreads(
 ### Usage Example
 
 ```typescript
-import { SandboxWorkerThreads } from '@testring/sandbox';
+import { SandboxWorkerThreads } from '@ringai/sandbox';
 
 const sandbox = new SandboxWorkerThreads(
     'console.log("Hello from worker thread");',
@@ -175,7 +175,7 @@ import {
     createESMLoader,
     createMock,
     createDefaultMock,
-} from '@testring/sandbox';
+} from '@ringai/sandbox';
 ```
 
 ### Types
@@ -274,7 +274,7 @@ Used internally by the `Sandbox` class.
 
 ## Integration with Test Worker
 
-The `WorkerController` in `@testring/test-worker` creates a `SandboxWorkerThreads` instance for each test execution:
+The `WorkerController` in `@ringai/test-worker` creates a `SandboxWorkerThreads` instance for each test execution:
 
 ```typescript
 // Inside WorkerController.runTest()
@@ -290,8 +290,8 @@ After execution completes (or fails), `SandboxWorkerThreads.clearCache()` is cal
 
 ## Dependencies
 
-- `@testring/utils` — `requirePackage()` for fallback module resolution, `generateUniqId()`
-- `@testring/logger` — Logging via `loggerClient`
+- `@ringai/utils` — `requirePackage()` for fallback module resolution, `generateUniqId()`
+- `@ringai/logger` — Logging via `loggerClient`
 - `node:vm` — VM context creation and script execution
 - `node:worker_threads` — Worker thread isolation
 - `node:url` — `fileURLToPath` for ESM loader hooks

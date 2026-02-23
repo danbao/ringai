@@ -1,7 +1,7 @@
-import {transport} from '@testring/transport';
-import {testAPIController} from '@testring/api';
+import {transport} from '@ringai/transport';
+import {testAPIController} from '@ringai/api';
 import {WorkerController} from './worker-controller';
-import {loggerClient, LoggerClient} from '@testring/logger';
+import {loggerClient, LoggerClient} from '@ringai/logger';
 
 const controller = new WorkerController(transport, testAPIController);
 

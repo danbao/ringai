@@ -1,7 +1,7 @@
-import {ITestQueuedTestRunData} from '@testring/types';
-import {loggerClient} from '@testring/logger';
-import {transport} from '@testring/transport';
-import {WebApplication} from '@testring/web-application';
+import {ITestQueuedTestRunData} from '@ringai/types';
+import {loggerClient} from '@ringai/logger';
+import {transport} from '@ringai/transport';
+import {WebApplication} from '@ringai/web-application';
 import {testAPIController} from './test-api-controller';
 
 const LOG_PREFIX = '[logged inside test]';

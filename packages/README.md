@@ -1,13 +1,13 @@
 # Extension Packages
 
-The `packages/` directory contains extension packages and plugins for the testring testing framework, providing additional functionality and integration capabilities. These packages are primarily used for browser drivers, web application testing, development tools, and other feature extensions.
+The `packages/` directory contains extension packages and plugins for the ringai testing framework, providing additional functionality and integration capabilities. These packages are primarily used for browser drivers, web application testing, development tools, and other feature extensions.
 
-[![npm](https://img.shields.io/npm/v/@testring/plugin-playwright-driver.svg)](https://www.npmjs.com/package/@testring/plugin-playwright-driver)
+[![npm](https://img.shields.io/npm/v/@ringai/plugin-playwright-driver.svg)](https://www.npmjs.com/package/@ringai/plugin-playwright-driver)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 
 ## Overview
 
-The extension packages provide specialized functionality that extends the core testring framework capabilities:
+The extension packages provide specialized functionality that extends the core ringai framework capabilities:
 
 - **🌐 Browser Automation** — Playwright-based multi-browser support (Chromium, Firefox, WebKit)
 - **🔧 Development Tools** — Comprehensive debugging and monitoring tools
@@ -100,32 +100,32 @@ Flexible timeout configuration for managing test execution timing and retries.
 
 ## Installation and Usage
 
-These packages can be installed independently via pnpm or used as plugins within the testring framework. Each package has independent version management and release cycles.
+These packages can be installed independently via pnpm or used as plugins within the ringai framework. Each package has independent version management and release cycles.
 
 ### Installation Examples
 
 ```bash
 # Install Playwright driver plugin
-pnpm add @testring/plugin-playwright-driver
+pnpm add @ringai/plugin-playwright-driver
 
 # Install Web application testing package
-pnpm add @testring/web-application
+pnpm add @ringai/web-application
 
 # Install Babel plugin for ES6+ support
-pnpm add @testring/plugin-babel
+pnpm add @ringai/plugin-babel
 
 # Install development tools
-pnpm add @testring/devtool-frontend @testring/devtool-backend
+pnpm add @ringai/devtool-frontend @ringai/devtool-backend
 ```
 
 ### Plugin Configuration
 
-#### Basic Configuration (.testringrc)
+#### Basic Configuration (.ringairc)
 ```json
 {
   "plugins": [
-    "@testring/plugin-playwright-driver",
-    "@testring/plugin-babel"
+    "@ringai/plugin-playwright-driver",
+    "@ringai/plugin-babel"
   ],
   "playwright": {
     "browsers": ["chromium", "firefox", "webkit"],
@@ -138,8 +138,8 @@ pnpm add @testring/devtool-frontend @testring/devtool-backend
 ```json
 {
   "plugins": [
-    "@testring/plugin-playwright-driver",
-    "@testring/plugin-fs-store"
+    "@ringai/plugin-playwright-driver",
+    "@ringai/plugin-fs-store"
   ],
   "playwright": {
     "browsers": ["chromium", "firefox", "webkit"],
@@ -152,8 +152,8 @@ pnpm add @testring/devtool-frontend @testring/devtool-backend
 ```json
 {
   "plugins": [
-    "@testring/plugin-playwright-driver",
-    "@testring/devtool-backend"
+    "@ringai/plugin-playwright-driver",
+    "@ringai/devtool-backend"
   ],
   "devtool": {
     "enabled": true,
@@ -196,7 +196,7 @@ package-name/
 ### Plugin Development API
 
 ```typescript
-import { PluginAPI } from '@testring/plugin-api';
+import { PluginAPI } from '@ringai/plugin-api';
 
 export class MyPlugin {
     constructor(private api: PluginAPI) {}

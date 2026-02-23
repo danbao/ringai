@@ -1,4 +1,4 @@
-// Example configuration for using @testring/plugin-playwright-driver
+// Example configuration for using @ringai/plugin-playwright-driver
 // 
 // Browser Mode Control:
 // - Default: Runs in headless mode for performance and consistency
@@ -11,7 +11,7 @@
 module.exports = {
     plugins: [
         // Basic configuration - default headless mode (controlled by PLAYWRIGHT_DEBUG environment)
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 // Note: headless is automatically set to true by default
@@ -25,7 +25,7 @@ module.exports = {
         
         // Advanced configuration with other features
         /*
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium', // or 'firefox', 'webkit'
             launchOptions: {
                 // headless mode is controlled by PLAYWRIGHT_DEBUG environment variable only
@@ -54,5 +54,5 @@ module.exports = {
     // Test files
     tests: './**/*.spec.js',
     
-    // Other testring configuration...
+    // Other ringai configuration...
 };

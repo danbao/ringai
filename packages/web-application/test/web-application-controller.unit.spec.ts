@@ -6,7 +6,7 @@ import {WebApplicationController} from '../src/web-application-controller.js';
 import {
   WebApplicationMessageType,
   WebApplicationControllerEventType,
-} from '@testring/types';
+} from '@ringai/types';
 
 class FakeTransport extends EventEmitter {
   public sent: any[] = [];

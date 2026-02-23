@@ -2,18 +2,18 @@
 
 import * as chai from 'chai';
 import {createRequire} from 'node:module';
-import {TransportMock} from '@testring/test-utils';
-import {testAPIController, TestAPIController} from '@testring/api';
+import {TransportMock} from '@ringai/test-utils';
+import {testAPIController, TestAPIController} from '@ringai/api';
 import {
     TestWorkerAction,
     TestStatus,
     ITestExecutionMessage,
     ITestExecutionCompleteMessage,
-} from '@testring/types';
+} from '@ringai/types';
 import {WorkerController} from '../src/worker/worker-controller';
 
 const require = createRequire(import.meta.url);
-const TESTRING_API_ABSOLUTE_PATH = require.resolve('@testring/api').replace(/\\/g, '/');
+const RINGAI_API_ABSOLUTE_PATH = require.resolve('@ringai/api').replace(/\\/g, '/');
 
 describe('WorkerController', () => {
     it('should run sync test', () => new Promise<void>((resolve, reject) => {
@@ -114,7 +114,7 @@ describe('WorkerController', () => {
             {
                 waitForRelease: false,
                 content: `
-                var api = require('${TESTRING_API_ABSOLUTE_PATH}');
+                var api = require('${RINGAI_API_ABSOLUTE_PATH}');
 
                 async function runMock () {
                     var fns = Array.prototype.slice.apply(arguments);
@@ -174,7 +174,7 @@ describe('WorkerController', () => {
             {
                 waitForRelease: false,
                 content: `
-                var api = require('${TESTRING_API_ABSOLUTE_PATH}');
+                var api = require('${RINGAI_API_ABSOLUTE_PATH}');
 
                 async function runMock () {
                     var fns = Array.prototype.slice.apply(arguments);
@@ -230,7 +230,7 @@ describe('WorkerController', () => {
             {
                 waitForRelease: false,
                 content: `
-                var api = require('${TESTRING_API_ABSOLUTE_PATH}');
+                var api = require('${RINGAI_API_ABSOLUTE_PATH}');
 
                 async function runMock () {
                     var fns = Array.prototype.slice.apply(arguments);

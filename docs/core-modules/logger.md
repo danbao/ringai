@@ -1,18 +1,18 @@
-# @testring/logger
+# @ringai/logger
 
 Distributed logging system providing structured log output with multi-process aggregation, level-based filtering, step grouping, and plugin hooks.
 
 ## Installation
 
 ```bash
-pnpm add @testring/logger
+pnpm add @ringai/logger
 ```
 
 ## Overview
 
 The logger module has a **client-server** architecture:
 
-- **`LoggerServer`** — runs in the main process, receives log entries from all workers via `@testring/transport`, filters by log level, formats output, and invokes plugin hooks
+- **`LoggerServer`** — runs in the main process, receives log entries from all workers via `@ringai/transport`, filters by log level, formats output, and invokes plugin hooks
 - **`LoggerClient`** / **`AbstractLoggerClient`** — runs in each worker (and the main process), provides the logging API, and broadcasts log entries to the server
 - **`loggerClient`** — pre-instantiated singleton exported for direct use
 
@@ -23,7 +23,7 @@ The logger module has a **client-server** architecture:
 Extends [`PluggableModule`](./pluggable-module.md). Processes and outputs log entries from all processes.
 
 ```typescript
-import { LoggerServer } from '@testring/logger';
+import { LoggerServer } from '@ringai/logger';
 ```
 
 **Constructor:**
@@ -67,7 +67,7 @@ Returns `'EMPTY'` or `'RUNNING'`.
 Numeric ordering used for level filtering:
 
 ```typescript
-import { LogLevelNumeric } from '@testring/logger';
+import { LogLevelNumeric } from '@ringai/logger';
 ```
 
 | Name      | Value | Description               |
@@ -86,7 +86,7 @@ import { LogLevelNumeric } from '@testring/logger';
 Extends `AbstractLoggerClient`. Broadcasts log entries universally via transport (main process ↔ all workers).
 
 ```typescript
-import { LoggerClient } from '@testring/logger';
+import { LoggerClient } from '@ringai/logger';
 ```
 
 ### `loggerClient` singleton
@@ -94,7 +94,7 @@ import { LoggerClient } from '@testring/logger';
 Pre-instantiated `LoggerClient` using the default transport. This is the primary import for logging throughout the framework:
 
 ```typescript
-import { loggerClient } from '@testring/logger';
+import { loggerClient } from '@ringai/logger';
 
 loggerClient.info('Test started');
 loggerClient.error('Something failed', error);
@@ -226,11 +226,11 @@ interface IConfigLogger {
 
 **CLI:**
 ```bash
-testring run --logLevel debug
-testring run --silent
+ringai run --logLevel debug
+ringai run --silent
 ```
 
-**Configuration file (`.testringrc`):**
+**Configuration file (`.ringairc`):**
 ```json
 {
   "logLevel": "info",
@@ -269,14 +269,14 @@ export default (pluginAPI) => {
 
 ## Dependencies
 
-- `@testring/pluggable-module` — Plugin hook base class
-- `@testring/transport` — Inter-process message passing
-- `@testring/utils` — `Queue`, `Stack`, `generateUniqId`
-- `@testring/types` — Type definitions
+- `@ringai/pluggable-module` — Plugin hook base class
+- `@ringai/transport` — Inter-process message passing
+- `@ringai/utils` — `Queue`, `Stack`, `generateUniqId`
+- `@ringai/types` — Type definitions
 - `chalk` — Terminal color formatting
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `LoggerServer`
-- [`@testring/transport`](./transport.md) — Delivers log entries from workers to server
-- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getLogger()` for plugin authors
+- [`@ringai/pluggable-module`](./pluggable-module.md) — Base class for `LoggerServer`
+- [`@ringai/transport`](./transport.md) — Delivers log entries from workers to server
+- [`@ringai/plugin-api`](./plugin-api.md) — Exposes `getLogger()` for plugin authors

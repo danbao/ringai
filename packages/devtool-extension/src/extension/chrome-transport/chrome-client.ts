@@ -4,7 +4,7 @@ import {
     ExtensionMessagingTransportEvents,
     ExtensionMessagingTransportTypes,
     IExtensionApplicationConfig,
-} from '@testring/types';
+} from '@ringai/types';
 
 import Port = chrome.runtime.Port;
 

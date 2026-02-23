@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import {FSStoreServer, fsStoreServerHooks} from '../src/fs-store-server';
 import {FSStoreClient} from '../src/fs-store-client';
 
-import {fsReqType} from '@testring/types';
+import {fsReqType} from '@ringai/types';
 
 let FSS: FSStoreServer;
 

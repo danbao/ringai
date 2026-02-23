@@ -1,11 +1,11 @@
-# @testring/web-application
+# @ringai/web-application
 
-The browser automation layer for the testring framework, providing two distinct APIs for web application testing: a full-featured `WebApplication` class that communicates through the transport/browser-proxy layer, and a simplified `WebApplicationSimplified` class that wraps Playwright's `Page` directly.
+The browser automation layer for the ringai framework, providing two distinct APIs for web application testing: a full-featured `WebApplication` class that communicates through the transport/browser-proxy layer, and a simplified `WebApplicationSimplified` class that wraps Playwright's `Page` directly.
 
 ## Installation
 
 ```bash
-pnpm add @testring/web-application
+pnpm add @ringai/web-application
 ```
 
 ## Exports
@@ -15,7 +15,7 @@ import {
   WebApplication,
   WebApplicationSimplified,
   WebApplicationController,
-} from '@testring/web-application';
+} from '@ringai/web-application';
 ```
 
 ## Architecture
@@ -30,7 +30,7 @@ Key internal classes:
 
 ### WebApplicationSimplified (NEW)
 
-A thin wrapper around a Playwright `Page` object. It keeps testring's `ElementPath` selector syntax and assert hooks but calls Playwright's native locator API directly — no IPC serialization.
+A thin wrapper around a Playwright `Page` object. It keeps ringai's `ElementPath` selector syntax and assert hooks but calls Playwright's native locator API directly — no IPC serialization.
 
 Use `WebApplicationSimplified` when you want direct Playwright access (auto-wait, network interception, tracing) without the multi-process overhead.
 
@@ -42,7 +42,7 @@ Use `WebApplicationSimplified` when you want direct Playwright access (auto-wait
 class WebApplication extends PluggableModule {
   constructor(
     testUID: string,           // unique test identifier
-    transport: ITransport,     // testring transport instance
+    transport: ITransport,     // ringai transport instance
     config?: Partial<IWebApplicationConfig>,
   )
 }
@@ -157,7 +157,7 @@ await app.waitUntil(condition, timeout?, timeoutMsg?, interval?)
 await app.waitForAlert(timeout?): Promise<boolean>
 ```
 
-Timeouts come from `@testring/timeout-config`:
+Timeouts come from `@ringai/timeout-config`:
 - `WAIT_TIMEOUT` — default element wait
 - `PAGE_LOAD_MAX` — page navigation timeout
 - `TICK_TIMEOUT` — polling interval
@@ -243,7 +243,7 @@ await app.enableScreenshots()
 await app.disableScreenshots()
 ```
 
-Screenshots are saved via `FSScreenshotFactory` from `@testring/fs-store` and logged with `logger.file()`.
+Screenshots are saved via `FSScreenshotFactory` from `@ringai/fs-store` and logged with `logger.file()`.
 
 ### Other
 
@@ -378,9 +378,9 @@ Events emitted:
 ## Usage Example
 
 ```typescript
-import { WebApplication } from '@testring/web-application';
+import { WebApplication } from '@ringai/web-application';
 
-// In a testring test worker context:
+// In a ringai test worker context:
 const app = new WebApplication('test-001', transport, {
   screenshotsEnabled: true,
   screenshotPath: './screenshots/',
@@ -407,14 +407,14 @@ await app.end();
 
 ## Dependencies
 
-- `@testring/element-path` — ElementPath selector system
-- `@testring/transport` — IPC communication
-- `@testring/logger` — Logging
-- `@testring/fs-store` — Screenshot file storage
-- `@testring/pluggable-module` — Plugin hook support
-- `@testring/async-breakpoints` — Debug breakpoint support
-- `@testring/timeout-config` — Centralized timeout values
-- `@testring/types` — TypeScript interfaces
-- `@testring/utils` — Utilities (`generateUniqId`)
+- `@ringai/element-path` — ElementPath selector system
+- `@ringai/transport` — IPC communication
+- `@ringai/logger` — Logging
+- `@ringai/fs-store` — Screenshot file storage
+- `@ringai/pluggable-module` — Plugin hook support
+- `@ringai/async-breakpoints` — Debug breakpoint support
+- `@ringai/timeout-config` — Centralized timeout values
+- `@ringai/types` — TypeScript interfaces
+- `@ringai/utils` — Utilities (`generateUniqId`)
 - `chai` — Assertion library (used by `createAssertion`)
 - `playwright` — Browser automation (used by `WebApplicationSimplified`)

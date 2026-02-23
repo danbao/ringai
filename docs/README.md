@@ -1,6 +1,6 @@
-# Testring Documentation
+# Ringai Documentation
 
-This directory contains the complete documentation for Testring, built with [VitePress](https://vitepress.dev/).
+This directory contains the complete documentation for Ringai, built with [VitePress](https://vitepress.dev/).
 
 ## Development Setup
 
@@ -129,5 +129,5 @@ When contributing to the documentation:
 ### Getting Help
 
 - [VitePress Documentation](https://vitepress.dev/)
-- [GitHub Issues](https://github.com/danbao/testring/issues)
-- [Community Discussions](https://github.com/danbao/testring/discussions)
+- [GitHub Issues](https://github.com/danbao/ringai/issues)
+- [Community Discussions](https://github.com/danbao/ringai/discussions)

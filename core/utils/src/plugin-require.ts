@@ -2,7 +2,7 @@ import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {requirePackage, resolvePackage} from './package-require';
 
-const PREFIXES = ['@testring/plugin-', 'testring-plugin-', '@testring/'];
+const PREFIXES = ['@ringai/plugin-', 'ringai-plugin-', '@ringai/'];
 
 function normalizeExport<T>(module: T): T {
     // filtering null and other falsy values

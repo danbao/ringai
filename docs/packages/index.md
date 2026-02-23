@@ -1,6 +1,6 @@
 # Packages
 
-This directory contains documentation for all testring extension packages.
+This directory contains documentation for all ringai extension packages.
 
 ## Package Categories
 
@@ -40,13 +40,13 @@ This directory contains documentation for all testring extension packages.
 Most packages can be installed individually:
 
 ```bash
-pnpm add --save-dev @testring/package-name
+pnpm add --save-dev @ringai/package-name
 ```
 
 Or install the complete framework:
 
 ```bash
-pnpm add --save-dev testring
+pnpm add --save-dev ringai
 ```
 
 ## Quick Links

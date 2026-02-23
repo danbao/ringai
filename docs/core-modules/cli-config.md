@@ -1,11 +1,11 @@
-# @testring/cli-config
+# @ringai/cli-config
 
-Configuration management module that parses CLI arguments, reads config files, and merges everything into a single `IConfig` object for the testring framework.
+Configuration management module that parses CLI arguments, reads config files, and merges everything into a single `IConfig` object for the ringai framework.
 
 ## Installation
 
 ```bash
-pnpm add @testring/cli-config
+pnpm add @ringai/cli-config
 ```
 
 ## Overview
@@ -25,7 +25,7 @@ This module is responsible for resolving the final runtime configuration from mu
 The main entry point. Resolves configuration from all sources and returns the merged result.
 
 ```typescript
-import { getConfig } from '@testring/cli-config';
+import { getConfig } from '@ringai/cli-config';
 
 const config = await getConfig(process.argv.slice(2));
 ```
@@ -39,7 +39,7 @@ Returns `Promise<IConfig>`.
 **Priority (highest to lowest):**
 
 1. CLI arguments
-2. File config (path from `--config`, defaults to `.testringrc`)
+2. File config (path from `--config`, defaults to `.ringairc`)
 3. Environment config (path from `--env-config`)
 4. Default configuration
 
@@ -50,13 +50,13 @@ Returns `Promise<IConfig>`.
 Type-safe helper for writing config files. Simply returns the input — its purpose is to provide TypeScript autocompletion.
 
 ```typescript
-import { defineConfig } from '@testring/cli-config';
+import { defineConfig } from '@ringai/cli-config';
 
 export default defineConfig({
   tests: './tests/**/*.spec.js',
   workerLimit: 4,
   retryCount: 2,
-  plugins: ['@testring/plugin-playwright-driver'],
+  plugins: ['@ringai/plugin-playwright-driver'],
 });
 ```
 
@@ -73,9 +73,9 @@ Returns `Partial<IConfig>`.
 Reads and parses a single configuration file. Supports JSON, JavaScript (sync or async export), and the `@extend` inheritance pattern.
 
 ```typescript
-import { getFileConfig } from '@testring/cli-config';
+import { getFileConfig } from '@ringai/cli-config';
 
-const fileConfig = await getFileConfig('./.testringrc', defaultConfiguration);
+const fileConfig = await getFileConfig('./.ringairc', defaultConfiguration);
 ```
 
 | Parameter    | Type                | Description                                       |
@@ -99,7 +99,7 @@ Returns `Promise<IConfig | null>` — `null` if the file doesn't exist or path i
 The default configuration object used as the base layer:
 
 ```typescript
-import { defaultConfiguration } from '@testring/cli-config';
+import { defaultConfiguration } from '@ringai/cli-config';
 ```
 
 ```typescript
@@ -109,7 +109,7 @@ const defaultConfiguration: IConfig = {
   restartWorker: false,
   screenshots: 'disable',
   screenshotPath: './_tmp/',
-  config: '.testringrc',
+  config: '.ringairc',
   debug: false,
   silent: false,
   bail: false,
@@ -131,7 +131,7 @@ const defaultConfiguration: IConfig = {
 Deep-merges multiple configuration objects with special handling for the `plugins` array. Plugins are merged by name — if two config layers reference the same plugin, their options are deep-merged rather than duplicated.
 
 ```typescript
-import { mergeConfigs } from '@testring/cli-config';
+import { mergeConfigs } from '@ringai/cli-config';
 
 const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
 ```
@@ -140,18 +140,18 @@ const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
 
 ```typescript
 // Layer 1
-{ plugins: ['@testring/plugin-babel'] }
+{ plugins: ['@ringai/plugin-babel'] }
 
 // Layer 2
-{ plugins: [['@testring/plugin-babel', { presets: ['@babel/preset-env'] }]] }
+{ plugins: [['@ringai/plugin-babel', { presets: ['@babel/preset-env'] }]] }
 
 // Result
-{ plugins: [['@testring/plugin-babel', { presets: ['@babel/preset-env'] }]] }
+{ plugins: [['@ringai/plugin-babel', { presets: ['@babel/preset-env'] }]] }
 ```
 
 ## Config File Formats
 
-### JSON (`.testringrc` or `.testringrc.json`)
+### JSON (`.ringairc` or `.ringairc.json`)
 
 ```json
 {
@@ -159,13 +159,13 @@ const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
   "workerLimit": 2,
   "retryCount": 3,
   "plugins": [
-    "@testring/plugin-playwright-driver",
-    ["@testring/plugin-babel", { "presets": ["@babel/preset-env"] }]
+    "@ringai/plugin-playwright-driver",
+    ["@ringai/plugin-babel", { "presets": ["@babel/preset-env"] }]
   ]
 }
 ```
 
-### JavaScript (`.testringrc.js`)
+### JavaScript (`.ringairc.js`)
 
 Static export:
 
@@ -173,7 +173,7 @@ Static export:
 export default {
   tests: './tests/**/*.spec.js',
   workerLimit: 2,
-  plugins: ['@testring/plugin-playwright-driver'],
+  plugins: ['@ringai/plugin-playwright-driver'],
 };
 ```
 
@@ -209,7 +209,7 @@ The extended config is loaded first, then the current file's values are merged o
 Arguments are parsed with `yargs/helpers` Parser. Kebab-case flags are automatically converted to camelCase.
 
 ```bash
-testring run \
+ringai run \
   --tests "./tests/**/*.spec.js" \
   --worker-limit 4 \
   --retry-count 2 \
@@ -231,7 +231,7 @@ Internal function that parses raw `argv` strings into a `Partial<IConfig>`. It:
 4. Removes `undefined` values
 
 ```typescript
-import { getArguments } from '@testring/cli-config';
+import { getArguments } from '@ringai/cli-config';
 
 const args = getArguments(['--worker-limit', '4', '--bail']);
 // { workerLimit: 4, bail: true }
@@ -251,11 +251,11 @@ const args = getArguments(['--worker-limit', '4', '--bail']);
 
 - `deepmerge` — deep object merging
 - `yargs` — CLI argument parsing (via `yargs/helpers`)
-- `@testring/logger` — logging config file reads
-- `@testring/utils` — `requirePackage` for loading JS config files
-- `@testring/types` — `IConfig`, `LogLevel`
+- `@ringai/logger` — logging config file reads
+- `@ringai/utils` — `requirePackage` for loading JS config files
+- `@ringai/types` — `IConfig`, `LogLevel`
 
 ## Related Modules
 
-- `@testring/cli` — invokes `getConfig()` to resolve configuration before running tests
-- `@testring/types` — defines the `IConfig` interface
+- `@ringai/cli` — invokes `getConfig()` to resolve configuration before running tests
+- `@ringai/types` — defines the `IConfig` interface

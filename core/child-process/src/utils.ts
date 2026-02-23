@@ -2,7 +2,7 @@ import {argv as processArgv} from 'node:process';
 
 function checkArguments(argv: string[]) {
     return (
-        argv.findIndex((item) => item.startsWith('--testring-parent-pid=')) > -1
+        argv.findIndex((item) => item.startsWith('--ringai-parent-pid=')) > -1
     );
 }
 

@@ -31,7 +31,7 @@ describe('core/reporter built-in reporters output', () => {
         } as any);
 
         const out = chunks.join('');
-        expect(out).toContain('Testring Test Runner - Dot Mode');
+        expect(out).toContain('Ringai Test Runner - Dot Mode');
         expect(out).toContain('Test Summary');
         expect(out).toContain('1 passed');
         expect(out).toContain('1 failed');
@@ -66,7 +66,7 @@ describe('core/reporter built-in reporters output', () => {
         } as any);
 
         const out = chunks.join('');
-        expect(out).toContain('Testring Test Runner');
+        expect(out).toContain('Ringai Test Runner');
         expect(out).toContain('✓ ok (5ms)');
         expect(out).toContain('✗ bad');
         expect(out).toContain('nope');

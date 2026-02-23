@@ -42,11 +42,11 @@ jobs:
       - name: Check publish target
         id: check_publish_target
         run: |
-          if [[ "${{ github.repository }}" != "ringcentral/testring" ]] || [[ "${{ github.ref }}" != "refs/heads/master" ]]; then
+          if [[ "${{ github.repository }}" != "ringcentral/ringai" ]] || [[ "${{ github.ref }}" != "refs/heads/master" ]]; then
             if [[ -n "${{ secrets.NPM_TOKEN }}" ]]; then
               echo "should_publish_dev=true" >> $GITHUB_OUTPUT
               echo "Publishing to dev packages because:"
-              echo "  Repository: ${{ github.repository }} (not ringcentral/testring)"
+              echo "  Repository: ${{ github.repository }} (not ringcentral/ringai)"
               echo "  Branch: ${{ github.ref }} (not refs/heads/master)"
               echo "  NPM_TOKEN is available"
             else
@@ -55,7 +55,7 @@ jobs:
             fi
           else
             echo "should_publish_dev=false" >> $GITHUB_OUTPUT
-            echo "Publishing to production packages (ringcentral/testring master branch)"
+            echo "Publishing to production packages (ringcentral/ringai master branch)"
           fi
 
       - name: Install dependencies

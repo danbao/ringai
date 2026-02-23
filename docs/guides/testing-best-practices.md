@@ -1,6 +1,6 @@
 # Testing Best Practices
 
-This guide outlines best practices for writing effective tests with testring.
+This guide outlines best practices for writing effective tests with ringai.
 
 ## Test Organization
 
@@ -262,7 +262,7 @@ afterEach(async (context) => {
 
 ### Parallel Execution
 
-Configure appropriate parallelization in `.testringrc`:
+Configure appropriate parallelization in `.ringairc`:
 
 ```json
 {
@@ -313,12 +313,12 @@ describe('E-commerce Workflow', () => {
 
 ### CI-Friendly Configuration
 
-Configure tests for CI environments in `.testringrc`:
+Configure tests for CI environments in `.ringairc`:
 
 ```json
 {
     "plugins": [
-        ["@testring/plugin-playwright-driver", {
+        ["@ringai/plugin-playwright-driver", {
             "headless": true
         }]
     ],
@@ -332,7 +332,7 @@ Configure tests for CI environments in `.testringrc`:
 Use different configurations for different environments:
 
 ```typescript
-// .testringrc.js
+// .ringairc.js
 const baseConfig = {
     tests: './test/**/*.spec.ts',
 };
@@ -341,13 +341,13 @@ const environments = {
     local: {
         ...baseConfig,
         plugins: [
-            ['@testring/plugin-playwright-driver', { headless: false }],
+            ['@ringai/plugin-playwright-driver', { headless: false }],
         ],
     },
     ci: {
         ...baseConfig,
         plugins: [
-            ['@testring/plugin-playwright-driver', { headless: true }],
+            ['@ringai/plugin-playwright-driver', { headless: true }],
         ],
         retryCount: 2,
     },
@@ -419,14 +419,14 @@ describe('User Registration Workflow', () => {
 
 Keep track of test coverage and scenarios in documentation.
 
-## Testring E2E Test Patterns
+## Ringai E2E Test Patterns
 
 ### Basic Test Structure
 
-All testring E2E tests use the `run()` pattern with `api.application`:
+All ringai E2E tests use the `run()` pattern with `api.application`:
 
 ```javascript
-import { run } from 'testring';
+import { run } from 'ringai';
 import { getTargetUrl } from './utils';
 
 run(async (api) => {

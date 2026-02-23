@@ -7,9 +7,9 @@ import kleur from 'kleur';
 import { runTests } from './commands/runCommand.js';
 import { runInitCommand } from './commands/initCommand.js';
 import { runPluginListCommand } from './commands/pluginCommand.js';
-import { getConfig } from '@testring/cli-config';
-import { transport } from '@testring/transport';
-import { loggerClient, LoggerServer } from '@testring/logger';
+import { getConfig } from '@ringai/cli-config';
+import { transport } from '@ringai/transport';
+import { loggerClient, LoggerServer } from '@ringai/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
@@ -17,8 +17,8 @@ const version = pkg.version;
 
 const mainCommand = defineCommand({
     meta: {
-        name: 'testring',
-        version: `testring version: ${version}`,
+        name: 'ringai',
+        version: `ringai version: ${version}`,
         description: 'Modern E2E test automation framework',
     },
     subCommands: {
@@ -51,7 +51,7 @@ const mainCommand = defineCommand({
             },
         }),
         init: defineCommand({
-            meta: { name: 'init', description: 'Initialize a new testring project' },
+            meta: { name: 'init', description: 'Initialize a new ringai project' },
             run: async () => runInitCommand(),
         }),
         plugin: defineCommand({

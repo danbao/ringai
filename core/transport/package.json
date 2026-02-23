@@ -1,19 +1,19 @@
 {
-  "name": "@testring/transport",
+  "name": "@ringai/transport",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/child-process": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/child-process": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "@types/node": "22.8.5"
   },
   "scripts": {

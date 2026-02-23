@@ -1,4 +1,4 @@
-export {TestringError} from './testring-error';
+export {RingaiError} from './ringai-error';
 export {TransportError} from './transport-error';
 export {PluginError} from './plugin-error';
 export {ConfigError} from './config-error';

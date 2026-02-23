@@ -1,6 +1,6 @@
 # Scripts Directory
 
-This directory contains utility scripts for the Testring project.
+This directory contains utility scripts for the Ringai project.
 
 ## Available Scripts
 

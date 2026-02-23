@@ -1,3 +1,3 @@
 export default function indexPage(req, res) {
-    res.send('TestRing');
+    res.send('RingAI');
 }

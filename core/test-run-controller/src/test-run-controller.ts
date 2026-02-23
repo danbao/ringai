@@ -9,10 +9,10 @@ import {
     ITestWorkerCallbackMeta,
     ITestWorkerInstance,
     TestRunControllerPlugins,
-} from '@testring/types';
-import {loggerClient} from '@testring/logger';
-import {PluggableModule} from '@testring/pluggable-module';
-import {Queue} from '@testring/utils';
+} from '@ringai/types';
+import {loggerClient} from '@ringai/logger';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {Queue} from '@ringai/utils';
 
 type TestQueue = Queue<IQueuedTest>;
 

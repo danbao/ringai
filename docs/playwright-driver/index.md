@@ -1,10 +1,10 @@
 # Playwright Driver Plugin
 
-A modern browser automation plugin for Testring that provides powerful Playwright-based testing capabilities with Selenium compatibility.
+A modern browser automation plugin for Ringai that provides powerful Playwright-based testing capabilities with Selenium compatibility.
 
 ## Overview
 
-The `@testring/plugin-playwright-driver` plugin offers:
+The `@ringai/plugin-playwright-driver` plugin offers:
 
 - **Modern Browser Automation** - Built on Playwright's latest browser automation technology
 - **Selenium Compatibility** - Supports Selenium Grid and Selenium-style configuration
@@ -18,19 +18,19 @@ The `@testring/plugin-playwright-driver` plugin offers:
 
 ```bash
 # Install with automatic browser download
-pnpm add -D @testring/plugin-playwright-driver
+pnpm add -D @ringai/plugin-playwright-driver
 
 # Skip browser installation (for CI/CD)
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @ringai/plugin-playwright-driver
 ```
 
 ### Basic Configuration
 
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true,
@@ -84,7 +84,7 @@ module.exports = {
 
 ### Basic Setup
 ```javascript
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     browserName: 'chromium',
     launchOptions: {
         headless: true
@@ -94,7 +94,7 @@ module.exports = {
 
 ### Selenium Grid
 ```javascript
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     browserName: 'chromium',
     seleniumGrid: {
         gridUrl: 'http://selenium-hub:4444',
@@ -108,7 +108,7 @@ module.exports = {
 
 ### Advanced Features
 ```javascript
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     browserName: 'chromium',
     coverage: true,
     video: true,
@@ -133,4 +133,4 @@ module.exports = {
 - [Package Documentation](../packages/plugin-playwright-driver.md)
 - [Configuration Reference](../configuration/)
 - [Plugin Development Guide](../guides/plugin-development.md)
-- [GitHub Repository](https://github.com/ringcentral/testring)
+- [GitHub Repository](https://github.com/ringcentral/ringai)

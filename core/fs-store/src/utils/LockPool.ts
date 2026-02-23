@@ -6,8 +6,8 @@
  *
  */
 
-import {MultiLock, Queue} from '@testring/utils';
-import {ILockPool} from '@testring/types';
+import {MultiLock, Queue} from '@ringai/utils';
+import {ILockPool} from '@ringai/types';
 
 type queueItem = {
     workerId: string;

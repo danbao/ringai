@@ -1,21 +1,21 @@
 {
-  "name": "@testring/sandbox",
+  "name": "@ringai/sandbox",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/api": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/test-utils": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/api": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/test-utils": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "tinypool": "2.1.0"
   },
   "scripts": {

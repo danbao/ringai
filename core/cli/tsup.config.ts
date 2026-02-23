@@ -13,6 +13,6 @@ export default defineConfig({
     tsconfig: 'tsconfig.build.json',
     platform: 'node',
     external: [
-        '@testring/*',
+        '@ringai/*',
     ],
 });

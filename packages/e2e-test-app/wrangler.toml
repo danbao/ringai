@@ -1,6 +1,6 @@
 # Cloudflare Workers 配置
 # 部署前请修改 name 为你的项目名称
-name = "testring-dev"
+name = "ringai-dev"
 main = "src/cloudflare-worker.ts"
 compatibility_date = "2025-07-28"
 

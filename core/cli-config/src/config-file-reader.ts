@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import process from 'node:process';
-import {loggerClient} from '@testring/logger';
-import {requirePackage} from '@testring/utils';
-import {IConfig as BaseConfig} from '@testring/types';
+import {loggerClient} from '@ringai/logger';
+import {requirePackage} from '@ringai/utils';
+import {IConfig as BaseConfig} from '@ringai/types';
 import {mergeConfigs} from './merge-configs';
 import ProcessEnv = NodeJS.ProcessEnv;
 interface IConfig extends BaseConfig {

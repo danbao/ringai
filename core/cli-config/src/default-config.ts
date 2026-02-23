@@ -1,4 +1,4 @@
-import {IConfig, LogLevel} from '@testring/types';
+import {IConfig, LogLevel} from '@ringai/types';
 
 export const defaultConfiguration: IConfig = {
     devtool: false,
@@ -6,7 +6,7 @@ export const defaultConfiguration: IConfig = {
     restartWorker: false,
     screenshots: 'disable',
     screenshotPath: './_tmp/',
-    config: '.testringrc',
+    config: '.ringairc',
     debug: false,
     silent: false,
     bail: false,

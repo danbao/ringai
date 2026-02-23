@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import {testAPIController} from '@testring/api';
+import {testAPIController} from '@ringai/api';
 import {WorkerController} from './worker/worker-controller';
 import {
     ITransport,
@@ -7,7 +7,7 @@ import {
     TestWorkerAction,
     IWorkerEmitter,
     ITransportDirectMessage,
-} from '@testring/types';
+} from '@ringai/types';
 
 export class TestWorkerLocal extends EventEmitter implements IWorkerEmitter {
     private workerController: WorkerController;

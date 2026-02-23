@@ -5,8 +5,8 @@ import {
     ITransportDirectMessage,
     ITransportMessage,
     ITransportSerializedStruct,
-} from '@testring/types';
-import {generateUniqId} from '@testring/utils';
+} from '@ringai/types';
+import {generateUniqId} from '@ringai/utils';
 import {serialize, deserialize} from './serialize';
 
 function isSerializedStruct(v: unknown): v is ITransportSerializedStruct {

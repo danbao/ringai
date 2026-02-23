@@ -1,5 +1,5 @@
 import { Hookable } from 'hookable';
-import type { IPluggableModule } from '@testring/types';
+import type { IPluggableModule } from '@ringai/types';
 
 type HookDescriptor = string;
 type HookHandler = (...args: any[]) => any | Promise<any>;

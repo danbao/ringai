@@ -10,18 +10,18 @@ import {
     ITransport,
     TestWorkerAction,
     WebApplicationDevtoolActions,
-} from '@testring/types';
+} from '@ringai/types';
 
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {fork} from '@testring/child-process';
-import {generateUniqId} from '@testring/utils';
-import {PluggableModule} from '@testring/pluggable-module';
-import {loggerClient} from '@testring/logger';
+import {fork} from '@ringai/child-process';
+import {generateUniqId} from '@ringai/utils';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {loggerClient} from '@ringai/logger';
 import {defaultDevtoolConfig} from './default-devtool-config';
 
-import {extensionId} from '@testring/devtool-extension';
+import {extensionId} from '@ringai/devtool-extension';
 
 export class DevtoolServerController
     extends PluggableModule

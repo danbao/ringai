@@ -1,16 +1,16 @@
-# @testring/test-run-controller
+# @ringai/test-run-controller
 
 Orchestrates the execution of a test queue across one or more worker processes. Extends `PluggableModule` to provide a rich set of lifecycle hooks for plugins to observe and control test execution, retries, and scheduling.
 
 ## Installation
 
 ```bash
-pnpm add @testring/test-run-controller
+pnpm add @ringai/test-run-controller
 ```
 
 ## Overview
 
-The `TestRunController` is the scheduling core of the testring framework. Given a set of test files, it:
+The `TestRunController` is the scheduling core of the ringai framework. Given a set of test files, it:
 
 1. Prepares a `Queue<IQueuedTest>` from the file list, calling the `beforeRun` hook to allow plugins to modify the queue
 2. Spawns worker processes (or runs locally) up to the configured `workerLimit`
@@ -24,7 +24,7 @@ The `TestRunController` is the scheduling core of the testring framework. Given 
 ### `TestRunController` class
 
 ```typescript
-import { TestRunController } from '@testring/test-run-controller';
+import { TestRunController } from '@ringai/test-run-controller';
 
 const controller = new TestRunController(config, testWorker, devtoolConfig);
 ```
@@ -121,7 +121,7 @@ const enum TestRunControllerPlugins {
 
 ## Plugin Hooks
 
-All hooks are accessed through the `PluggableModule` system. Plugins typically register via the `@testring/plugin-api` wrapper rather than calling `getHook()` directly.
+All hooks are accessed through the `PluggableModule` system. Plugins typically register via the `@ringai/plugin-api` wrapper rather than calling `getHook()` directly.
 
 ### Lifecycle hooks
 
@@ -206,8 +206,8 @@ The controller reads the following fields from `IConfig`:
 ## Usage Example
 
 ```typescript
-import { TestRunController } from '@testring/test-run-controller';
-import { TestWorker } from '@testring/test-worker';
+import { TestRunController } from '@ringai/test-run-controller';
+import { TestWorker } from '@ringai/test-worker';
 
 const config = {
   workerLimit: 4,
@@ -246,13 +246,13 @@ if (errors) {
 
 ## Dependencies
 
-- `@testring/pluggable-module` — plugin hook system base class
-- `@testring/logger` — logging via `loggerClient`
-- `@testring/utils` — `Queue` data structure
-- `@testring/types` — `IConfig`, `IQueuedTest`, `TestRunControllerPlugins`, and related types
+- `@ringai/pluggable-module` — plugin hook system base class
+- `@ringai/logger` — logging via `loggerClient`
+- `@ringai/utils` — `Queue` data structure
+- `@ringai/types` — `IConfig`, `IQueuedTest`, `TestRunControllerPlugins`, and related types
 
 ## Related Modules
 
-- `@testring/test-worker` — creates and manages worker process instances
-- `@testring/plugin-api` — provides the plugin-facing API that wraps these hooks
-- `@testring/cli` — invokes `runQueue()` as part of the `run` command
+- `@ringai/test-worker` — creates and manages worker process instances
+- `@ringai/plugin-api` — provides the plugin-facing API that wraps these hooks
+- `@ringai/cli` — invokes `runQueue()` as part of the `run` command

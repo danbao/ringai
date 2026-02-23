@@ -18,7 +18,7 @@ export class DotReporter extends TestReporter {
     
     override onStart(_runInfo: { startTime: number; tests: unknown[] }): void {
         this.writeln();
-        this.writeln(this.colorize('bold', '  Testring Test Runner - Dot Mode'));
+        this.writeln(this.colorize('bold', '  Ringai Test Runner - Dot Mode'));
         this.writeln(this.colorize('bold', '  ='.repeat(20)));
         this.writeln();
     }

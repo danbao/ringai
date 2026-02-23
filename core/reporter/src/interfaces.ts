@@ -1,4 +1,4 @@
-import type { IFile } from '@testring/types';
+import type { IFile } from '@ringai/types';
 
 /**
  * Represents the current state of a test run

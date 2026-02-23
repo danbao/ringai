@@ -1,5 +1,5 @@
 import * as yargsHelpers from 'yargs/helpers';
-import {transport} from '@testring/transport';
+import {transport} from '@ringai/transport';
 import {BrowserProxy} from './browser-proxy';
 
 const Parser = (yargsHelpers as any).Parser || (yargsHelpers as any).default?.Parser;

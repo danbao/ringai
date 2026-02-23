@@ -1,6 +1,6 @@
-# @testring/download-collector-crx
+# @ringai/download-collector-crx
 
-Chrome extension for the testring framework that enables monitoring and tracking of file downloads during automated testing. This extension solves the problem of accessing download information in headless browser mode by storing download metadata in localStorage, making it accessible to test scripts.
+Chrome extension for the ringai framework that enables monitoring and tracking of file downloads during automated testing. This extension solves the problem of accessing download information in headless browser mode by storing download metadata in localStorage, making it accessible to test scripts.
 
 ## Overview
 
@@ -34,7 +34,7 @@ The download collector Chrome extension addresses a critical limitation in brows
 ## Installation
 
 ```bash
-pnpm add @testring/download-collector-crx --save-dev
+pnpm add @ringai/download-collector-crx --save-dev
 ```
 
 The extension is automatically built during installation via a postinstall script.
@@ -82,7 +82,7 @@ interface DownloadItem {
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
-import { getCrxBase64 } from '@testring/download-collector-crx';
+import { getCrxBase64 } from '@ringai/download-collector-crx';
 
 async function runTest() {
     // Create a temporary CRX file
@@ -255,8 +255,8 @@ console.log('All localStorage keys:', allKeys);
 
 ## Related Modules
 
-- **[@testring/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
-- **[@testring/web-application](web-application.md)** — Web application testing utilities
+- **[@ringai/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
+- **[@ringai/web-application](web-application.md)** — Web application testing utilities
 
 ## Requirements
 
@@ -265,4 +265,4 @@ console.log('All localStorage keys:', allKeys);
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/ringcentral/ringai/blob/master/LICENSE) file for details.

@@ -2,17 +2,17 @@ import kleur from 'kleur';
 
 const OFFICIAL_PLUGINS = [
     {
-        name: '@testring/plugin-babel',
+        name: '@ringai/plugin-babel',
         description: 'Babel transpilation for tests',
         status: 'official',
     },
     {
-        name: '@testring/plugin-fs-store',
+        name: '@ringai/plugin-fs-store',
         description: 'Filesystem storage plugin',
         status: 'official',
     },
     {
-        name: '@testring/plugin-playwright-driver',
+        name: '@ringai/plugin-playwright-driver',
         description: 'Playwright browser driver',
         status: 'official',
     },
@@ -20,19 +20,19 @@ const OFFICIAL_PLUGINS = [
 
 const COMMUNITY_PLUGINS = [
     {
-        name: 'testring-plugin-allure',
+        name: 'ringai-plugin-allure',
         description: 'Allure reporter integration',
         status: 'community',
     },
     {
-        name: 'testring-plugin-jest',
+        name: 'ringai-plugin-jest',
         description: 'Jest compatibility layer',
         status: 'community',
     },
 ];
 
 export async function runPluginListCommand() {
-    console.log(kleur.yellow().bold('Testring Plugins\n'));
+    console.log(kleur.yellow().bold('Ringai Plugins\n'));
     console.log(kleur.dim('Official Plugins:\n'));
 
     for (const plugin of OFFICIAL_PLUGINS) {
@@ -54,6 +54,6 @@ export async function runPluginListCommand() {
     }
 
     console.log(kleur.dim('To install a plugin:'));
-    console.log(kleur.dim('  pnpm add @testring/plugin-babel'));
+    console.log(kleur.dim('  pnpm add @ringai/plugin-babel'));
     console.log();
 }

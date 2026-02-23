@@ -2,7 +2,7 @@
  * Simplified WebApplication using Playwright Page directly
  * 
  * This is a thin wrapper around Playwright Page that:
- * 1. Keeps ElementPath selector syntax (testring-specific)
+ * 1. Keeps ElementPath selector syntax (ringai-specific)
  * 2. Keeps assert hooks (success/error handlers)
  * 3. Uses Playwright's native API for everything else
  * 
@@ -10,14 +10,14 @@
  */
 
 import { Page, Locator, BrowserContext } from 'playwright';
-import { createElementPath, ElementPathProxy } from '@testring/element-path';
+import { createElementPath, ElementPathProxy } from '@ringai/element-path';
 import type { 
     IWebApplicationConfig, 
     IAssertionErrorMeta, 
     IAssertionSuccessMeta,
     ITransport 
-} from '@testring/types';
-import { loggerClient } from '@testring/logger';
+} from '@ringai/types';
+import { loggerClient } from '@ringai/logger';
 
 // DEFAULT_CONFIG reserved for future use
 // const DEFAULT_CONFIG: Partial<IWebApplicationConfig> = {
@@ -57,7 +57,7 @@ export class WebApplicationSimplified {
     /**
      * Convert ElementPath to Playwright Locator
      * 
-     * This preserves testring's selector syntax while using Playwright's locator API
+     * This preserves ringai's selector syntax while using Playwright's locator API
      */
     private toLocator(selector: string | ElementPathProxy): Locator {
         // If it's an ElementPathProxy, convert to string selector

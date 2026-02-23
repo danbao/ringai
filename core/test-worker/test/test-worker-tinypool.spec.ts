@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import {vi} from 'vitest';
 
 import {TestWorkerTinypool} from '../src/test-worker-tinypool';
-import {TestStatus, TestWorkerAction} from '@testring/types';
+import {TestStatus, TestWorkerAction} from '@ringai/types';
 
 // Mock tinypool to avoid spinning real worker_threads
 const runMock = vi.fn();

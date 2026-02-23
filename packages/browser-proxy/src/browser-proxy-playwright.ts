@@ -15,8 +15,8 @@ import { Browser, BrowserContext, Page, chromium, firefox, webkit } from 'playwr
 import { 
     IBrowserProxyPlugin, 
     WindowFeaturesConfig
-} from '@testring/types';
-import { loggerClient } from '@testring/logger';
+} from '@ringai/types';
+import { loggerClient } from '@ringai/logger';
 
 const DEFAULT_LAUNCH_OPTIONS = {
     headless: true,

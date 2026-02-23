@@ -1,11 +1,11 @@
-# @testring/test-utils
+# @ringai/test-utils
 
-Testing utilities for the testring framework. Provides mock implementations of core interfaces (`ITransport`, `ITestWorker`, `IBrowserProxyController`), file-system helpers, and a browser-driver plugin compatibility tester.
+Testing utilities for the ringai framework. Provides mock implementations of core interfaces (`ITransport`, `ITestWorker`, `IBrowserProxyController`), file-system helpers, and a browser-driver plugin compatibility tester.
 
 ## Installation
 
 ```bash
-pnpm add --save-dev @testring/test-utils
+pnpm add --save-dev @ringai/test-utils
 ```
 
 ## Exports
@@ -19,15 +19,15 @@ import {
   fileResolverFactory,
   PluginCompatibilityTester,
   type CompatibilityTestConfig,
-} from '@testring/test-utils';
+} from '@ringai/test-utils';
 ```
 
 ## TransportMock
 
-A mock implementation of `ITransport` (from `@testring/types`) built on Node.js `EventEmitter`. All broadcast/send methods emit events locally, making it easy to test message-driven logic without real IPC.
+A mock implementation of `ITransport` (from `@ringai/types`) built on Node.js `EventEmitter`. All broadcast/send methods emit events locally, making it easy to test message-driven logic without real IPC.
 
 ```typescript
-import { TransportMock } from '@testring/test-utils';
+import { TransportMock } from '@ringai/test-utils';
 
 const transport = new TransportMock();
 
@@ -88,7 +88,7 @@ class TransportMock extends EventEmitter implements ITransport {
 A mock implementation of `ITestWorker` that creates `TestWorkerMockInstance` objects. Configurable to simulate success or failure with optional delays.
 
 ```typescript
-import { TestWorkerMock } from '@testring/test-utils';
+import { TestWorkerMock } from '@ringai/test-utils';
 
 // Success with 100 ms delay
 const worker = new TestWorkerMock(false, 100);
@@ -150,7 +150,7 @@ class TestWorkerMockInstance implements ITestWorkerInstance {
 A minimal mock of `IBrowserProxyController` that records every command for later assertion.
 
 ```typescript
-import { BrowserProxyControllerMock } from '@testring/test-utils';
+import { BrowserProxyControllerMock } from '@ringai/test-utils';
 
 const controller = new BrowserProxyControllerMock();
 
@@ -184,7 +184,7 @@ class BrowserProxyControllerMock implements IBrowserProxyController {
 Creates a function that resolves file paths relative to a root directory.
 
 ```typescript
-import { fileResolverFactory } from '@testring/test-utils';
+import { fileResolverFactory } from '@ringai/test-utils';
 
 const resolve = fileResolverFactory('/project', 'test', 'fixtures');
 
@@ -208,7 +208,7 @@ Uses `path.resolve()` internally — the root segments and file segments are con
 Creates an async function that reads a file as UTF-8 text, relative to a root directory.
 
 ```typescript
-import { fileReaderFactory } from '@testring/test-utils';
+import { fileReaderFactory } from '@ringai/test-utils';
 
 const readFixture = fileReaderFactory('/project', 'test', 'fixtures');
 
@@ -229,8 +229,8 @@ Uses `fs.readFile` with `'utf8'` encoding. Rejects with `NodeJS.ErrnoException` 
 A test harness that verifies an `IBrowserProxyPlugin` implementation has all required methods and can perform common browser operations (navigation, element queries, form interactions, JS execution, screenshots, wait operations, session management, error handling).
 
 ```typescript
-import { PluginCompatibilityTester } from '@testring/test-utils';
-import type { CompatibilityTestConfig } from '@testring/test-utils';
+import { PluginCompatibilityTester } from '@ringai/test-utils';
+import type { CompatibilityTestConfig } from '@ringai/test-utils';
 
 const config: CompatibilityTestConfig = {
   pluginName: 'my-driver',
@@ -296,11 +296,11 @@ Use these lowercase, no-space names in `skipTests`:
 
 ## Dependencies
 
-- **`@testring/types`** — `ITransport`, `ITestWorker`, `ITestWorkerInstance`, `IBrowserProxyController`, `IBrowserProxyCommand`, `IBrowserProxyPlugin`, `IWorkerEmitter`
+- **`@ringai/types`** — `ITransport`, `ITestWorker`, `ITestWorkerInstance`, `IBrowserProxyController`, `IBrowserProxyCommand`, `IBrowserProxyPlugin`, `IWorkerEmitter`
 
 ## Related Modules
 
-- **`@testring/transport`** — Production transport implementation
-- **`@testring/test-worker`** — Production test worker
-- **`@testring/browser-proxy`** — Production browser proxy controller
-- **`@testring/plugin-playwright-driver`** — Playwright-based browser driver plugin
+- **`@ringai/transport`** — Production transport implementation
+- **`@ringai/test-worker`** — Production test worker
+- **`@ringai/browser-proxy`** — Production browser proxy controller
+- **`@ringai/plugin-playwright-driver`** — Playwright-based browser driver plugin

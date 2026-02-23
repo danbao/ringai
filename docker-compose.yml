@@ -1,5 +1,5 @@
 # ============================================
-# Testring Docker Compose - Local Development
+# Ringai Docker Compose - Local Development
 # ============================================
 # Usage:
 #   docker compose run --rm test        # Run unit tests

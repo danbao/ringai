@@ -1,10 +1,10 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-vi.mock('@testring/transport', () => ({
+vi.mock('@ringai/transport', () => ({
     transport: {name: 'mock-transport'},
 }));
 
-vi.mock('@testring/logger', () => {
+vi.mock('@ringai/logger', () => {
     const loggerClient = {
         withPrefix: vi.fn(() => loggerClient),
         startStep: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock('@testring/logger', () => {
 });
 
 // Keep it simple: we only need isStopped/end from WebApplication in this unit.
-vi.mock('@testring/web-application', () => {
+vi.mock('@ringai/web-application', () => {
     class WebApplication {
         static instances: any[] = [];
         public end = vi.fn(async () => undefined);
@@ -40,8 +40,8 @@ vi.mock('@testring/web-application', () => {
     return {WebApplication};
 });
 
-import {loggerClient} from '@testring/logger';
-import {WebApplication} from '@testring/web-application';
+import {loggerClient} from '@ringai/logger';
+import {WebApplication} from '@ringai/web-application';
 
 import {TestContext} from '../src/test-context';
 import {testAPIController} from '../src/test-api-controller';

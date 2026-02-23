@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import {vi} from 'vitest';
 
 import {TestWorkerLocal} from '../src/test-worker-local';
-import {TestWorkerAction} from '@testring/types';
+import {TestWorkerAction} from '@ringai/types';
 
 // Mock controller so we can test routing without running real test execution
 vi.mock('../src/worker/worker-controller', () => {

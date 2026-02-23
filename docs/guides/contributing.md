@@ -1,6 +1,6 @@
-# Contributing to Testring
+# Contributing to Ringai
 
-Thank you for your interest in contributing to testring! This guide will help you get started.
+Thank you for your interest in contributing to ringai! This guide will help you get started.
 
 ## Prerequisites
 
@@ -17,13 +17,13 @@ Before you begin, ensure you have:
 
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/testring.git
-   cd testring
+   git clone https://github.com/YOUR_USERNAME/ringai.git
+   cd ringai
    ```
 
 3. **Add the upstream remote**:
    ```bash
-   git remote add upstream https://github.com/danbao/testring.git
+   git remote add upstream https://github.com/danbao/ringai.git
    ```
 
 4. **Install dependencies**:
@@ -87,12 +87,12 @@ Before you begin, ensure you have:
    git push origin feature/your-feature-name
    ```
 
-4. **Create a Pull Request** on GitHub against `danbao/testring`
+4. **Create a Pull Request** on GitHub against `danbao/ringai`
 
 ## Project Structure
 
 ```
-testring/
+ringai/
 ├── core/                 # Core framework modules (~20 packages)
 │   ├── api/             # Test execution API
 │   ├── cli/             # Command-line interface (citty)
@@ -283,7 +283,7 @@ The changeset will be consumed during the release process to update package vers
 
 ## Plugin Development
 
-Use the `@testring/plugin-api` package for creating new plugins. Follow existing plugin patterns in the `packages/` directory:
+Use the `@ringai/plugin-api` package for creating new plugins. Follow existing plugin patterns in the `packages/` directory:
 
 - `plugin-playwright-driver` — Playwright browser automation
 - `plugin-babel` — Babel transpilation support
@@ -348,4 +348,4 @@ See the [Plugin Development Guide](./plugin-development.md) for detailed instruc
 - **Issues**: Search existing issues before creating new ones
 - **Discussions**: Use GitHub Discussions for questions
 
-Thank you for contributing to testring!
+Thank you for contributing to ringai!

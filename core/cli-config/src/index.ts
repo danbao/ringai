@@ -1,4 +1,4 @@
-import { IConfig } from '@testring/types';
+import { IConfig } from '@ringai/types';
 import { getArguments } from './arguments-parser.js';
 import { getFileConfig } from './config-file-reader.js';
 import { defaultConfiguration } from './default-config.js';

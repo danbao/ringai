@@ -7,9 +7,9 @@ import {
     IBrowserProxyWorker,
     IBrowserProxyWorkerConfig,
     ITransport,
-} from '@testring/types';
-import {PluggableModule} from '@testring/pluggable-module';
-import {loggerClient} from '@testring/logger';
+} from '@ringai/types';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {loggerClient} from '@ringai/logger';
 import {BrowserProxyWorker} from './browser-proxy-worker';
 import {BrowserProxyLocalWorker} from './browser-proxy-local-worker';
 

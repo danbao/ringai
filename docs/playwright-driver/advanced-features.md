@@ -1,6 +1,6 @@
 # Advanced Features and Debugging
 
-The `@testring/plugin-playwright-driver` plugin provides advanced capabilities for comprehensive testing and debugging.
+The `@ringai/plugin-playwright-driver` plugin provides advanced capabilities for comprehensive testing and debugging.
 
 ## Debug Mode
 
@@ -393,7 +393,7 @@ await page.evaluate(() => {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: false,
@@ -427,7 +427,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true,

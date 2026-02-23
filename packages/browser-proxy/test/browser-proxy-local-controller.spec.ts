@@ -1,8 +1,8 @@
-import {Transport} from '@testring/transport';
+import {Transport} from '@ringai/transport';
 import {BrowserProxyController} from '../src/browser-proxy-controller';
-import {fork} from '@testring/child-process';
+import {fork} from '@ringai/child-process';
 import * as path from 'path';
-import {BrowserProxyActions, BrowserProxyPlugins} from '@testring/types';
+import {BrowserProxyActions, BrowserProxyPlugins} from '@ringai/types';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 

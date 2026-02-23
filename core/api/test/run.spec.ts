@@ -1,6 +1,6 @@
 import {describe, it, expect, vi, beforeEach} from 'vitest';
 
-vi.mock('@testring/async-breakpoints', () => {
+vi.mock('@ringai/async-breakpoints', () => {
     return {
         asyncBreakpoints: {
             waitBeforeInstructionBreakpoint: vi.fn(async () => undefined),
@@ -15,11 +15,11 @@ import {run, beforeRun, afterRun} from '../src/run';
 // dependencies
 import {testAPIController} from '../src/test-api-controller';
 
-vi.mock('@testring/transport', () => ({
+vi.mock('@ringai/transport', () => ({
     transport: {},
 }));
 
-vi.mock('@testring/logger', () => {
+vi.mock('@ringai/logger', () => {
     const loggerClient = {
         withPrefix: vi.fn(() => loggerClient),
         startStep: vi.fn(),

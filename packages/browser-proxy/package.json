@@ -1,27 +1,27 @@
 {
-  "name": "@testring/browser-proxy",
+  "name": "@ringai/browser-proxy",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/child-process": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/child-process": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "@types/node": "^22.0.0",
     "playwright": "^1.48.0"
   },
   "devDependencies": {
-    "@testring/test-utils": "workspace:*"
+    "@ringai/test-utils": "workspace:*"
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",

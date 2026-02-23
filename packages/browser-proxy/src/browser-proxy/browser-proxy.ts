@@ -5,9 +5,9 @@ import {
     IBrowserProxyMessage,
     IBrowserProxyPlugin,
     ITransport,
-} from '@testring/types';
-import {requirePlugin} from '@testring/utils';
-import {loggerClient} from '@testring/logger';
+} from '@ringai/types';
+import {requirePlugin} from '@ringai/utils';
+import {loggerClient} from '@ringai/logger';
 
 function resolvePlugin(pluginPath: string): any {
     const resolvedPlugin = requirePlugin(pluginPath);

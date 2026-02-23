@@ -1,4 +1,4 @@
-import {BrowserProxyPlugins} from '@testring/types';
+import {BrowserProxyPlugins} from '@ringai/types';
 import {AbstractAPI} from './abstract';
 
 export class BrowserProxyAPI extends AbstractAPI {

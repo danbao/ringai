@@ -1,10 +1,10 @@
 {
-  "name": "@testring/devtool-frontend",
+  "name": "@ringai/devtool-frontend",
   "version": "0.8.0",
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "@testring/client-ws-transport": "workspace:*",
-    "@testring/types": "workspace:*",
+    "@ringai/client-ws-transport": "workspace:*",
+    "@ringai/types": "workspace:*",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "@types/webpack": "5.28.5",

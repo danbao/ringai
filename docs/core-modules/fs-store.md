@@ -1,11 +1,11 @@
-# @testring/fs-store
+# @ringai/fs-store
 
-File storage module providing coordinated file operations in multi-process environments. Uses a client-server architecture over `@testring/transport` for file locking, access control, and lifecycle management.
+File storage module providing coordinated file operations in multi-process environments. Uses a client-server architecture over `@ringai/transport` for file locking, access control, and lifecycle management.
 
 ## Installation
 
 ```bash
-pnpm add @testring/fs-store
+pnpm add @ringai/fs-store
 ```
 
 ## Overview
@@ -46,7 +46,7 @@ import {
   FSTextFactory,
   FSBinaryFactory,
   FS_CONSTANTS,
-} from '@testring/fs-store';
+} from '@ringai/fs-store';
 ```
 
 ## API Reference
@@ -91,7 +91,7 @@ Removes all transport listeners registered by this server instance.
 | `onRelease`   | `fsStoreServerHooks.ON_RELEASE`  | read  | `({ workerId, requestId, fullPath, fileName, action })` | Observe file release events     |
 
 ```typescript
-import { FSStoreServer, fsStoreServerHooks } from '@testring/fs-store';
+import { FSStoreServer, fsStoreServerHooks } from '@ringai/fs-store';
 
 const server = new FSStoreServer(20, 'my-store');
 
@@ -161,7 +161,7 @@ Broadcasts a cleanup message to release all operations for the current worker.
 Factory function that returns a cached `FSStoreClient` singleton per prefix. Ensures only one client instance exists per message prefix.
 
 ```typescript
-import { FSClientGet } from '@testring/fs-store';
+import { FSClientGet } from '@ringai/fs-store';
 
 const client = FSClientGet('my-store');
 ```
@@ -265,7 +265,7 @@ Pre-configured `FSStoreFile` creators for common file types. Each returns a new 
 Creates a screenshot file with `FSStoreType.screenshot`, extension `png`, binary encoding, and `FSFileUniqPolicy.global`.
 
 ```typescript
-import { FSScreenshotFactory } from '@testring/fs-store';
+import { FSScreenshotFactory } from '@ringai/fs-store';
 
 const file = FSScreenshotFactory({ fileName: 'login-page.png' });
 await file.write(screenshotBuffer);
@@ -276,7 +276,7 @@ await file.write(screenshotBuffer);
 Creates a text file with `FSStoreType.text`, UTF-8 encoding, and `FSFileUniqPolicy.global`.
 
 ```typescript
-import { FSTextFactory } from '@testring/fs-store';
+import { FSTextFactory } from '@ringai/fs-store';
 
 const file = FSTextFactory({ ext: 'log' });
 await file.write(Buffer.from('Test output log'));
@@ -287,7 +287,7 @@ await file.write(Buffer.from('Test output log'));
 Creates a binary file with `FSStoreType.bin`, binary encoding, and `FSFileUniqPolicy.global`.
 
 ```typescript
-import { FSBinaryFactory } from '@testring/fs-store';
+import { FSBinaryFactory } from '@ringai/fs-store';
 
 const file = FSBinaryFactory({ ext: 'dat' });
 await file.write(binaryBuffer);
@@ -300,7 +300,7 @@ await file.write(binaryBuffer);
 Transport message name constants:
 
 ```typescript
-import { FS_CONSTANTS } from '@testring/fs-store';
+import { FS_CONSTANTS } from '@ringai/fs-store';
 ```
 
 | Key                         | Value                  | Description                  |
@@ -340,15 +340,15 @@ enum FSFileUniqPolicy {
 
 ## Dependencies
 
-- `@testring/pluggable-module` — Plugin hook base class for `FSStoreServer`
-- `@testring/transport` — Inter-process communication
-- `@testring/logger` — Logging (via `loggerClient.withPrefix`)
-- `@testring/utils` — `generateUniqId`, `fs.ensureDir`, `fs.touchFile`
-- `@testring/types` — Type definitions
+- `@ringai/pluggable-module` — Plugin hook base class for `FSStoreServer`
+- `@ringai/transport` — Inter-process communication
+- `@ringai/logger` — Logging (via `loggerClient.withPrefix`)
+- `@ringai/utils` — `generateUniqId`, `fs.ensureDir`, `fs.touchFile`
+- `@ringai/types` — Type definitions
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `FSStoreServer`
-- [`@testring/transport`](./transport.md) — Message passing between server and clients
-- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getFSStore()` for plugin authors
-- [`@testring/plugin-fs-store`](../packages/plugin-fs-store.md) — Default fs-store plugin implementation
+- [`@ringai/pluggable-module`](./pluggable-module.md) — Base class for `FSStoreServer`
+- [`@ringai/transport`](./transport.md) — Message passing between server and clients
+- [`@ringai/plugin-api`](./plugin-api.md) — Exposes `getFSStore()` for plugin authors
+- [`@ringai/plugin-fs-store`](../packages/plugin-fs-store.md) — Default fs-store plugin implementation

@@ -116,7 +116,7 @@ describe('Performance Integration Tests', function() {
                     stdio: 'pipe',
                     env: {
                         ...process.env,
-                        TESTRING_WORKER_ID: `worker-${i}` // Unique worker ID
+                        RINGAI_WORKER_ID: `worker-${i}` // Unique worker ID
                     }
                 });
 

@@ -1,6 +1,6 @@
 # Configuration
 
-Testring provides a flexible configuration system with support for config files, environment configs, and CLI arguments. All three levels share the same set of options, with a clear priority order:
+Ringai provides a flexible configuration system with support for config files, environment configs, and CLI arguments. All three levels share the same set of options, with a clear priority order:
 
 ```
 CLI arguments > environment config > config file > defaults
@@ -10,18 +10,18 @@ CLI arguments have the highest priority and override everything. The environment
 
 ## Configuration Files
 
-Testring supports the following config file formats:
+Ringai supports the following config file formats:
 
 | File | Format |
 |------|--------|
-| `.testringrc` | JSON (default) |
-| `.testringrc.js` | ESM JavaScript |
-| `.testringrc.cjs` | CommonJS JavaScript |
-| `testring.config.js` | ESM JavaScript |
-| `testring.config.cjs` | CommonJS JavaScript |
+| `.ringairc` | JSON (default) |
+| `.ringairc.js` | ESM JavaScript |
+| `.ringairc.cjs` | CommonJS JavaScript |
+| `ringai.config.js` | ESM JavaScript |
+| `ringai.config.cjs` | CommonJS JavaScript |
 
 ::: tip
-Since testring packages use `"type": "module"`, any CommonJS config files must use the `.cjs` extension.
+Since ringai packages use `"type": "module"`, any CommonJS config files must use the `.cjs` extension.
 :::
 
 ### JSON Config
@@ -40,7 +40,7 @@ Since testring packages use `"type": "module"`, any CommonJS config files must u
 JavaScript config files can export a config object, a function returning a config object, or an async function returning a config object:
 
 ```js
-// .testringrc.js or testring.config.js
+// .ringairc.js or ringai.config.js
 export default {
   tests: './tests/**/*.spec.js',
   workerLimit: 4,
@@ -65,7 +65,7 @@ export default async function () {
 ### CommonJS Config
 
 ```js
-// .testringrc.cjs or testring.config.cjs
+// .ringairc.cjs or ringai.config.cjs
 module.exports = {
   tests: './tests/**/*.spec.js',
   workerLimit: 4,
@@ -78,12 +78,12 @@ module.exports = {
 
 ### `config`
 
-**Default:** `.testringrc`
+**Default:** `.ringairc`
 
 Path to the config file, relative to the project root. Works only as a CLI argument.
 
 ```bash
-testring run --config ./my-custom-config.json
+ringai run --config ./my-custom-config.json
 ```
 
 ### `envConfig`
@@ -93,7 +93,7 @@ testring run --config ./my-custom-config.json
 Path to an environment config file, relative to the project root. Works only as a CLI argument. The environment config extends and overrides the base config — useful for decomposing configuration by environment (e.g., CI, staging, local).
 
 ```bash
-testring run --config ./base.json --envConfig ./ci.json
+ringai run --config ./base.json --envConfig ./ci.json
 ```
 
 ### `tests`
@@ -103,7 +103,7 @@ testring run --config ./base.json --envConfig ./ci.json
 Glob pattern for test file discovery, relative to the project root. All matching files are added to the test run queue.
 
 ```bash
-testring run --tests "./src/**/test/*.spec.js"
+ringai run --tests "./src/**/test/*.spec.js"
 ```
 
 ```json
@@ -119,7 +119,7 @@ testring run --tests "./src/**/test/*.spec.js"
 Array of plugins to load. Plugins can be specified as a string (module name) or a tuple of `[moduleName, pluginConfig]`. See the [Plugin Development Guide](../guides/plugin-development.md) for details.
 
 ```bash
-testring run --plugins my-plugin-1 --plugins my-plugin-2
+ringai run --plugins my-plugin-1 --plugins my-plugin-2
 ```
 
 ```json
@@ -138,7 +138,7 @@ testring run --plugins my-plugin-1 --plugins my-plugin-2
 Maximum number of tests to run in parallel. Increase carefully — too many workers may overwhelm the browser driver. Pass `"local"` to run tests in the same process as the runner (useful for debugging).
 
 ```bash
-testring run --worker-limit 4
+ringai run --worker-limit 4
 ```
 
 ```json
@@ -154,7 +154,7 @@ testring run --worker-limit 4
 Stop the test run on the first failure instead of continuing.
 
 ```bash
-testring run --bail
+ringai run --bail
 ```
 
 ```json
@@ -170,7 +170,7 @@ testring run --bail
 Number of times to retry a failed test before marking it as failed.
 
 ```bash
-testring run --retry-count 5
+ringai run --retry-count 5
 ```
 
 ```json
@@ -186,7 +186,7 @@ testring run --retry-count 5
 Delay in milliseconds between test retries.
 
 ```bash
-testring run --retry-delay 10000
+ringai run --retry-delay 10000
 ```
 
 ```json
@@ -202,7 +202,7 @@ testring run --retry-delay 10000
 Maximum time in milliseconds for a single test execution before it is terminated.
 
 ```bash
-testring run --test-timeout 30000
+ringai run --test-timeout 30000
 ```
 
 ```json
@@ -226,7 +226,7 @@ Available levels (from most to least verbose):
 - `silent`
 
 ```bash
-testring run --log-level debug
+ringai run --log-level debug
 ```
 
 ```json
@@ -242,7 +242,7 @@ testring run --log-level debug
 Shorthand for `--logLevel silent`. Suppresses all log output.
 
 ```bash
-testring run --silent
+ringai run --silent
 ```
 
 ```json
@@ -258,7 +258,7 @@ testring run --silent
 Enable debug mode. Provides additional diagnostic output useful during test development.
 
 ```bash
-testring run --debug
+ringai run --debug
 ```
 
 ```json
@@ -274,7 +274,7 @@ testring run --debug
 Enable the devtool interface for interactive debugging and inspection.
 
 ```bash
-testring run --devtool
+ringai run --devtool
 ```
 
 ```json
@@ -290,7 +290,7 @@ testring run --devtool
 Run browsers in headless mode (no visible UI). Commonly used in CI environments.
 
 ```bash
-testring run --headless
+ringai run --headless
 ```
 
 ```json
@@ -311,7 +311,7 @@ Available values:
 - `afterError` — capture screenshots only after errors (on retry runs)
 
 ```bash
-testring run --screenshots afterError
+ringai run --screenshots afterError
 ```
 
 ```json
@@ -355,7 +355,7 @@ Available values:
 - `never` — keep workers alive
 
 ```bash
-testring run --restartWorker always
+ringai run --restartWorker always
 ```
 
 ```json

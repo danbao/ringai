@@ -1,6 +1,6 @@
 
 import * as chai from 'chai';
-import {IConfig} from '@testring/types';
+import {IConfig} from '@ringai/types';
 import {mergeConfigs} from '../src/merge-configs';
 
 describe('getConfig', () => {

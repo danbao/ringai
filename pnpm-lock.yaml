@@ -117,22 +117,22 @@ importers:
 
   core/api:
     dependencies:
-      '@testring/async-breakpoints':
+      '@ringai/async-breakpoints':
         specifier: workspace:*
         version: link:../async-breakpoints
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
-      '@testring/web-application':
+      '@ringai/web-application':
         specifier: workspace:*
         version: link:../../packages/web-application
 
@@ -148,46 +148,46 @@ importers:
 
   core/child-process:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
 
   core/cli:
     dependencies:
-      '@testring/browser-proxy':
+      '@ringai/browser-proxy':
         specifier: workspace:*
         version: link:../../packages/browser-proxy
-      '@testring/cli-config':
+      '@ringai/cli-config':
         specifier: workspace:*
         version: link:../cli-config
-      '@testring/fs-reader':
+      '@ringai/fs-reader':
         specifier: workspace:*
         version: link:../fs-reader
-      '@testring/fs-store':
+      '@ringai/fs-store':
         specifier: workspace:*
         version: link:../fs-store
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/plugin-api':
+      '@ringai/plugin-api':
         specifier: workspace:*
         version: link:../plugin-api
-      '@testring/test-run-controller':
+      '@ringai/test-run-controller':
         specifier: workspace:*
         version: link:../test-run-controller
-      '@testring/test-worker':
+      '@ringai/test-worker':
         specifier: workspace:*
         version: link:../test-worker
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/web-application':
+      '@ringai/web-application':
         specifier: workspace:*
         version: link:../../packages/web-application
       '@types/node':
@@ -202,13 +202,13 @@ importers:
 
   core/cli-config:
     dependencies:
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       c12:
@@ -239,13 +239,13 @@ importers:
 
   core/fs-reader:
     dependencies:
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../pluggable-module
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
       p-limit:
@@ -257,40 +257,40 @@ importers:
 
   core/fs-store:
     dependencies:
-      '@testring/cli-config':
+      '@ringai/cli-config':
         specifier: workspace:*
         version: link:../cli-config
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../pluggable-module
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
 
   core/logger:
     dependencies:
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../pluggable-module
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       '@types/bytes':
@@ -306,28 +306,28 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
     devDependencies:
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
 
   core/pluggable-module:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
 
   core/plugin-api:
     dependencies:
-      '@testring/fs-store':
+      '@ringai/fs-store':
         specifier: workspace:*
         version: link:../fs-store
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       '@types/node':
@@ -336,25 +336,34 @@ importers:
 
   core/reporter:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
 
-  core/sandbox:
+  core/ringai:
     dependencies:
-      '@testring/api':
+      '@ringai/api':
         specifier: workspace:*
         version: link:../api
-      '@testring/logger':
+      '@ringai/cli':
+        specifier: workspace:*
+        version: link:../cli
+
+  core/sandbox:
+    dependencies:
+      '@ringai/api':
+        specifier: workspace:*
+        version: link:../api
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       tinypool:
@@ -363,59 +372,59 @@ importers:
 
   core/test-run-controller:
     dependencies:
-      '@testring/fs-store':
+      '@ringai/fs-store':
         specifier: workspace:*
         version: link:../fs-store
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../pluggable-module
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
     devDependencies:
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
 
   core/test-worker:
     dependencies:
-      '@testring/api':
+      '@ringai/api':
         specifier: workspace:*
         version: link:../api
-      '@testring/async-breakpoints':
+      '@ringai/async-breakpoints':
         specifier: workspace:*
         version: link:../async-breakpoints
-      '@testring/child-process':
+      '@ringai/child-process':
         specifier: workspace:*
         version: link:../child-process
-      '@testring/fs-reader':
+      '@ringai/fs-reader':
         specifier: workspace:*
         version: link:../fs-reader
-      '@testring/fs-store':
+      '@ringai/fs-store':
         specifier: workspace:*
         version: link:../fs-store
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../pluggable-module
-      '@testring/sandbox':
+      '@ringai/sandbox':
         specifier: workspace:*
         version: link:../sandbox
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       '@types/node':
@@ -425,28 +434,19 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
     devDependencies:
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
 
-  core/testring:
-    dependencies:
-      '@testring/api':
-        specifier: workspace:*
-        version: link:../api
-      '@testring/cli':
-        specifier: workspace:*
-        version: link:../cli
-
   core/transport:
     dependencies:
-      '@testring/child-process':
+      '@ringai/child-process':
         specifier: workspace:*
         version: link:../child-process
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../utils
       '@types/node':
@@ -461,7 +461,7 @@ importers:
 
   core/utils:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../types
       '@types/bytes':
@@ -488,22 +488,22 @@ importers:
 
   packages/browser-proxy:
     dependencies:
-      '@testring/child-process':
+      '@ringai/child-process':
         specifier: workspace:*
         version: link:../../core/child-process
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../../core/logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../../core/pluggable-module
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../../core/transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
       '@types/node':
@@ -513,16 +513,16 @@ importers:
         specifier: ^1.48.0
         version: 1.58.2
     devDependencies:
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../test-utils
 
   packages/client-ws-transport:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
 
@@ -537,28 +537,28 @@ importers:
       '@babel/types':
         specifier: ^7.26.0
         version: 7.29.0
-      '@testring/child-process':
+      '@ringai/child-process':
         specifier: workspace:*
         version: link:../../core/child-process
-      '@testring/devtool-extension':
+      '@ringai/devtool-extension':
         specifier: workspace:*
         version: link:../devtool-extension
-      '@testring/devtool-frontend':
+      '@ringai/devtool-frontend':
         specifier: workspace:*
         version: link:../devtool-frontend
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../../core/logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../../core/pluggable-module
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../../core/transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
       express:
@@ -571,7 +571,7 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
     devDependencies:
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../test-utils
       '@types/express-serve-static-core':
@@ -589,13 +589,13 @@ importers:
 
   packages/devtool-extension:
     devDependencies:
-      '@testring/client-ws-transport':
+      '@ringai/client-ws-transport':
         specifier: workspace:*
         version: link:../client-ws-transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
       '@types/chrome':
@@ -634,10 +634,10 @@ importers:
 
   packages/devtool-frontend:
     devDependencies:
-      '@testring/client-ws-transport':
+      '@ringai/client-ws-transport':
         specifier: workspace:*
         version: link:../client-ws-transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
       '@types/react':
@@ -706,19 +706,19 @@ importers:
       '@hono/node-server':
         specifier: ^1.12.2
         version: 1.19.9(hono@4.11.10)
-      '@testring/cli':
+      '@ringai/cli':
         specifier: workspace:*
         version: link:../../core/cli
-      '@testring/plugin-babel':
+      '@ringai/plugin-babel':
         specifier: workspace:*
         version: link:../plugin-babel
-      '@testring/plugin-fs-store':
+      '@ringai/plugin-fs-store':
         specifier: workspace:*
         version: link:../plugin-fs-store
-      '@testring/plugin-playwright-driver':
+      '@ringai/plugin-playwright-driver':
         specifier: workspace:*
         version: link:../plugin-playwright-driver
-      '@testring/web-application':
+      '@ringai/web-application':
         specifier: workspace:*
         version: link:../web-application
       '@types/chai':
@@ -745,9 +745,9 @@ importers:
       mocha:
         specifier: ^10.0.0
         version: 10.8.2
-      testring:
+      ringai:
         specifier: workspace:*
-        version: link:../../core/testring
+        version: link:../../core/ringai
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.19.11)(typescript@5.6.3)
@@ -766,7 +766,7 @@ importers:
       '@babel/plugin-transform-modules-commonjs':
         specifier: 7.25.9
         version: 7.25.9(@babel/core@7.26.0)
-      '@testring/plugin-api':
+      '@ringai/plugin-api':
         specifier: workspace:*
         version: link:../../core/plugin-api
       '@types/babel__core':
@@ -775,32 +775,32 @@ importers:
 
   packages/plugin-fs-store:
     dependencies:
-      '@testring/plugin-api':
+      '@ringai/plugin-api':
         specifier: workspace:*
         version: link:../../core/plugin-api
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
     devDependencies:
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../../core/transport
 
   packages/plugin-playwright-driver:
     dependencies:
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../../core/logger
-      '@testring/plugin-api':
+      '@ringai/plugin-api':
         specifier: workspace:*
         version: link:../../core/plugin-api
-      '@testring/timeout-config':
+      '@ringai/timeout-config':
         specifier: workspace:*
         version: link:../timeout-config
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
       '@types/node':
@@ -831,7 +831,7 @@ importers:
 
   packages/test-utils:
     dependencies:
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
     devDependencies:
@@ -871,41 +871,41 @@ importers:
 
   packages/web-application:
     dependencies:
-      '@testring/async-breakpoints':
+      '@ringai/async-breakpoints':
         specifier: workspace:*
         version: link:../../core/async-breakpoints
-      '@testring/element-path':
+      '@ringai/element-path':
         specifier: workspace:*
         version: link:../element-path
-      '@testring/fs-store':
+      '@ringai/fs-store':
         specifier: workspace:*
         version: link:../../core/fs-store
-      '@testring/logger':
+      '@ringai/logger':
         specifier: workspace:*
         version: link:../../core/logger
-      '@testring/pluggable-module':
+      '@ringai/pluggable-module':
         specifier: workspace:*
         version: link:../../core/pluggable-module
-      '@testring/timeout-config':
+      '@ringai/timeout-config':
         specifier: workspace:*
         version: link:../timeout-config
-      '@testring/transport':
+      '@ringai/transport':
         specifier: workspace:*
         version: link:../../core/transport
-      '@testring/types':
+      '@ringai/types':
         specifier: workspace:*
         version: link:../../core/types
-      '@testring/utils':
+      '@ringai/utils':
         specifier: workspace:*
         version: link:../../core/utils
       playwright:
         specifier: ^1.48.0
         version: 1.58.2
     devDependencies:
-      '@testring/child-process':
+      '@ringai/child-process':
         specifier: workspace:*
         version: link:../../core/child-process
-      '@testring/test-utils':
+      '@ringai/test-utils':
         specifier: workspace:*
         version: link:../test-utils
       '@types/node':

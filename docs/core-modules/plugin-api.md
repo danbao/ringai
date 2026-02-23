@@ -1,16 +1,16 @@
-# @testring/plugin-api
+# @ringai/plugin-api
 
 Plugin API module that provides the plugin system infrastructure — plugin resolution, loading, initialization, and access to framework module hooks.
 
 ## Installation
 
 ```bash
-pnpm add @testring/plugin-api
+pnpm add @ringai/plugin-api
 ```
 
 ## Overview
 
-This module is the core of the testring plugin system. It provides:
+This module is the core of the ringai plugin system. It provides:
 
 - **`PluginAPI`** — the object passed to every plugin function, giving access to framework module hooks
 - **`PluginController`** — resolves, loads, and initializes plugins from configuration
@@ -25,7 +25,7 @@ Plugins are functions that receive a `PluginAPI` instance and optionally a confi
 The main entry point for initializing plugins. Creates a `PluginController` and calls `initialize()` with the plugin list from config.
 
 ```typescript
-import { applyPlugins } from '@testring/plugin-api';
+import { applyPlugins } from '@ringai/plugin-api';
 
 applyPlugins(moduleInstances, config);
 ```
@@ -35,14 +35,14 @@ applyPlugins(moduleInstances, config);
 | Parameter              | Type              | Description                                            |
 | ---------------------- | ----------------- | ------------------------------------------------------ |
 | `pluginsDestinations`  | `IPluginModules`  | Object containing framework module instances           |
-| `config`               | `IConfig`         | Full testring configuration (reads `config.plugins`)   |
+| `config`               | `IConfig`         | Full ringai configuration (reads `config.plugins`)   |
 
 ### `PluginController` class
 
 Handles plugin resolution, loading, validation, and initialization.
 
 ```typescript
-import { PluginController } from '@testring/plugin-api';
+import { PluginController } from '@ringai/plugin-api';
 
 const controller = new PluginController(moduleInstances);
 controller.initialize(config.plugins);
@@ -64,11 +64,11 @@ controller.initialize([
 
 **Plugin resolution flow:**
 
-1. The plugin name is passed to `requirePlugin()` from `@testring/utils`
+1. The plugin name is passed to `requirePlugin()` from `@ringai/utils`
 2. `requirePlugin` tries these prefixed variants in order:
-   - `@testring/plugin-<name>`
-   - `testring-plugin-<name>`
-   - `@testring/<name>`
+   - `@ringai/plugin-<name>`
+   - `ringai-plugin-<name>`
+   - `@ringai/<name>`
    - `<name>` as-is
 3. The resolved module must export a function — if not, a `SyntaxError` is thrown
 4. The function is called with `(pluginAPI, pluginConfig)` where `pluginAPI` is a `PluginAPI` instance and `pluginConfig` is the config object (or `null`)
@@ -214,14 +214,14 @@ Access via `pluginAPI.getBrowserProxy()`.
 | ----------------------------- | --------- | -------------------------------------------------------- |
 | `proxyPlugin(pluginPath, config)` | write | Register a browser driver plugin. Only one plugin can register — subsequent calls throw an error. |
 
-This is how browser driver plugins (like `@testring/plugin-playwright-driver`) register themselves:
+This is how browser driver plugins (like `@ringai/plugin-playwright-driver`) register themselves:
 
 ```typescript
 export default (pluginAPI, pluginConfig) => {
   const browserProxy = pluginAPI.getBrowserProxy();
 
   browserProxy.proxyPlugin(
-    '@testring/plugin-playwright-driver/driver',
+    '@ringai/plugin-playwright-driver/driver',
     pluginConfig || {},
   );
 };
@@ -262,7 +262,7 @@ A plugin is a function exported as the default export of a module:
 
 ```typescript
 // my-plugin.ts
-import type { PluginAPI } from '@testring/plugin-api';
+import type { PluginAPI } from '@ringai/plugin-api';
 
 export default (pluginAPI: PluginAPI, config: any) => {
   const logger = pluginAPI.getLogger();
@@ -281,10 +281,10 @@ export default (pluginAPI: PluginAPI, config: any) => {
 
 ### Plugin Configuration
 
-Plugins are configured in the testring configuration file (`.testringrc`, `.testringrc.js`, or `.testringrc.cjs`):
+Plugins are configured in the ringai configuration file (`.ringairc`, `.ringairc.js`, or `.ringairc.cjs`):
 
 ```javascript
-// .testringrc.js
+// .ringairc.js
 export default {
   plugins: [
     // String form — no config
@@ -297,7 +297,7 @@ export default {
     './plugins/my-local-plugin',
 
     // Scoped package
-    '@my-org/testring-plugin-reporter',
+    '@my-org/ringai-plugin-reporter',
   ],
 };
 ```
@@ -306,8 +306,8 @@ export default {
 
 ```typescript
 // plugins/reporter.ts
-import type { PluginAPI } from '@testring/plugin-api';
-import type { IQueuedTest } from '@testring/types';
+import type { PluginAPI } from '@ringai/plugin-api';
+import type { IQueuedTest } from '@ringai/types';
 
 export default (pluginAPI: PluginAPI) => {
   const controller = pluginAPI.getTestRunController();
@@ -355,13 +355,13 @@ type PluginFunction = (api: PluginAPI, config: object | null) => void;
 
 ## Dependencies
 
-- `@testring/types` — Type definitions (`IConfig`, `IPluginModules`, `ConfigPluginDescriptor`)
-- `@testring/utils` — `requirePlugin` for plugin resolution and loading
-- `@testring/fs-store` — `fsStoreServerHooks` constants for FS store hook names
+- `@ringai/types` — Type definitions (`IConfig`, `IPluginModules`, `ConfigPluginDescriptor`)
+- `@ringai/utils` — `requirePlugin` for plugin resolution and loading
+- `@ringai/fs-store` — `fsStoreServerHooks` constants for FS store hook names
 
 ## Related Modules
 
-- [`@testring/utils`](./utils.md) — Plugin resolution (`requirePlugin`)
-- [`@testring/pluggable-module`](./pluggable-module.md) — Hook system foundation
-- [`@testring/cli-config`](./cli-config.md) — Configuration management
-- [`@testring/transport`](./transport.md) — Inter-process communication
+- [`@ringai/utils`](./utils.md) — Plugin resolution (`requirePlugin`)
+- [`@ringai/pluggable-module`](./pluggable-module.md) — Hook system foundation
+- [`@ringai/cli-config`](./cli-config.md) — Configuration management
+- [`@ringai/transport`](./transport.md) — Inter-process communication

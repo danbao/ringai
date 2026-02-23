@@ -1,11 +1,11 @@
-# @testring/plugin-babel
+# @ringai/plugin-babel
 
-Babel compilation plugin for the testring framework. Hooks into the test worker's `compile` step to transform test files via `@babel/core.transformAsync()` before execution.
+Babel compilation plugin for the ringai framework. Hooks into the test worker's `compile` step to transform test files via `@babel/core.transformAsync()` before execution.
 
 ## Installation
 
 ```bash
-pnpm add @testring/plugin-babel
+pnpm add @ringai/plugin-babel
 ```
 
 Peer dependencies:
@@ -17,7 +17,7 @@ Peer dependencies:
 The package exports a single default function:
 
 ```typescript
-import babelPlugin from '@testring/plugin-babel';
+import babelPlugin from '@ringai/plugin-babel';
 ```
 
 ## How It Works
@@ -33,7 +33,7 @@ The entire plugin is concise:
 
 ```typescript
 import * as path from 'path';
-import { PluginAPI } from '@testring/plugin-api';
+import { PluginAPI } from '@ringai/plugin-api';
 import * as babelCore from '@babel/core';
 import babelPluginCommonJS from '@babel/plugin-transform-modules-commonjs';
 
@@ -71,7 +71,7 @@ export default babelPlugin;
 
 ## Built-in Plugin: `babelPluginCommonJS`
 
-The plugin always includes `@babel/plugin-transform-modules-commonjs` with `{ strictMode: false }` as the first Babel plugin. This converts ES module `import`/`export` statements to CommonJS `require`/`module.exports` — necessary because test code runs inside the testring sandbox which uses CommonJS module loading.
+The plugin always includes `@babel/plugin-transform-modules-commonjs` with `{ strictMode: false }` as the first Babel plugin. This converts ES module `import`/`export` statements to CommonJS `require`/`module.exports` — necessary because test code runs inside the ringai sandbox which uses CommonJS module loading.
 
 Any additional plugins provided via `config.plugins` are appended **after** the built-in CommonJS transform.
 
@@ -105,12 +105,12 @@ Pass any standard `@babel/core` `TransformOptions`. Key options:
 
 ## Usage
 
-### In `.testringrc` (JSON config)
+### In `.ringairc` (JSON config)
 
 ```json
 {
   "plugins": [
-    "@testring/plugin-babel"
+    "@ringai/plugin-babel"
   ]
 }
 ```
@@ -120,7 +120,7 @@ Pass any standard `@babel/core` `TransformOptions`. Key options:
 ```json
 {
   "plugins": [
-    ["@testring/plugin-babel", {
+    ["@ringai/plugin-babel", {
       "sourceMaps": true,
       "presets": [
         ["@babel/preset-env", { "targets": { "node": "22" } }]
@@ -136,8 +136,8 @@ Pass any standard `@babel/core` `TransformOptions`. Key options:
 ### Programmatic usage
 
 ```typescript
-import babelPlugin from '@testring/plugin-babel';
-import { PluginAPI } from '@testring/plugin-api';
+import babelPlugin from '@ringai/plugin-babel';
+import { PluginAPI } from '@ringai/plugin-api';
 
 const pluginAPI = new PluginAPI(/* ... */);
 
@@ -158,4 +158,4 @@ babelPlugin(pluginAPI, {
 
 - `@babel/core` — Babel compiler
 - `@babel/plugin-transform-modules-commonjs` — ESM → CJS transform
-- `@testring/plugin-api` — Plugin API interface
+- `@ringai/plugin-api` — Plugin API interface

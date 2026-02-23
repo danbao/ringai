@@ -10,13 +10,13 @@ import {
     TestWorkerAction,
     TestStatus,
     TestEvents,
-} from '@testring/types';
-import {restructureError} from '@testring/utils';
+} from '@ringai/types';
+import {restructureError} from '@ringai/utils';
 
-import {SandboxWorkerThreads} from '@testring/sandbox';
-import {testAPIController, TestAPIController} from '@testring/api';
-import {asyncBreakpoints, BreakStackError} from '@testring/async-breakpoints';
-import {loggerClient, LoggerClient} from '@testring/logger';
+import {SandboxWorkerThreads} from '@ringai/sandbox';
+import {testAPIController, TestAPIController} from '@ringai/api';
+import {asyncBreakpoints, BreakStackError} from '@ringai/async-breakpoints';
+import {loggerClient, LoggerClient} from '@ringai/logger';
 
 export class WorkerController {
     private logger: LoggerClient = loggerClient.withPrefix(

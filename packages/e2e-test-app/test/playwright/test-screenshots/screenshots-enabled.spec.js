@@ -1,4 +1,4 @@
-import {run} from 'testring';
+import {run} from 'ringai';
 import {unlink, stat, readFile} from 'fs';
 import {promisify} from 'util';
 import {extname, basename} from 'path';

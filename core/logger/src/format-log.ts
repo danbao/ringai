@@ -1,7 +1,7 @@
 import process from 'node:process';
 import * as util from 'util';
 import chalk from 'chalk';
-import {ILogEntity, LogLevel, LogTypes} from '@testring/types';
+import {ILogEntity, LogLevel, LogTypes} from '@ringai/types';
 
 const HAS_EMOJI_SUPPORT = !!(
     process.stdout.isTTY && process.platform === 'darwin'

@@ -1,5 +1,5 @@
-import {ConfigPluginDescriptor, IConfig, IPluginModules} from '@testring/types';
-import {requirePlugin} from '@testring/utils';
+import {ConfigPluginDescriptor, IConfig, IPluginModules} from '@ringai/types';
+import {requirePlugin} from '@ringai/utils';
 import {PluginAPI} from './plugin-api';
 
 export class PluginController {
@@ -42,7 +42,7 @@ export class PluginController {
             throw new SyntaxError(
                 [
                     `Plugin ${pluginName} has incorrect format, it should be function!`,
-                    'Please, follow plugin handbook in testring docs to get more info about API.',
+                    'Please, follow plugin handbook in ringai docs to get more info about API.',
                 ].join('\n'),
             );
         }

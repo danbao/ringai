@@ -1,11 +1,11 @@
-# @testring/browser-proxy
+# @ringai/browser-proxy
 
-Browser proxy module providing the bridge between the testring framework and browser automation. Offers two architectures: the legacy controller-based approach using child process isolation with IPC, and the new simplified `BrowserProxyPlaywright` class that calls Playwright APIs directly.
+Browser proxy module providing the bridge between the ringai framework and browser automation. Offers two architectures: the legacy controller-based approach using child process isolation with IPC, and the new simplified `BrowserProxyPlaywright` class that calls Playwright APIs directly.
 
 ## Installation
 
 ```bash
-pnpm add @testring/browser-proxy --dev
+pnpm add @ringai/browser-proxy --dev
 ```
 
 ## Architecture Overview
@@ -48,7 +48,7 @@ Main Process
 Direct Playwright integration without child process overhead. Implements `IBrowserProxyPlugin` with all standard browser actions.
 
 ```typescript
-import { BrowserProxyPlaywright, createBrowserProxyPlaywright } from '@testring/browser-proxy';
+import { BrowserProxyPlaywright, createBrowserProxyPlaywright } from '@ringai/browser-proxy';
 ```
 
 ### Constructor
@@ -197,7 +197,7 @@ function createBrowserProxyPlaywright(config?: {
 ### Usage Example
 
 ```typescript
-import { createBrowserProxyPlaywright } from '@testring/browser-proxy';
+import { createBrowserProxyPlaywright } from '@ringai/browser-proxy';
 
 const browser = createBrowserProxyPlaywright({
     browserName: 'chromium',
@@ -217,7 +217,7 @@ await browser.kill();
 Extends `PluggableModule`. Manages a pool of `BrowserProxyWorker` instances that communicate with browser plugins via forked child processes.
 
 ```typescript
-import { BrowserProxyController, browserProxyControllerFactory } from '@testring/browser-proxy';
+import { BrowserProxyController, browserProxyControllerFactory } from '@ringai/browser-proxy';
 ```
 
 ### Constructor
@@ -260,7 +260,7 @@ class BrowserProxyController extends PluggableModule implements IBrowserProxyCon
 function browserProxyControllerFactory(transport: ITransport): BrowserProxyController
 ```
 
-Creates a `BrowserProxyController` with `fork()` from `@testring/child-process` as the worker creator.
+Creates a `BrowserProxyController` with `fork()` from `@ringai/child-process` as the worker creator.
 
 ## BrowserProxyWorker Class (Internal)
 
@@ -302,7 +302,7 @@ class BrowserProxy {
 }
 ```
 
-- Loads plugin via `requirePlugin()` from `@testring/utils`
+- Loads plugin via `requirePlugin()` from `@ringai/utils`
 - Plugin must export a factory function: `(config) => IBrowserProxyPlugin`
 - Listens for `BrowserProxyMessageTypes.execute` messages
 - Calls the corresponding method on the plugin instance
@@ -331,16 +331,16 @@ interface IBrowserProxyCommandResponse {
 
 ## Dependencies
 
-- `@testring/child-process` — `fork()` for spawning browser proxy workers
-- `@testring/transport` — IPC message passing
-- `@testring/pluggable-module` — Plugin hook system
-- `@testring/logger` — Logging
-- `@testring/utils` — `generateUniqId()`, `requirePlugin()`
-- `@testring/types` — Type definitions and enums
+- `@ringai/child-process` — `fork()` for spawning browser proxy workers
+- `@ringai/transport` — IPC message passing
+- `@ringai/pluggable-module` — Plugin hook system
+- `@ringai/logger` — Logging
+- `@ringai/utils` — `generateUniqId()`, `requirePlugin()`
+- `@ringai/types` — Type definitions and enums
 - `playwright` — Browser automation (for `BrowserProxyPlaywright`)
 
 ## Related Modules
 
-- [`@testring/plugin-playwright-driver`](./plugin-playwright-driver.md) — Playwright plugin for the legacy controller architecture
-- [`@testring/transport`](../core-modules/transport.md) — Inter-process communication layer
-- [`@testring/plugin-api`](../core-modules/plugin-api.md) — Plugin registration API
+- [`@ringai/plugin-playwright-driver`](./plugin-playwright-driver.md) — Playwright plugin for the legacy controller architecture
+- [`@ringai/transport`](../core-modules/transport.md) — Inter-process communication layer
+- [`@ringai/plugin-api`](../core-modules/plugin-api.md) — Plugin registration API

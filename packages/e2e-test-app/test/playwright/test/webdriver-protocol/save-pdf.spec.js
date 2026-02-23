@@ -1,4 +1,4 @@
-import {run} from 'testring';
+import {run} from 'ringai';
 import {getTargetUrl} from '../utils';
 import * as path from 'path';
 import * as fs from 'fs';

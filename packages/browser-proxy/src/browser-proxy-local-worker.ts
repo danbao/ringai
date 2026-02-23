@@ -7,9 +7,9 @@ import {
     IBrowserProxyWorker,
     IBrowserProxyWorkerConfig,
     ITransport,
-} from '@testring/types';
-import {generateUniqId} from '@testring/utils';
-import {loggerClient} from '@testring/logger';
+} from '@ringai/types';
+import {generateUniqId} from '@ringai/utils';
+import {loggerClient} from '@ringai/logger';
 import {BrowserProxy} from './browser-proxy/browser-proxy';
 
 export class BrowserProxyLocalWorker implements IBrowserProxyWorker {

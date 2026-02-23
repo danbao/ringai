@@ -7,9 +7,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {IFSStoreFile, FSStoreOptions, requestMeta} from '@testring/types';
-import {loggerClient} from '@testring/logger';
-import {fs as fsTool} from '@testring/utils';
+import {IFSStoreFile, FSStoreOptions, requestMeta} from '@ringai/types';
+import {loggerClient} from '@ringai/logger';
+import {fs as fsTool} from '@ringai/utils';
 
 import {FSStoreClient} from './fs-store-client';
 

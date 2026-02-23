@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import {ITransportDirectMessage} from '@testring/types';
+import {ITransportDirectMessage} from '@ringai/types';
 
 class RootProcessMock extends EventEmitter {
     private messageStack: Array<ITransportDirectMessage> = [];

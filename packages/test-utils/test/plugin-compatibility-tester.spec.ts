@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
-import { IBrowserProxyPlugin } from '@testring/types';
+import { IBrowserProxyPlugin } from '@ringai/types';
 import { createBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
 
 chai.use(sinonChai);

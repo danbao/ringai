@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import { IBrowserProxyPlugin } from '@testring/types';
+import { IBrowserProxyPlugin } from '@ringai/types';
 
 /**
  * Creates a complete mock implementation of IBrowserProxyPlugin

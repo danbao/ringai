@@ -7,8 +7,8 @@ import {
     SavePdfOptions,
     WebApplicationMessageType,
     WindowFeaturesConfig,
-} from '@testring/types';
-import {generateUniqId} from '@testring/utils';
+} from '@ringai/types';
+import {generateUniqId} from '@ringai/utils';
 
 export class WebClient implements IWebApplicationClient {
     constructor(private applicant: string, private transport: ITransport) {}

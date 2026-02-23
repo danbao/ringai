@@ -2,10 +2,10 @@
 import * as path from 'path';
 import * as os from 'os';
 import {Writable} from 'stream';
-import {getConfig} from '@testring/cli-config';
-import {Transport} from '@testring/transport';
+import {getConfig} from '@ringai/cli-config';
+import {Transport} from '@ringai/transport';
 import {runTests} from '../src/commands/runCommand';
-import {IConfig} from '@testring/types';
+import {IConfig} from '@ringai/types';
 import {exec} from 'child_process';
 import {promisify} from 'util';
 
@@ -18,7 +18,7 @@ const stdout = new Writable({
     },
 });
 
-describe('testring CLI', () => {
+describe('ringai CLI', () => {
     it('should run positive tests', async () => {
         const transport = new Transport();
         const config = await getConfig([

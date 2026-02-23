@@ -11,8 +11,8 @@
  *  lock so the dataId(fileName) could not get permission for deleted until all locks will be unlocked
  *
  */
-import {PluggableModule} from '@testring/pluggable-module';
-import {MultiLock, Queue} from '@testring/utils';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {MultiLock, Queue} from '@ringai/utils';
 
 export const hooks = {
     ON_LOCK: 'onLockAcquire',

@@ -2,9 +2,9 @@ import * as chai from 'chai';
 import {vi} from 'vitest';
 
 import {TestWorkerInstance} from '../src/test-worker-instance';
-import {TestWorkerAction, TestStatus} from '@testring/types';
+import {TestWorkerAction, TestStatus} from '@ringai/types';
 
-vi.mock('@testring/fs-store', () => {
+vi.mock('@ringai/fs-store', () => {
     return {
         FSClientGet: () => ({
             releaseAllWorkerActions: vi.fn(),

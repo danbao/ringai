@@ -2,8 +2,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {TransportMock} from '@testring/test-utils';
-import {LoggerMessageTypes, LogTypes, FSFileLogType} from '@testring/types';
+import {TransportMock} from '@ringai/test-utils';
+import {LoggerMessageTypes, LogTypes, FSFileLogType} from '@ringai/types';
 
 import {LoggerClient} from '../src/logger-client';
 import {report, stepsTypes} from './fixtures/constants';

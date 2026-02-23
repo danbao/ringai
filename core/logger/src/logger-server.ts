@@ -1,5 +1,5 @@
-import {PluggableModule} from '@testring/pluggable-module';
-import {Queue} from '@testring/utils';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {Queue} from '@ringai/utils';
 import {
     IConfigLogger,
     ILogEntity,
@@ -9,7 +9,7 @@ import {
     LoggerMessageTypes,
     LoggerPlugins,
     LogQueueStatus,
-} from '@testring/types';
+} from '@ringai/types';
 import {formatLog} from './format-log';
 
 export enum LogLevelNumeric {

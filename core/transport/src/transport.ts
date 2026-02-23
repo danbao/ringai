@@ -1,12 +1,12 @@
 import process from 'node:process';
 
-import {isChildProcess} from '@testring/child-process';
+import {isChildProcess} from '@ringai/child-process';
 import {
     ITransport,
     IWorkerEmitter,
     TransportMessageHandler,
     ITransportDirectMessage,
-} from '@testring/types';
+} from '@ringai/types';
 import {DirectTransport} from './direct-transport';
 import {BroadcastTransport} from './broadcast-transport';
 import {EventEmitter} from 'events';

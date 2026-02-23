@@ -1,25 +1,25 @@
 # Quick Start Guide
 
-Get up and running with testring in just a few minutes.
+Get up and running with ringai in just a few minutes.
 
 ## Prerequisites
 
-Make sure you have [installed testring](./installation.md) before proceeding.
+Make sure you have [installed ringai](./installation.md) before proceeding.
 
 ## Step 1: Initialize Your Project
 
 Create a new directory and initialize it:
 
 ```bash
-mkdir my-testring-tests
-cd my-testring-tests
+mkdir my-ringai-tests
+cd my-ringai-tests
 pnpm init
 ```
 
-Install testring and the Playwright driver:
+Install ringai and the Playwright driver:
 
 ```bash
-pnpm add -D testring @testring/plugin-playwright-driver
+pnpm add -D ringai @ringai/plugin-playwright-driver
 npx playwright install
 ```
 
@@ -28,7 +28,7 @@ npx playwright install
 Create a test file `test/example.spec.js`:
 
 ```javascript
-import { run } from 'testring';
+import { run } from 'ringai';
 
 run(async (api) => {
     await api.application.url('https://example.com');
@@ -36,18 +36,18 @@ run(async (api) => {
 });
 ```
 
-testring uses its own `run()` API where each test file calls `run()` with an async callback that receives the test API context.
+ringai uses its own `run()` API where each test file calls `run()` with an async callback that receives the test API context.
 
 ## Step 3: Create Configuration
 
-Create a testring configuration file `.testringrc` in your project root:
+Create a ringai configuration file `.ringairc` in your project root:
 
 ```json
 {
     "tests": "./test/**/*.spec.js",
     "plugins": [
-        ["@testring/plugin-playwright-driver", { "headless": true }],
-        "@testring/plugin-babel"
+        ["@ringai/plugin-playwright-driver", { "headless": true }],
+        "@ringai/plugin-babel"
     ],
     "workerLimit": 2
 }
@@ -58,7 +58,7 @@ Create a testring configuration file `.testringrc` in your project root:
 Execute your tests:
 
 ```bash
-npx testring run
+npx ringai run
 ```
 
 ## Step 5: Add More Features
@@ -68,7 +68,7 @@ npx testring run
 For transpilation support with modern JavaScript features:
 
 ```bash
-pnpm add -D @testring/plugin-babel @babel/preset-env
+pnpm add -D @ringai/plugin-babel @babel/preset-env
 ```
 
 Create a `.babelrc` file:
@@ -79,25 +79,25 @@ Create a `.babelrc` file:
 }
 ```
 
-Make sure `@testring/plugin-babel` is listed in the `plugins` array of your `.testringrc` (as shown in Step 3).
+Make sure `@ringai/plugin-babel` is listed in the `plugins` array of your `.ringairc` (as shown in Step 3).
 
 ### Add File Storage
 
 For screenshots and test artifacts:
 
 ```bash
-pnpm add -D @testring/plugin-fs-store
+pnpm add -D @ringai/plugin-fs-store
 ```
 
-Update `.testringrc` to include the plugin:
+Update `.ringairc` to include the plugin:
 
 ```json
 {
     "tests": "./test/**/*.spec.js",
     "plugins": [
-        "@testring/plugin-babel",
-        "@testring/plugin-fs-store",
-        ["@testring/plugin-playwright-driver", { "headless": true }]
+        "@ringai/plugin-babel",
+        "@ringai/plugin-fs-store",
+        ["@ringai/plugin-playwright-driver", { "headless": true }]
     ],
     "workerLimit": 2,
     "screenshots": "afterError",
@@ -108,12 +108,12 @@ Update `.testringrc` to include the plugin:
 ## Next Steps
 
 - [Configuration Guide](../configuration/index.md) — Learn about all configuration options
-- [API Reference](../core-modules/api.md) — Explore the full testring API
+- [API Reference](../core-modules/api.md) — Explore the full ringai API
 - [Plugin Development](../guides/plugin-development.md) — Create custom plugins
 - [Best Practices](../guides/testing-best-practices.md) — Learn testing best practices
 
 ## Need Help?
 
 - [Troubleshooting Guide](../guides/troubleshooting.md)
-- [GitHub Issues](https://github.com/danbao/testring/issues)
+- [GitHub Issues](https://github.com/danbao/ringai/issues)
 - [Documentation Index](../README.md)

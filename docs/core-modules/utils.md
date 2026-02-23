@@ -1,16 +1,16 @@
-# @testring/utils
+# @ringai/utils
 
 General-purpose utility module providing error classes, data structures, file system helpers, network port utilities, package loading, and more.
 
 ## Installation
 
 ```bash
-pnpm add @testring/utils
+pnpm add @ringai/utils
 ```
 
 ## Overview
 
-This module provides cross-cutting utilities used throughout the testring framework:
+This module provides cross-cutting utilities used throughout the ringai framework:
 
 - **Error hierarchy** — structured error classes with context, codes, and error chaining
 - **File system helpers** — directory creation, file touch, existence checks
@@ -24,7 +24,7 @@ This module provides cross-cutting utilities used throughout the testring framew
 
 ### Error Hierarchy
 
-All custom errors extend `TestringError`, which extends the native `Error`. Each error class sets `this.name` to the class name automatically and supports structured context via `ErrorContext`.
+All custom errors extend `RingaiError`, which extends the native `Error`. Each error class sets `this.name` to the class name automatically and supports structured context via `ErrorContext`.
 
 #### `ErrorContext` type
 
@@ -37,23 +37,23 @@ interface ErrorContext {
 }
 ```
 
-#### `TestringError`
+#### `RingaiError`
 
-Base error class for all testring errors. Supports three constructor overloads:
+Base error class for all ringai errors. Supports three constructor overloads:
 
 ```typescript
-import { TestringError } from '@testring/utils';
+import { RingaiError } from '@ringai/utils';
 
 // Simple message
-throw new TestringError('Something went wrong');
+throw new RingaiError('Something went wrong');
 
 // Message with contextId string (prepended to message)
-throw new TestringError('Connection lost', 'worker-3');
+throw new RingaiError('Connection lost', 'worker-3');
 // → error.message === 'worker-3: Connection lost'
 // → error.contextId === 'worker-3'
 
 // Message with full ErrorContext
-throw new TestringError('Connection lost', {
+throw new RingaiError('Connection lost', {
   code: 'ERR_TRANSPORT',
   contextId: 'worker-3',
   metadata: { retries: 3 },
@@ -68,7 +68,7 @@ throw new TestringError('Connection lost', {
 
 | Property     | Type                         | Description                          |
 | ------------ | ---------------------------- | ------------------------------------ |
-| `name`       | `string`                     | Class name (e.g., `'TestringError'`) |
+| `name`       | `string`                     | Class name (e.g., `'RingaiError'`) |
 | `message`    | `string`                     | Error message (with optional prefix) |
 | `code`       | `string \| undefined`        | Programmatic error code              |
 | `contextId`  | `string \| undefined`        | Context identifier                   |
@@ -84,7 +84,7 @@ throw new TestringError('Connection lost', {
 For transport/IPC-related failures.
 
 ```typescript
-import { TransportError } from '@testring/utils';
+import { TransportError } from '@ringai/utils';
 
 throw new TransportError('Message delivery failed', {
   code: 'ERR_SEND',
@@ -97,7 +97,7 @@ throw new TransportError('Message delivery failed', {
 For plugin lifecycle and loading failures.
 
 ```typescript
-import { PluginError } from '@testring/utils';
+import { PluginError } from '@ringai/utils';
 
 throw new PluginError('Plugin initialization failed', 'my-plugin');
 ```
@@ -107,7 +107,7 @@ throw new PluginError('Plugin initialization failed', 'my-plugin');
 For configuration validation and parsing failures.
 
 ```typescript
-import { ConfigError } from '@testring/utils';
+import { ConfigError } from '@ringai/utils';
 
 throw new ConfigError('Invalid timeout value', {
   code: 'ERR_CONFIG_VALIDATION',
@@ -120,7 +120,7 @@ throw new ConfigError('Invalid timeout value', {
 For worker process failures.
 
 ```typescript
-import { WorkerError } from '@testring/utils';
+import { WorkerError } from '@ringai/utils';
 
 throw new WorkerError('Worker crashed', {
   contextId: 'worker-5',
@@ -133,7 +133,7 @@ throw new WorkerError('Worker crashed', {
 Imported as a namespace:
 
 ```typescript
-import { fs } from '@testring/utils';
+import { fs } from '@ringai/utils';
 ```
 
 #### `fs.ensureDir(savePath)`
@@ -141,7 +141,7 @@ import { fs } from '@testring/utils';
 Creates a directory recursively (like `mkdir -p`). Resolves if the directory already exists.
 
 ```typescript
-await fs.ensureDir('/tmp/testring/reports');
+await fs.ensureDir('/tmp/ringai/reports');
 ```
 
 #### `fs.touchFile(fName)`
@@ -149,7 +149,7 @@ await fs.ensureDir('/tmp/testring/reports');
 Opens a file in append mode (`a+`) and immediately closes it, creating the file if it doesn't exist.
 
 ```typescript
-await fs.touchFile('/tmp/testring/output.log');
+await fs.touchFile('/tmp/ringai/output.log');
 ```
 
 #### `fs.exists(path)`
@@ -157,7 +157,7 @@ await fs.touchFile('/tmp/testring/output.log');
 Returns `true` if the path is accessible, `false` otherwise.
 
 ```typescript
-if (await fs.exists('/tmp/testring/cache.json')) {
+if (await fs.exists('/tmp/ringai/cache.json')) {
   // file exists
 }
 ```
@@ -167,7 +167,7 @@ if (await fs.exists('/tmp/testring/cache.json')) {
 Attempts to create a file exclusively (`ax` flag). Returns `true` if the file was created, `false` if it already exists.
 
 ```typescript
-const created = await fs.ensureNewFile('/tmp/testring/lock');
+const created = await fs.ensureNewFile('/tmp/ringai/lock');
 if (created) {
   console.log('Lock acquired');
 }
@@ -180,7 +180,7 @@ if (created) {
 Tests whether a port is available by attempting to start a TCP server on it. Returns `true` if available, `false` if in use.
 
 ```typescript
-import { isAvailablePort } from '@testring/utils';
+import { isAvailablePort } from '@ringai/utils';
 
 const available = await isAvailablePort(3000, 'localhost');
 ```
@@ -190,7 +190,7 @@ const available = await isAvailablePort(3000, 'localhost');
 Binds to port `0` to get an OS-assigned random available port. Returns the port number.
 
 ```typescript
-import { getRandomPort } from '@testring/utils';
+import { getRandomPort } from '@ringai/utils';
 
 const port = await getRandomPort('localhost');
 // e.g., 49152
@@ -201,7 +201,7 @@ const port = await getRandomPort('localhost');
 Tries each port in the given array in order, returning the first available one. If none are available, falls back to `getRandomPort()`.
 
 ```typescript
-import { getAvailablePort } from '@testring/utils';
+import { getAvailablePort } from '@ringai/utils';
 
 const port = await getAvailablePort([3000, 3001, 3002], 'localhost');
 ```
@@ -218,7 +218,7 @@ const port = await getAvailablePort([3000, 3001, 3002], 'localhost');
 Starting from `start`, finds the first available port, incrementing by 1 each time. Ports in `skipPorts` are skipped.
 
 ```typescript
-import { getAvailableFollowingPort } from '@testring/utils';
+import { getAvailableFollowingPort } from '@ringai/utils';
 
 const port = await getAvailableFollowingPort(9229, 'localhost', [9230]);
 // Tries 9229, skips 9230, tries 9231, etc.
@@ -236,7 +236,7 @@ Loads a module using Node.js `createRequire`. Resolution strategy:
 Throws `ReferenceError` with a descriptive message if the module cannot be loaded.
 
 ```typescript
-import { requirePackage } from '@testring/utils';
+import { requirePackage } from '@ringai/utils';
 
 const config = requirePackage<MyConfig>('./config.json');
 ```
@@ -246,27 +246,27 @@ const config = requirePackage<MyConfig>('./config.json');
 Resolves the full file path of a module without loading it. Same resolution strategy as `requirePackage`.
 
 ```typescript
-import { resolvePackage } from '@testring/utils';
+import { resolvePackage } from '@ringai/utils';
 
-const fullPath = resolvePackage('@testring/logger');
+const fullPath = resolvePackage('@ringai/logger');
 ```
 
 #### `requirePlugin<T>(pluginPath)`
 
-Resolves and loads a testring plugin. Tries these prefixed variants in order:
+Resolves and loads a ringai plugin. Tries these prefixed variants in order:
 
-1. `@testring/plugin-<pluginPath>`
-2. `testring-plugin-<pluginPath>`
-3. `@testring/<pluginPath>`
+1. `@ringai/plugin-<pluginPath>`
+2. `ringai-plugin-<pluginPath>`
+3. `@ringai/<pluginPath>`
 4. `<pluginPath>` as-is
 
 Handles ES module default export normalization (detects `__esModule` flag and returns `.default` if present).
 
 ```typescript
-import { requirePlugin } from '@testring/utils';
+import { requirePlugin } from '@ringai/utils';
 
 const plugin = requirePlugin('playwright-driver');
-// Resolves @testring/plugin-playwright-driver
+// Resolves @ringai/plugin-playwright-driver
 ```
 
 ### Data Structures
@@ -276,7 +276,7 @@ const plugin = requirePlugin('playwright-driver');
 A FIFO queue with filtering and extraction capabilities. Implements `IQueue<T>` and is iterable.
 
 ```typescript
-import { Queue } from '@testring/utils';
+import { Queue } from '@ringai/utils';
 
 const queue = new Queue<string>(['a', 'b', 'c']);
 
@@ -300,7 +300,7 @@ queue.clean();                // Remove all elements
 A LIFO stack. Implements `IStack<T>` and is iterable.
 
 ```typescript
-import { Stack } from '@testring/utils';
+import { Stack } from '@ringai/utils';
 
 const stack = new Stack<number>();
 
@@ -320,7 +320,7 @@ stack.clean();              // Remove all elements
 A multi-count lock manager that tracks lock counts per ID with an optional global limit. Useful for concurrency control (e.g., limiting concurrent worker processes).
 
 ```typescript
-import { MultiLock } from '@testring/utils';
+import { MultiLock } from '@ringai/utils';
 
 // Allow up to 4 total locks across all IDs
 const lock = new MultiLock(4);
@@ -354,7 +354,7 @@ lock.getIds();             // Map<string, number> of all IDs and their lock coun
 Generates a unique ID using `nanoid`. Optional `size` parameter controls the ID length.
 
 ```typescript
-import { generateUniqId } from '@testring/utils';
+import { generateUniqId } from '@ringai/utils';
 
 const id = generateUniqId();    // e.g., 'V1StGXR8_Z5jdHi6B-myT'
 const short = generateUniqId(8); // e.g., 'a1b2c3d4'
@@ -365,7 +365,7 @@ const short = generateUniqId(8); // e.g., 'a1b2c3d4'
 Return human-readable strings with current process memory usage (formatted via the `bytes` library).
 
 ```typescript
-import { getMemoryReport, getHeapReport } from '@testring/utils';
+import { getMemoryReport, getHeapReport } from '@ringai/utils';
 
 console.log(getMemoryReport());
 // 'Total memory usage: 45.2MB, External memory: 1.2MB.'
@@ -379,7 +379,7 @@ console.log(getHeapReport());
 Classic throttle function. Ensures `func` is called at most once per `limit` milliseconds. Trailing calls are scheduled.
 
 ```typescript
-import { throttle } from '@testring/utils';
+import { throttle } from '@ringai/utils';
 
 const throttledLog = throttle((msg: string) => {
   console.log(msg);
@@ -394,7 +394,7 @@ throttledLog('world');  // Scheduled after 1000ms
 Normalizes error-like objects into proper `Error` instances. If the input is already an `Error`, returns it as-is. Otherwise, creates a new `Error` with the input's `message` and `stack`.
 
 ```typescript
-import { restructureError } from '@testring/utils';
+import { restructureError } from '@ringai/utils';
 
 const err = restructureError({ message: 'oops', stack: '...' });
 // Returns a proper Error instance
@@ -408,6 +408,6 @@ const err = restructureError({ message: 'oops', stack: '...' });
 
 ## Related Modules
 
-- [`@testring/types`](./types.md) — Type definitions (`IQueue`, `IStack`, `ErrorContext`)
-- [`@testring/transport`](./transport.md) — Uses `generateUniqId` for message UIDs
-- [`@testring/plugin-api`](./plugin-api.md) — Uses `requirePlugin` for plugin loading
+- [`@ringai/types`](./types.md) — Type definitions (`IQueue`, `IStack`, `ErrorContext`)
+- [`@ringai/transport`](./transport.md) — Uses `generateUniqId` for message UIDs
+- [`@ringai/plugin-api`](./plugin-api.md) — Uses `requirePlugin` for plugin loading

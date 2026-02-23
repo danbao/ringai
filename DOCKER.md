@@ -1,6 +1,6 @@
-# Testring Docker Guide
+# Ringai Docker Guide
 
-This guide explains how to use Docker with testring for development and CI/CD.
+This guide explains how to use Docker with ringai for development and CI/CD.
 
 ## Quick Start
 
@@ -43,13 +43,13 @@ The Dockerfile supports multiple build targets:
 
 ```bash
 # Build test-runner (default)
-docker build -t testring:test .
+docker build -t ringai:test .
 
 # Build CI image
-docker build -t testring:ci --target ci .
+docker build -t ringai:ci --target ci .
 
 # Build dev image
-docker build -t testring:dev --target dev .
+docker build -t ringai:dev --target dev .
 ```
 
 ## GitHub Actions
@@ -73,7 +73,7 @@ jobs:
   docker:
     uses: ./.github/workflows/templates/docker.yml@main
     with:
-      image-name: testring
+      image-name: ringai
       target: ci
       push: true
     secrets:
@@ -105,7 +105,7 @@ If Playwright tests fail in Docker, try:
 
 ```bash
 # Rebuild with browser support
-docker build --target ci -t testring:ci .
+docker build --target ci -t ringai:ci .
 
 # Run with extended shm
 docker compose run --rm --shm-size=2gb test-e2e
