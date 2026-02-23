@@ -1,12 +1,53 @@
-# Coverage Progress (Phase 1)
+# 覆盖率提升进度追踪
 
-## Completed
+> 自动生成的任务追踪表
 
-- ✅ 1.1 core/api run() 调用顺序测试 (commit b0c72b7d)
-- ✅ 1.2 TestContext 测试 (commit af96a250)
-- ✅ 1.3 TestApiController 测试 (commit 63c6015b)
-- ✅ 1.4 core/cli runCommand 参数组合到内部 config 的映射 (commit 6e79b128)
-- ✅ 1.5 core/cli cli-error.ts 错误包装 (commit b8fb267c)
-- ✅ 1.6 core/cli initCommand.ts 分支覆盖（受限：交互式 readline/require 难以在 vitest ESM 中稳定 mock，已改为 smoke 测试以提升覆盖） (commit 534fe5bb)
-- ✅ 1.7 core/reporter reporter-manager.ts 行为覆盖：注册 reporter、未知 reporter 错误、fan-out、多 reporter close (commit 9823e380)
-- ✅ 1.8 core/reporter reporters 输出稳定性：dot/spec/json reporters (commit 90a60660)
+## 执行概览
+
+- **开始时间**: 2026-02-22
+- **目标**: 完成 COVERAGE_PLAN.md 中的所有 Phase
+
+## Phase 状态
+
+| Phase | 描述 | 状态 | 完成度 |
+|-------|------|------|--------|
+| Phase 0 | 快速探测现状 | ✅ 完成 | 100% |
+| Phase 1 | 低成本覆盖关键入口 (api, cli, reporter) | ✅ 完成 | 100% |
+| Phase 2 | test-worker 与 pluggable-module | 🔄 进行中 | 0% |
+| Phase 3 | web-application / client-ws-transport | ⏳ 待开始 | 0% |
+| Phase 4 | browser-proxy-playwright | ⏳ 待开始 | 0% |
+
+## Phase 2 任务
+
+| # | 任务 | 模块 | 状态 | 提交 |
+|---|------|------|------|------|
+| 2.1 | pluggable-module hook 注册/取消 | core/pluggable-module | ⏳ | - |
+| 2.2 | pluggable-module hook 执行顺序 | core/pluggable-module | ⏳ | - |
+| 2.3 | pluggable-module hook 抛错传播 | core/pluggable-module | ⏳ | - |
+| 2.4 | TestWorkerLocal 启动/停止/幂等性 | core/test-worker | ⏳ | - |
+| 2.5 | TestWorkerTinypool pool 参数/任务分发 | core/test-worker | ⏳ | - |
+| 2.6 | TestWorkerInstance 状态转换 | core/test-worker | ⏳ | - |
+
+## Phase 3 任务
+
+| # | 任务 | 模块 | 状态 | 提交 |
+|---|------|------|------|------|
+| 3.1 | ws-transport connect/disconnect 状态 | packages/client-ws-transport | ⏳ | - |
+| 3.2 | ws-transport 消息序列化/反序列化 | packages/client-ws-transport | ⏳ | - |
+| 3.3 | ws-transport 断线重连 | packages/client-ws-transport | ⏳ | - |
+| 3.4 | asyncAssert 超时/成功/错误 | packages/web-application | ⏳ | - |
+| 3.5 | browser-scripts 脚本生成 | packages/web-application | ⏳ | - |
+| 3.6 | controller transport event 分派 | packages/web-application | ⏳ | - |
+
+## Phase 4 任务
+
+| # | 任务 | 模块 | 状态 | 提交 |
+|---|------|------|------|------|
+| 4.1 | browser-proxy 启动/清理 | packages/browser-proxy | ⏳ | - |
+| 4.2 | 代理/worker 消息通道 | packages/browser-proxy | ⏳ | - |
+| 4.3 | 常见错误处理 | packages/browser-proxy | ⏳ | - |
+
+## 最近更新
+
+- 2026-02-22: Phase 1 完成 (8/8 任务)
+- 2026-02-22: Phase 2 开始
