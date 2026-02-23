@@ -2287,9 +2287,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testring-docs@workspace:.":
+"ringai-docs@workspace:.":
   version: 0.0.0-use.local
-  resolution: "testring-docs@workspace:."
+  resolution: "ringai-docs@workspace:."
   dependencies:
     vitepress: "npm:^1.0.0"
   peerDependencies:
