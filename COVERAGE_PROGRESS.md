@@ -13,7 +13,7 @@
 |-------|------|------|--------|
 | Phase 0 | 快速探测现状 | ✅ 完成 | 100% |
 | Phase 1 | 低成本覆盖关键入口 (api, cli, reporter) | ✅ 完成 | 100% |
-| Phase 2 | test-worker 与 pluggable-module | 🔄 进行中 | 0% |
+| Phase 2 | test-worker 与 pluggable-module | ✅ 完成 | 100% |
 | Phase 3 | web-application / client-ws-transport | ⏳ 待开始 | 0% |
 | Phase 4 | browser-proxy-playwright | ⏳ 待开始 | 0% |
 
@@ -21,12 +21,12 @@
 
 | # | 任务 | 模块 | 状态 | 提交 |
 |---|------|------|------|------|
-| 2.1 | pluggable-module hook 注册/取消 | core/pluggable-module | ⏳ | - |
-| 2.2 | pluggable-module hook 执行顺序 | core/pluggable-module | ⏳ | - |
-| 2.3 | pluggable-module hook 抛错传播 | core/pluggable-module | ⏳ | - |
-| 2.4 | TestWorkerLocal 启动/停止/幂等性 | core/test-worker | ⏳ | - |
-| 2.5 | TestWorkerTinypool pool 参数/任务分发 | core/test-worker | ⏳ | - |
-| 2.6 | TestWorkerInstance 状态转换 | core/test-worker | ⏳ | - |
+| 2.1 | pluggable-module hook 注册/取消 | core/pluggable-module | ✅ | 67daaf55 |
+| 2.2 | pluggable-module hook 执行顺序 | core/pluggable-module | ✅ | dad99d0d |
+| 2.3 | pluggable-module hook 抛错传播 | core/pluggable-module | ✅ | dad99d0d |
+| 2.4 | TestWorkerLocal 启动/停止/幂等性 | core/test-worker | ✅ | a1f42470 |
+| 2.5 | TestWorkerTinypool pool 参数/任务分发 | core/test-worker | ✅ | 6fa15598 |
+| 2.6 | TestWorkerInstance 状态转换 | core/test-worker | ✅ | 66cf9834 |
 
 ## Phase 3 任务
 
@@ -50,4 +50,4 @@
 ## 最近更新
 
 - 2026-02-22: Phase 1 完成 (8/8 任务)
-- 2026-02-22: Phase 2 开始
+- 2026-02-23: Phase 2 完成 (6/6 任务)
