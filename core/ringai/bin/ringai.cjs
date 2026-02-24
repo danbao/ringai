@@ -1,5 +1,3 @@
 #!/usr/bin/env node
 
-const { runCLI } = require('@ringai/cli');
-
-runCLI(process.argv);
+import('@ringai/cli').then(({ runCLI }) => runCLI(process.argv));
