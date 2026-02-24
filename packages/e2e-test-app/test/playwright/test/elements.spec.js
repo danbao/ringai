@@ -72,4 +72,17 @@ run(async (api) => {
 
     await app.assert.deepEqual(checkedStates, [false, true]);
 
+    // elements() — low-level element query
+    let textareaElement = await app.elements(app.root.textarea);
+    await app.assert.ok(textareaElement.length > 0);
+
+    // getActiveElement
+    await app.click(app.root.textarea);
+    let activeElement = await app.getActiveElement();
+    await app.assert.ok(activeElement);
+
+    // getLocation
+    const location = await app.getLocation(app.root.textarea);
+    await app.assert.equal(typeof location.x, 'number');
+    await app.assert.equal(typeof location.y, 'number');
 });

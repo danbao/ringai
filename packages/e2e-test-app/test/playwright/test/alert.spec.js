@@ -27,4 +27,11 @@ run(async (api) => {
     await app.assert.equal(secondAlertState, 'false');
     await app.assert.equal(thirdAlertState, 'false');
     await app.assert.equal(text, 'test');
+
+    // waitForAlert
+    await app.click(app.root.delayAlertButton);
+    await app.waitForAlert();
+    const isOpen = await app.isAlertOpen();
+    await app.assert.isTrue(isOpen);
+    await app.alertAccept();
 });

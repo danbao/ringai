@@ -138,4 +138,12 @@ run(async (api) => {
     await app.assert.equal(await app.getCurrentTabId(), currentTabId);
     let afterCloseTabIds = await app.getTabIds();
     await app.assert.lengthOf(afterCloseTabIds, 1);
+
+    // getWindowSize
+    let finalWindowSize = await app.getWindowSize();
+    await app.assert.isObject(finalWindowSize);
+    await app.assert.isNumber(finalWindowSize.width);
+    await app.assert.isNumber(finalWindowSize.height);
+    await app.assert.isAbove(finalWindowSize.width, 0);
+    await app.assert.isAbove(finalWindowSize.height, 0);
 });
