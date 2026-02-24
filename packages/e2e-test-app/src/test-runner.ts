@@ -27,22 +27,10 @@ async function runTests() {
     await mockWebServer.start();
 
     return new Promise<void>((resolve, reject) => {
-        const ringaiProcess = childProcess.exec(
-            `node ${ringaiFile} run ${args.join(' ')}`,
-            {},
-            (error, _stdout, _stderr) => {
-                mockWebServer.stop();
-
-                if (error) {
-                    console.error('[test-runner] Test execution failed:', error.message);
-                    console.error('[test-runner] Exit code:', error.code);
-                    console.error('[test-runner] Signal:', error.signal);
-                    reject(error);
-                } else {
-                    console.log('[test-runner] Test execution completed successfully');
-                    resolve();
-                }
-            },
+        const ringaiProcess = childProcess.spawn(
+            process.execPath,
+            [ringaiFile, 'run', ...args],
+            {stdio: ['inherit', 'pipe', 'pipe']},
         );
 
         if (ringaiProcess.stdout) {
@@ -53,56 +41,26 @@ async function runTests() {
             ringaiProcess.stderr.pipe(process.stderr);
         }
 
-        // Handle process exit events with platform-specific logic
-        ringaiProcess.on('exit', (code, signal) => {
+        ringaiProcess.on('close', (code, signal) => {
+            mockWebServer.stop();
             console.log(`[test-runner] Process exited with code: ${code}, signal: ${signal}`);
 
-            // On Linux/Ubuntu, be more aggressive about detecting failures
-            if (isLinux && isCI) {
-                // In CI on Linux, any non-zero exit code or signal indicates failure
-                if ((code !== 0 && code !== null) || signal) {
-                    const error = new Error(`Test process exited with non-zero code: ${code}, signal: ${signal}`);
-                    (error as any).code = code;
-                    (error as any).signal = signal;
-                    mockWebServer.stop();
-                    reject(error);
-                    return;
-                }
-            } else {
-                // Standard handling for other platforms
-                if (code !== 0 && code !== null) {
-                    const error = new Error(`Test process exited with non-zero code: ${code}`);
-                    (error as any).code = code;
-                    (error as any).signal = signal;
-                    mockWebServer.stop();
-                    reject(error);
-                    return;
-                }
+            if ((code !== 0 && code !== null) || (isLinux && isCI && signal)) {
+                const error = new Error(`Test process exited with non-zero code: ${code}, signal: ${signal}`);
+                (error as any).code = code;
+                (error as any).signal = signal;
+                reject(error);
+                return;
             }
 
-            // If we reach here and the callback hasn't been called yet,
-            // wait a bit to see if the callback will be called
-            setTimeout(() => {
-                if (!ringaiProcess.killed) {
-                    console.log('[test-runner] Process exit detected, but no callback yet. Assuming success.');
-                }
-            }, 100);
+            console.log('[test-runner] Test execution completed successfully');
+            resolve();
         });
 
         ringaiProcess.on('error', (error) => {
             console.error('[test-runner] Process error:', error);
             mockWebServer.stop();
             reject(error);
-        });
-
-        ringaiProcess.on('unhandledRejection', (reason, promise) => {
-            // eslint-disable-next-line no-console
-            console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-        });
-
-        ringaiProcess.on('uncaughtException', (error) => {
-            // eslint-disable-next-line no-console
-            console.error('Uncaught Exception:', error);
         });
     });
 }
