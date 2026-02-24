@@ -1,7 +1,7 @@
 import * as vm from 'node:vm';
 import * as path from 'node:path';
 type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
-import {requirePackage} from '@ringai/utils';
+import {requirePackageSync} from '@ringai/utils';
 import {Script} from './script';
 
 class Sandbox {
@@ -115,7 +115,7 @@ class Sandbox {
             return dependencySandbox ? dependencySandbox.execute() : undefined;
         }
 
-        return requirePackage(requestPath, this.filename);
+        return requirePackageSync(requestPath, this.filename);
     }
 
     private createContext(filename: string, _dependencies: DependencyDict) {

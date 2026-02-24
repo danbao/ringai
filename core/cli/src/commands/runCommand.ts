@@ -84,7 +84,7 @@ class RunCommand implements ICLICommand {
         );
         const fsReader = new FSReader();
 
-        applyPlugins(
+        await applyPlugins(
             {
                 logger: loggerServer,
                 fsReader,

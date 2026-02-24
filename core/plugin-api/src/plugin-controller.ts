@@ -5,7 +5,7 @@ import {PluginAPI} from './plugin-api';
 export class PluginController {
     constructor(private modulesList: IPluginModules) {}
 
-    public initialize(plugins: IConfig['plugins']): void {
+    public async initialize(plugins: IConfig['plugins']): Promise<void> {
         if (!plugins || !Array.isArray(plugins)) {
             return;
         }
@@ -13,12 +13,12 @@ export class PluginController {
         for (let index = 0; index < plugins.length; index++) {
             const plugin = plugins[index];
             if (plugin !== undefined) {
-                this.processPlugin(plugin, index);
+                await this.processPlugin(plugin, index);
             }
         }
     }
 
-    private processPlugin(plugin: ConfigPluginDescriptor, index: number) {
+    private async processPlugin(plugin: ConfigPluginDescriptor, index: number) {
         let pluginName: string;
         let pluginConfig: object | null;
 
@@ -36,7 +36,7 @@ export class PluginController {
             );
         }
 
-        const importedPlugin = requirePlugin(pluginName);
+        const importedPlugin = await requirePlugin(pluginName);
 
         if (typeof importedPlugin !== 'function') {
             throw new SyntaxError(

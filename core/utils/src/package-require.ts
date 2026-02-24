@@ -45,7 +45,7 @@ interface RequireError extends Error {
     message: string;
 }
 
-export function requirePackage<T = unknown>(modulePath: string, parentModule?: string): T {
+export function requirePackageSync<T = unknown>(modulePath: string, parentModule?: string): T {
 
     const fileName = resolvePackage(modulePath, parentModule);
 
@@ -53,6 +53,31 @@ export function requirePackage<T = unknown>(modulePath: string, parentModule?: s
         return requireById<T>(fileName);
     } catch (exception: unknown) {
         const requireError = exception as RequireError;
+        const error = new ReferenceError(
+            `Error, while requiring '${modulePath}': ${requireError.message}`,
+        );
+
+        if (requireError.stack) {
+            error.stack = requireError.stack;
+        }
+
+        throw error;
+    }
+}
+
+export async function requirePackage<T = unknown>(modulePath: string, parentModule?: string): Promise<T> {
+
+    const fileName = resolvePackage(modulePath, parentModule);
+
+    try {
+        return requireById<T>(fileName);
+    } catch (exception: unknown) {
+        const requireError = exception as RequireError;
+        if (requireError && (requireError as any).code === 'ERR_REQUIRE_ESM') {
+            const mod = await import(fileName);
+            return (mod.default ?? mod) as T;
+        }
+
         const error = new ReferenceError(
             `Error, while requiring '${modulePath}': ${requireError.message}`,
         );

@@ -29,7 +29,7 @@ async function readJSConfig(
 ): Promise<IConfig | null> {
     try {
         const fullPath = path.resolve(configPath);
-        const configFile = requirePackage<IConfig | ((config: IConfig, env: ProcessEnv) => IConfig | Promise<IConfig>)>(fullPath);
+        const configFile = await requirePackage<IConfig | ((config: IConfig, env: ProcessEnv) => IConfig | Promise<IConfig>)>(fullPath);
 
         if (typeof configFile === 'function') {
             // TODO (flops) write tests for env passing

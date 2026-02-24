@@ -20,7 +20,7 @@ function normalizeExport<T>(module: T): T {
     return anyModule['default'] ? anyModule['default'] as T : module;
 }
 
-export function requirePlugin<T = unknown>(pluginPath: string): T {
+export async function requirePlugin<T = unknown>(pluginPath: string): Promise<T> {
     let resolvedPlugin;
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const parentModule = path.join(__dirname, '../..');
@@ -41,7 +41,7 @@ export function requirePlugin<T = unknown>(pluginPath: string): T {
         resolvedPlugin = resolvePackage(pluginPath);
     }
 
-    const plugin = requirePackage<T>(resolvedPlugin);
+    const plugin = await requirePackage<T>(resolvedPlugin);
 
     return normalizeExport(plugin);
 }

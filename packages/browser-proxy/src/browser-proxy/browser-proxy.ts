@@ -9,8 +9,8 @@ import {
 import {requirePlugin} from '@ringai/utils';
 import {loggerClient} from '@ringai/logger';
 
-function resolvePlugin(pluginPath: string): any {
-    const resolvedPlugin = requirePlugin(pluginPath);
+async function resolvePlugin(pluginPath: string): Promise<any> {
+    const resolvedPlugin = await requirePlugin(pluginPath);
 
     if (typeof resolvedPlugin !== 'function') {
         throw new TypeError('plugin is not a function');
@@ -21,6 +21,8 @@ function resolvePlugin(pluginPath: string): any {
 
 export class BrowserProxy {
     private plugin: IBrowserProxyPlugin | undefined;
+
+    private pluginReady: Promise<void>;
 
     private killed = false;
 
@@ -33,15 +35,15 @@ export class BrowserProxy {
         pluginPath: string,
         pluginConfig: any,
     ) {
-        this.loadPlugin(pluginPath, pluginConfig);
+        this.pluginReady = this.loadPlugin(pluginPath, pluginConfig);
         this.registerCommandListener();
     }
 
-    private loadPlugin(pluginPath: string, pluginConfig: any) {
+    private async loadPlugin(pluginPath: string, pluginConfig: any) {
         let pluginFactory: any;
 
         try {
-            pluginFactory = resolvePlugin(pluginPath);
+            pluginFactory = await resolvePlugin(pluginPath);
         } catch (error) {
             this.logger.error(`Can't load plugin ${pluginPath}`, error);
         }
@@ -80,6 +82,8 @@ export class BrowserProxy {
         const {uid, applicant, command} = message;
 
         try {
+            await this.pluginReady;
+
             if (this.killed) {
                 this.sendEmptyResponse(uid);
                 return;
