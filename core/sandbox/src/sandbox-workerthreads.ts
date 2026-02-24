@@ -178,6 +178,7 @@ export class SandboxWorkerThreads extends EventEmitter {
         // Create a fresh worker for each execution (like vm.createContext)
         const worker = new Worker(WORKER_EVAL_SOURCE, {
             eval: true,
+            execArgv: ['--experimental-require-module'],
         });
 
         return new Promise((resolve, reject) => {

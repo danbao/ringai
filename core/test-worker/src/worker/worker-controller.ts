@@ -128,7 +128,10 @@ export class WorkerController {
     }
 
     private async completeExecutionFailed(error: Error) {
-        this.logger.error(error, 'Error during test execution');
+        this.logger.error(error?.message || error, 'Error during test execution');
+        if (error?.stack) {
+            this.logger.error(error.stack);
+        }
         this.releasePauseMode();
 
         try {
@@ -137,11 +140,17 @@ export class WorkerController {
             this.logger.error('Failed to release tests execution');
         }
 
+        const serializedError = {
+            message: error?.message || String(error),
+            stack: error?.stack || '',
+            name: error?.name || 'Error',
+        };
+
         this.transport.broadcastUniversally<ITestExecutionCompleteMessage>(
             TestWorkerAction.executionComplete,
             {
                 status: TestStatus.failed,
-                error,
+                error: serializedError as any,
             },
         );
 

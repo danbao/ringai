@@ -219,9 +219,20 @@ export class TestWorkerInstance implements ITestWorkerInstance {
                     callback();
                     break;
 
-                case TestStatus.failed:
-                    callback(message.error || new Error("Unknown error"));
+                case TestStatus.failed: {
+                    const rawError = message.error;
+                    let err: Error;
+                    if (rawError instanceof Error) {
+                        err = rawError;
+                    } else if (rawError && typeof rawError === 'object' && 'message' in rawError) {
+                        err = new Error((rawError as any).message);
+                        if ((rawError as any).stack) err.stack = (rawError as any).stack;
+                    } else {
+                        err = new Error('Unknown error');
+                    }
+                    callback(err);
                     break;
+                }
             }
 
             this.successTestExecution = null;
