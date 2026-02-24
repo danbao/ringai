@@ -57,7 +57,10 @@ function formatLogLevel(logLevel: LogLevel, emojiSupport: boolean): string {
     }
 }
 
-const formatTime = (time: Date) => chalk.grey(`${time.toLocaleTimeString()}`);
+const formatTime = (time: Date | string) => {
+    const date = time instanceof Date ? time : new Date(time);
+    return chalk.grey(`${date.toLocaleTimeString()}`);
+};
 
 const formatProcessID = (processID?: string) =>
     typeof processID === 'string' ? processID.padEnd(10) : 'main';
