@@ -590,9 +590,10 @@ export class WebApplication extends PluggableModule {
         return `Simulating JS field change for ${this.formatXpath(xpath)} with value ${value}`;
     })
     public async simulateJSFieldChange(xpath: ElementPath, value: string) {
+        const normalizedXPath = this.normalizeSelector(xpath);
         const result = await this.client.executeAsync(
             simulateJSFieldChangeScript,
-            xpath,
+            normalizedXPath,
             value,
         );
 
@@ -702,6 +703,15 @@ export class WebApplication extends PluggableModule {
             )} returns "${text}"`,
         );
         return text;
+    }
+
+    @stepLog(function (this: WebApplication, xpath: ElementPath, timeout: number = this.WAIT_TIMEOUT) {
+        return `Getting tag name for ${this.formatXpath(xpath)} for ${timeout}`;
+    })
+    public async getTagName(xpath: ElementPath, timeout: number = this.WAIT_TIMEOUT) {
+        await this.waitForExist(xpath, timeout);
+        const normalizedSelector = this.normalizeSelector(xpath);
+        return this.client.getTagName(normalizedSelector);
     }
 
     @stepLog(function (this: WebApplication, xpath: ElementPath, _trim = true, timeout: number = this.WAIT_TIMEOUT) {
@@ -1568,6 +1578,13 @@ export class WebApplication extends PluggableModule {
     })
     public execute(fn: (...args: any[]) => any, ...args: any[]) {
         return this.client.execute(fn, ...args);
+    }
+
+    @stepLog(function (this: WebApplication, _fn: (...args: any[]) => any, ..._args: any[]) {
+        return 'Executing async JavaScript function in browser console';
+    })
+    public executeAsync(fn: (...args: any[]) => any, ...args: any[]) {
+        return this.client.executeAsync(fn, ...args);
     }
 
     @stepLog(function (this: WebApplication, timeout: number) {

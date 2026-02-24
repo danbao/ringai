@@ -2599,10 +2599,20 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         }
     }
 
-    public async waitUntil(applicant: string, condition: () => boolean | Promise<boolean>, timeout?: number, _timeoutMsg?: string, _interval?: number): Promise<void> {
+    public async waitUntil(applicant: string, condition: () => boolean | Promise<boolean>, timeout?: number, timeoutMsg?: string, interval?: number): Promise<void> {
         await this.createClient(applicant);
-        const { page } = this.getBrowserClient(applicant);
-        await page.waitForFunction(condition, {}, { timeout: timeout || TIMEOUTS.CONDITION });
+        const effectiveTimeout = timeout || TIMEOUTS.CONDITION;
+        const effectiveInterval = interval || 500;
+        const startTime = Date.now();
+
+        while (true) {
+            if (Date.now() - startTime > effectiveTimeout) {
+                throw new Error(timeoutMsg || `waitUntil timeout after ${effectiveTimeout}ms`);
+            }
+            const result = await condition();
+            if (result) return;
+            await new Promise(resolve => setTimeout(resolve, effectiveInterval));
+        }
     }
 
     public async selectByAttribute(applicant: string, selector: string, attribute: string, value: string): Promise<void> {
