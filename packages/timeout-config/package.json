@@ -11,13 +11,11 @@
   "author": "RingCentral",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test/**/*.spec.js --recursive",
+    "test": "echo 'Run tests from root: pnpm test:unit'",
     "build": "echo 'No build needed for plain JS package'"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "22.8.5",
-    "chai": "4.3.7",
-    "mocha": "10.8.2"
+    "@types/node": "22.8.5"
   }
 }

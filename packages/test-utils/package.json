@@ -12,7 +12,7 @@
   "license": "MIT",
   "scripts": {
     "test": "echo 'Run tests from root: pnpm test:unit'",
-    "test:watch": "mocha --watch",
+    "test:watch": "cd ../.. && vitest watch packages/test-utils/test",
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "build:watch": "tsc --watch --inlineSourceMap"
   },

@@ -17,8 +17,8 @@
   "author": "RingCentral",
   "license": "MIT",
   "scripts": {
-    "test": "mocha",
-    "test:debug": "PLAYWRIGHT_DEBUG=1 mocha --config .mocharc.debug.json",
+    "test": "echo 'Run tests from root: pnpm test:unit'",
+    "test:debug": "cd ../.. && PLAYWRIGHT_DEBUG=1 vitest run packages/plugin-playwright-driver/test",
     "postinstall": "node scripts/install-browsers.cjs",
     "install-browsers": "node scripts/install-browsers.cjs",
     "uninstall-browsers": "npx playwright uninstall --all",
