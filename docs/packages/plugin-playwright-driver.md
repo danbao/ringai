@@ -1,13 +1,13 @@
-# @testring/plugin-playwright-driver
+# @ringai/plugin-playwright-driver
 
-Modern browser automation plugin for the testring framework using Playwright. This plugin provides fast, reliable, and feature-rich browser automation capabilities with support for multiple browsers and advanced debugging features.
+Modern browser automation plugin for the ringai framework using Playwright. This plugin provides fast, reliable, and feature-rich browser automation capabilities with support for multiple browsers and advanced debugging features.
 
-[![npm version](https://badge.fury.io/js/@testring/plugin-playwright-driver.svg)](https://www.npmjs.com/package/@testring/plugin-playwright-driver)
+[![npm version](https://badge.fury.io/js/@ringai/plugin-playwright-driver.svg)](https://www.npmjs.com/package/@ringai/plugin-playwright-driver)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 
 ## Overview
 
-The Playwright driver plugin brings modern browser automation to testring, leveraging Playwright's powerful capabilities for reliable end-to-end testing. It provides a seamless migration path from Selenium while offering enhanced performance, stability, and debugging features.
+The Playwright driver plugin brings modern browser automation to ringai, leveraging Playwright's powerful capabilities for reliable end-to-end testing. It provides a seamless migration path from Selenium while offering enhanced performance, stability, and debugging features.
 
 ## Key Features
 
@@ -44,7 +44,7 @@ The Playwright driver plugin brings modern browser automation to testring, lever
 
 ```bash
 # Using pnpm (recommended)
-pnpm add -D @testring/plugin-playwright-driver
+pnpm add -D @ringai/plugin-playwright-driver
 ```
 
 ### 🚀 Automatic Browser Installation
@@ -53,16 +53,16 @@ pnpm add -D @testring/plugin-playwright-driver
 
 ```bash
 # Install all browsers automatically (chromium, firefox, webkit, msedge)
-pnpm add -D @testring/plugin-playwright-driver
+pnpm add -D @ringai/plugin-playwright-driver
 
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @ringai/plugin-playwright-driver
 
 # Install only specific browsers
-PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add -D @ringai/plugin-playwright-driver
 
 # Force browser installation in CI environments
-PLAYWRIGHT_INSTALL_IN_CI=1 pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_INSTALL_IN_CI=1 pnpm add -D @ringai/plugin-playwright-driver
 ```
 
 ### Manual Browser Management
@@ -98,13 +98,13 @@ Environment variables to control browser installation behavior:
 
 ### Basic Configuration
 
-Configure the plugin in your testring configuration file:
+Configure the plugin in your ringai configuration file:
 
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium', // 'chromium', 'firefox', 'webkit', or 'msedge'
             launchOptions: {
                 headless: true,
@@ -120,10 +120,10 @@ module.exports = {
 Take advantage of Playwright's rich feature set with advanced configuration:
 
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             // Browser selection
             browserName: 'chromium',
 
@@ -168,10 +168,10 @@ module.exports = {
 Connect to Selenium Grid for distributed testing:
 
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium', // Only 'chromium' and 'msedge' support Selenium Grid
             seleniumGrid: {
                 // Grid connection details
@@ -210,14 +210,14 @@ export SELENIUM_REMOTE_CAPABILITIES='{"browserName":"chrome","browserVersion":"l
 export SELENIUM_REMOTE_HEADERS='{"Authorization":"Bearer your-token"}'
 ```
 
-### Using with .testringrc
+### Using with .ringairc
 
-If you prefer JSON configuration, you can use a `.testringrc` file:
+If you prefer JSON configuration, you can use a `.ringairc` file:
 
 ```json
 {
   "plugins": [
-    ["@testring/plugin-playwright-driver", {
+    ["@ringai/plugin-playwright-driver", {
       "browserName": "chromium",
       "launchOptions": {
         "headless": true
@@ -316,13 +316,13 @@ Browser context configuration options:
 
 ## Migration from Selenium
 
-This plugin provides the same API as `@testring/plugin-selenium-driver`, making migration straightforward:
+This plugin provides the same API as `@ringai/plugin-selenium-driver`, making migration straightforward:
 
 ```javascript
 // Before (Selenium)
 module.exports = {
     plugins: [
-        ['@testring/plugin-selenium-driver', {
+        ['@ringai/plugin-selenium-driver', {
             desiredCapabilities: {
                 browserName: 'chrome',
                 chromeOptions: {
@@ -336,7 +336,7 @@ module.exports = {
 // After (Playwright)
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true
@@ -348,7 +348,7 @@ module.exports = {
 
 ### Migration Checklist
 
-- [ ] Replace `@testring/plugin-selenium-driver` with `@testring/plugin-playwright-driver`
+- [ ] Replace `@ringai/plugin-selenium-driver` with `@ringai/plugin-playwright-driver`
 - [ ] Update browser names (`chrome` → `chromium`, `safari` → `webkit`)
 - [ ] Convert `desiredCapabilities` to `launchOptions` and `contextOptions`
 - [ ] Update any browser-specific configurations
@@ -361,7 +361,7 @@ Most existing tests should work without modification, but you may need to adjust
 ### Basic Test
 
 ```javascript
-import { run } from 'testring';
+import { run } from 'ringai';
 
 run(async (api) => {
     const app = api.application;
@@ -384,10 +384,10 @@ run(async (api) => {
 ### Mobile Device Emulation
 
 ```javascript
-// Configure mobile emulation in testring.config.js
+// Configure mobile emulation in ringai.config.js
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             contextOptions: {
                 viewport: { width: 375, height: 667 },
@@ -539,14 +539,14 @@ run(async (api) => {
 
 ### Parallel Execution
 
-Configure testring for parallel test execution:
+Configure ringai for parallel test execution:
 
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     workerLimit: 4, // Run 4 tests in parallel
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true // Required for parallel execution
@@ -589,7 +589,7 @@ module.exports = {
 Enable debug logging:
 
 ```bash
-DEBUG=testring:playwright pnpm test
+DEBUG=ringai:playwright pnpm test
 ```
 
 ### Environment Variables
@@ -609,7 +609,7 @@ SLOWMO=1000 pnpm test
 
 ## API Reference
 
-The plugin provides the same API as the standard testring web application interface. Key methods include:
+The plugin provides the same API as the standard ringai web application interface. Key methods include:
 
 - `app.url(url)` - Navigate to URL
 - `app.click(selector)` - Click element
@@ -619,20 +619,20 @@ The plugin provides the same API as the standard testring web application interf
 - `app.makeScreenshot()` - Take screenshot
 - `app.assert.*` - Assertion methods
 
-For complete API documentation, see the [@testring/web-application](web-application.md) documentation.
+For complete API documentation, see the [@ringai/web-application](web-application.md) documentation.
 
 ## Dependencies
 
 - **`playwright`** - Core Playwright library
-- **`@testring/plugin-api`** - Plugin API interface
-- **`@testring/types`** - TypeScript type definitions
+- **`@ringai/plugin-api`** - Plugin API interface
+- **`@ringai/types`** - TypeScript type definitions
 
 ## Related Modules
 
-- **`@testring/plugin-selenium-driver`** - Selenium WebDriver plugin (migration source)
-- **`@testring/web-application`** - Web application testing interface
-- **`@testring/browser-proxy`** - Browser proxy service
+- **`@ringai/plugin-selenium-driver`** - Selenium WebDriver plugin (migration source)
+- **`@ringai/web-application`** - Web application testing interface
+- **`@ringai/browser-proxy`** - Browser proxy service
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/testring/blob/master/LICENSE) file for details.
+MIT License - see the [LICENSE](https://github.com/ringcentral/ringai/blob/master/LICENSE) file for details.

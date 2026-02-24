@@ -1,5 +1,5 @@
 {
-  "name": "@testring/plugin-babel",
+  "name": "@ringai/plugin-babel",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
     "@babel/core": "7.26.0",
     "@babel/plugin-transform-modules-commonjs": "7.25.9",
-    "@testring/plugin-api": "workspace:*",
+    "@ringai/plugin-api": "workspace:*",
     "@types/babel__core": "7.20.5"
   },
   "scripts": {

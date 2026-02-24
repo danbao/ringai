@@ -1,5 +1,5 @@
-import {Stack, generateUniqId} from '@testring/utils';
-import {transport} from '@testring/transport';
+import {Stack, generateUniqId} from '@ringai/utils';
+import {transport} from '@ringai/transport';
 import {
     ILogEntity,
     ILoggerClient,
@@ -10,7 +10,7 @@ import {
     LogTypes,
     LogEntityPrefixType,
     LogEntityMarkerType,
-} from '@testring/types';
+} from '@ringai/types';
 
 type stepEntity = {
     stepID: string;

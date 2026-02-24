@@ -1,7 +1,7 @@
 
 import * as chai from 'chai';
-import {Transport} from '@testring/transport';
-import {ScreenshotsConfig, TestWorkerPlugin} from '@testring/types';
+import {Transport} from '@ringai/transport';
+import {ScreenshotsConfig, TestWorkerPlugin} from '@ringai/types';
 import {TestWorker} from '../src/test-worker';
 
 describe('TestWorkerInstance', () => {

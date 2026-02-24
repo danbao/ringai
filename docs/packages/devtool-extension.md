@@ -1,10 +1,10 @@
-# @testring/devtool-extension
+# @ringai/devtool-extension
 
-Browser extension component for the testring framework that provides in-browser debugging and testing capabilities. This Chrome extension integrates with the testring developer tools to enable real-time test monitoring, element highlighting, and browser interaction recording directly within web pages.
+Browser extension component for the ringai framework that provides in-browser debugging and testing capabilities. This Chrome extension integrates with the ringai developer tools to enable real-time test monitoring, element highlighting, and browser interaction recording directly within web pages.
 
 ## Overview
 
-The devtool extension is a Chrome browser extension that serves as the bridge between web pages and the testring framework, providing:
+The devtool extension is a Chrome browser extension that serves as the bridge between web pages and the ringai framework, providing:
 
 - **Real-time element highlighting** for test development and debugging
 - **Browser-side test recording** and interaction capture
@@ -40,7 +40,7 @@ The devtool extension is a Chrome browser extension that serves as the bridge be
 ## Installation
 
 ```bash
-pnpm add @testring/devtool-extension --save-dev
+pnpm add @ringai/devtool-extension --save-dev
 ```
 
 ## Extension Architecture
@@ -101,7 +101,7 @@ function renderPopup(config) {
 
 1. **Install the extension package**:
    ```bash
-   pnpm add @testring/devtool-extension --save-dev
+   pnpm add @ringai/devtool-extension --save-dev
    ```
 
 2. **Build the extension**:
@@ -114,11 +114,11 @@ function renderPopup(config) {
    - Enable "Developer mode"
    - Click "Load unpacked" and select the `dist` folder
 
-### Integration with Testring Framework
+### Integration with Ringai Framework
 
 ```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { transport } from '@testring/transport';
+import { DevtoolServerController } from '@ringai/devtool-backend';
+import { transport } from '@ringai/transport';
 
 // Create devtool server
 const devtoolServer = new DevtoolServerController(transport);
@@ -139,7 +139,7 @@ import {
     extensionId,
     absoluteExtensionPath,
     extensionCRXPath,
-} from '@testring/devtool-extension';
+} from '@ringai/devtool-extension';
 
 // Extension metadata
 console.log('Extension ID:', extensionId);
@@ -151,7 +151,7 @@ console.log('CRX File:', extensionCRXPath);
 
 ```typescript
 import { chromium } from 'playwright';
-import { absoluteExtensionPath } from '@testring/devtool-extension';
+import { absoluteExtensionPath } from '@ringai/devtool-extension';
 
 const browser = await chromium.launchPersistentContext('', {
     args: [
@@ -170,8 +170,8 @@ The extension uses a standard Chrome extension manifest:
 ```json
 {
     "manifest_version": 2,
-    "name": "TestRing",
-    "description": "TestRing recording extension",
+    "name": "RingAI",
+    "description": "RingAI recording extension",
     "permissions": [
         "webRequest",
         "webRequestBlocking",
@@ -195,7 +195,7 @@ The extension uses a standard Chrome extension manifest:
 Configure the extension through the options page or programmatically:
 
 ```typescript
-import type { IExtensionApplicationConfig } from '@testring/types';
+import type { IExtensionApplicationConfig } from '@ringai/types';
 
 const config: IExtensionApplicationConfig = {
     host: 'localhost',
@@ -302,17 +302,17 @@ dist/
 
 ## Dependencies
 
-- **`@testring/client-ws-transport`** — WebSocket communication
-- **`@testring/types`** — TypeScript type definitions
-- **`@testring/utils`** — Utility functions
+- **`@ringai/client-ws-transport`** — WebSocket communication
+- **`@ringai/types`** — TypeScript type definitions
+- **`@ringai/utils`** — Utility functions
 - **`chrome-launcher`** — Chrome browser automation
 - **`webpack`** — Module bundling and build system
 
 ## Related Modules
 
-- **[@testring/devtool-backend](devtool-backend.md)** — Backend server for developer tools
-- **[@testring/devtool-frontend](devtool-frontend.md)** — Frontend interface for developer tools
-- **[@testring/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
+- **[@ringai/devtool-backend](devtool-backend.md)** — Backend server for developer tools
+- **[@ringai/devtool-frontend](devtool-frontend.md)** — Frontend interface for developer tools
+- **[@ringai/plugin-playwright-driver](../packages/plugin-playwright-driver.md)** — Playwright integration
 
 ## Requirements
 
@@ -322,4 +322,4 @@ dist/
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/ringai/blob/master/LICENSE) file for details.

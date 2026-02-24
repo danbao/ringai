@@ -13,8 +13,8 @@
 
 import {EventEmitter} from 'events';
 import {Worker} from 'node:worker_threads';
-import {loggerClient} from '@testring/logger';
-import {generateUniqId} from '@testring/utils';
+import {loggerClient} from '@ringai/logger';
+import {generateUniqId} from '@ringai/utils';
 type DependencyDict = Record<string, Record<string, {path: string; content: string}>>;
 
 const logger = loggerClient.withPrefix('[sandbox-workerthreads]');

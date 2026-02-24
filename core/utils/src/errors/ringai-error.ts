@@ -1,16 +1,16 @@
 import type {ErrorContext} from './types';
 
 /**
- * Base error class for all testring errors
+ * Base error class for all ringai errors
  * Provides structured error context and proper error chaining
  *
  * Usage:
- *   throw new TestringError('Something went wrong');
- *   throw new TestringError('Something went wrong', 'contextId');
- *   throw new TestringError('Something went wrong', { code: 'ERR_CODE', contextId: 'worker-1' });
- *   throw new TestringError('Something went wrong', { cause: originalError });
+ *   throw new RingaiError('Something went wrong');
+ *   throw new RingaiError('Something went wrong', 'contextId');
+ *   throw new RingaiError('Something went wrong', { code: 'ERR_CODE', contextId: 'worker-1' });
+ *   throw new RingaiError('Something went wrong', { cause: originalError });
  */
-export class TestringError extends Error {
+export class RingaiError extends Error {
     public readonly code?: string;
     public readonly contextId?: string;
     public readonly metadata?: Record<string, unknown>;
@@ -27,10 +27,10 @@ export class TestringError extends Error {
         let finalOptions = options;
 
         if (typeof context === 'string') {
-            // Overload: TestringError(message, string) - string is treated as contextId
+            // Overload: RingaiError(message, string) - string is treated as contextId
             finalMessage = context ? `${context}: ${message}` : message;
         } else if (context && typeof context === 'object') {
-            // Overload: TestringError(message, ErrorContext)
+            // Overload: RingaiError(message, ErrorContext)
             const ctx = context;
             if (ctx.cause) {
                 finalOptions = {cause: ctx.cause, ...options};

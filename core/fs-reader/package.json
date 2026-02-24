@@ -1,12 +1,12 @@
 {
-  "name": "@testring/fs-reader",
+  "name": "@ringai/fs-reader",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
@@ -16,9 +16,9 @@
     "test": "mocha"
   },
   "dependencies": {
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/types": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/types": "workspace:*",
     "tinyglobby": "0.2.15",
     "p-limit": "3.1.0"
   }

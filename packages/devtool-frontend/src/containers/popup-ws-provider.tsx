@@ -6,7 +6,7 @@ import {
     IDevtoolWSMessage,
     ITestControllerExecutionState,
     TestWorkerAction,
-} from '@testring/types';
+} from '@ringai/types';
 import { ButtonsLayout } from '../components/popup-layout';
 
 interface IPopupWsProviderProps {

@@ -1,17 +1,17 @@
-# @testring/types
+# @ringai/types
 
-Central type definition package for the testring framework. Contains all shared TypeScript interfaces, enums, and type aliases organized by module.
+Central type definition package for the ringai framework. Contains all shared TypeScript interfaces, enums, and type aliases organized by module.
 
 ## Installation
 
 ```bash
-pnpm add @testring/types
+pnpm add @ringai/types
 ```
 
 All types are re-exported from the package root:
 
 ```typescript
-import { IConfig, LogLevel, ITransport, ITestWorker } from '@testring/types';
+import { IConfig, LogLevel, ITransport, ITestWorker } from '@ringai/types';
 ```
 
 ---

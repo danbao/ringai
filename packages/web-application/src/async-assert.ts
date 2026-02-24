@@ -5,7 +5,7 @@ import type {
   IAssertionOptions,
   IAssertionErrorMeta,
   IAssertionSuccessMeta,
-} from '@testring/types';
+} from '@ringai/types';
 
 const errorMessagesField = '_errorMessages' as const;
 

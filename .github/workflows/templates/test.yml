@@ -1,8 +1,8 @@
 # ============================================
-# Reusable Workflow: Testring Test Suite
+# Reusable Workflow: Ringai Test Suite
 # ============================================
 # This is a reusable workflow that can be called from other workflows.
-# It runs the testring test suite with coverage.
+# It runs the ringai test suite with coverage.
 #
 # Usage:
 #   jobs:

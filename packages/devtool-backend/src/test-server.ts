@@ -1,8 +1,8 @@
-import {LogLevel} from '@testring/types';
-import {transport} from '@testring/transport';
+import {LogLevel} from '@ringai/types';
+import {transport} from '@ringai/transport';
 
 import {DevtoolWorkerController} from './worker/devtool-worker-controller';
-import {loggerClient, LoggerServer} from '@testring/logger';
+import {loggerClient, LoggerServer} from '@ringai/logger';
 
 import {defaultDevtoolConfig} from './default-devtool-config';
 

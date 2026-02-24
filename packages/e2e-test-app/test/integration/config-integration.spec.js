@@ -57,15 +57,15 @@ describe('Configuration Integration Tests', function() {
             const configContent = `
                 module.exports = {
                     plugins: [
-                        ['@testring/plugin-babel', {}],
-                        ['@testring/plugin-nonexistent', {}] // This should fail gracefully
+                        ['@ringai/plugin-babel', {}],
+                        ['@ringai/plugin-nonexistent', {}] // This should fail gracefully
                     ]
                 };
             `;
 
             fs.writeFileSync(tempConfigPath, configContent);
 
-            const testProcess = spawn('testring', ['run', '--config', tempConfigPath], {
+            const testProcess = spawn('ringai', ['run', '--config', tempConfigPath], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });
@@ -115,7 +115,7 @@ describe('Configuration Integration Tests', function() {
                 env: {
                     ...process.env,
                     NODE_ENV: 'test',
-                    TESTRING_LOG_LEVEL: 'debug'
+                    RINGAI_LOG_LEVEL: 'debug'
                 }
             });
 
@@ -164,7 +164,7 @@ describe('Configuration Integration Tests', function() {
 
             fs.writeFileSync(tempConfigPath, configContent);
 
-            const testProcess = spawn('testring', ['run', '--config', tempConfigPath], {
+            const testProcess = spawn('ringai', ['run', '--config', tempConfigPath], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe'
             });

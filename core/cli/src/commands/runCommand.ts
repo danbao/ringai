@@ -1,16 +1,16 @@
-import {LoggerServer, loggerClient} from '@testring/logger';
-import {TestRunController} from '@testring/test-run-controller';
-import {applyPlugins} from '@testring/plugin-api';
-import {FSReader} from '@testring/fs-reader';
-import {TestWorker} from '@testring/test-worker';
-import {WebApplicationController} from '@testring/web-application';
+import {LoggerServer, loggerClient} from '@ringai/logger';
+import {TestRunController} from '@ringai/test-run-controller';
+import {applyPlugins} from '@ringai/plugin-api';
+import {FSReader} from '@ringai/fs-reader';
+import {TestWorker} from '@ringai/test-worker';
+import {WebApplicationController} from '@ringai/web-application';
 import {
     browserProxyControllerFactory,
     BrowserProxyController,
-} from '@testring/browser-proxy';
-import {ICLICommand, IConfig, ITransport} from '@testring/types';
+} from '@ringai/browser-proxy';
+import {ICLICommand, IConfig, ITransport} from '@ringai/types';
 
-import {FSStoreServer} from '@testring/fs-store';
+import {FSStoreServer} from '@ringai/fs-store';
 
 class RunCommand implements ICLICommand {
     private logger = loggerClient;

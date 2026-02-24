@@ -1,16 +1,16 @@
-# @testring/transport
+# @ringai/transport
 
 Transport layer module that provides inter-process communication (IPC) mechanisms and message passing in multi-process environments.
 
 ## Installation
 
 ```bash
-pnpm add @testring/transport
+pnpm add @ringai/transport
 ```
 
 ## Overview
 
-This module is the core communication layer of the testring framework, responsible for:
+This module is the core communication layer of the ringai framework, responsible for:
 
 - Inter-Process Communication (IPC) between the main process and worker processes
 - Point-to-point message delivery to specific child processes
@@ -30,7 +30,7 @@ The transport module is split into two internal subsystems:
 The main transport class that combines direct and broadcast communication.
 
 ```typescript
-import { Transport } from '@testring/transport';
+import { Transport } from '@ringai/transport';
 
 const transport = new Transport(process);
 ```
@@ -83,11 +83,11 @@ transport.broadcastUniversally('status-update', { ready: true });
 
 #### `transport.isChildProcess()`
 
-Returns `true` if this transport instance was created in a child process context (determined by the `broadcastToLocal` constructor parameter, which defaults to the result of `isChildProcess()` from `@testring/child-process`).
+Returns `true` if this transport instance was created in a child process context (determined by the `broadcastToLocal` constructor parameter, which defaults to the result of `isChildProcess()` from `@ringai/child-process`).
 
 ```typescript
 if (transport.isChildProcess()) {
-  console.log('Running in a testring child process');
+  console.log('Running in a ringai child process');
 }
 ```
 
@@ -96,7 +96,7 @@ if (transport.isChildProcess()) {
 Registers a child process (an `IWorkerEmitter`) for direct communication. The child is stored in an internal registry and its `message` and `exit` events are wired up automatically.
 
 ```typescript
-import { fork } from '@testring/child-process';
+import { fork } from '@ringai/child-process';
 
 const child = await fork('./worker.ts');
 transport.registerChild('worker-1', child);
@@ -151,7 +151,7 @@ transport.onceFrom('worker-1', 'ready', () => {
 The module exports a pre-configured singleton instance created with `new Transport(process)`:
 
 ```typescript
-import { transport } from '@testring/transport';
+import { transport } from '@ringai/transport';
 
 // Ready to use — already bound to the current process
 transport.on('my-event', (data) => { /* ... */ });
@@ -162,7 +162,7 @@ transport.on('my-event', (data) => { /* ... */ });
 Serialization functions used internally by the transport layer to clone message payloads across process boundaries. Built on `structuredClone` (Node.js 17+).
 
 ```typescript
-import { serialize, deserialize } from '@testring/transport';
+import { serialize, deserialize } from '@ringai/transport';
 
 const cloned = serialize({ date: new Date(), set: new Set([1, 2, 3]) });
 // Returns a deep clone via structuredClone
@@ -217,8 +217,8 @@ type TransportMessageHandler<T = unknown> = (
 ### Main Process: Distribute and Collect
 
 ```typescript
-import { transport } from '@testring/transport';
-import { fork } from '@testring/child-process';
+import { transport } from '@ringai/transport';
+import { fork } from '@ringai/child-process';
 
 // Register workers
 const child1 = await fork('./test-worker.ts');
@@ -240,7 +240,7 @@ await transport.send('worker-2', 'execute-test', { file: 'b.spec.ts' });
 ### Child Process: Listen and Respond
 
 ```typescript
-import { transport } from '@testring/transport';
+import { transport } from '@ringai/transport';
 
 transport.on('execute-test', async (task) => {
   const result = await runTest(task.file);
@@ -251,7 +251,7 @@ transport.on('execute-test', async (task) => {
 ### Waiting for a Specific Process Response
 
 ```typescript
-import { transport } from '@testring/transport';
+import { transport } from '@ringai/transport';
 
 // Send a command and wait for the specific worker's response
 await transport.send('worker-1', 'run-check', { type: 'health' });
@@ -263,13 +263,13 @@ transport.onceFrom('worker-1', 'check-result', (data) => {
 
 ## Dependencies
 
-- `@testring/child-process` — `isChildProcess()` detection
-- `@testring/types` — Type definitions (`ITransport`, `IWorkerEmitter`, `TransportMessageHandler`, `ITransportDirectMessage`)
-- `@testring/utils` — `generateUniqId` for message UIDs
+- `@ringai/child-process` — `isChildProcess()` detection
+- `@ringai/types` — Type definitions (`ITransport`, `IWorkerEmitter`, `TransportMessageHandler`, `ITransportDirectMessage`)
+- `@ringai/utils` — `generateUniqId` for message UIDs
 - `events` — Node.js `EventEmitter`
 
 ## Related Modules
 
-- [`@testring/child-process`](./child-process.md) — Child process creation and management
-- [`@testring/test-worker`](./test-worker.md) — Test worker processes
-- [`@testring/logger`](./logger.md) — Logging system (uses transport internally)
+- [`@ringai/child-process`](./child-process.md) — Child process creation and management
+- [`@ringai/test-worker`](./test-worker.md) — Test worker processes
+- [`@ringai/logger`](./logger.md) — Logging system (uses transport internally)

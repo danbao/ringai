@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import {IFile} from '@testring/types';
+import {IFile} from '@ringai/types';
 import pLimit from 'p-limit';
 
 const ERR_NO_FILES = new Error('No test files found');

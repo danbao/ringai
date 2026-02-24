@@ -1,4 +1,4 @@
-import {IPluggableModule} from '@testring/types';
+import {IPluggableModule} from '@ringai/types';
 
 export class AbstractAPI {
     constructor(

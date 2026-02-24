@@ -1,23 +1,23 @@
 # Plugin Development
 
-This guide covers how to create and use plugins with the testring framework.
+This guide covers how to create and use plugins with the ringai framework.
 
 ## Plugin Usage
 
 ### Configuration
 
-Plugins are configured in `.testringrc` (JSON) or `.testringrc.js` (ESM):
+Plugins are configured in `.ringairc` (JSON) or `.ringairc.js` (ESM):
 
 ```json
 {
     "plugins": [
-        "testring-plugin-logger-fs",
+        "ringai-plugin-logger-fs",
 
-        ["testring-plugin-test-metadata", {
+        ["ringai-plugin-test-metadata", {
             "format": "json"
         }],
 
-        ["@testring/plugin-playwright-driver", {
+        ["@ringai/plugin-playwright-driver", {
             "headless": true
         }]
     ]
@@ -29,7 +29,7 @@ Plugins are configured in `.testringrc` (JSON) or `.testringrc.js` (ESM):
 Plugins can also be specified via CLI:
 
 ```bash
-testring run --plugins=testring-plugin-1 --plugins=testring-plugin-2
+ringai run --plugins=ringai-plugin-1 --plugins=ringai-plugin-2
 ```
 
 ## Plugin API
@@ -37,7 +37,7 @@ testring run --plugins=testring-plugin-1 --plugins=testring-plugin-2
 Every plugin receives a `PluginAPI` instance and an optional user configuration object. The `PluginAPI` provides access to the framework's core modules:
 
 ```typescript
-import type { PluginAPI } from '@testring/plugin-api';
+import type { PluginAPI } from '@ringai/plugin-api';
 
 export default (pluginAPI: PluginAPI, userConfig?: Record<string, unknown>) => {
     // Available PluginAPI methods:
@@ -78,8 +78,8 @@ export default (pluginAPI: PluginAPI, userConfig?: Record<string, unknown>) => {
 ### Simple Logger Plugin
 
 ```typescript
-// testring-plugin-custom-logger/src/index.ts
-import type { PluginAPI } from '@testring/plugin-api';
+// ringai-plugin-custom-logger/src/index.ts
+import type { PluginAPI } from '@ringai/plugin-api';
 
 interface CustomLoggerConfig {
     logErrors?: boolean;
@@ -107,8 +107,8 @@ export default (pluginAPI: PluginAPI, userConfig?: CustomLoggerConfig) => {
 ### Test Lifecycle Plugin
 
 ```typescript
-// testring-plugin-test-reporter/src/index.ts
-import type { PluginAPI } from '@testring/plugin-api';
+// ringai-plugin-test-reporter/src/index.ts
+import type { PluginAPI } from '@ringai/plugin-api';
 
 interface ReporterConfig {
     outputFormat?: 'json' | 'text';
@@ -131,8 +131,8 @@ export default (pluginAPI: PluginAPI, userConfig?: ReporterConfig) => {
 ### Browser Interaction Plugin
 
 ```typescript
-// testring-plugin-screenshots/src/index.ts
-import type { PluginAPI } from '@testring/plugin-api';
+// ringai-plugin-screenshots/src/index.ts
+import type { PluginAPI } from '@ringai/plugin-api';
 
 interface ScreenshotConfig {
     outputDir?: string;
@@ -151,12 +151,12 @@ export default (pluginAPI: PluginAPI, userConfig?: ScreenshotConfig) => {
 
 ## Hook System
 
-Testring uses the [hookable](https://github.com/unjs/hookable) library (via `PluggableModule`) for its plugin hook system. Core modules extend `PluggableModule` and expose lifecycle hooks.
+Ringai uses the [hookable](https://github.com/unjs/hookable) library (via `PluggableModule`) for its plugin hook system. Core modules extend `PluggableModule` and expose lifecycle hooks.
 
 ### How Hooks Work
 
 ```typescript
-import { PluggableModule } from '@testring/pluggable-module';
+import { PluggableModule } from '@ringai/pluggable-module';
 
 // Core modules extend PluggableModule
 class MyModule extends PluggableModule {
@@ -179,7 +179,7 @@ class MyModule extends PluggableModule {
 Plugins can register hook handlers using the hookable API:
 
 ```typescript
-import { PluggableModule } from '@testring/pluggable-module';
+import { PluggableModule } from '@ringai/pluggable-module';
 
 // Register a single hook
 module.registerHook('beforeAction', async (data) => {
@@ -200,10 +200,10 @@ module.hookBefore((event) => {
 
 ## Plugin Package Structure
 
-A testring plugin follows this standard ESM package structure:
+A ringai plugin follows this standard ESM package structure:
 
 ```
-testring-plugin-my-feature/
+ringai-plugin-my-feature/
 ├── src/
 │   └── index.ts           # Plugin entry point
 ├── dist/                  # Built output (ESM)
@@ -219,7 +219,7 @@ testring-plugin-my-feature/
 
 ```json
 {
-    "name": "testring-plugin-my-feature",
+    "name": "ringai-plugin-my-feature",
     "version": "1.0.0",
     "type": "module",
     "main": "./dist/index.js",
@@ -231,12 +231,12 @@ testring-plugin-my-feature/
         "test": "vitest run"
     },
     "peerDependencies": {
-        "@testring/plugin-api": "^0.8.0",
-        "@testring/types": "^0.8.0"
+        "@ringai/plugin-api": "^0.8.0",
+        "@ringai/types": "^0.8.0"
     },
     "devDependencies": {
-        "@testring/plugin-api": "^0.8.0",
-        "@testring/types": "^0.8.0",
+        "@ringai/plugin-api": "^0.8.0",
+        "@ringai/types": "^0.8.0",
         "tsup": "^8.0.0",
         "typescript": "^5.4.0",
         "vitest": "^3.0.0"
@@ -300,9 +300,9 @@ Refer to these existing plugins in the `packages/` directory for real-world exam
 
 | Plugin | Description |
 |--------|-------------|
-| `@testring/plugin-playwright-driver` | Playwright browser automation driver |
-| `@testring/plugin-babel` | Babel transpilation for test files |
-| `@testring/plugin-fs-store` | File system storage for test artifacts |
+| `@ringai/plugin-playwright-driver` | Playwright browser automation driver |
+| `@ringai/plugin-babel` | Babel transpilation for test files |
+| `@ringai/plugin-fs-store` | File system storage for test artifacts |
 
 ## Summary
 

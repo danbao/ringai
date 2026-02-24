@@ -1,4 +1,4 @@
-import {IPluginModules} from '@testring/types';
+import {IPluginModules} from '@ringai/types';
 import {BrowserProxyAPI} from './modules/browser-proxy';
 import {FSReaderAPI} from './modules/fs-reader';
 import {LoggerAPI} from './modules/logger';

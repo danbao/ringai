@@ -1,4 +1,4 @@
-import {PluginAPI} from '@testring/plugin-api';
+import {PluginAPI} from '@ringai/plugin-api';
 
 import {cbGen} from './onFileName';
 

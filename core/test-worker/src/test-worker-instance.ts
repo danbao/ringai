@@ -1,10 +1,10 @@
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {loggerClient} from '@testring/logger';
-// import {FSReader} from '@testring/fs-reader';
-import {FSStoreClient, FSClientGet} from '@testring/fs-store';
-import {fork} from '@testring/child-process';
-import {generateUniqId} from '@testring/utils';
+import {loggerClient} from '@ringai/logger';
+// import {FSReader} from '@ringai/fs-reader';
+import {FSStoreClient, FSClientGet} from '@ringai/fs-store';
+import {fork} from '@ringai/child-process';
+import {generateUniqId} from '@ringai/utils';
 import {TestWorkerLocal} from './test-worker-local';
 import {
     IFile,
@@ -17,7 +17,7 @@ import {
     FileCompiler,
     TestStatus,
     IWorkerEmitter,
-} from '@testring/types';
+} from '@ringai/types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WORKER_ROOT = path.resolve(__dirname, 'worker.js');

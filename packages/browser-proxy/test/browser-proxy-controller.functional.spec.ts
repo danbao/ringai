@@ -2,9 +2,9 @@
 
 import * as path from 'path';
 import * as chai from 'chai';
-import {Transport} from '@testring/transport';
-import {fork} from '@testring/child-process';
-import {BrowserProxyActions, BrowserProxyPlugins} from '@testring/types';
+import {Transport} from '@ringai/transport';
+import {fork} from '@ringai/child-process';
+import {BrowserProxyActions, BrowserProxyPlugins} from '@ringai/types';
 import {BrowserProxyController} from '../src/browser-proxy-controller';
 
 const workerPath = path.resolve(__dirname, './fixtures/worker.ts');

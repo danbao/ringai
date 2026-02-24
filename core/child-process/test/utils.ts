@@ -9,7 +9,7 @@ describe('isChildProcess', () => {
     });
     it('child args', () => {
         chai.expect(
-            isChildProcess(['--some=argument', '--testring-parent-pid=10']),
+            isChildProcess(['--some=argument', '--ringai-parent-pid=10']),
         ).to.be.equal(true);
     });
 });

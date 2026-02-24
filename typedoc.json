@@ -20,7 +20,7 @@
   ],
   "entryPointStrategy": "expand",
   "out": "docs/api",
-  "name": "Testring API",
+  "name": "Ringai API",
   "includeVersion": true,
   "excludePrivate": true,
   "excludeProtected": false,

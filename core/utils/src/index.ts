@@ -27,7 +27,7 @@ export {restructureError} from './restructure-error';
 
 // Error classes - Task 4.6: Error hierarchy standardization
 export {
-    TestringError,
+    RingaiError,
     TransportError,
     PluginError,
     ConfigError,

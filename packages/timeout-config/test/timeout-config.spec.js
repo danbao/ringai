@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import TIMEOUTS from '../index.js';
 
-describe('@testring/timeout-config', () => {
+describe('@ringai/timeout-config', () => {
   it('should export timeout configuration', () => {
     expect(TIMEOUTS).to.be.an('object');
   });

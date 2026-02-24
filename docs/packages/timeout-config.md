@@ -1,17 +1,17 @@
-# @testring/timeout-config
+# @ringai/timeout-config
 
-Centralized timeout configuration for the testring framework. Provides pre-calculated timeout constants organized by operation speed category, with automatic environment-based multipliers for local, CI, and debug modes.
+Centralized timeout configuration for the ringai framework. Provides pre-calculated timeout constants organized by operation speed category, with automatic environment-based multipliers for local, CI, and debug modes.
 
 ## Installation
 
 ```bash
-pnpm add @testring/timeout-config
+pnpm add @ringai/timeout-config
 ```
 
 ## Quick Start
 
 ```typescript
-import TIMEOUTS from '@testring/timeout-config';
+import TIMEOUTS from '@ringai/timeout-config';
 
 // Use pre-calculated timeout constants
 await page.waitForSelector('#element', { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
@@ -33,7 +33,7 @@ import TIMEOUTS, {
   isLocal,
   isCI,
   isDebug,
-} from '@testring/timeout-config';
+} from '@ringai/timeout-config';
 ```
 
 ## Environment Detection
@@ -135,7 +135,7 @@ function calculateTimeout(
 **Throws** if `category.operation` is not found and no `baseValue` is provided.
 
 ```typescript
-import { calculateTimeout } from '@testring/timeout-config';
+import { calculateTimeout } from '@ringai/timeout-config';
 
 // Use the built-in base value
 const clickTimeout = calculateTimeout('fast', 'click');
@@ -151,7 +151,7 @@ The timeout-config package is consumed by key framework packages to ensure consi
 ### plugin-playwright-driver
 
 ```typescript
-import TIMEOUTS from '@testring/timeout-config';
+import TIMEOUTS from '@ringai/timeout-config';
 
 const DEFAULT_CONFIG = {
   clientTimeout: TIMEOUTS.CLIENT_SESSION,  // 15 min session lifetime
@@ -176,7 +176,7 @@ await Promise.race([
 ### web-application
 
 ```typescript
-import TIMEOUTS from '@testring/timeout-config';
+import TIMEOUTS from '@ringai/timeout-config';
 
 class WebApplication {
   protected WAIT_PAGE_LOAD_TIMEOUT = TIMEOUTS.PAGE_LOAD_MAX;
@@ -203,5 +203,5 @@ None — this is a plain JavaScript package with no runtime dependencies.
 
 ## Related Modules
 
-- **`@testring/plugin-playwright-driver`** — Playwright browser driver using these timeouts
-- **`@testring/web-application`** — Web application base class using these timeouts
+- **`@ringai/plugin-playwright-driver`** — Playwright browser driver using these timeouts
+- **`@ringai/web-application`** — Web application base class using these timeouts

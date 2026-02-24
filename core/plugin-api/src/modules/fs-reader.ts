@@ -1,4 +1,4 @@
-import {FSReaderPlugins} from '@testring/types';
+import {FSReaderPlugins} from '@ringai/types';
 import {AbstractAPI} from './abstract';
 
 export class FSReaderAPI extends AbstractAPI {

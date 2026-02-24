@@ -4,7 +4,7 @@ import {
     ITransportBroadcastMessage,
     ITransportDirectMessage,
     ITransportSerializedStruct,
-} from '@testring/types';
+} from '@ringai/types';
 import {deserialize, serialize} from './serialize';
 
 function isSerializedStruct(v: unknown): v is ITransportSerializedStruct {

@@ -1,14 +1,14 @@
 # Core Modules
 
-The `core/` directory contains the core modules of the testring testing framework, providing the foundation functionality and essential services. These modules implement key features such as test execution, process management, file system operations, logging, and more.
+The `core/` directory contains the core modules of the ringai testing framework, providing the foundation functionality and essential services. These modules implement key features such as test execution, process management, file system operations, logging, and more.
 
-[![npm version](https://badge.fury.io/js/testring.svg)](https://www.npmjs.com/package/testring)
+[![npm version](https://badge.fury.io/js/ringai.svg)](https://www.npmjs.com/package/ringai)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 [![Node.js](https://img.shields.io/badge/Node.js->=22.0.0-brightgreen)](https://nodejs.org/)
 
 ## Overview
 
-The core modules form the backbone of the testring framework, providing:
+The core modules form the backbone of the ringai framework, providing:
 
 - **Multi-process test execution** with parallel processing capabilities
 - **Plugin architecture** for extensible functionality
@@ -23,7 +23,7 @@ The core modules form the backbone of the testring framework, providing:
 ### Core Runtime Modules
 - **`api/`** — Test API controller providing the main interface for test execution
 - **`cli/`** — Command-line interface handling CLI arguments and user interaction
-- **`testring/`** — Main testring entry module and framework orchestrator
+- **`ringai/`** — Main ringai entry module and framework orchestrator
 
 ### Test Execution Modules
 - **`test-worker/`** — Test worker processes responsible for executing tests in isolated environments
@@ -80,8 +80,8 @@ Customizable test result reporting with support for multiple output formats and 
 These core modules are primarily intended for internal framework use. Developers typically don't need to interact with these modules directly. For extending framework functionality, it's recommended to use the plugin API instead of modifying core modules.
 
 ### For Framework Users
-- Use the main `testring` package for test execution
-- Configure through `.testringrc` or CLI parameters
+- Use the main `ringai` package for test execution
+- Configure through `.ringairc` or CLI parameters
 - Extend functionality through official plugins
 
 ### For Plugin Developers
@@ -138,7 +138,7 @@ The core modules follow a layered architecture design with 10 distinct layers, f
   - `test-run-controller` + `test-worker` + `transport` + `types`
 
 #### 🔶 Entry Layer (Layer 9)
-- **testring** — Main entry package, depends on `api` + `cli`, serves as the unified framework entry point
+- **ringai** — Main entry package, depends on `api` + `cli`, serves as the unified framework entry point
 
 ### Key Dependency Characteristics
 
@@ -163,7 +163,7 @@ Complete plugin extension mechanism provided through `pluggable-module` and `plu
 ### Dependency Graph
 
 ```
-testring (Entry Point)
+ringai (Entry Point)
 ├── api
 └── cli
     ├── cli-config
@@ -201,10 +201,10 @@ testring (Entry Point)
 
 ```bash
 # Clone the repository
-git clone https://github.com/danbao/testring.git
+git clone https://github.com/danbao/ringai.git
 
 # Navigate to the project directory
-cd testring
+cd ringai
 
 # Install dependencies
 pnpm install
@@ -277,4 +277,4 @@ Each core module includes comprehensive tests:
 3. Update dependency graph and documentation
 4. Add appropriate tests and type definitions
 
-This layered architecture ensures code maintainability and extensibility while preventing circular dependencies, providing a stable and reliable foundation for the testring framework.
+This layered architecture ensures code maintainability and extensibility while preventing circular dependencies, providing a stable and reliable foundation for the ringai framework.

@@ -3,12 +3,12 @@ import {
     DEFAULT_RECORDER_HTTP_PORT,
     DEFAULT_RECORDER_WS_PORT,
 } from './constants';
-import {IDevtoolServerConfig} from '@testring/types';
+import {IDevtoolServerConfig} from '@ringai/types';
 
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {absolutePath as FRONTEND_PATH} from '@testring/devtool-frontend';
+import {absolutePath as FRONTEND_PATH} from '@ringai/devtool-frontend';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const getRouterPath = (filepath: string) =>

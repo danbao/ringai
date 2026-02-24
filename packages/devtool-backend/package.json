@@ -1,5 +1,5 @@
 {
-  "name": "@testring/devtool-backend",
+  "name": "@ringai/devtool-backend",
   "version": "0.8.0",
   "type": "module",
   "description": "DEPRECATED: DevTools server backend. Consider migrating to a modern solution.",
@@ -7,7 +7,7 @@
   "main": "./dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
@@ -21,20 +21,20 @@
     "@babel/parser": "^7.26.0",
     "@babel/traverse": "^7.26.0",
     "@babel/types": "^7.26.0",
-    "@testring/child-process": "workspace:*",
-    "@testring/devtool-extension": "workspace:*",
-    "@testring/devtool-frontend": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/child-process": "workspace:*",
+    "@ringai/devtool-extension": "workspace:*",
+    "@ringai/devtool-frontend": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "express": "4.21.1",
     "redux": "5.0.1",
     "ws": "8.18.0"
   },
   "devDependencies": {
-    "@testring/test-utils": "workspace:*",
+    "@ringai/test-utils": "workspace:*",
     "@types/express-serve-static-core": "5.0.1",
     "@types/node": "22.8.5",
     "@types/ws": "8.5.12",

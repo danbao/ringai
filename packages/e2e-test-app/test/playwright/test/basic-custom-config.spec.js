@@ -1,4 +1,4 @@
-import {run} from 'testring';
+import {run} from 'ringai';
 
 run(async (api) => {
     const app = api.application;
@@ -8,15 +8,15 @@ run(async (api) => {
         hostname: 'localhost',
         port: 8080,
         headers: {
-            'X-Testring-Custom-Header': 'TestringCustomValue',
+            'X-Ringai-Custom-Header': 'RingaiCustomValue',
         },
     });
     
     // 验证配置是否正确设置
     const config = await app.client.getCustomBrowserClientConfig();
     await app.assert.equal(
-        config.headers['X-Testring-Custom-Header'],
-        'TestringCustomValue',
+        config.headers['X-Ringai-Custom-Header'],
+        'RingaiCustomValue',
         'Custom header should be set correctly'
     );
     

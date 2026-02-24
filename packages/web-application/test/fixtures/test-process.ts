@@ -1,4 +1,4 @@
-import {Transport} from '@testring/transport';
+import {Transport} from '@ringai/transport';
 import {WebApplication} from '../../src/web-application';
 import {ELEMENT_NAME, TEST_NAME} from './constants.ts';
 

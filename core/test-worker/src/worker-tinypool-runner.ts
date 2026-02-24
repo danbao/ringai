@@ -5,10 +5,10 @@
  */
 
 import { parentPort } from 'worker_threads';
-import { transport } from '@testring/transport';
-import { testAPIController } from '@testring/api';
+import { transport } from '@ringai/transport';
+import { testAPIController } from '@ringai/api';
 import { WorkerController } from './worker/worker-controller';
-import { loggerClient } from '@testring/logger';
+import { loggerClient } from '@ringai/logger';
 
 const logger = loggerClient.withPrefix('[worker-tinypool]');
 

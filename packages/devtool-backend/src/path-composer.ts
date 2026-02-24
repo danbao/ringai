@@ -1,4 +1,4 @@
-import {ElementSummary} from '@testring/types';
+import {ElementSummary} from '@ringai/types';
 
 export class PathComposer {
     constructor(private targetAttribute: string) {}

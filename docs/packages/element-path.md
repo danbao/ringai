@@ -1,11 +1,11 @@
-# @testring/element-path
+# @ringai/element-path
 
-XPath/locator builder for the testring framework. Provides a Proxy-wrapped `ElementPath` class that generates XPath expressions via fluent chaining and dynamic property access.
+XPath/locator builder for the ringai framework. Provides a Proxy-wrapped `ElementPath` class that generates XPath expressions via fluent chaining and dynamic property access.
 
 ## Installation
 
 ```bash
-pnpm add @testring/element-path
+pnpm add @ringai/element-path
 ```
 
 ## Exports
@@ -15,13 +15,13 @@ import {
   ElementPath,
   createElementPath,
   type ElementPathProxy,
-} from '@testring/element-path';
+} from '@ringai/element-path';
 ```
 
 ## Quick Start
 
 ```typescript
-import { createElementPath } from '@testring/element-path';
+import { createElementPath } from '@ringai/element-path';
 
 const root = createElementPath();
 
@@ -271,5 +271,5 @@ path.__getInstance().getElementType();
 
 ## Dependencies
 
-- `@testring/types` — TypeScript type definitions
-- `@testring/utils` — Utility helpers (`hasOwn`, `isInteger`, `isGenKeyType`, `keysCount`)
+- `@ringai/types` — TypeScript type definitions
+- `@ringai/utils` — Utility helpers (`hasOwn`, `isInteger`, `isGenKeyType`, `keysCount`)

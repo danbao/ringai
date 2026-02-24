@@ -1,10 +1,10 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'Testring Documentation',
+  title: 'Ringai Documentation',
   description: 'A modern Node.js-based automated UI testing framework for web applications',
   // Only use GitHub Pages base when explicitly set for production
-  base: process.env.VITEPRESS_PRODUCTION === 'true' ? '/testring/' : '/',
+  base: process.env.VITEPRESS_PRODUCTION === 'true' ? '/ringai/' : '/',
   
   // Clean URLs - allows accessing /guides/ instead of /guides/README.html
   cleanUrls: true,
@@ -30,7 +30,7 @@ export default defineConfig({
       { text: 'Packages', link: '/packages/' },
       { text: 'Guides', link: '/guides/' },
       { text: 'Test Fixtures', link: 'https://testring-dev.ringcentral.workers.dev/', target: '_blank' },
-      { text: 'GitHub', link: 'https://github.com/ringcentral/testring', target: '_blank' }
+      { text: 'GitHub', link: 'https://github.com/ringcentral/ringai', target: '_blank' }
     ],
 
     // Sidebar
@@ -89,7 +89,7 @@ export default defineConfig({
             { text: 'Dependencies Builder', link: '/core-modules/dependencies-builder' },
             { text: 'Async Assert', link: '/core-modules/async-assert' },
             { text: 'Async Breakpoints', link: '/core-modules/async-breakpoints' },
-            { text: 'Testring', link: '/core-modules/testring' }
+            { text: 'Ringai', link: '/core-modules/ringai' }
           ]
         }
       ],
@@ -140,7 +140,7 @@ export default defineConfig({
 
     // Social links
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/ringcentral/testring' }
+      { icon: 'github', link: 'https://github.com/ringcentral/ringai' }
     ],
 
     // Footer
@@ -156,7 +156,7 @@ export default defineConfig({
 
     // Edit link
     editLink: {
-      pattern: 'https://github.com/ringcentral/testring/edit/master/docs/:path',
+      pattern: 'https://github.com/ringcentral/ringai/edit/master/docs/:path',
       text: 'Edit this page on GitHub'
     },
 

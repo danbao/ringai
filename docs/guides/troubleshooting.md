@@ -1,10 +1,10 @@
 # Troubleshooting Guide
 
-This guide helps resolve common issues when working with testring.
+This guide helps resolve common issues when working with ringai.
 
 ## Environment Requirements
 
-testring requires:
+ringai requires:
 - **Node.js 22+** (ES2022 features, native ESM support)
 - **pnpm 10+** (package manager)
 - **TypeScript 5+** (ES2022 target)
@@ -36,7 +36,7 @@ pnpm run reinstall
 ```bash
 # Use pnpm's built-in global management (no sudo needed)
 pnpm setup
-pnpm add -g @testring/cli
+pnpm add -g @ringai/cli
 ```
 
 ### Peer Dependency Conflicts
@@ -56,14 +56,14 @@ pnpm run deps:find-updates
 
 **Problem:** Code uses CommonJS syntax in an ESM package.
 
-All testring packages use `"type": "module"` in `package.json`. Use ESM imports:
+All ringai packages use `"type": "module"` in `package.json`. Use ESM imports:
 
 ```typescript
 // ❌ Wrong
-const { Sandbox } = require('@testring/sandbox');
+const { Sandbox } = require('@ringai/sandbox');
 
 // ✅ Correct
-import { Sandbox } from '@testring/sandbox';
+import { Sandbox } from '@ringai/sandbox';
 ```
 
 ### `__dirname` / `__filename` Not Available
@@ -81,25 +81,25 @@ const __dirname = path.dirname(__filename);
 
 ### Configuration File Format
 
-**Problem:** `.testringrc.js` fails to load with ESM errors.
+**Problem:** `.ringairc.js` fails to load with ESM errors.
 
-testring supports these config formats:
-- `.testringrc` — JSON (always works)
-- `.testringrc.js` — Must use ESM syntax (`export default { ... }`)
-- `.testringrc.cjs` — Use for CommonJS config (`module.exports = { ... }`)
+ringai supports these config formats:
+- `.ringairc` — JSON (always works)
+- `.ringairc.js` — Must use ESM syntax (`export default { ... }`)
+- `.ringairc.cjs` — Use for CommonJS config (`module.exports = { ... }`)
 
 ```javascript
-// .testringrc.js (ESM)
+// .ringairc.js (ESM)
 export default {
-    plugins: ['@testring/plugin-playwright-driver'],
+    plugins: ['@ringai/plugin-playwright-driver'],
     workerLimit: 4,
 };
 ```
 
 ```javascript
-// .testringrc.cjs (CommonJS fallback)
+// .ringairc.cjs (CommonJS fallback)
 module.exports = {
-    plugins: ['@testring/plugin-playwright-driver'],
+    plugins: ['@ringai/plugin-playwright-driver'],
     workerLimit: 4,
 };
 ```
@@ -123,7 +123,7 @@ const mod = await import(pathToFileURL('/absolute/path/to/module.js').href);
 
 **Problem:** `ts-node` doesn't work well with ESM + TypeScript.
 
-testring uses `tsx` as the TypeScript ESM loader:
+ringai uses `tsx` as the TypeScript ESM loader:
 
 ```bash
 # ❌ ts-node often fails with ESM
@@ -312,7 +312,7 @@ npx playwright install
 
 **Problem:** File paths use backslashes that break ESM `import()`.
 
-testring handles this internally by converting to `file://` URLs, but in custom code:
+ringai handles this internally by converting to `file://` URLs, but in custom code:
 
 ```typescript
 import { pathToFileURL } from 'node:url';
@@ -383,7 +383,7 @@ This usually means a worker process crashed. Check:
 
 **Problem:** Linting fails or ignores files.
 
-testring uses ESLint flat config (`eslint.config.js`):
+ringai uses ESLint flat config (`eslint.config.js`):
 
 ```bash
 # Run linting
@@ -399,10 +399,10 @@ pnpm run lint:fix
 
 ```bash
 # Run with debug logging
-DEBUG=testring:* pnpm run test:unit
+DEBUG=ringai:* pnpm run test:unit
 
 # Debug specific module
-DEBUG=testring:worker pnpm run test:unit
+DEBUG=ringai:worker pnpm run test:unit
 ```
 
 ### Use Local Worker Mode
@@ -419,16 +419,16 @@ node --inspect-brk node_modules/.bin/vitest run path/to/test.spec.ts
 ### Check Package Versions
 
 ```bash
-# Verify all testring packages are at consistent versions
+# Verify all ringai packages are at consistent versions
 pnpm run deps:validate
 
-# List installed testring packages
-pnpm list --filter "@testring/*" --depth 0
+# List installed ringai packages
+pnpm list --filter "@ringai/*" --depth 0
 ```
 
 ## Common Error Messages
 
-### "Cannot find module '@testring/...'"
+### "Cannot find module '@ringai/...'"
 
 **Cause:** Package not installed or not built.
 
@@ -464,7 +464,7 @@ npx playwright install
 
 If you're still experiencing issues:
 
-1. Check the [GitHub Issues](https://github.com/nicholasrq/testring/issues)
+1. Check the [GitHub Issues](https://github.com/nicholasrq/ringai/issues)
 2. Review the [API Documentation](../core-modules/api.md)
 3. Run with debug logging enabled
 4. Create a minimal reproduction case

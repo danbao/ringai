@@ -20,7 +20,7 @@ import {
     ITransportSerializedStruct,
     TransportSerializer,
     TransportDeserializer,
-} from '@testring/types';
+} from '@ringai/types';
 
 /**
  * Custom error for data clone failures
@@ -111,4 +111,4 @@ export const deserialize: TransportDeserializer = (struct: ITransportSerializedS
 };
 
 // Re-export types for backward compatibility
-export type { ITransportSerializedStruct } from '@testring/types';
+export type { ITransportSerializedStruct } from '@ringai/types';

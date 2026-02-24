@@ -3,7 +3,7 @@ import {
     FSStoreType,
     FSFileUniqPolicy,
     FSStoreDataOptions,
-} from '@testring/types';
+} from '@ringai/types';
 import {FSStoreFile} from './fs-store-file';
 
 const baseMeta: requestMeta = {

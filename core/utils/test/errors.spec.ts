@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 
 import {
-    TestringError,
+    RingaiError,
     TransportError,
     PluginError,
     ConfigError,
@@ -11,22 +11,22 @@ import {
 const {expect} = chai;
 
 describe('errors', () => {
-    describe('TestringError', () => {
+    describe('RingaiError', () => {
         it('should create a basic error', () => {
-            const error = new TestringError('Test error');
+            const error = new RingaiError('Test error');
             expect(error.message).to.equal('Test error');
-            expect(error.name).to.equal('TestringError');
+            expect(error.name).to.equal('RingaiError');
         });
 
         it('should create error with context string', () => {
-            const error = new TestringError('Test error', 'worker-1');
+            const error = new RingaiError('Test error', 'worker-1');
             expect(error.message).to.equal('worker-1: Test error');
             expect(error.contextId).to.equal('worker-1');
         });
 
         it('should create error with ErrorContext', () => {
             const originalError = new Error('Original');
-            const error = new TestringError('Test error', {
+            const error = new RingaiError('Test error', {
                 code: 'ERR_TEST',
                 contextId: 'plugin-1',
                 metadata: {foo: 'bar'},
@@ -41,13 +41,13 @@ describe('errors', () => {
         });
 
         it('should serialize to JSON correctly', () => {
-            const error = new TestringError('Test error', {
+            const error = new RingaiError('Test error', {
                 code: 'ERR_TEST',
                 contextId: 'worker-1',
             });
 
             const json = error.toJSON();
-            expect(json['name']).to.equal('TestringError');
+            expect(json['name']).to.equal('RingaiError');
             expect(json['message']).to.equal('ERR_TEST:worker-1: Test error');
             expect(json['code']).to.equal('ERR_TEST');
             expect(json['contextId']).to.equal('worker-1');

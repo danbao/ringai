@@ -2,16 +2,16 @@ import { PlaywrightPluginConfig, BrowserClientItem } from '../types.js';
 import {
     IBrowserProxyPlugin,
     WindowFeaturesConfig
-} from '@testring/types';
+} from '@ringai/types';
 
 import { chromium, firefox, webkit, Browser, BrowserContext, Page } from 'playwright';
-import { loggerClient } from '@testring/logger';
+import { loggerClient } from '@ringai/logger';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
 // 导入统一的timeout配置
-import TIMEOUTS from '@testring/timeout-config';
+import TIMEOUTS from '@ringai/timeout-config';
 
 const DEFAULT_CONFIG: PlaywrightPluginConfig = {
     browserName: 'chromium',
@@ -446,7 +446,7 @@ class PlaywrightCleanupManager {
     private logger: any; // 日志记录器
 
     private constructor() {
-        this.registryFile = path.join(os.tmpdir(), 'testring-playwright-processes.json');
+        this.registryFile = path.join(os.tmpdir(), 'ringai-playwright-processes.json');
         // 创建一个简单的 logger，如果没有可用的 logger
         this.logger = {
             debug: (message: string, ...args: any[]) => console.log(`[DEBUG] ${message}`, ...args),

@@ -1,10 +1,10 @@
-# @testring/devtool-frontend
+# @ringai/devtool-frontend
 
-React-based frontend debugging panel for the testring framework that provides a graphical user interface for test monitoring and control. This package works in conjunction with `@testring/devtool-backend` and `@testring/devtool-extension` to enable real-time log viewing, test execution control, and browser screenshot visualization.
+React-based frontend debugging panel for the ringai framework that provides a graphical user interface for test monitoring and control. This package works in conjunction with `@ringai/devtool-backend` and `@ringai/devtool-extension` to enable real-time log viewing, test execution control, and browser screenshot visualization.
 
 ## Overview
 
-The devtool frontend is a React-based UI component of the testring framework, providing:
+The devtool frontend is a React-based UI component of the ringai framework, providing:
 
 - **Real-time test execution monitoring** with status updates and control
 - **Interactive test control panel** for pausing, resuming, and stepping through tests
@@ -42,7 +42,7 @@ The devtool frontend is a React-based UI component of the testring framework, pr
 ## Installation
 
 ```bash
-pnpm add @testring/devtool-frontend --save-dev
+pnpm add @ringai/devtool-frontend --save-dev
 ```
 
 ## UI Components
@@ -91,7 +91,7 @@ The popup interface provides quick test control buttons:
 
 ```typescript
 import React from 'react';
-import { TestWorkerAction } from '@testring/types';
+import { TestWorkerAction } from '@ringai/types';
 
 export class ButtonsLayout extends React.Component {
     render() {
@@ -127,7 +127,7 @@ export class ButtonsLayout extends React.Component {
 
 1. **Install the required packages**:
    ```bash
-   pnpm add @testring/devtool-frontend @testring/devtool-backend --save-dev
+   pnpm add @ringai/devtool-frontend @ringai/devtool-backend --save-dev
    ```
 
 2. **Build the frontend**:
@@ -137,8 +137,8 @@ export class ButtonsLayout extends React.Component {
 
 3. **Start the devtool server**:
    ```typescript
-   import { DevtoolServerController } from '@testring/devtool-backend';
-   import { transport } from '@testring/transport';
+   import { DevtoolServerController } from '@ringai/devtool-backend';
+   import { transport } from '@ringai/transport';
 
    const devtoolServer = new DevtoolServerController(transport);
    await devtoolServer.init();
@@ -150,9 +150,9 @@ export class ButtonsLayout extends React.Component {
 ### Integration with Test Framework
 
 ```typescript
-import { DevtoolServerController } from '@testring/devtool-backend';
-import { TestRunController } from '@testring/test-run-controller';
-import { transport } from '@testring/transport';
+import { DevtoolServerController } from '@ringai/devtool-backend';
+import { TestRunController } from '@ringai/test-run-controller';
+import { transport } from '@ringai/transport';
 
 // Start devtool server
 const devtoolServer = new DevtoolServerController(transport);
@@ -247,8 +247,8 @@ interface ButtonLayoutProps {
 ### With Chrome Extension
 
 ```typescript
-import { absolutePath } from '@testring/devtool-frontend';
-import { extensionId } from '@testring/devtool-extension';
+import { absolutePath } from '@ringai/devtool-frontend';
+import { extensionId } from '@ringai/devtool-extension';
 
 // The extension will load the frontend from the backend server
 console.log('Frontend assets path:', absolutePath);
@@ -261,7 +261,7 @@ console.log('Extension ID:', extensionId);
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { absolutePath } from '@testring/devtool-frontend';
+import { absolutePath } from '@ringai/devtool-frontend';
 
 const app = new Hono();
 
@@ -297,17 +297,17 @@ serve({ fetch: app.fetch, port: 8080 }, (info) => {
 - **`react`** — UI component library
 - **`react-dom`** — React DOM rendering
 - **`react-monaco-editor`** — Monaco code editor for React
-- **`@testring/client-ws-transport`** — WebSocket communication
-- **`@testring/types`** — TypeScript type definitions
+- **`@ringai/client-ws-transport`** — WebSocket communication
+- **`@ringai/types`** — TypeScript type definitions
 - **`monaco-editor-webpack-plugin`** — Monaco editor integration
 - **`webpack`** — Module bundling and build system
 
 ## Related Modules
 
-- **[@testring/devtool-backend](devtool-backend.md)** — Backend server for developer tools
-- **[@testring/devtool-extension](devtool-extension.md)** — Chrome extension for browser integration
-- **[@testring/test-run-controller](../core-modules/test-run-controller.md)** — Test execution controller
-- **[@testring/transport](../core-modules/transport.md)** — Inter-process communication
+- **[@ringai/devtool-backend](devtool-backend.md)** — Backend server for developer tools
+- **[@ringai/devtool-extension](devtool-extension.md)** — Chrome extension for browser integration
+- **[@ringai/test-run-controller](../core-modules/test-run-controller.md)** — Test execution controller
+- **[@ringai/transport](../core-modules/transport.md)** — Inter-process communication
 
 ## Requirements
 
@@ -316,4 +316,4 @@ serve({ fetch: app.fetch, port: 8080 }, (info) => {
 
 ## License
 
-MIT License — see the [LICENSE](https://github.com/danbao/testring/blob/master/LICENSE) file for details.
+MIT License — see the [LICENSE](https://github.com/danbao/ringai/blob/master/LICENSE) file for details.

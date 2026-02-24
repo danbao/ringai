@@ -1,32 +1,32 @@
 {
-  "name": "@testring/test-worker",
+  "name": "@ringai/test-worker",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/api": "workspace:*",
-    "@testring/async-breakpoints": "workspace:*",
-    "@testring/child-process": "workspace:*",
-    "@testring/fs-reader": "workspace:*",
-    "@testring/fs-store": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/sandbox": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/api": "workspace:*",
+    "@ringai/async-breakpoints": "workspace:*",
+    "@ringai/child-process": "workspace:*",
+    "@ringai/fs-reader": "workspace:*",
+    "@ringai/fs-store": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/sandbox": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "@types/node": "22.8.5",
     "tinypool": "2.1.0"
   },
   "devDependencies": {
-    "@testring/test-utils": "workspace:*"
+    "@ringai/test-utils": "workspace:*"
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",

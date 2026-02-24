@@ -15,9 +15,9 @@ import {
     IWorkerEmitter,
     ITestExecutionCompleteMessage,
     TestStatus 
-} from '@testring/types';
-import { loggerClient } from '@testring/logger';
-import { generateUniqId } from '@testring/utils';
+} from '@ringai/types';
+import { loggerClient } from '@ringai/logger';
+import { generateUniqId } from '@ringai/utils';
 
 const logger = loggerClient.withPrefix('[test-worker-tinypool]');
 

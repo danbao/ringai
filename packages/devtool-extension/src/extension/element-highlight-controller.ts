@@ -1,4 +1,4 @@
-import {throttle} from '@testring/utils';
+import {throttle} from '@ringai/utils';
 
 import {HighlightElement} from './highlight-element';
 
@@ -148,7 +148,7 @@ export class ElementHighlightController {
     private initRootElements(): void {
         const document = this.getDocument();
 
-        this.rootElement = document.createElement('testring-highlight-holder');
+        this.rootElement = document.createElement('ringai-highlight-holder');
 
         this.rootElement.setAttribute('style', this.getImportantStyleAttr());
 

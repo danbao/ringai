@@ -2012,6 +2012,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ringai-docs@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "ringai-docs@workspace:."
+  dependencies:
+    vitepress: "npm:^1.0.0"
+  peerDependencies:
+    vue: ^3.3.0
+  languageName: unknown
+  linkType: soft
+
 "rollup@npm:^4.20.0":
   version: 4.45.1
   resolution: "rollup@npm:4.45.1"
@@ -2286,16 +2296,6 @@ __metadata:
   checksum: 10c0/d4679609bb2a9b48eeaf84632b6d844128d2412b95b6de07d53d8ee8baf4ca0857c9331dfa510390a0727b550fd543d4d1a10995ad86cdf078423fbb8d99831d
   languageName: node
   linkType: hard
-
-"testring-docs@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "testring-docs@workspace:."
-  dependencies:
-    vitepress: "npm:^1.0.0"
-  peerDependencies:
-    vue: ^3.3.0
-  languageName: unknown
-  linkType: soft
 
 "tinyglobby@npm:^0.2.12":
   version: 0.2.14

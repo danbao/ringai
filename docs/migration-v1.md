@@ -1,10 +1,10 @@
 # Migration Guide: v0.x → v1.0
 
-> This guide helps you migrate your testring tests from v0.x to v1.0.
+> This guide helps you migrate your ringai tests from v0.x to v1.0.
 
 ## Overview
 
-Testring v1.0 includes major architectural changes:
+Ringai v1.0 includes major architectural changes:
 
 - **ESM-first**: All packages now support ESM natively
 - **Modern tooling**: pnpm + Turborepo + tsup
@@ -14,7 +14,7 @@ Testring v1.0 includes major architectural changes:
 
 ## ESM Migration (v0.8.0+)
 
-Starting with v0.8.0, testring has fully migrated to ESM. This section covers the key changes if you are upgrading from a pre-0.8.0 version.
+Starting with v0.8.0, ringai has fully migrated to ESM. This section covers the key changes if you are upgrading from a pre-0.8.0 version.
 
 ### What Changed
 
@@ -43,13 +43,13 @@ Add `"type": "module"` to your project's `package.json`:
 
 **Before (CommonJS):**
 ```javascript
-const { testring } = require('@testring/core');
+const { ringai } = require('@ringai/core');
 const LoginPage = require('../pages/LoginPage');
 ```
 
 **After (ESM):**
 ```typescript
-import { testring } from '@testring/core/index.js';
+import { ringai } from '@ringai/core/index.js';
 import { LoginPage } from '../pages/LoginPage.js';
 ```
 
@@ -120,7 +120,7 @@ All dependency management now uses pnpm:
 pnpm install
 
 # Add a package
-pnpm add @testring/web-application
+pnpm add @ringai/web-application
 
 # Run scripts
 pnpm test
@@ -133,19 +133,19 @@ pnpm run build
 
 **Before (CommonJS):**
 ```javascript
-const { testring } = require('@testring/core');
+const { ringai } = require('@ringai/core');
 ```
 
 **After (ESM):**
 ```javascript
-import { testring } from '@testring/core/index.js';
+import { ringai } from '@ringai/core/index.js';
 ```
 
 ### 2. Configuration
 
 **Before:**
 ```javascript
-// testring.config.js
+// ringai.config.js
 module.exports = {
     tests: './tests/**/*.ts',
     workerLimit: 5,
@@ -154,8 +154,8 @@ module.exports = {
 
 **After (TypeScript-first):**
 ```typescript
-// testring.config.ts
-import { defineConfig } from '@testring/cli-config';
+// ringai.config.ts
+import { defineConfig } from '@ringai/cli-config';
 
 export default defineConfig({
     tests: './tests/**/*.ts',
@@ -177,7 +177,7 @@ module.exports = MyPlugin;
 
 **After:**
 ```typescript
-import type { PluginAPI } from '@testring/plugin-api';
+import type { PluginAPI } from '@ringai/plugin-api';
 
 export default (pluginAPI: PluginAPI, userConfig?: Record<string, unknown>) => {
     const logger = pluginAPI.getLogger();
@@ -200,7 +200,7 @@ await webApplication.click('#button');
 
 **After:**
 ```typescript
-import { WebApplication } from '@testring/web-application';
+import { WebApplication } from '@ringai/web-application';
 
 const webApplication = new WebApplication(config);
 await webApplication.open('http://example.com');
@@ -220,7 +220,7 @@ transport.send('message', payload);
 
 **After:**
 ```typescript
-import { transport } from '@testring/transport';
+import { transport } from '@ringai/transport';
 
 transport.send('message', payload);
 ```
@@ -231,13 +231,13 @@ transport.send('message', payload);
 
 ```bash
 # Run tests
-testring run
+ringai run
 
 # Initialize new project
-testring init
+ringai init
 
 # List available plugins
-testring plugin list
+ringai plugin list
 ```
 
 ### 2. Reporter System
@@ -245,13 +245,13 @@ testring plugin list
 Built-in reporters: spec, dot, json, html
 
 ```bash
-testring run --reporter=spec
-testring run --reporter=json --reporter-output=results.json
+ringai run --reporter=spec
+ringai run --reporter=json --reporter-output=results.json
 ```
 
 ### 3. Environment Variables
 
-- `TESTRING_SKIP_DEPENDENCY_BUILD=true` — Skip dependency build (ESM mode)
+- `RINGAI_SKIP_DEPENDENCY_BUILD=true` — Skip dependency build (ESM mode)
 
 ## Migration Steps
 
@@ -265,8 +265,8 @@ testring run --reporter=json --reporter-output=results.json
 
 3. **Update dependencies:**
    ```bash
-   pnpm remove @testring/core
-   pnpm add @testring/web-application @testring/test-worker
+   pnpm remove @ringai/core
+   pnpm add @ringai/web-application @ringai/test-worker
    ```
 
 4. **Convert to ESM:**
@@ -297,14 +297,14 @@ testring run --reporter=json --reporter-output=results.json
 
 ## Getting Help
 
-- GitHub Issues: https://github.com/ringcentral/testring/issues
+- GitHub Issues: https://github.com/ringcentral/ringai/issues
 
 ## Changelog Highlights
 
 ### Removed Packages (replaced by native Node.js):
-- `@testring/async-assert` → Use `node:assert` + Vitest `expect`
-- `@testring/transport/serialize` → Use `structuredClone`
-- `@testring/http-api` → Use native `fetch`
+- `@ringai/async-assert` → Use `node:assert` + Vitest `expect`
+- `@ringai/transport/serialize` → Use `structuredClone`
+- `@ringai/http-api` → Use native `fetch`
 
 ### Deprecated:
 - `plugin-selenium-driver` → Use `plugin-playwright-driver`

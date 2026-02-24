@@ -1,8 +1,8 @@
-import {TestEvents} from '@testring/types';
+import {TestEvents} from '@ringai/types';
 
 import {EventEmitter} from 'events';
 
-import {asyncBreakpoints} from '@testring/async-breakpoints';
+import {asyncBreakpoints} from '@ringai/async-breakpoints';
 
 type BeforeRunCallback = () => void | Promise<void>;
 type AfterRunCallback = () => void | Promise<void>;

@@ -1,5 +1,5 @@
 
-import {fork} from '@testring/child-process';
+import {fork} from '@ringai/child-process';
 import process from 'node:process';
 import * as path from 'path';
 import * as chai from 'chai';

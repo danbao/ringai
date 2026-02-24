@@ -2,19 +2,19 @@
 layout: home
 
 hero:
-  name: "Testring"
+  name: "Ringai"
   text: "Modern UI Testing Framework"
   tagline: "An ESM-first Node.js automated UI testing framework for web applications"
   image:
     src: /logo.svg
-    alt: Testring Logo
+    alt: Ringai Logo
   actions:
     - theme: brand
       text: Get Started
       link: /getting-started/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/danbao/testring
+      link: https://github.com/danbao/ringai
 
 features:
   - icon: ⚡
@@ -44,20 +44,20 @@ features:
 
 ## Quick Start
 
-Get up and running with Testring in minutes:
+Get up and running with Ringai in minutes:
 
 ```bash
-# Install testring
-pnpm add -D testring
+# Install ringai
+pnpm add -D ringai
 
 # Run tests
-testring run
+ringai run
 
 # Run with specific configuration
-testring run --config ./test.config.js
+ringai run --config ./test.config.js
 ```
 
-## Why Testring?
+## Why Ringai?
 
 <div class="feature-grid">
   <div class="feature-card">
@@ -83,7 +83,7 @@ testring run --config ./test.config.js
 
 ## Core Modules
 
-Testring is built on a foundation of [18 core modules](/core-modules/):
+Ringai is built on a foundation of [18 core modules](/core-modules/):
 
 - <span class="badge core">API</span> **Test Execution API** — Core testing engine and execution framework
 - <span class="badge core">CLI</span> **Command Line Interface** — Easy-to-use command line tools built with citty
@@ -92,7 +92,7 @@ Testring is built on a foundation of [18 core modules](/core-modules/):
 
 ## Extension Packages
 
-Extend Testring with powerful [packages](/packages/):
+Extend Ringai with powerful [packages](/packages/):
 
 - <span class="badge package">Playwright Driver</span> **Modern Browser Automation** — Playwright-based multi-browser automation
 - <span class="badge package">Browser Proxy</span> **Network Interception** — Advanced network testing capabilities
@@ -110,19 +110,19 @@ Extend Testring with powerful [packages](/packages/):
   
   <div class="feature-card">
     <h3>🤝 Contributing</h3>
-    <p>Join our community of contributors and help make Testring even better.</p>
+    <p>Join our community of contributors and help make Ringai even better.</p>
     <a href="/guides/contributing">Learn How →</a>
   </div>
   
   <div class="feature-card">
     <h3>🐛 Issue Tracking</h3>
     <p>Report bugs, request features, and get help from the community.</p>
-    <a href="https://github.com/danbao/testring/issues" target="_blank">GitHub Issues →</a>
+    <a href="https://github.com/danbao/ringai/issues" target="_blank">GitHub Issues →</a>
   </div>
   
   <div class="feature-card">
     <h3>💬 Discussions</h3>
-    <p>Connect with other users and share your experiences with Testring.</p>
-    <a href="https://github.com/danbao/testring/discussions" target="_blank">Join Discussion →</a>
+    <p>Connect with other users and share your experiences with Ringai.</p>
+    <a href="https://github.com/danbao/ringai/discussions" target="_blank">Join Discussion →</a>
   </div>
 </div>

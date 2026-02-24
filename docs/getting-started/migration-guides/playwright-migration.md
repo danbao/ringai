@@ -4,7 +4,7 @@ This document provides a guide for migrating from Selenium to Playwright, along 
 
 ## Overview
 
-The testring framework now supports Playwright as a browser automation driver, serving as an alternative to Selenium. The Playwright plugin provides a highly compatible API with Selenium, making the migration process as smooth as possible.
+The ringai framework now supports Playwright as a browser automation driver, serving as an alternative to Selenium. The Playwright plugin provides a highly compatible API with Selenium, making the migration process as smooth as possible.
 
 ## Key Improvements
 
@@ -31,7 +31,7 @@ The testring framework now supports Playwright as a browser automation driver, s
 
 ### Configure Playwright Plugin
 
-In your testring configuration file, use the `playwright-driver` plugin:
+In your ringai configuration file, use the `playwright-driver` plugin:
 
 ```javascript
 module.exports = {

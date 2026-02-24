@@ -1,24 +1,24 @@
 {
-  "name": "@testring/test-run-controller",
+  "name": "@ringai/test-run-controller",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/fs-store": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*"
+    "@ringai/fs-store": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*"
   },
   "devDependencies": {
-    "@testring/test-utils": "workspace:*"
+    "@ringai/test-utils": "workspace:*"
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",

@@ -11,12 +11,12 @@ const execAsync = promisify(exec);
  */
 class IntegrationTestUtils {
     /**
-     * Run a testring command and capture output
+     * Run a ringai command and capture output
      * @param {string[]} args - Command arguments
      * @param {Object} options - Spawn options
      * @returns {Promise<{code: number, stdout: string, stderr: string}>}
      */
-    static runTestringCommand(args, options = {}) {
+    static runRingaiCommand(args, options = {}) {
         return new Promise((resolve, reject) => {
             const defaultOptions = {
                 cwd: path.resolve(__dirname, '../..'),
@@ -24,7 +24,7 @@ class IntegrationTestUtils {
                 ...options
             };
 
-            const process = spawn('testring', args, defaultOptions);
+            const process = spawn('ringai', args, defaultOptions);
             
             let stdout = '';
             let stderr = '';
@@ -208,7 +208,7 @@ class IntegrationTestUtils {
      */
     static createFailingTest(errorMessage = 'This test should fail') {
         return `
-            const { run } = require('@testring/e2e-test-app/test/utils');
+            const { run } = require('@ringai/e2e-test-app/test/utils');
 
             run(async (api) => {
                 const app = api.application;
@@ -224,7 +224,7 @@ class IntegrationTestUtils {
      */
     static createTimeoutTest(delay = 10000) {
         return `
-            const { run } = require('@testring/e2e-test-app/test/utils');
+            const { run } = require('@ringai/e2e-test-app/test/utils');
 
             run(async (api) => {
                 await new Promise(resolve => setTimeout(resolve, ${delay}));

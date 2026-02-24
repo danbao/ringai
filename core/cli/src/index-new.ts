@@ -7,9 +7,9 @@ import kleur from 'kleur';
 import { runTests } from './commands/runCommand.js';
 import { runInitCommand } from './commands/initCommand.js';
 import { runPluginListCommand } from './commands/pluginCommand.js';
-import { getConfig } from '@testring/cli-config';
-import { transport } from '@testring/transport';
-import { loggerClient } from '@testring/logger';
+import { getConfig } from '@ringai/cli-config';
+import { transport } from '@ringai/transport';
+import { loggerClient } from '@ringai/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Note: dist entry is located at ./dist/index-new.js, package.json is one level up.
@@ -19,8 +19,8 @@ const version = pkg.version;
 // Define the main CLI command
 const mainCommand = defineCommand({
     meta: {
-        name: 'testring',
-        version: `testring version: ${version}`,
+        name: 'ringai',
+        version: `ringai version: ${version}`,
         description: 'Modern E2E test automation framework',
     },
     subCommands: {
@@ -58,7 +58,7 @@ const mainCommand = defineCommand({
         init: defineCommand({
             meta: {
                 name: 'init',
-                description: 'Initialize a new testring project',
+                description: 'Initialize a new ringai project',
             },
             run: async () => {
                 await runInitCommand();

@@ -6,7 +6,7 @@ import {
     IWebApplicationResponseMessage,
     WebApplicationMessageType,
     WebApplicationControllerEventType,
-} from '@testring/types';
+} from '@ringai/types';
 
 export class WebApplicationController extends EventEmitter {
     private isKilled = false;

@@ -3,12 +3,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as chai from 'chai';
 
-import {loggerClient} from '@testring/logger';
+import {loggerClient} from '@ringai/logger';
 
 import {FSStoreServer, fsStoreServerHooks} from '../src/fs-store-server';
 import {FSTextFactory} from '../src/';
 
-import {fsReqType} from '@testring/types';
+import {fsReqType} from '@ringai/types';
 
 const prefix = 'fsf-preset-test';
 const log = loggerClient.withPrefix(prefix);

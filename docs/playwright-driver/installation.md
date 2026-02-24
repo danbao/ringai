@@ -2,14 +2,14 @@
 
 ## Overview
 
-Starting from v0.8.0, `@testring/plugin-playwright-driver` supports automatic installation of all required browsers during `pnpm add`, eliminating the need for manual execution of additional commands.
+Starting from v0.8.0, `@ringai/plugin-playwright-driver` supports automatic installation of all required browsers during `pnpm add`, eliminating the need for manual execution of additional commands.
 
 ## 🎯 Quick Start
 
 ### Default Installation (Recommended)
 
 ```bash
-pnpm add @testring/plugin-playwright-driver
+pnpm add @ringai/plugin-playwright-driver
 ```
 
 This will automatically install the following browsers:
@@ -23,7 +23,7 @@ This will automatically install the following browsers:
 If you don't want to automatically install browsers:
 
 ```bash
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @ringai/plugin-playwright-driver
 ```
 
 ### Install Specific Browsers
@@ -31,7 +31,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-drive
 Install only the browsers you need:
 
 ```bash
-PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,msedge pnpm add @ringai/plugin-playwright-driver
 ```
 
 ## 🔧 Environment Variable Control
@@ -97,21 +97,21 @@ RUN pnpm exec playwright install chromium firefox
 
 ```bash
 # Full installation with all browsers
-pnpm add @testring/plugin-playwright-driver
+pnpm add @ringai/plugin-playwright-driver
 ```
 
 ### Test Environment
 
 ```bash
 # Install only Chromium and Firefox
-PLAYWRIGHT_BROWSERS=chromium,firefox pnpm add @testring/plugin-playwright-driver
+PLAYWRIGHT_BROWSERS=chromium,firefox pnpm add @ringai/plugin-playwright-driver
 ```
 
 ### Production Build
 
 ```bash
 # Skip browser installation
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @testring/plugin-playwright-driver
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm add -D @ringai/plugin-playwright-driver
 ```
 
 ## 🐛 Troubleshooting
@@ -137,7 +137,7 @@ pnpm exec playwright install --force msedge
 
 ```bash
 # Ensure script has execution permission
-chmod +x node_modules/@testring/plugin-playwright-driver/scripts/install-browsers.js
+chmod +x node_modules/@ringai/plugin-playwright-driver/scripts/install-browsers.js
 ```
 
 ### 4. Issues in CI Environment

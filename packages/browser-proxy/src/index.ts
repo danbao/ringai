@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {fork} from '@testring/child-process';
-import {ITransport, IChildProcessForkOptions} from '@testring/types';
+import {fork} from '@ringai/child-process';
+import {ITransport, IChildProcessForkOptions} from '@ringai/types';
 import {BrowserProxyController} from './browser-proxy-controller';
 import {BrowserProxyPlaywright} from './browser-proxy-playwright';
 

@@ -1,7 +1,7 @@
 import {
     ITestControllerExecutionState,
     TestWorkerAction,
-} from '@testring/types';
+} from '@ringai/types';
 
 import React from 'react';
 

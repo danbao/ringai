@@ -21,11 +21,11 @@ on:
         description: 'Node.js version to use'
       publish-scope:
         type: string
-        default: '@testring'
+        default: '@ringai'
         description: 'npm scope for packages'
       exclude-packages:
         type: string
-        default: '@testring/devtool-frontend,@testring/devtool-backend,@testring/devtool-extension'
+        default: '@ringai/devtool-frontend,@ringai/devtool-backend,@ringai/devtool-extension'
         description: 'Comma-separated list of packages to exclude'
     secrets:
       npm-token:

@@ -2,17 +2,17 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
   "changelog": [
     "@changesets/changelog-github",
-    { "repo": "danbao/testring" }
+    { "repo": "danbao/ringai" }
   ],
   "commit": false,
   "fixed": [
-    ["@testring/*", "testring"]
+    ["@ringai/*", "ringai"]
   ],
   "linked": [],
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@testring/e2e-test-app"
+    "@ringai/e2e-test-app"
   ]
 }

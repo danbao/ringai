@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow,@typescript-eslint/no-this-alias */
 import * as url from 'url';
-import {FSScreenshotFactory} from '@testring/fs-store';
+import {FSScreenshotFactory} from '@ringai/fs-store';
 
 import {
     IWebApplicationConfig,
@@ -15,13 +15,13 @@ import {
     ExtensionPostMessageTypes,
     FSFileLogType,
     SavePdfOptions,
-} from '@testring/types';
+} from '@ringai/types';
 
-import {asyncBreakpoints} from '@testring/async-breakpoints';
-import {loggerClient, LoggerClient} from '@testring/logger';
-import {generateUniqId} from '@testring/utils';
-import {PluggableModule} from '@testring/pluggable-module';
-import {createElementPath, ElementPathProxy} from '@testring/element-path';
+import {asyncBreakpoints} from '@ringai/async-breakpoints';
+import {loggerClient, LoggerClient} from '@ringai/logger';
+import {generateUniqId} from '@ringai/utils';
+import {PluggableModule} from '@ringai/pluggable-module';
+import {createElementPath, ElementPathProxy} from '@ringai/element-path';
 
 import {createAssertion} from './async-assert';
 import {WebClient} from './web-client';
@@ -34,7 +34,7 @@ import {
 } from './browser-scripts';
 
 // 导入统一的timeout配置
-import TIMEOUTS from '@testring/timeout-config';
+import TIMEOUTS from '@ringai/timeout-config';
 
 type valueType = string | number | null | undefined;
 

@@ -143,7 +143,7 @@ export const esmLoaderHooks = new ESMLoaderHooks();
  * 
  * @example
  * // In a test file:
- * import { createESMLoader } from '@testring/sandbox/esm-loader';
+ * import { createESMLoader } from '@ringai/sandbox/esm-loader';
  * 
  * const loader = createESMLoader({
  *   onLoad: async (specifier) => {
@@ -275,7 +275,7 @@ function generateMockModuleCode(mock: ModuleMock): string {
  * Create a simple mock for a module
  * 
  * @example
- * import { createMock } from '@testring/sandbox/esm-loader';
+ * import { createMock } from '@ringai/sandbox/esm-loader';
  * 
  * const mock = createMock({
  *   myFunction: () => 'mocked result',
@@ -294,7 +294,7 @@ export function createMock(namedExports: MockedModule): ModuleMock {
  * Create a default export mock
  * 
  * @example
- * import { createDefaultMock } from '@testring/sandbox/esm-loader';
+ * import { createDefaultMock } from '@ringai/sandbox/esm-loader';
  * 
  * const mock = createDefaultMock({
  *   foo: 'bar',

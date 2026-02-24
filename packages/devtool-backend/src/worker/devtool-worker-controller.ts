@@ -16,12 +16,12 @@ import {
     ITransport,
     TestWorkerAction,
     WebApplicationDevtoolActions,
-} from '@testring/types';
+} from '@ringai/types';
 // eslint-disable-next-line import/no-unresolved
 import type {Request} from 'express-serve-static-core';
 
 import {Store} from 'redux';
-import {loggerClient} from '@testring/logger';
+import {loggerClient} from '@ringai/logger';
 
 import {DevtoolHttpServer} from './devtool-http-server';
 import {DevtoolWsServer} from './devtool-ws-server';

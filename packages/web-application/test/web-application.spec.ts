@@ -1,8 +1,8 @@
 
 import * as chai from 'chai';
 
-import {TransportMock} from '@testring/test-utils';
-import {generateUniqId} from '@testring/utils';
+import {TransportMock} from '@ringai/test-utils';
+import {generateUniqId} from '@ringai/utils';
 import {WebApplication} from '../src/web-application';
 
 // TODO (flops) add more tests

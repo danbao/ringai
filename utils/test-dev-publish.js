@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const mockGithubUsername = 'testuser';
 const mockCommitId = 'abc1234';
-const excludeList = ['@testring/devtool-frontend', '@testring/devtool-backend', '@testring/devtool-extension'];
+const excludeList = ['@ringai/devtool-frontend', '@ringai/devtool-backend', '@ringai/devtool-extension'];
 
 function getWorkspacePackages() {
     const rootDir = path.resolve(__dirname, '..');
@@ -41,10 +41,10 @@ function createDevPackageJson(pkg) {
     const devVersion = `${packageJson.version}-${mockGithubUsername}-${mockCommitId}`;
 
     let devName;
-    if (packageJson.name === 'testring') {
-        devName = 'testring-dev';
-    } else if (packageJson.name.startsWith('@testring/')) {
-        devName = packageJson.name.replace('@testring/', '@testring-dev/');
+    if (packageJson.name === 'ringai') {
+        devName = 'ringai-dev';
+    } else if (packageJson.name.startsWith('@ringai/')) {
+        devName = packageJson.name.replace('@ringai/', '@ringai-dev/');
     } else {
         devName = packageJson.name;
     }
@@ -55,10 +55,10 @@ function createDevPackageJson(pkg) {
         if (devPackageJson[depType]) {
             const newDeps = {};
             for (const [depName, depVersion] of Object.entries(devPackageJson[depType])) {
-                if (depName === 'testring') {
-                    newDeps['testring-dev'] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
-                } else if (depName.startsWith('@testring/') && !depName.startsWith('@testring-dev/')) {
-                    newDeps[depName.replace('@testring/', '@testring-dev/')] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
+                if (depName === 'ringai') {
+                    newDeps['ringai-dev'] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
+                } else if (depName.startsWith('@ringai/') && !depName.startsWith('@ringai-dev/')) {
+                    newDeps[depName.replace('@ringai/', '@ringai-dev/')] = `${depVersion}-${mockGithubUsername}-${mockCommitId}`;
                 } else {
                     newDeps[depName] = depVersion;
                 }
@@ -83,7 +83,7 @@ async function testDevPublish() {
         console.log(`${pkg.name} -> ${devPkg.name}@${devPkg.version}`);
 
         const transformedDeps = Object.entries(devPkg.dependencies || {})
-            .filter(([name]) => name.startsWith('@testring-dev/') || name === 'testring-dev');
+            .filter(([name]) => name.startsWith('@ringai-dev/') || name === 'ringai-dev');
         if (transformedDeps.length > 0) {
             transformedDeps.forEach(([name, version]) => console.log(`  dep: ${name}@${version}`));
         }

@@ -1,22 +1,22 @@
-# @testring/api
+# @ringai/api
 
-Test API module that provides the core test execution interface, test lifecycle management, and test context for the testring framework.
+Test API module that provides the core test execution interface, test lifecycle management, and test context for the ringai framework.
 
 ## Installation
 
 ```bash
-pnpm add @testring/api
+pnpm add @ringai/api
 ```
 
 ## Overview
 
-This module serves as the primary API layer for writing and executing tests in testring. It provides:
+This module serves as the primary API layer for writing and executing tests in ringai. It provides:
 
 - The `run()` function — the main entry point for test execution
 - `beforeRun()` and `afterRun()` lifecycle callbacks
 - `TestAPIController` — manages test ID, parameters, environment, and event bus
 - `TestContext` — the `api` object passed into every test function, providing logging, web application access, and parameter retrieval
-- Re-export of `WebApplication` from `@testring/web-application`
+- Re-export of `WebApplication` from `@ringai/web-application`
 
 ## API Reference
 
@@ -25,7 +25,7 @@ This module serves as the primary API layer for writing and executing tests in t
 The main entry point for test execution. Accepts one or more test functions, creates a `TestContext` instance, and runs each test sequentially.
 
 ```typescript
-import { run } from '@testring/api';
+import { run } from '@ringai/api';
 
 type TestFunction = (api: TestContext) => void | Promise<void>;
 
@@ -43,7 +43,7 @@ async function run(...tests: Array<TestFunction>): Promise<void>;
 7. In all cases: the `afterRun` callbacks include `api.end()` which stops all web application instances
 
 ```typescript
-import { run } from '@testring/api';
+import { run } from '@ringai/api';
 
 await run(async (api) => {
   await api.application.url('https://example.com');
@@ -54,7 +54,7 @@ await run(async (api) => {
 #### Running Multiple Tests Sequentially
 
 ```typescript
-import { run } from '@testring/api';
+import { run } from '@ringai/api';
 
 const loginTest = async (api) => {
   await api.application.url('/login');
@@ -77,7 +77,7 @@ await run(loginTest, dashboardTest);
 Register lifecycle callbacks that run before/after the test functions.
 
 ```typescript
-import { beforeRun, afterRun } from '@testring/api';
+import { beforeRun, afterRun } from '@ringai/api';
 
 beforeRun(async () => {
   // Runs before the first test function
@@ -90,7 +90,7 @@ afterRun(async () => {
 });
 ```
 
-`beforeRun` callbacks are flushed (executed and cleared) at the start of `run()`, after the `started` event. They are wrapped with `@testring/async-breakpoints` for debugger support.
+`beforeRun` callbacks are flushed (executed and cleared) at the start of `run()`, after the `started` event. They are wrapped with `@ringai/async-breakpoints` for debugger support.
 
 The `run()` function automatically registers an `afterRun` callback that calls `api.end()` to stop all web application instances.
 
@@ -99,7 +99,7 @@ The `run()` function automatically registers an `afterRun` callback that calls `
 Manages the test state: test ID, parameters, environment parameters, lifecycle callbacks, and the event bus.
 
 ```typescript
-import { testAPIController } from '@testring/api';
+import { testAPIController } from '@ringai/api';
 ```
 
 #### `testAPIController.setTestID(testID)` / `testAPIController.getTestID()`
@@ -169,14 +169,14 @@ Low-level registration of lifecycle callbacks. Prefer using `beforeRun()` and `a
 
 #### `testAPIController.flushBeforeRunCallbacks()` / `testAPIController.flushAfterRunCallbacks()`
 
-Executes all registered callbacks in order and clears the list. Both methods integrate with `@testring/async-breakpoints` (waiting before and after instruction breakpoints).
+Executes all registered callbacks in order and clears the list. Both methods integrate with `@ringai/async-breakpoints` (waiting before and after instruction breakpoints).
 
 ### `testAPIController` singleton
 
 A pre-created instance exported from the module:
 
 ```typescript
-import { testAPIController } from '@testring/api';
+import { testAPIController } from '@ringai/api';
 ```
 
 ### `TestContext` class
@@ -228,7 +228,7 @@ const baseUrl = env.baseUrl;
 Creates a custom `WebApplication` subclass instance, bound to the current test ID and transport.
 
 ```typescript
-import { WebApplication } from '@testring/web-application';
+import { WebApplication } from '@ringai/web-application';
 
 class AdminApp extends WebApplication {
   async loginAsAdmin() {
@@ -256,16 +256,16 @@ Creates a shallow clone of the `TestContext` merged with the provided object. Us
 
 ### `WebApplication` re-export
 
-The `WebApplication` class from `@testring/web-application` is re-exported for convenience:
+The `WebApplication` class from `@ringai/web-application` is re-exported for convenience:
 
 ```typescript
-import { WebApplication } from '@testring/api';
+import { WebApplication } from '@ringai/api';
 ```
 
 ## Complete Example
 
 ```typescript
-import { run, beforeRun, afterRun, testAPIController } from '@testring/api';
+import { run, beforeRun, afterRun, testAPIController } from '@ringai/api';
 
 testAPIController.setTestParameters({
   username: 'testuser@example.com',
@@ -305,16 +305,16 @@ await run(async (api) => {
 
 ## Dependencies
 
-- `@testring/web-application` — `WebApplication` class
-- `@testring/async-breakpoints` — Async breakpoint integration in lifecycle callbacks
-- `@testring/logger` — `loggerClient` for logging and step management
-- `@testring/transport` — `transport` singleton for web application IPC
-- `@testring/utils` — `restructureError` for error normalization
-- `@testring/types` — Type definitions (`TestEvents`, `ITestQueuedTestRunData`)
+- `@ringai/web-application` — `WebApplication` class
+- `@ringai/async-breakpoints` — Async breakpoint integration in lifecycle callbacks
+- `@ringai/logger` — `loggerClient` for logging and step management
+- `@ringai/transport` — `transport` singleton for web application IPC
+- `@ringai/utils` — `restructureError` for error normalization
+- `@ringai/types` — Type definitions (`TestEvents`, `ITestQueuedTestRunData`)
 
 ## Related Modules
 
-- [`@testring/test-worker`](./test-worker.md) — Runs test files in worker processes (invokes `run()`)
-- [`@testring/test-run-controller`](./test-run-controller.md) — Orchestrates test execution
-- [`@testring/web-application`](../packages/web-application.md) — Web application abstraction
-- [`@testring/async-breakpoints`](./async-breakpoints.md) — Debugger breakpoint support
+- [`@ringai/test-worker`](./test-worker.md) — Runs test files in worker processes (invokes `run()`)
+- [`@ringai/test-run-controller`](./test-run-controller.md) — Orchestrates test execution
+- [`@ringai/web-application`](../packages/web-application.md) — Web application abstraction
+- [`@ringai/async-breakpoints`](./async-breakpoints.md) — Debugger breakpoint support

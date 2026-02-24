@@ -1,16 +1,16 @@
-# @testring/async-breakpoints
+# @ringai/async-breakpoints
 
 Asynchronous breakpoint system that provides pause-and-resume control over test execution flow. Built on top of Node.js `EventEmitter`, it allows one part of the framework to block execution until another part explicitly resolves the breakpoint.
 
 ## Installation
 
 ```bash
-pnpm add @testring/async-breakpoints
+pnpm add @ringai/async-breakpoints
 ```
 
 ## Overview
 
-This module provides an event-driven breakpoint mechanism used internally by the testring framework to coordinate between the devtool debugger and test execution. It supports two breakpoint types — **before instruction** and **after instruction** — and exposes a shared singleton instance for framework-wide use.
+This module provides an event-driven breakpoint mechanism used internally by the ringai framework to coordinate between the devtool debugger and test execution. It supports two breakpoint types — **before instruction** and **after instruction** — and exposes a shared singleton instance for framework-wide use.
 
 Key capabilities:
 
@@ -27,7 +27,7 @@ Key capabilities:
 The main breakpoint manager. Extends `EventEmitter` from Node.js.
 
 ```typescript
-import { AsyncBreakpoints } from '@testring/async-breakpoints';
+import { AsyncBreakpoints } from '@ringai/async-breakpoints';
 
 const breakpoints = new AsyncBreakpoints();
 ```
@@ -93,7 +93,7 @@ Emits a `breakStack` event that causes **all** active breakpoints to reject with
 A pre-created `AsyncBreakpoints` instance exported for framework-wide use:
 
 ```typescript
-import { asyncBreakpoints } from '@testring/async-breakpoints';
+import { asyncBreakpoints } from '@ringai/async-breakpoints';
 
 asyncBreakpoints.addBeforeInstructionBreakpoint();
 await asyncBreakpoints.waitBeforeInstructionBreakpoint();
@@ -109,7 +109,7 @@ asyncBreakpoints.resolveBeforeInstructionBreakpoint();
 Custom error class thrown when `breakStack()` interrupts an active breakpoint. Extends `Error` with `Error.captureStackTrace` for cleaner stack traces.
 
 ```typescript
-import { BreakStackError } from '@testring/async-breakpoints';
+import { BreakStackError } from '@ringai/async-breakpoints';
 
 try {
   await asyncBreakpoints.waitBeforeInstructionBreakpoint();
@@ -147,7 +147,7 @@ export enum BreakpointEvents {
 These are the event names emitted on the `EventEmitter`. You can subscribe to them directly:
 
 ```typescript
-import { asyncBreakpoints, BreakpointEvents } from '@testring/async-breakpoints';
+import { asyncBreakpoints, BreakpointEvents } from '@ringai/async-breakpoints';
 
 asyncBreakpoints.on(BreakpointEvents.resolverEvent, (type) => {
   console.log(`Breakpoint resolved: ${type}`);
@@ -163,7 +163,7 @@ asyncBreakpoints.on(BreakpointEvents.breakStackEvent, () => {
 ### Basic flow control
 
 ```typescript
-import { asyncBreakpoints } from '@testring/async-breakpoints';
+import { asyncBreakpoints } from '@ringai/async-breakpoints';
 
 // Producer: set a breakpoint before executing an instruction
 asyncBreakpoints.addBeforeInstructionBreakpoint();
@@ -184,7 +184,7 @@ function onDebuggerContinue() {
 ### Using the callback to detect breakpoint state
 
 ```typescript
-import { asyncBreakpoints } from '@testring/async-breakpoints';
+import { asyncBreakpoints } from '@ringai/async-breakpoints';
 
 await asyncBreakpoints.waitBeforeInstructionBreakpoint(async (hasBreakpoint) => {
   if (hasBreakpoint) {
@@ -198,7 +198,7 @@ await asyncBreakpoints.waitBeforeInstructionBreakpoint(async (hasBreakpoint) => 
 ### Forcibly breaking all breakpoints
 
 ```typescript
-import { asyncBreakpoints, BreakStackError } from '@testring/async-breakpoints';
+import { asyncBreakpoints, BreakStackError } from '@ringai/async-breakpoints';
 
 asyncBreakpoints.addBeforeInstructionBreakpoint();
 asyncBreakpoints.addAfterInstructionBreakpoint();
@@ -220,5 +220,5 @@ asyncBreakpoints.breakStack();
 
 ## Related Modules
 
-- `@testring/api` — uses breakpoints for devtool-driven flow control
-- `@testring/test-worker` — uses breakpoints for process synchronization
+- `@ringai/api` — uses breakpoints for devtool-driven flow control
+- `@ringai/test-worker` — uses breakpoints for process synchronization

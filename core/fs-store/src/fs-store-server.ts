@@ -6,11 +6,11 @@ import {
     IFSStoreResp,
     fsReqType,
     requestMeta,
-} from '@testring/types';
-import {generateUniqId} from '@testring/utils';
-import {loggerClient} from '@testring/logger';
-import {transport} from '@testring/transport';
-import {PluggableModule} from '@testring/pluggable-module';
+} from '@ringai/types';
+import {generateUniqId} from '@ringai/utils';
+import {loggerClient} from '@ringai/logger';
+import {transport} from '@ringai/transport';
+import {PluggableModule} from '@ringai/pluggable-module';
 
 import {LockPool, FilePermissionResolver, FS_CONSTANTS} from './utils';
 

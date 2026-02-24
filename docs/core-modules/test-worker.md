@@ -1,11 +1,11 @@
-# @testring/test-worker
+# @ringai/test-worker
 
-Test worker module that manages spawning and executing tests in isolated processes. Provides the execution engine for the testring framework with support for child process isolation, local (in-process) execution, compilation hooks, and IPC-based communication via `@testring/transport`.
+Test worker module that manages spawning and executing tests in isolated processes. Provides the execution engine for the ringai framework with support for child process isolation, local (in-process) execution, compilation hooks, and IPC-based communication via `@ringai/transport`.
 
 ## Installation
 
 ```bash
-pnpm add @testring/test-worker --dev
+pnpm add @ringai/test-worker --dev
 ```
 
 ## Architecture Overview
@@ -38,7 +38,7 @@ Main Process                          Child Process (forked)
 The main entry point. Extends `PluggableModule` with two plugin hooks for compilation.
 
 ```typescript
-import { TestWorker } from '@testring/test-worker';
+import { TestWorker } from '@ringai/test-worker';
 ```
 
 ### Constructor
@@ -68,9 +68,9 @@ class TestWorker extends PluggableModule implements ITestWorker {
 ### Usage
 
 ```typescript
-import { TestWorker } from '@testring/test-worker';
-import { transport } from '@testring/transport';
-import { TestWorkerPlugin } from '@testring/types';
+import { TestWorker } from '@ringai/test-worker';
+import { transport } from '@ringai/transport';
+import { TestWorkerPlugin } from '@ringai/types';
 
 const testWorker = new TestWorker(transport, {
     screenshots: 'disable',
@@ -98,7 +98,7 @@ const instance = testWorker.spawn();
 Manages a single child process (or local worker) for test execution. Handles process lifecycle, IPC communication, and source compilation.
 
 ```typescript
-import { TestWorkerInstance } from '@testring/test-worker';
+import { TestWorkerInstance } from '@ringai/test-worker';
 ```
 
 ### Constructor
@@ -154,7 +154,7 @@ Default config:
 ### Worker Process Creation
 
 When `localWorker` is `false` (default):
-- Uses `fork()` from `@testring/child-process` to spawn a child process
+- Uses `fork()` from `@ringai/child-process` to spawn a child process
 - The child runs `worker/index.ts` which initializes a `WorkerController`
 - The worker is registered with transport using the worker ID
 - stdout/stderr are piped to the logger
@@ -181,7 +181,7 @@ class TestWorkerLocal extends EventEmitter implements IWorkerEmitter {
 
 ## WorkerController Class
 
-Runs inside the child process (or in-process for local mode). Orchestrates test execution using `SandboxWorkerThreads` from `@testring/sandbox`.
+Runs inside the child process (or in-process for local mode). Orchestrates test execution using `SandboxWorkerThreads` from `@ringai/sandbox`.
 
 ```typescript
 class WorkerController {
@@ -223,7 +223,7 @@ When `waitForRelease: true`, the worker supports:
 An experimental alternative that uses Tinypool (`worker_threads` pool) instead of `child_process.fork()`.
 
 ```typescript
-import { TestWorkerTinypool, createTinypoolWorker } from '@testring/test-worker';
+import { TestWorkerTinypool, createTinypoolWorker } from '@ringai/test-worker';
 ```
 
 Benefits over child process:
@@ -311,20 +311,20 @@ interface ITestExecutionMessage {
 
 ## Dependencies
 
-- `@testring/pluggable-module` — Plugin hook system (`PluggableModule`)
-- `@testring/child-process` — `fork()` for spawning worker processes
-- `@testring/transport` — IPC message passing between main and worker processes
-- `@testring/sandbox` — `SandboxWorkerThreads` for test code execution
-- `@testring/api` — `TestAPIController` for test lifecycle events
-- `@testring/async-breakpoints` — Breakpoint support for devtools integration
-- `@testring/logger` — Logging via `loggerClient`
-- `@testring/fs-store` — `FSStoreClient` for file system operations
-- `@testring/utils` — `generateUniqId()`, `restructureError()`
-- `@testring/types` — All type definitions and enums
+- `@ringai/pluggable-module` — Plugin hook system (`PluggableModule`)
+- `@ringai/child-process` — `fork()` for spawning worker processes
+- `@ringai/transport` — IPC message passing between main and worker processes
+- `@ringai/sandbox` — `SandboxWorkerThreads` for test code execution
+- `@ringai/api` — `TestAPIController` for test lifecycle events
+- `@ringai/async-breakpoints` — Breakpoint support for devtools integration
+- `@ringai/logger` — Logging via `loggerClient`
+- `@ringai/fs-store` — `FSStoreClient` for file system operations
+- `@ringai/utils` — `generateUniqId()`, `restructureError()`
+- `@ringai/types` — All type definitions and enums
 
 ## Related Modules
 
-- [`@testring/sandbox`](./sandbox.md) — Code execution sandbox
-- [`@testring/test-run-controller`](./index.md) — Orchestrates test runs using TestWorker
-- [`@testring/transport`](./transport.md) — Inter-process communication layer
-- [`@testring/api`](./api.md) — Test API and lifecycle events
+- [`@ringai/sandbox`](./sandbox.md) — Code execution sandbox
+- [`@ringai/test-run-controller`](./index.md) — Orchestrates test runs using TestWorker
+- [`@ringai/transport`](./transport.md) — Inter-process communication layer
+- [`@ringai/api`](./api.md) — Test API and lifecycle events

@@ -1,11 +1,11 @@
-# @testring/reporter
+# @ringai/reporter
 
 Flexible test reporting system with built-in reporters (spec, dot, json) and support for custom reporter plugins.
 
 ## Installation
 
 ```bash
-pnpm add @testring/reporter
+pnpm add @ringai/reporter
 ```
 
 ## Overview
@@ -23,7 +23,7 @@ The reporter module provides:
 Manages multiple reporters and dispatches test lifecycle events to all of them.
 
 ```typescript
-import { ReporterManager } from '@testring/reporter';
+import { ReporterManager } from '@ringai/reporter';
 ```
 
 **Constructor:**
@@ -70,7 +70,7 @@ If no reporters are configured, `SpecReporter` is added by default.
 **Example:**
 
 ```typescript
-import { ReporterManager } from '@testring/reporter';
+import { ReporterManager } from '@ringai/reporter';
 
 const manager = new ReporterManager([
   { reporter: 'spec', options: { colors: true, verbose: true } },
@@ -92,7 +92,7 @@ await manager.close();
 Base class for all reporters. Provides output helpers, color support, and duration formatting.
 
 ```typescript
-import { TestReporter } from '@testring/reporter';
+import { TestReporter } from '@ringai/reporter';
 ```
 
 **Constructor:**
@@ -309,8 +309,8 @@ type ReporterConstructor = new (options?: IReporterOptions) => ITestReporter;
 Extend `TestReporter` and override lifecycle methods:
 
 ```typescript
-import { TestReporter } from '@testring/reporter';
-import type { ITestResult, ITestRunResult, IReporterOptions } from '@testring/reporter';
+import { TestReporter } from '@ringai/reporter';
+import type { ITestResult, ITestRunResult, IReporterOptions } from '@ringai/reporter';
 
 export class TapReporter extends TestReporter {
   public name = 'tap';
@@ -353,7 +353,7 @@ export class TapReporter extends TestReporter {
 Register it with `ReporterManager`:
 
 ```typescript
-import { ReporterManager } from '@testring/reporter';
+import { ReporterManager } from '@ringai/reporter';
 import { TapReporter } from './tap-reporter.js';
 
 const manager = new ReporterManager([
@@ -364,7 +364,7 @@ const manager = new ReporterManager([
 Or implement the `ITestReporter` interface directly as a plain object:
 
 ```typescript
-import type { ITestReporter, ITestResult } from '@testring/reporter';
+import type { ITestReporter, ITestResult } from '@ringai/reporter';
 
 const myReporter: ITestReporter = {
   name: 'my-reporter',

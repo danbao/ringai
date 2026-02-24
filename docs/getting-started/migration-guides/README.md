@@ -1,15 +1,15 @@
 # Migration Guides
 
-This directory contains guides for migrating to testring from other testing frameworks.
+This directory contains guides for migrating to ringai from other testing frameworks.
 
 ## Available Guides
 
-- [Playwright Migration](playwright-migration.md) - Migrating from Playwright to testring
+- [Playwright Migration](playwright-migration.md) - Migrating from Playwright to ringai
 
 ## General Migration Tips
 
 1. Review your current test structure
-2. Understand testring's architecture
+2. Understand ringai's architecture
 3. Plan your migration in phases
 4. Test thoroughly after migration
 

@@ -1,20 +1,20 @@
 {
-  "name": "@testring/plugin-api",
+  "name": "@ringai/plugin-api",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/fs-store": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/fs-store": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "@types/node": "22.8.5"
   },
   "scripts": {

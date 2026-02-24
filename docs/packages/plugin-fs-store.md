@@ -1,11 +1,11 @@
-# @testring/plugin-fs-store
+# @ringai/plugin-fs-store
 
-File system storage plugin for the testring framework. Extends `@testring/fs-store` by hooking into the `FSStoreServer`'s file name assignment process, routing output files to configured directories based on file type.
+File system storage plugin for the ringai framework. Extends `@ringai/fs-store` by hooking into the `FSStoreServer`'s file name assignment process, routing output files to configured directories based on file type.
 
 ## Installation
 
 ```bash
-pnpm add --save-dev @testring/plugin-fs-store
+pnpm add --save-dev @ringai/plugin-fs-store
 ```
 
 ## Export
@@ -13,7 +13,7 @@ pnpm add --save-dev @testring/plugin-fs-store
 The package exports a single default plugin function:
 
 ```typescript
-import plugin from '@testring/plugin-fs-store';
+import plugin from '@ringai/plugin-fs-store';
 ```
 
 ## How It Works
@@ -21,7 +21,7 @@ import plugin from '@testring/plugin-fs-store';
 ### Plugin Registration (index.ts)
 
 ```typescript
-import { PluginAPI } from '@testring/plugin-api';
+import { PluginAPI } from '@ringai/plugin-api';
 import { cbGen } from './onFileName';
 
 export default (pluginAPI: PluginAPI, config: Record<string, any>) => {
@@ -59,7 +59,7 @@ The `cbGen(staticPaths)` function returns an async callback with signature:
 
 3. **Generate unique file name** (`ensureUniqName`):
    - If no `meta.fileName` is provided, generate a unique name: `{nameParts}_{randomId}.{ext}`
-   - Uses `ensureNewFile()` from `@testring/utils` to guarantee no collision.
+   - Uses `ensureNewFile()` from `@ringai/utils` to guarantee no collision.
    - If `meta.fileName` exists and `extraName` is not empty, insert the extra name before the extension.
 
 4. **Return** the full path: `path.join(basePath, fileName)`.
@@ -87,12 +87,12 @@ interface PluginConfig {
 }
 ```
 
-### In `.testringrc`
+### In `.ringairc`
 
 ```json
 {
   "plugins": [
-    ["@testring/plugin-fs-store", {
+    ["@ringai/plugin-fs-store", {
       "staticPaths": {
         "screenshot": "./test-results/screenshots",
         "log": "./test-results/logs",
@@ -126,13 +126,13 @@ interface IOnFileNameHookData {
 
 ## File Release Handling
 
-The `cbGen` callback only handles **file name assignment** — it determines where files should be written. Actual file creation, writing, and cleanup are managed by `@testring/fs-store` (`FSScreenshotFactory`, `FSTextFactory`, etc.). This plugin's role is purely to route file names to the correct directories based on type.
+The `cbGen` callback only handles **file name assignment** — it determines where files should be written. Actual file creation, writing, and cleanup are managed by `@ringai/fs-store` (`FSScreenshotFactory`, `FSTextFactory`, etc.). This plugin's role is purely to route file names to the correct directories based on type.
 
 When `meta.global` is `true` with a `fileName`, the file is treated as shared across workers (e.g., a summary report) and its path is used directly without worker-specific naming.
 
 ## Dependencies
 
-- `@testring/plugin-api` — Plugin API interface
-- `@testring/types` — `FSFileUniqPolicy`, `IOnFileNameHookData`
-- `@testring/utils` — `generateUniqId`, `fs.ensureNewFile`, `fs.ensureDir`
+- `@ringai/plugin-api` — Plugin API interface
+- `@ringai/types` — `FSFileUniqPolicy`, `IOnFileNameHookData`
+- `@ringai/utils` — `generateUniqId`, `fs.ensureNewFile`, `fs.ensureDir`
 - `path`, `os` — Node.js built-ins

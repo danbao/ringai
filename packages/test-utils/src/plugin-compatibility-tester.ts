@@ -7,7 +7,7 @@
  */
 
 import { expect } from 'chai';
-import { IBrowserProxyPlugin } from '@testring/types';
+import { IBrowserProxyPlugin } from '@ringai/types';
 
 export interface CompatibilityTestConfig {
     pluginName: string;

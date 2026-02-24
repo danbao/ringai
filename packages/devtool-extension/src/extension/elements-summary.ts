@@ -1,4 +1,4 @@
-import {ElementSummary} from '@testring/types';
+import {ElementSummary} from '@ringai/types';
 
 const composePath = (
     element: HTMLElement,

@@ -1,5 +1,5 @@
 /**
- * Reporter types for testring
+ * Reporter types for ringai
  */
 
 export const enum ReporterPlugins {

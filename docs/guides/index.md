@@ -1,11 +1,11 @@
-# Testring Guides
+# Ringai Guides
 
-Comprehensive guides for using and extending testring.
+Comprehensive guides for using and extending ringai.
 
 ## Available Guides
 
-- [Contributing](contributing.md) - How to contribute to the testring project
-- [Plugin Development](plugin-development.md) - Creating custom plugins for testring
+- [Contributing](contributing.md) - How to contribute to the ringai project
+- [Plugin Development](plugin-development.md) - Creating custom plugins for ringai
 - [Testing Best Practices](testing-best-practices.md) - Best practices for writing effective tests
 - [Troubleshooting](troubleshooting.md) - Common issues and solutions
 
@@ -13,7 +13,7 @@ Comprehensive guides for using and extending testring.
 
 ### Development Guides
 - **Contributing**: Step-by-step guide for contributing code, documentation, and reporting issues
-- **Plugin Development**: Complete guide to developing testring plugins and custom modules
+- **Plugin Development**: Complete guide to developing ringai plugins and custom modules
 - **Testing Best Practices**: Patterns and practices for writing maintainable tests
 
 ### User Guides

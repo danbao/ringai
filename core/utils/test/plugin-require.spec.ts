@@ -5,7 +5,7 @@ import {requirePlugin} from '../src/plugin-require';
 
 describe('requirePlugin', () => {
     it('should resolve npm modules', () => {
-        const plugin = requirePlugin<Record<string, unknown>>('@testring/types');
+        const plugin = requirePlugin<Record<string, unknown>>('@ringai/types');
 
         chai.expect(typeof plugin).to.equal('object');
         chai.expect(plugin).to.have.property('TestStatus');

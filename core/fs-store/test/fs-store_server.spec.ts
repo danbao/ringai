@@ -10,9 +10,9 @@ import {
 } from '../src/fs-store-server';
 import {FS_CONSTANTS} from '../src/utils';
 
-import {transport} from '@testring/transport';
+import {transport} from '@ringai/transport';
 
-import {IFSStoreReq, IFSStoreResp, fsReqType} from '@testring/types';
+import {IFSStoreReq, IFSStoreResp, fsReqType} from '@ringai/types';
 
 const msgNamePrefix = 'fs-st_test';
 

@@ -24,8 +24,8 @@ In `packages/e2e-test-app/src/test-runner.ts`, the child process error handling 
 
 ```typescript
 // Original problematic code
-const testringProcess = childProcess.exec(
-    `node ${testringFile} ${args.join(' ')}`,
+const ringaiProcess = childProcess.exec(
+    `node ${ringaiFile} ${args.join(' ')}`,
     {},
     (error, _stdout, _stderr) => {
         mockWebServer.stop();
@@ -53,8 +53,8 @@ async function runTests() {
     await mockWebServer.start();
 
     return new Promise<void>((resolve, reject) => {
-        const testringProcess = childProcess.exec(
-            `node ${testringFile} ${args.join(' ')}`,
+        const ringaiProcess = childProcess.exec(
+            `node ${ringaiFile} ${args.join(' ')}`,
             {},
             (error, _stdout, _stderr) => {
                 mockWebServer.stop();
@@ -72,7 +72,7 @@ async function runTests() {
         );
 
         // Add process exit event handling
-        testringProcess.on('exit', (code, signal) => {
+        ringaiProcess.on('exit', (code, signal) => {
             console.log(`[test-runner] Process exited with code: ${code}, signal: ${signal}`);
             if (code !== 0 && code !== null) {
                 const error = new Error(`Test process exited with non-zero code: ${code}`);
@@ -83,7 +83,7 @@ async function runTests() {
             }
         });
 
-        testringProcess.on('error', (error) => {
+        ringaiProcess.on('error', (error) => {
             console.error('[test-runner] Process error:', error);
             mockWebServer.stop();
             reject(error);

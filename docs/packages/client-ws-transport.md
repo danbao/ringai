@@ -1,18 +1,18 @@
-# @testring/client-ws-transport
+# @ringai/client-ws-transport
 
-WebSocket client transport for the testring devtool system. Wraps the browser `WebSocket` API in an `EventEmitter`-based interface with automatic message queuing, optional reconnection, and a handshake protocol for app registration.
+WebSocket client transport for the ringai devtool system. Wraps the browser `WebSocket` API in an `EventEmitter`-based interface with automatic message queuing, optional reconnection, and a handshake protocol for app registration.
 
 ## Installation
 
 ```bash
-pnpm add @testring/client-ws-transport
+pnpm add @ringai/client-ws-transport
 ```
 
 ## Quick Start
 
 ```typescript
-import { ClientWsTransport } from '@testring/client-ws-transport';
-import { ClientWsTransportEvents, DevtoolEvents } from '@testring/types';
+import { ClientWsTransport } from '@ringai/client-ws-transport';
+import { ClientWsTransportEvents, DevtoolEvents } from '@ringai/types';
 
 const ws = new ClientWsTransport('localhost', 3001);
 
@@ -36,10 +36,10 @@ await ws.send(DevtoolEvents.WORKER_ACTION, { actionType: 'run' });
 ## Exports
 
 ```typescript
-import { ClientWsTransport } from '@testring/client-ws-transport';
+import { ClientWsTransport } from '@ringai/client-ws-transport';
 ```
 
-Event and message types are re-exported from `@testring/types`:
+Event and message types are re-exported from `@ringai/types`:
 
 ```typescript
 import {
@@ -48,7 +48,7 @@ import {
   type IClientWsTransport,
   type IDevtoolWSMessage,
   type IDevtoolWSHandshakeResponseMessage,
-} from '@testring/types';
+} from '@ringai/types';
 ```
 
 ## ClientWsTransport
@@ -196,7 +196,7 @@ interface IDevtoolWSHandshakeResponseMessage {
 
 ## Internal Message Queue
 
-`ClientWsTransport` uses a `Queue<IQueuedMessage>` from `@testring/utils` to buffer outbound messages when the connection is not ready:
+`ClientWsTransport` uses a `Queue<IQueuedMessage>` from `@ringai/utils` to buffer outbound messages when the connection is not ready:
 
 ```typescript
 interface IQueuedMessage {
@@ -234,10 +234,10 @@ new ClientWsTransport(host, port)
 
 ## Dependencies
 
-- **`@testring/types`** — `ClientWsTransportEvents`, `DevtoolEvents`, `IClientWsTransport`, `IDevtoolWSHandshakeResponseMessage`
-- **`@testring/utils`** — `Queue` data structure for message buffering
+- **`@ringai/types`** — `ClientWsTransportEvents`, `DevtoolEvents`, `IClientWsTransport`, `IDevtoolWSHandshakeResponseMessage`
+- **`@ringai/utils`** — `Queue` data structure for message buffering
 
 ## Related Modules
 
-- **`@testring/devtool-backend`** — Server-side WebSocket handler that this client connects to
-- **`@testring/transport`** — IPC transport for worker communication (different from WS transport)
+- **`@ringai/devtool-backend`** — Server-side WebSocket handler that this client connects to
+- **`@ringai/transport`** — IPC transport for worker communication (different from WS transport)

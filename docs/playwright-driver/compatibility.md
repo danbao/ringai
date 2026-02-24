@@ -1,6 +1,6 @@
 # Selenium Compatibility Guide
 
-The `@testring/plugin-playwright-driver` plugin provides comprehensive Selenium compatibility to ease migration from Selenium-based testing.
+The `@ringai/plugin-playwright-driver` plugin provides comprehensive Selenium compatibility to ease migration from Selenium-based testing.
 
 ## Overview
 
@@ -49,7 +49,7 @@ The plugin supports both native Playwright configuration and Selenium-style conf
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-selenium-driver', {
+        ['@ringai/plugin-selenium-driver', {
             host: 'localhost',
             port: 4444,
             capabilities: {
@@ -70,7 +70,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             launchOptions: {
                 headless: true,
@@ -89,7 +89,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-selenium-driver', {
+        ['@ringai/plugin-selenium-driver', {
             host: 'selenium-hub',
             port: 4444,
             path: '/wd/hub',
@@ -108,7 +108,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             seleniumGrid: {
                 gridUrl: 'http://selenium-hub:4444/wd/hub',
@@ -221,7 +221,7 @@ Full Selenium Grid support with:
 
 ```javascript
 // Step 1: Change plugin
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     // Keep existing Selenium parameters
     host: 'localhost',
     port: 4444,
@@ -237,7 +237,7 @@ Full Selenium Grid support with:
 
 ```javascript
 // Step 2: Use Playwright parameters
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     browserName: 'chromium',
     launchOptions: { ... },
     contextOptions: { ... }
@@ -252,7 +252,7 @@ Full Selenium Grid support with:
 
 ```javascript
 // Step 3: Add advanced features
-['@testring/plugin-playwright-driver', {
+['@ringai/plugin-playwright-driver', {
     browserName: 'chromium',
     video: true,
     trace: true,

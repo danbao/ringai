@@ -1,11 +1,11 @@
-# @testring/fs-reader
+# @ringai/fs-reader
 
 File system reader that locates test files by glob pattern, reads their content, and exposes plugin hooks for custom file resolution logic.
 
 ## Installation
 
 ```bash
-pnpm add @testring/fs-reader
+pnpm add @ringai/fs-reader
 ```
 
 ## Overview
@@ -22,7 +22,7 @@ Plugin hooks allow modifying the file list between these steps.
 ### `FSReader` class
 
 ```typescript
-import { FSReader } from '@testring/fs-reader';
+import { FSReader } from '@ringai/fs-reader';
 ```
 
 **Constructor:**
@@ -146,14 +146,14 @@ Reads a single file, resolving its path to absolute. Returns `{ path, content }`
 
 ## Dependencies
 
-- `@testring/pluggable-module` — Plugin hook base class
-- `@testring/logger` — Error logging when no files match
-- `@testring/types` — `IFSReader`, `IFile`, `FSReaderPlugins`
+- `@ringai/pluggable-module` — Plugin hook base class
+- `@ringai/logger` — Error logging when no files match
+- `@ringai/types` — `IFSReader`, `IFile`, `FSReaderPlugins`
 - `tinyglobby` — Fast glob pattern matching
 - `p-limit` — Concurrency limiter for file reads
 
 ## Related Modules
 
-- [`@testring/pluggable-module`](./pluggable-module.md) — Base class for `FSReader`
-- [`@testring/plugin-api`](./plugin-api.md) — Exposes `getFSReader()` with `onBeforeResolve` / `onAfterResolve` methods
-- [`@testring/test-run-controller`](./test-run-controller.md) — Uses `FSReader` to discover test files
+- [`@ringai/pluggable-module`](./pluggable-module.md) — Base class for `FSReader`
+- [`@ringai/plugin-api`](./plugin-api.md) — Exposes `getFSReader()` with `onBeforeResolve` / `onAfterResolve` methods
+- [`@ringai/test-run-controller`](./test-run-controller.md) — Uses `FSReader` to discover test files

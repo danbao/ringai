@@ -65,7 +65,7 @@ describe('Process Cleanup Integration Tests', function() {
             const testProcess = spawn('pnpm', ['run', 'test:playwright'], {
                 cwd: path.resolve(__dirname, '../..'),
                 stdio: 'pipe',
-                env: { ...process.env, TESTRING_FILTER: 'alert' }
+                env: { ...process.env, RINGAI_FILTER: 'alert' }
             });
 
             let output = '';
@@ -148,7 +148,7 @@ describe('Process Cleanup Integration Tests', function() {
                 cwd: path.resolve(__dirname, '../../..'),
                 stdio: 'pipe',
                 detached: false,
-                env: { ...process.env, TESTRING_FILTER: 'title' }
+                env: { ...process.env, RINGAI_FILTER: 'title' }
             });
 
             let output = '';

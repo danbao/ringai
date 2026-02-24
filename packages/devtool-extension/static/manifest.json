@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "TestRing",
+  "name": "RingAI",
   "author": "RingCentral",
-  "description": "TestRing recording extension.",
+  "description": "RingAI recording extension.",
   "browser_action": {
-    "default_title": "TestRing",
+    "default_title": "RingAI",
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },

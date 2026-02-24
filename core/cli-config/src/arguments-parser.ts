@@ -1,5 +1,5 @@
 import * as yargsHelpers from 'yargs/helpers';
-import {IConfig} from '@testring/types';
+import {IConfig} from '@ringai/types';
 
 const Parser = yargsHelpers.Parser;
 

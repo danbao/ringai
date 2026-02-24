@@ -1,8 +1,8 @@
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as chai from 'chai';
-import {TestWorkerMock} from '@testring/test-utils';
-import {TestRunControllerPlugins} from '@testring/types/src/test-run-controller';
+import {TestWorkerMock} from '@ringai/test-utils';
+import {TestRunControllerPlugins} from '@ringai/types/src/test-run-controller';
 import {TestRunController} from '../src/test-run-controller';
 
 const DEFAULT_TIMEOUT = 60 * 1000;

@@ -1,4 +1,4 @@
-import {run} from '@testring/api';
+import {run} from '@ringai/api';
 
 export default run;
 export {run};

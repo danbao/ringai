@@ -8,7 +8,7 @@
 #     docker:
 #       uses: ./.github/workflows/templates/docker.yml@main
 #       with:
-#         image-name: my-testring-image
+#         image-name: my-ringai-image
 #         dockerfile: Dockerfile
 #         target: ci
 #       secrets:

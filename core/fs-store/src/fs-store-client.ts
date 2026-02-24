@@ -4,15 +4,15 @@
 
 import * as path from 'path';
 
-import {generateUniqId} from '@testring/utils';
-import {loggerClient} from '@testring/logger';
-import {transport} from '@testring/transport';
+import {generateUniqId} from '@ringai/utils';
+import {loggerClient} from '@ringai/logger';
+import {transport} from '@ringai/transport';
 import {
     fsReqType,
     IFSStoreReq,
     IFSStoreResp,
     requestMeta,
-} from '@testring/types';
+} from '@ringai/types';
 
 import {FS_CONSTANTS} from './utils';
 

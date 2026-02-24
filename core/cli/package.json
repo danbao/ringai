@@ -1,30 +1,30 @@
 {
-  "name": "@testring/cli",
+  "name": "@ringai/cli",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "testring": "./bin/cli.js"
+    "ringai": "./bin/cli.js"
   },
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/browser-proxy": "workspace:*",
-    "@testring/cli-config": "workspace:*",
-    "@testring/fs-reader": "workspace:*",
-    "@testring/fs-store": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/plugin-api": "workspace:*",
-    "@testring/test-run-controller": "workspace:*",
-    "@testring/test-worker": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/web-application": "workspace:*",
+    "@ringai/browser-proxy": "workspace:*",
+    "@ringai/cli-config": "workspace:*",
+    "@ringai/fs-reader": "workspace:*",
+    "@ringai/fs-store": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/plugin-api": "workspace:*",
+    "@ringai/test-run-controller": "workspace:*",
+    "@ringai/test-worker": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/web-application": "workspace:*",
     "@types/node": "22.8.5",
     "citty": "^0.1.6",
     "kleur": "^4.1.5"

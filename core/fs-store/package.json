@@ -1,5 +1,5 @@
 {
-  "name": "@testring/fs-store",
+  "name": "@ringai/fs-store",
   "version": "0.8.0",
   "type": "module",
   "description": "fs storage & operations service",
@@ -11,24 +11,24 @@
   "types": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/cli-config": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/test-utils": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*"
+    "@ringai/cli-config": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/test-utils": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*"
   },
   "scripts": {
     "test": "mocha",
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   },
   "bugs": {
-    "url": "https://github.com/ringcentral/testring/issues"
+    "url": "https://github.com/ringcentral/ringai/issues"
   }
 }

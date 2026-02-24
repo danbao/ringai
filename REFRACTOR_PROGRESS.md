@@ -1,6 +1,6 @@
-# Testring v1.0 Refactor Progress
+# Ringai v1.0 Refactor Progress
 
-> 唯一重构计划文档：`/root/workspace/github/danbao/testring-v1.0-refactor-plan.md`
+> 唯一重构计划文档：`/root/workspace/github/danbao/ringai-v1.0-refactor-plan.md`
 
 ## Phase 1 - 基础设施现代化（工具链层）
 - [x] 1.1 迁移到 pnpm（workspace + lockfile）

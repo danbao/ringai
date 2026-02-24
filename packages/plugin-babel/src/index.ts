@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {PluginAPI} from '@testring/plugin-api';
+import {PluginAPI} from '@ringai/plugin-api';
 import * as babelCore from '@babel/core';
 import babelPluginCommonJS from '@babel/plugin-transform-modules-commonjs';
 

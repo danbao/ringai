@@ -1,5 +1,5 @@
 import process from 'node:process';
-import {Transport} from '@testring/transport';
+import {Transport} from '@ringai/transport';
 import {PAYLOAD, REQUEST_NAME, RESPONSE_NAME} from './constants.ts';
 
 const transport = new Transport(process);

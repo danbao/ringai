@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {Transport} from '@testring/transport';
+import {Transport} from '@ringai/transport';
 import {BrowserProxy} from '../../src/browser-proxy/browser-proxy';
 
 const pluginName = path.resolve(__dirname, './sync-plugin.cjs');

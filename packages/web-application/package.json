@@ -1,30 +1,30 @@
 {
-  "name": "@testring/web-application",
+  "name": "@ringai/web-application",
   "version": "0.8.0",
   "type": "module",
   "main": "./dist/index.js",
   "typings": "./src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ringcentral/testring.git"
+    "url": "https://github.com/ringcentral/ringai.git"
   },
   "author": "RingCentral",
   "license": "MIT",
   "dependencies": {
-    "@testring/async-breakpoints": "workspace:*",
-    "@testring/element-path": "workspace:*",
-    "@testring/fs-store": "workspace:*",
-    "@testring/logger": "workspace:*",
-    "@testring/pluggable-module": "workspace:*",
-    "@testring/timeout-config": "workspace:*",
-    "@testring/transport": "workspace:*",
-    "@testring/types": "workspace:*",
-    "@testring/utils": "workspace:*",
+    "@ringai/async-breakpoints": "workspace:*",
+    "@ringai/element-path": "workspace:*",
+    "@ringai/fs-store": "workspace:*",
+    "@ringai/logger": "workspace:*",
+    "@ringai/pluggable-module": "workspace:*",
+    "@ringai/timeout-config": "workspace:*",
+    "@ringai/transport": "workspace:*",
+    "@ringai/types": "workspace:*",
+    "@ringai/utils": "workspace:*",
     "playwright": "^1.48.0"
   },
   "devDependencies": {
-    "@testring/child-process": "workspace:*",
-    "@testring/test-utils": "workspace:*",
+    "@ringai/child-process": "workspace:*",
+    "@ringai/test-utils": "workspace:*",
     "@types/node": "22.8.5"
   },
   "scripts": {

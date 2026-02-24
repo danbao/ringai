@@ -1,11 +1,11 @@
-# @testring/pluggable-module
+# @ringai/pluggable-module
 
-Base module providing the plugin hook system used throughout the testring framework. Every core module that supports plugins extends `PluggableModule`, which manages named hooks and integrates with the [hookable](https://github.com/unjs/hookable) library.
+Base module providing the plugin hook system used throughout the ringai framework. Every core module that supports plugins extends `PluggableModule`, which manages named hooks and integrates with the [hookable](https://github.com/unjs/hookable) library.
 
 ## Installation
 
 ```bash
-pnpm add @testring/pluggable-module
+pnpm add @ringai/pluggable-module
 ```
 
 ## Overview
@@ -22,7 +22,7 @@ All pluggable core modules (`LoggerServer`, `FSReader`, `FSStoreServer`, etc.) e
 ### `PluggableModule` class
 
 ```typescript
-import { PluggableModule } from '@testring/pluggable-module';
+import { PluggableModule } from '@ringai/pluggable-module';
 ```
 
 **Constructor:**
@@ -138,7 +138,7 @@ Returns the underlying `Hookable` instance for advanced usage (hook dependencies
 Creates a new `PluggableModule` instance without subclassing.
 
 ```typescript
-import { createPluggableModule } from '@testring/pluggable-module';
+import { createPluggableModule } from '@ringai/pluggable-module';
 
 const module = createPluggableModule(['onData', 'onComplete']);
 ```
@@ -150,7 +150,7 @@ const module = createPluggableModule(['onData', 'onComplete']);
 Standalone hook with **write** (modifier) and **read** (listener) semantics. Write hooks are called first and can transform data; read hooks are called after and receive the final data but cannot modify it.
 
 ```typescript
-import { Hook } from '@testring/pluggable-module';
+import { Hook } from '@ringai/pluggable-module';
 ```
 
 #### `writeHook(pluginName, modifier)`
@@ -211,7 +211,7 @@ Removes both write and read hooks for the given plugin name. Returns `true` if a
 ### Extending PluggableModule
 
 ```typescript
-import { PluggableModule } from '@testring/pluggable-module';
+import { PluggableModule } from '@ringai/pluggable-module';
 
 class TestFileLoader extends PluggableModule {
   constructor() {
@@ -252,10 +252,10 @@ The original stack trace is preserved on the wrapped error.
 ## Dependencies
 
 - [`hookable`](https://github.com/unjs/hookable) — Modern hook system from UnJS
-- `@testring/types` — Type definitions (`IPluggableModule`)
+- `@ringai/types` — Type definitions (`IPluggableModule`)
 
 ## Related Modules
 
-- [`@testring/plugin-api`](./plugin-api.md) — Plugin registration API that uses `getHook()` to wire plugins into core modules
-- [`@testring/logger`](./logger.md) — Extends `PluggableModule` with logging hooks
-- [`@testring/fs-reader`](./fs-reader.md) — Extends `PluggableModule` with file resolution hooks
+- [`@ringai/plugin-api`](./plugin-api.md) — Plugin registration API that uses `getHook()` to wire plugins into core modules
+- [`@ringai/logger`](./logger.md) — Extends `PluggableModule` with logging hooks
+- [`@ringai/fs-reader`](./fs-reader.md) — Extends `PluggableModule` with file resolution hooks

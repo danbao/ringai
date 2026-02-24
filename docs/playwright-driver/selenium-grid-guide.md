@@ -1,6 +1,6 @@
 # Selenium Grid Integration
 
-This guide covers using Selenium Grid with `@testring/plugin-playwright-driver` for distributed testing.
+This guide covers using Selenium Grid with `@ringai/plugin-playwright-driver` for distributed testing.
 
 ## Overview
 
@@ -18,7 +18,7 @@ Playwright can connect to Selenium Grid Hub to run Google Chrome or Microsoft Ed
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium', // Only chromium and msedge support Selenium Grid
             seleniumGrid: {
                 gridUrl: 'http://selenium-hub:4444'
@@ -137,7 +137,7 @@ Configuration priority order (from highest to lowest):
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             seleniumGrid: {
                 gridUrl: 'http://localhost:4444',
@@ -156,7 +156,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             seleniumGrid: {
                 gridUrl: process.env.SELENIUM_GRID_URL || 'http://selenium-hub:4444',
@@ -181,7 +181,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             browserName: 'chromium',
             seleniumGrid: {
                 gridUrl: 'https://your-cloud-grid.com:4444',
@@ -210,7 +210,7 @@ module.exports = {
 module.exports = {
     workerLimit: 4, // Adjust based on Grid capacity
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             // ... Grid configuration
         }]
     ]
@@ -225,7 +225,7 @@ module.exports = {
     retryCount: 2,
     retryDelay: 1000,
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             seleniumGrid: {
                 // ... Grid configuration
             }
@@ -239,7 +239,7 @@ module.exports = {
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             clientTimeout: 30 * 60 * 1000, // 30 minutes
             seleniumGrid: {
                 gridCapabilities: {
@@ -259,7 +259,7 @@ module.exports = {
 // Debug configuration for development environment
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             seleniumGrid: {
                 gridCapabilities: {
                     'se:options': {
@@ -329,7 +329,7 @@ curl http://localhost:4444/grid/api/sessions
 ```javascript
 module.exports = {
     plugins: [
-        ['@testring/plugin-playwright-driver', {
+        ['@ringai/plugin-playwright-driver', {
             seleniumGrid: {
                 gridCapabilities: {
                     'se:options': {

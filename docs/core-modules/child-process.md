@@ -1,11 +1,11 @@
-# @testring/child-process
+# @ringai/child-process
 
 Child process management module that provides cross-platform child process creation and management capabilities, supporting direct execution of JavaScript and TypeScript files.
 
 ## Installation
 
 ```bash
-pnpm add @testring/child-process
+pnpm add @ringai/child-process
 ```
 
 ## Overview
@@ -25,10 +25,10 @@ This module provides enhanced child process management features, including:
 
 Creates a child process to execute the given file. For `.ts` files, automatically configures the **tsx** ESM loader via `NODE_OPTIONS`. Returns an `IChildProcessFork` (a `ChildProcess` extended with a `debugPort` property).
 
-The fork function injects a `--testring-parent-pid=<pid>` argument into the child process argv, which is used by `isChildProcess()` to detect whether the current process was spawned by testring.
+The fork function injects a `--ringai-parent-pid=<pid>` argument into the child process argv, which is used by `isChildProcess()` to detect whether the current process was spawned by ringai.
 
 ```typescript
-import { fork } from '@testring/child-process';
+import { fork } from '@ringai/child-process';
 
 async function fork(
   filePath: string,
@@ -75,7 +75,7 @@ The resolved path is cached after the first resolution.
 Spawns a child process with IPC support. The process is spawned in detached mode with an IPC channel (`stdio: [null, null, null, 'ipc']`).
 
 ```typescript
-import { spawn } from '@testring/child-process';
+import { spawn } from '@ringai/child-process';
 
 function spawn(
   command: string,
@@ -101,7 +101,7 @@ The spawned process uses `process.cwd()` as the working directory and runs in de
 Spawns a child process with piped stdio (`stdin`, `stdout`, `stderr`). Unlike `spawn`, this function uses attached mode (`detached: false`), hides the console window on Windows (`windowsHide: true`), and calls `child.unref()` so the child does not keep the parent's event loop active.
 
 ```typescript
-import { spawnWithPipes } from '@testring/child-process';
+import { spawnWithPipes } from '@ringai/child-process';
 
 function spawnWithPipes(
   command: string,
@@ -128,10 +128,10 @@ function spawnWithPipes(
 
 ### `isChildProcess(argv?)`
 
-Checks whether the current process was spawned by testring by looking for a `--testring-parent-pid=` argument in the process argv.
+Checks whether the current process was spawned by ringai by looking for a `--ringai-parent-pid=` argument in the process argv.
 
 ```typescript
-import { isChildProcess } from '@testring/child-process';
+import { isChildProcess } from '@ringai/child-process';
 
 function isChildProcess(argv?: string[]): boolean;
 ```
@@ -142,14 +142,14 @@ function isChildProcess(argv?: string[]): boolean;
 | --------- | ---------------- | --------------- | ----------------------------------------- |
 | `argv`    | `string[]`       | `process.argv`  | The argument array to search              |
 
-Returns `true` if any element in `argv` starts with `--testring-parent-pid=`.
+Returns `true` if any element in `argv` starts with `--ringai-parent-pid=`.
 
 ## Usage Examples
 
 ### Execute a JavaScript File
 
 ```typescript
-import { fork } from '@testring/child-process';
+import { fork } from '@ringai/child-process';
 
 const child = await fork('./worker.js');
 
@@ -163,7 +163,7 @@ child.send({ type: 'start' });
 ### Execute a TypeScript File
 
 ```typescript
-import { fork } from '@testring/child-process';
+import { fork } from '@ringai/child-process';
 
 // Automatically uses tsx ESM loader for .ts files
 const child = await fork('./worker.ts');
@@ -176,7 +176,7 @@ child.on('message', (data) => {
 ### Fork with Debug Mode
 
 ```typescript
-import { fork } from '@testring/child-process';
+import { fork } from '@ringai/child-process';
 
 const child = await fork('./worker.js', [], {
   debug: true,
@@ -189,10 +189,10 @@ console.log(`Debug at: chrome://inspect → localhost:${child.debugPort}`);
 ### Detect Child Process
 
 ```typescript
-import { isChildProcess } from '@testring/child-process';
+import { isChildProcess } from '@ringai/child-process';
 
 if (isChildProcess()) {
-  // Running inside a testring-forked child process
+  // Running inside a ringai-forked child process
   process.on('message', (msg) => {
     process.send?.({ result: 'done' });
   });
@@ -205,7 +205,7 @@ if (isChildProcess()) {
 ### Spawn with Pipes
 
 ```typescript
-import { spawnWithPipes } from '@testring/child-process';
+import { spawnWithPipes } from '@ringai/child-process';
 
 const child = spawnWithPipes('node', ['--version']);
 
@@ -217,7 +217,7 @@ child.stdout?.on('data', (data) => {
 ### Spawn with Custom Environment
 
 ```typescript
-import { spawn } from '@testring/child-process';
+import { spawn } from '@ringai/child-process';
 
 const child = spawn('node', ['script.js'], {
   MY_VAR: 'hello',
@@ -231,11 +231,11 @@ child.on('message', (msg) => {
 
 ## Dependencies
 
-- `@testring/types` — Type definitions (`IChildProcessForkOptions`, `IChildProcessFork`)
-- `@testring/utils` — Utility functions (`getAvailablePort`)
+- `@ringai/types` — Type definitions (`IChildProcessForkOptions`, `IChildProcessFork`)
+- `@ringai/utils` — Utility functions (`getAvailablePort`)
 
 ## Related Modules
 
-- [`@testring/test-worker`](./test-worker.md) — Test worker process management (uses `fork` internally)
-- [`@testring/transport`](./transport.md) — Inter-process communication layer
-- [`@testring/utils`](./utils.md) — Utility functions
+- [`@ringai/test-worker`](./test-worker.md) — Test worker process management (uses `fork` internally)
+- [`@ringai/transport`](./transport.md) — Inter-process communication layer
+- [`@ringai/utils`](./utils.md) — Utility functions
