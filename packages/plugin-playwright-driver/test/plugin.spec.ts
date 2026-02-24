@@ -4,6 +4,9 @@ import { expect } from 'chai';
 import playwrightPlugin from '../src/index';
 import { PluginAPIMock } from './mocks/plugin-api.mock';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('PlaywrightPlugin', () => {
     let pluginAPIMock: PluginAPIMock;

@@ -31,6 +31,6 @@
   },
   "scripts": {
     "build": "tsup --config tsup.config.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
-    "test": "mocha"
+    "test": "echo 'Run tests from root: pnpm test:unit'"
   }
 }

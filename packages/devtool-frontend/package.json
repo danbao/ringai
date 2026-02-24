@@ -11,7 +11,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.ts",
     "build:watch": "webpack --config webpack.config.ts --watch --devtool inline-source-map",
-    "test": "mocha"
+    "test": "echo 'Run tests from root: pnpm test:unit'"
   },
   "devDependencies": {
     "@ringai/client-ws-transport": "workspace:*",

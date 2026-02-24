@@ -1,6 +1,7 @@
 {
   "spec": "test/**/*.spec.ts",
-  "require": ["ts-node/register", "test/setup.ts"],
+  "node-option": ["import=tsx"],
+  "require": ["test/setup.ts"],
   "recursive": true,
   "timeout": 8000,
   "exit": true,

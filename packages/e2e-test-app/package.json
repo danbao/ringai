@@ -12,7 +12,7 @@
   "scripts": {
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:all": "pnpm run test:unit && pnpm run test:e2e:full && pnpm run test:integration",
-    "test:watch": "echo \"test:watch skipped\"",
+
     "test:unit": "pnpm run test:simple",
     "test:simple": "ringai run --config test/simple/.ringairc --env-parameters.test 10 --rc.tags-list=#P0,#P1",
     "test:e2e": "pnpm run test:playwright:headless",

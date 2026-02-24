@@ -25,88 +25,38 @@
     "test:e2e:simple": "pnpm --filter @ringai/e2e-test-app run test:simple",
     "test:e2e:coverage": "c8 --config .c8.json tsx ./packages/e2e-test-app/src/test-runner.ts --config ./packages/e2e-test-app/test/playwright/config.coverage.cjs --env-config=./packages/e2e-test-app/test/playwright/env.json --headless",
     "test:performance": "pnpm --filter @ringai/fs-reader run test:performance",
-    "test:playwright": "pnpm --filter @ringai/plugin-playwright-driver run test",
-    "test:playwright:debug": "cd packages/plugin-playwright-driver && pnpm run test:debug",
+    "test:plugin-playwright": "pnpm --filter @ringai/plugin-playwright-driver run test",
+    "test:plugin-playwright:debug": "cd packages/plugin-playwright-driver && pnpm run test:debug",
     "test:ci": "pnpm run test:unit:coverage && pnpm run test:e2e:coverage",
     "test:ci:coverage": "pnpm run test:unit:coverage:lcov && pnpm run test:e2e:coverage:lcov",
     "test:unit:coverage:lcov": "vitest run --coverage --reporter=verbose",
     "test:e2e:coverage:lcov": "c8 tsx ./packages/e2e-test-app/src/test-runner.ts --config ./packages/e2e-test-app/test/playwright/config.coverage.cjs --env-config=./packages/e2e-test-app/test/playwright/env.json --headless",
-    "test:e2e:grid": "echo 'Selenium Grid tests removed — use test:e2e:headless for Playwright E2E' && exit 0",
+
     "build": "turbo run build",
     "build:main": "turbo run build --filter=!@ringai/e2e-test-app --filter=!@ringai/devtool-frontend --filter=!@ringai/devtool-extension",
     "build:main:watch": "pnpm --filter=!@ringai/e2e-test-app --filter=!@ringai/devtool-frontend --filter=!@ringai/devtool-extension -r exec -- tsc --watch --inlineSourceMap",
     "build:devtool": "turbo run build --filter=@ringai/devtool-frontend",
     "build:extension": "turbo run build --filter=@ringai/devtool-extension",
-    "build:types:check": "turbo run build --filter=!@ringai/e2e-test-app --filter=!@ringai/devtool-frontend --filter=!@ringai/devtool-extension",
+
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "publish:version": "changeset version",
+
     "publish:ci": "node ./utils/publish.js --exclude=@ringai/devtool-frontend,@ringai/devtool-backend,@ringai/devtool-extension",
     "publish:dev": "node ./utils/publish.js --dev --exclude=@ringai/devtool-frontend,@ringai/devtool-backend,@ringai/devtool-extension",
-    "deps:check": "pnpm run deps:check:precommit",
-    "deps:check:precommit": "pnpm run deps:validate",
+    "deps:check": "pnpm run deps:validate",
     "deps:validate": "pnpm -r exec -- node ../../utils/check-packages-versions",
     "deps:find-updates": "ncu -m --deep --color",
-    "deps:update": "ncu -m --deep --color",
+    "deps:update": "ncu -u -m --deep --color",
     "docs:api": "typedoc",
     "docs:api:watch": "typedoc --watch",
-    "docs": "pnpm run docs:api",
     "analyze:performance:logs-only": "node scripts/analyze-long-steps.js"
   },
-  "nyc": {
-    "report-dir": "./.coverage",
-    "all": false,
-    "check-coverage": false,
-    "lines": 50,
-    "statements": 50,
-    "functions": 50,
-    "branches": 45,
-    "sourceMap": false,
-    "include": [
-      "core/*/src/*.ts",
-      "core/*/src/**/*.ts",
-      "packages/*/src/*.ts",
-      "packages/*/src/**/*.ts"
-    ],
-    "exclude": [
-      "core/*/src/index.ts",
-      "core/types",
-      "packages/*/src/index.ts",
-      "packages/web-application/src/web-application.ts",
-      "packages/web-application/src/web-client.ts",
-      "packages/plugin-playwright-driver/**/*",
-      "packages/devtool-*/**/*",
-      "packages/e2e-test-app/**/*",
-      "**/test/**/*",
-      "**/tests/**/*",
-      "**/*.spec.ts",
-      "**/*.test.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "reporter": [
-      "text-summary",
-      "lcov"
-    ],
-    "cache": true,
-    "temp-dir": "./.nyc_output"
-  },
+
   "packageManager": "pnpm@10.28.2",
   "pnpm": {
     "onlyBuiltDependencies": [
-      "chromedriver",
-      "core-js",
-      "cpu-features",
-      "edgedriver",
       "esbuild",
-      "geckodriver",
-      "nx",
-      "pre-commit",
-      "sharp",
-      "spawn-sync",
-      "ssh2",
       "workerd"
     ]
   },

@@ -26,6 +26,6 @@
   },
   "scripts": {
     "build": "tsup",
-    "test": "mocha"
+    "test": "echo 'Run tests from root: pnpm test:unit'"
   }
 }

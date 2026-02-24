@@ -12,8 +12,7 @@
   "author": "RingCentral",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/test-server.ts",
-    "start:watch": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' ./src/index.ts",
+    "start": "tsx src/test-server.ts",
     "build": "tsup --config ../../tsup.config.base.ts",
     "test": "vitest run"
   },
