@@ -13,7 +13,7 @@ import {
 } from '@ringai/types';
 import {restructureError} from '@ringai/utils';
 
-import {SandboxWorkerThreads} from '@ringai/sandbox';
+import {Sandbox} from '@ringai/sandbox';
 import {testAPIController, TestAPIController} from '@ringai/api';
 import {asyncBreakpoints, BreakStackError} from '@ringai/async-breakpoints';
 import {loggerClient, LoggerClient} from '@ringai/logger';
@@ -105,7 +105,7 @@ export class WorkerController {
         } catch (e) {
             this.logger.error('Failed to release tests execution');
         }
-        SandboxWorkerThreads.clearCache();
+        Sandbox.clearCache();
 
         this.transport.broadcastUniversally(TestWorkerAction.unregister, {});
 
@@ -154,7 +154,7 @@ export class WorkerController {
             },
         );
 
-        SandboxWorkerThreads.clearCache();
+        Sandbox.clearCache();
 
         this.transport.broadcastUniversally(
             TestWorkerAction.unregister,
@@ -193,7 +193,7 @@ export class WorkerController {
 
     private evaluateCode(_message: ITestEvaluationMessage) {
         this.setPendingState(true);
-        // NOTE: SandboxWorkerThreads currently doesn't support live evaluateScript.
+        // NOTE: Sandbox.evaluateScript could be used here for live code evaluation.
         // Keeping behavior as a no-op with logging to avoid breaking devtools features.
         Promise.resolve().catch((err: unknown) => this.logger.error(err));
         this.setPendingState(false);
@@ -234,7 +234,7 @@ export class WorkerController {
         // TODO (flops) pass message.parameters somewhere inside web application
         const testID = path.relative(process.cwd(), message.path);
 
-        const sandbox = new SandboxWorkerThreads(
+        const sandbox = new Sandbox(
             message.content,
             message.path,
             message.dependencies as any,

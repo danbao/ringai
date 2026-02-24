@@ -24,7 +24,7 @@
     "@ringai/test-utils": "workspace:*"
   },
   "scripts": {
-    "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
+    "build": "tsup && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "test": "echo 'Run tests from root: pnpm test:unit'"
   }
 }

@@ -2,7 +2,7 @@ import {IBrowserProxyCommand} from './structs';
 import {WindowFeaturesConfig} from '../web-application';
 
 export interface IBrowserProxyController {
-    init(): Promise<void>;
+    init(mainConfig?: { workerLimit?: number | 'local' }): Promise<void>;
 
     execute(applicant: string, command: IBrowserProxyCommand): Promise<any>;
 

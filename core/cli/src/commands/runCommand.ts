@@ -102,7 +102,9 @@ class RunCommand implements ICLICommand {
 
         this.logger.info(`Found ${tests.length} test(s) to run.`);
 
-        await this.browserProxyController.init();
+        await this.browserProxyController.init({
+            workerLimit: this.config.workerLimit,
+        });
 
         this.webApplicationController.init();
 

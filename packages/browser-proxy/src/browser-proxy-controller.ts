@@ -41,7 +41,7 @@ export class BrowserProxyController
         super([BrowserProxyPlugins.getPlugin]);
     }
 
-    public async init(): Promise<void> {
+    public async init(mainConfig?: { workerLimit?: number | 'local' }): Promise<void> {
         if (typeof this.workerCreator !== 'function') {
             this.logger.error(
                 `Unsupported worker type "${typeof this.workerCreator}"`,
@@ -62,6 +62,11 @@ export class BrowserProxyController
                 config.workerLimit === 'local'
                     ? 'local'
                     : Number(config.workerLimit);
+        } else if (mainConfig?.workerLimit) {
+            this.workerLimit =
+                mainConfig.workerLimit === 'local'
+                    ? 'local'
+                    : Number(mainConfig.workerLimit);
         }
 
         if (this.workerLimit === 'local') {

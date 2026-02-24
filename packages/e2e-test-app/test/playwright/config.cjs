@@ -37,7 +37,7 @@ module.exports = async (config) => {
                     browserName: 'chromium',
                     launchOptions: {
                         headless: !local,
-                        slowMo: local ? 100 : 0, // Add slow motion for local debugging
+                        slowMo: local ? 500 : 0, // Add slow motion for local debugging
                         args: local ? [] : ['--no-sandbox']
                     },
                     clientTimeout: local ? 0 : (config.testTimeout || TIMEOUTS.CLIENT_SESSION),

@@ -22,7 +22,7 @@
     "postinstall": "node scripts/install-browsers.cjs",
     "install-browsers": "node scripts/install-browsers.cjs",
     "uninstall-browsers": "npx playwright uninstall --all",
-    "build": "tsup --config ../../tsup.config.base.ts --format esm && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
+    "build": "tsup && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   },
   "dependencies": {
     "@ringai/logger": "workspace:*",
