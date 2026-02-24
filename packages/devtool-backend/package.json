@@ -14,7 +14,7 @@
   "scripts": {
     "start": "tsx src/test-server.ts",
     "build": "tsup --config ../../tsup.config.base.ts",
-    "test": "vitest run"
+    "test": "echo 'Run tests from root: pnpm test:unit'"
   },
   "dependencies": {
     "@babel/parser": "^7.26.0",

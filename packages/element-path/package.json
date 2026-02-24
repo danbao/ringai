@@ -12,6 +12,6 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup --config tsup.config.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
-    "test": "vitest"
+    "test": "echo 'Run tests from root: pnpm test:unit'"
   }
 }
