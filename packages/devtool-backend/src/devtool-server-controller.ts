@@ -97,9 +97,7 @@ export class DevtoolServerController
             );
         }
 
-        this.transport.registerChild(workerID, this.worker);
-
-        this.logger.debug(`Registered child process ${workerID}`);
+        this.logger.debug(`Started worker process ${workerID}`);
     }
 
     private async stopServer() {

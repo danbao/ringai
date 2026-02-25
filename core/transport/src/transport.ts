@@ -1,6 +1,5 @@
 import {
     ITransport,
-    IWorkerEmitter,
     TransportMessageHandler,
 } from '@ringai/types';
 import {EventEmitter} from 'events';
@@ -21,14 +20,6 @@ export class Transport implements ITransport {
         this.emitter.emit(messageType, payload);
     }
 
-    public isChildProcess() {
-        return false;
-    }
-
-    public registerChild(_processID: string, _child: IWorkerEmitter) {
-        // No-op: single process, no child processes
-    }
-
     public on<T = unknown>(
         messageType: string,
         callback: TransportMessageHandler<T>,
@@ -38,15 +29,6 @@ export class Transport implements ITransport {
     }
 
     public once<T = unknown>(
-        messageType: string,
-        callback: TransportMessageHandler<T>,
-    ) {
-        this.emitter.once(messageType, callback);
-        return () => this.emitter.removeListener(messageType, callback);
-    }
-
-    public onceFrom<T = unknown>(
-        _processID: string,
         messageType: string,
         callback: TransportMessageHandler<T>,
     ) {

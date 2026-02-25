@@ -1,9 +1,7 @@
 import {EventEmitter} from 'events';
-import {ITransport, IWorkerEmitter} from '@ringai/types';
+import {ITransport} from '@ringai/types';
 
 export class TransportMock extends EventEmitter implements ITransport {
-    private processes: Map<string, IWorkerEmitter> = new Map();
-
     public getProcessStdioConfig() {
         return [];
     }
@@ -18,10 +16,6 @@ export class TransportMock extends EventEmitter implements ITransport {
         processID: string,
     ) {
         this.emit(messageType, payload, processID);
-    }
-
-    public isChildProcess(): boolean {
-        return true;
     }
 
     public send<T = any>(
@@ -55,26 +49,5 @@ export class TransportMock extends EventEmitter implements ITransport {
         super.on(messageType, wrappedCallback);
 
         return () => this.removeListener(messageType, wrappedCallback);
-    }
-
-    public onceFrom<T = any>(
-        processID: string,
-        messageType: string,
-        callback: (m: T, source?: string) => void,
-    ): any {
-        const handler = (message: T, source?: string) => {
-            if (processID === source) {
-                callback(message);
-                this.removeListener(messageType, handler);
-            }
-        };
-
-        super.on(messageType, handler);
-
-        return () => this.removeListener(messageType, handler);
-    }
-
-    public registerChild(processID: string, process: IWorkerEmitter) {
-        this.processes.set(processID, process);
     }
 }

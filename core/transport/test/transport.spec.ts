@@ -58,18 +58,5 @@ describe('Transport', () => {
         expect(handler).toHaveBeenCalledTimes(3);
     });
 
-    it('isChildProcess should return false', () => {
-        const transport = new Transport();
-        expect(transport.isChildProcess()).toBe(false);
-    });
 
-    it('onceFrom should work like once (processID ignored)', () => {
-        const transport = new Transport();
-        const handler = vi.fn();
-
-        transport.onceFrom('some-id', 'test', handler);
-        transport.broadcast('test', 'value');
-
-        expect(handler).toHaveBeenCalledWith('value');
-    });
 });
