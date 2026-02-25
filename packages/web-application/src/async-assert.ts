@@ -54,7 +54,15 @@ export function createAssertion(options: IAssertionOptions = {}): AsyncAssertion
         const successMessage = originalMethod.length === args.length ? args.pop() : '';
 
         const typeOfAssert = isSoft ? 'softAssert' : 'assert';
-        const assertMessage = `[${typeOfAssert}] ${fieldName}`;
+        const argsPreview = args.map((a: any) => {
+          if (a === null) return 'null';
+          if (a === undefined) return 'undefined';
+          if (typeof a === 'string') return a.length > 60 ? `"${a.slice(0, 60)}..."` : `"${a}"`;
+          if (typeof a === 'function') return 'fn()';
+          try { const s = JSON.stringify(a); return s.length > 60 ? s.slice(0, 60) + '...' : s; }
+          catch { return String(a); }
+        }).join(', ');
+        const assertMessage = `[${typeOfAssert}] ${fieldName}(${argsPreview})`;
 
         try {
           originalMethod(...args);
