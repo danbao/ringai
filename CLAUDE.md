@@ -71,14 +71,17 @@ pnpm run test:unit:watch
 # Run a single test file
 npx vitest run path/to/file.spec.ts
 
-# Run E2E tests (headless)
-pnpm run test:e2e:headless
+# Run E2E tests (headless, default)
+pnpm run test:e2e
+
+# Run E2E tests (headed, with browser visible)
+pnpm run test:e2e:headed
 
 # Run E2E tests with coverage (c8)
-pnpm run test:e2e:coverage:lcov
+pnpm run test:e2e:coverage
 
 # Run CI tests (unit coverage + E2E coverage)
-pnpm run test:ci:coverage
+pnpm run test:ci
 ```
 
 ### Linting and Code Quality
