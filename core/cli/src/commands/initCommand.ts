@@ -1,12 +1,11 @@
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { createInterface } from 'node:readline';
 import kleur from 'kleur';
 import { CliError } from './utils/cli-error.js';
 
 interface InitAnswers {
     projectName: string;
-    testFramework: 'vitest' | 'mocha';
     browser: 'playwright';
     reporter: 'spec' | 'dot' | 'json';
     plugins: string[];
@@ -14,12 +13,12 @@ interface InitAnswers {
 
 function askQuestion(question: string): Promise<string> {
     return new Promise((resolve) => {
-        const readline = require('readline').createInterface({
+        const rl = createInterface({
             input: process.stdin,
             output: process.stdout,
         });
-        readline.question(question, (answer: string) => {
-            readline.close();
+        rl.question(question, (answer: string) => {
+            rl.close();
             resolve(answer);
         });
     });
@@ -27,13 +26,13 @@ function askQuestion(question: string): Promise<string> {
 
 function askConfirm(question: string, defaultValue: boolean = false): Promise<boolean> {
     return new Promise((resolve) => {
-        const readline = require('readline').createInterface({
+        const rl = createInterface({
             input: process.stdin,
             output: process.stdout,
         });
         const prompt = defaultValue ? `${question} (Y/n)` : `${question} (y/N)`;
-        readline.question(prompt, (answer: string) => {
-            readline.close();
+        rl.question(prompt, (answer: string) => {
+            rl.close();
             const normalized = answer.toLowerCase().trim();
             if (normalized === '') {
                 resolve(defaultValue);
@@ -51,12 +50,12 @@ function askSelect<T extends string>(question: string, options: { label: string;
             const marker = opt.value === defaultValue ? '✓' : ' ';
             console.log(`  ${marker} ${idx + 1}. ${opt.label}`);
         });
-        const readline = require('readline').createInterface({
+        const rl = createInterface({
             input: process.stdin,
             output: process.stdout,
         });
-        readline.question('\nEnter your choice (number): ', (answer: string) => {
-            readline.close();
+        rl.question('\nEnter your choice (number): ', (answer: string) => {
+            rl.close();
             const idx = parseInt(answer.trim(), 10) - 1;
             if (isNaN(idx) || idx < 0 || idx >= options.length) {
                 resolve(defaultValue);
@@ -79,15 +78,6 @@ export async function runInitCommand() {
         if (!projectName) {
             throw new CliError('Project name is required');
         }
-
-        const testFramework = await askSelect<InitAnswers['testFramework']>(
-            'Which test framework would you like to use?',
-            [
-                { label: 'Vitest (recommended)', value: 'vitest' },
-                { label: 'Mocha', value: 'mocha' },
-            ],
-            'vitest'
-        );
 
         const browser: InitAnswers['browser'] = 'playwright';
 
@@ -113,7 +103,6 @@ export async function runInitCommand() {
 
         // Generate config
         const config = generateConfig(projectName, {
-            testFramework,
             browser,
             reporter,
             plugins,
@@ -129,7 +118,7 @@ export async function runInitCommand() {
             mkdirSync(testDir, { recursive: true });
         }
 
-        const testExample = generateTestExample(testFramework);
+        const testExample = generateTestExample();
         writeFileSync(join(testDir, 'example.test.ts'), testExample, 'utf-8');
 
         // Update package.json scripts
@@ -151,7 +140,6 @@ export async function runInitCommand() {
 }
 
 interface ConfigOptions {
-    testFramework: InitAnswers['testFramework'];
     browser: InitAnswers['browser'];
     reporter: InitAnswers['reporter'];
     plugins: string[];
@@ -185,23 +173,12 @@ export default defineConfig({
 `;
 }
 
-function generateTestExample(framework: InitAnswers['testFramework']): string {
-    if (framework === 'vitest') {
-        return `import { test, expect } from 'vitest';
+function generateTestExample(): string {
+    return `import { test, expect } from 'vitest';
 
 test('example test', async ({ page }) => {
     await page.goto('https://example.com');
     await expect(page.locator('h1')).toContainText('Example');
-});
-`;
-    }
-
-    return `import { assert } from 'chai';
-
-describe('example test suite', () => {
-    it('should pass', async () => {
-        assert.equal(1, 1, '1 should equal 1');
-    });
 });
 `;
 }
@@ -222,7 +199,7 @@ function updatePackageJson() {
 
         if (!packageJson.scripts.ringai) {
             packageJson.scripts.ringai = 'ringai run';
-            require('fs').writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
+            writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
             console.log(kleur.green('\n✓ Added ringai script to package.json'));
         }
     } catch {

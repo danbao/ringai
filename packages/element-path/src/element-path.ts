@@ -112,7 +112,7 @@ export class ElementPath {
         Search mask parse helpers
      */
 
-    // noinspection JSMethodCanBeStatic
+
     // eslint-disable-next-line sonarjs/cognitive-complexity
     protected parseMask(mask: string | undefined): SearchMaskObject {
         const maskFilter: SearchMaskObject = {};
@@ -163,7 +163,7 @@ export class ElementPath {
         return maskFilter;
     }
 
-    // noinspection JSMethodCanBeStatic
+
     protected parseText(textMask: string): SearchTextObject {
         if (textMask === '{}') {
             throw new TypeError('Text search param can not be empty');
@@ -295,7 +295,7 @@ export class ElementPath {
         return conditions;
     }
 
-    // noinspection JSMethodCanBeStatic
+
     protected getTextXpathParts(searchOptions: {
         containsText?: string;
         equalsText?: string;
@@ -539,10 +539,7 @@ export class ElementPath {
         });
     }
 
-    // @deprecated
-    // TODO (flops) remove asap
     public generateChildByLocator(locator: XpathLocator): ElementPath {
-        // noinspection SuspiciousTypeOfGuard
         if (typeof locator.xpath !== 'string') {
             throw Error('Invalid options, "xpath" string is required');
         }

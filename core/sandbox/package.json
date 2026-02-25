@@ -15,8 +15,7 @@
     "@ringai/logger": "workspace:*",
     "@ringai/test-utils": "workspace:*",
     "@ringai/types": "workspace:*",
-    "@ringai/utils": "workspace:*",
-    "tinypool": "2.1.0"
+    "@ringai/utils": "workspace:*"
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",

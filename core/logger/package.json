@@ -15,10 +15,7 @@
     "@ringai/transport": "workspace:*",
     "@ringai/types": "workspace:*",
     "@ringai/utils": "workspace:*",
-    "@types/bytes": "3.1.4",
-    "@types/node": "22.8.5",
-    "bytes": "3.1.2",
-    "chalk": "4.1.2"
+    "@types/node": "22.8.5"
   },
   "devDependencies": {
     "@ringai/test-utils": "workspace:*"

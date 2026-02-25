@@ -22,8 +22,7 @@
     "@ringai/transport": "workspace:*",
     "@ringai/types": "workspace:*",
     "@ringai/utils": "workspace:*",
-    "@types/node": "22.8.5",
-    "tinypool": "2.1.0"
+    "@types/node": "22.8.5"
   },
   "devDependencies": {
     "@ringai/test-utils": "workspace:*"

@@ -14,10 +14,7 @@
     "@ringai/logger": "workspace:*",
     "@ringai/types": "workspace:*",
     "@ringai/utils": "workspace:*",
-    "c12": "^2.0.0",
-    "citty": "^0.1.6",
-    "deepmerge": "^4.3.1",
-    "defu": "^6.0.0"
+    "deepmerge": "^4.3.1"
   },
   "peerDependencies": {
     "zod": "^3.23.0"

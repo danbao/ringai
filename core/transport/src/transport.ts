@@ -8,10 +8,6 @@ import {EventEmitter} from 'events';
 export class Transport implements ITransport {
     private emitter: EventEmitter = new EventEmitter();
 
-    public getProcessesList(): Array<string> {
-        return [];
-    }
-
     public send<T = unknown>(
         _processID: string,
         messageType: string,

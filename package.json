@@ -63,7 +63,7 @@
     "@jsdevtools/npm-publish": "3.1.1",
 
     "@types/chai": "5.0.1",
-    "@types/mocha": "10.0.9",
+
     "@types/node": "22.19.11",
     "@types/sinon": "17.0.4",
     "@vitest/coverage-v8": "4.0.18",
@@ -71,16 +71,16 @@
     "eslint": "^9.39.2",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-sonarjs": "4.0.0",
-    "glob": "11.0.0",
+
     "globals": "17.3.0",
 
-    "mocha": "10.8.2",
+
     "npm-check-updates": "17.1.9",
-    "nyc": "17.1.0",
-    "pre-commit": "1.2.2",
+
+
     "rimraf": "6.0.1",
     "sinon": "19.0.2",
-    "ts-node": "10.9.2",
+
     "tsup": "8.5.1",
     "tsx": "4.21.0",
     "turbo": "2.8.10",

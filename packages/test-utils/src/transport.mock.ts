@@ -8,10 +8,6 @@ export class TransportMock extends EventEmitter implements ITransport {
         return [];
     }
 
-    public getProcessesList() {
-        return [];
-    }
-
     public broadcast<T = any>(messageType: string, payload: T) {
         this.emit(messageType, payload);
     }

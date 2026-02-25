@@ -89,8 +89,6 @@ export interface IWorkerEmitter extends EventEmitter {
 }
 
 export interface ITransport {
-    getProcessesList(): Array<string>;
-
     send<T = unknown>(
         processID: string,
         messageType: string,

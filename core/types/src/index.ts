@@ -27,7 +27,6 @@ export * from './test-worker/enums';
 export * from './test-worker';
 
 export * from './transport/structs';
-export * from './transport/enums';
 export * from './transport';
 
 export * from './logger/enums';

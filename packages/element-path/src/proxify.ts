@@ -173,8 +173,7 @@ export function proxify(instance: ElementPath, strictMode = true) {
 
         if (
             strictMode &&
-            (key === 'xpathByElement' ||
-                key === 'xpath' ||
+            (key === 'xpath' ||
                 key === 'xpathByLocator')
         ) {
             throw Error('Can not use xpath query in strict mode');
@@ -192,20 +191,6 @@ export function proxify(instance: ElementPath, strictMode = true) {
                     target.generateChildByLocator({
                         xpath: element.locator,
                         id: element.id,
-                        parent: element.parent,
-                    }),
-                    strictMode,
-                );
-            };
-        }
-
-        // TODO (flops) @deprecated
-        if (key === 'xpathByElement') {
-            return (element: XpathLocatorProxified) => {
-                return proxify(
-                    target.generateChildByLocator({
-                        id: element.id,
-                        xpath: element.locator,
                         parent: element.parent,
                     }),
                     strictMode,

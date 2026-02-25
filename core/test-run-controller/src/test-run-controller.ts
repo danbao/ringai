@@ -335,7 +335,6 @@ export class TestRunController
 
             await Promise.race(raceQueue);
 
-            // noinspection JSUnusedAssignment
             clearTimeout(timer);
 
             await this.callHook(
@@ -350,7 +349,6 @@ export class TestRunController
             }
 
             queuedTest.retryErrors.push(error);
-            // noinspection JSUnusedAssignment
             clearTimeout(timer);
 
             await this.onTestFailed(error as Error, worker, queuedTest, queue);
