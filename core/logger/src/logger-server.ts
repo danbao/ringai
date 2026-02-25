@@ -10,7 +10,7 @@ import {
     LoggerPlugins,
     LogQueueStatus,
 } from '@ringai/types';
-import {formatLog} from './format-log';
+import {formatLog, formatLogJsonl} from './format-log';
 
 export enum LogLevelNumeric {
     verbose,
@@ -73,7 +73,8 @@ export class LoggerServer extends PluggableModule implements ILoggerServer {
             );
 
             if (!entryAfterPlugin.muteStdout) {
-                const formattedMessage = formatLog(logEntity, meta.processID);
+                const formatter = this.config.logFormat === 'jsonl' ? formatLogJsonl : formatLog;
+                const formattedMessage = formatter(logEntity, meta.processID);
                 this.stdout.write(`${formattedMessage}\n`);
             }
 

@@ -17,5 +17,6 @@ export const defaultConfiguration: IConfig = {
     retryDelay: 2000,
     testTimeout: 15 * 60 * 1000,
     logLevel: LogLevel.info,
+    logFormat: 'text',
     envParameters: {},
 };

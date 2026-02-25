@@ -7,6 +7,7 @@ export type ConfigPluginDescriptor = string | [string] | [string, PluginConfig];
 
 export interface IConfigLogger {
     logLevel: LogLevel;
+    logFormat?: 'text' | 'jsonl';
     silent: boolean;
 }
 
