@@ -19,6 +19,7 @@ class Sandbox {
         private source: string,
         private filename: string,
         private dependencies: DependencyDict,
+        private moduleOverrides?: Map<string, any>,
     ) {
         this.context = this.createContext(this.filename, this.dependencies);
         Sandbox.modulesCache.set(filename, this);
@@ -113,6 +114,10 @@ class Sandbox {
             }
 
             return dependencySandbox ? dependencySandbox.execute() : undefined;
+        }
+
+        if (this.moduleOverrides?.has(requestPath)) {
+            return this.moduleOverrides.get(requestPath);
         }
 
         return requirePackageSync(requestPath, this.filename);

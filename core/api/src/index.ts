@@ -1,5 +1,6 @@
 import {WebApplication} from '@ringai/web-application';
 import {testAPIController, TestAPIController} from './test-api-controller';
-import {run} from './run';
+import {TestContext} from './test-context';
+import {run, beforeRun, afterRun} from './run';
 
-export {run, testAPIController, TestAPIController, WebApplication};
+export {run, beforeRun, afterRun, testAPIController, TestAPIController, TestContext, WebApplication};

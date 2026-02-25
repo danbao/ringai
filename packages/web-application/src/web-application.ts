@@ -140,7 +140,7 @@ export class WebApplication extends PluggableModule {
 
     public get client(): WebClient {
         const applicationID = `${this.testUID}-${generateUniqId()}`;
-        const value = new WebClient(applicationID, this.transport);
+        const value = new WebClient(applicationID);
 
         Object.defineProperty(this, 'client', {
             value,

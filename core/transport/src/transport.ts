@@ -1,74 +1,47 @@
-import process from 'node:process';
-
-import {isChildProcess} from '@ringai/child-process';
 import {
     ITransport,
     IWorkerEmitter,
     TransportMessageHandler,
-    ITransportDirectMessage,
 } from '@ringai/types';
-import {DirectTransport} from './direct-transport';
-import {BroadcastTransport} from './broadcast-transport';
 import {EventEmitter} from 'events';
-
-const IS_CHILD_PROCESS = isChildProcess();
 
 export class Transport implements ITransport {
     private emitter: EventEmitter = new EventEmitter();
 
-    private directTransport: DirectTransport;
-
-    private broadcastTransport: BroadcastTransport;
-
-    constructor(
-        rootProcess: NodeJS.Process = process,
-        private broadcastToLocal: boolean = IS_CHILD_PROCESS,
-    ) {
-        const handler: TransportMessageHandler = (payload, source) =>
-            this.triggerListeners(payload as ITransportDirectMessage, source);
-
-        this.directTransport = new DirectTransport(handler);
-
-        this.broadcastTransport = new BroadcastTransport(handler, rootProcess);
-    }
-
     public getProcessesList(): Array<string> {
-        return this.directTransport.getProcessesList();
+        return [];
     }
 
     public send<T = unknown>(
-        processID: string,
+        _processID: string,
         messageType: string,
         payload: T,
     ): Promise<void> {
-        return this.directTransport.send(processID, messageType, payload);
+        this.emitter.emit(messageType, payload);
+        return Promise.resolve();
     }
 
     public broadcast<T = unknown>(messageType: string, payload: T): void {
-        this.broadcastTransport.broadcast(messageType, payload);
+        this.emitter.emit(messageType, payload);
     }
 
     public broadcastLocal<T = unknown>(messageType: string, payload: T): void {
-        this.broadcastTransport.broadcastLocal(messageType, payload);
+        this.emitter.emit(messageType, payload);
     }
 
     public broadcastUniversally<T = unknown>(
         messageType: string,
         payload: T,
     ): void {
-        if (this.isChildProcess()) {
-            this.broadcast(messageType, payload);
-        } else {
-            this.broadcastLocal(messageType, payload);
-        }
+        this.emitter.emit(messageType, payload);
     }
 
     public isChildProcess() {
-        return this.broadcastToLocal;
+        return false;
     }
 
-    public registerChild(processID: string, child: IWorkerEmitter) {
-        this.directTransport.registerChild(processID, child);
+    public registerChild(_processID: string, _child: IWorkerEmitter) {
+        // No-op: single process, no child processes
     }
 
     public on<T = unknown>(
@@ -76,7 +49,6 @@ export class Transport implements ITransport {
         callback: TransportMessageHandler<T>,
     ) {
         this.emitter.on(messageType, callback);
-
         return () => this.emitter.removeListener(messageType, callback);
     }
 
@@ -85,31 +57,15 @@ export class Transport implements ITransport {
         callback: TransportMessageHandler<T>,
     ) {
         this.emitter.once(messageType, callback);
-
         return () => this.emitter.removeListener(messageType, callback);
     }
 
     public onceFrom<T = unknown>(
-        processID: string,
+        _processID: string,
         messageType: string,
         callback: TransportMessageHandler<T>,
     ) {
-        const handler = (message: T, source: string) => {
-            if (processID === source) {
-                callback(message);
-                this.emitter.removeListener(messageType, handler);
-            }
-        };
-
-        this.emitter.on(messageType, handler);
-
-        return () => this.emitter.removeListener(messageType, handler);
-    }
-
-    private triggerListeners(
-        message: ITransportDirectMessage,
-        processID?: string,
-    ) {
-        this.emitter.emit(message.type, message.payload, processID);
+        this.emitter.once(messageType, callback);
+        return () => this.emitter.removeListener(messageType, callback);
     }
 }

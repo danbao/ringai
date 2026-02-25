@@ -24,11 +24,11 @@ module.exports = async (config) => {
 
     return {
         screenshotPath: './_tmp/',
-        workerLimit: 'local',
+        workerLimit: 5,
         maxWriteThreadCount: 2,
         screenshots: 'disable',
-        retryCount: local ? 0 : 2, // 在 CI 环境中重试失败的测试
-        testTimeout: local ? 0 : (config.testTimeout || TIMEOUTS.TEST_EXECUTION),
+        retryCount: local ? 0 : 2,
+        testTimeout: local ? 0 : 90000,
         tests: 'test/playwright/test/**/*.spec.js',
         plugins: [
             [

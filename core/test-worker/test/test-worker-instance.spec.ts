@@ -1,92 +1,97 @@
-import * as chai from 'chai';
-import {vi} from 'vitest';
+import {describe, it, vi, expect} from 'vitest';
 
 import {TestWorkerInstance} from '../src/test-worker-instance';
-import {TestWorkerAction, TestStatus} from '@ringai/types';
 
-vi.mock('@ringai/fs-store', () => {
-    return {
-        FSClientGet: () => ({
-            releaseAllWorkerActions: vi.fn(),
+vi.mock('@ringai/logger', () => ({
+    loggerClient: {
+        debug: vi.fn(),
+        info: vi.fn(),
+        error: vi.fn(),
+        warn: vi.fn(),
+        withPrefix: () => ({
+            debug: vi.fn(), info: vi.fn(), error: vi.fn(), warn: vi.fn(),
         }),
-        FSStoreClient: class {},
-    };
-});
+    },
+}));
 
-vi.mock('../src/test-worker-local', () => {
-    const {EventEmitter} = require('events');
+vi.mock('@ringai/sandbox', () => ({
+    Sandbox: class {
+        static clearCache = vi.fn();
+        execute = vi.fn();
+    },
+}));
+
+vi.mock('@ringai/api', () => {
+    const mockBus = {
+        on: vi.fn(),
+        removeListener: vi.fn(),
+        startedTest: vi.fn().mockResolvedValue(undefined),
+        finishedTest: vi.fn().mockResolvedValue(undefined),
+        failedTest: vi.fn().mockResolvedValue(undefined),
+    };
+    class MockTestAPIController {
+        getBus = vi.fn(() => mockBus);
+        setEnvironmentParameters = vi.fn();
+        setTestParameters = vi.fn();
+        setTestID = vi.fn();
+        getTestID = vi.fn(() => 'test-id');
+        getTestParameters = vi.fn(() => ({}));
+        getEnvironmentParameters = vi.fn(() => ({}));
+        flushBeforeRunCallbacks = vi.fn().mockResolvedValue(undefined);
+        flushAfterRunCallbacks = vi.fn().mockResolvedValue(undefined);
+        registerBeforeRunCallback = vi.fn();
+        registerAfterRunCallback = vi.fn();
+    }
     return {
-        TestWorkerLocal: class TestWorkerLocal extends EventEmitter {
-            send = vi.fn(async () => true);
-            kill = vi.fn(() => {
-                this.emit('exit');
-            });
-        },
+        TestAPIController: MockTestAPIController,
+        testAPIController: new MockTestAPIController(),
+        TestContext: class { end = vi.fn().mockResolvedValue(undefined); },
+        WebApplication: class {},
     };
 });
 
-const flush = async () => {
-    // allow promise chains + timers used internally (delay(100) etc.)
-    await new Promise((r) => setTimeout(r, 0));
-};
+vi.mock('@ringai/async-breakpoints', () => ({
+    asyncBreakpoints: {
+        resolveBeforeInstructionBreakpoint: vi.fn(),
+        resolveAfterInstructionBreakpoint: vi.fn(),
+    },
+    BreakStackError: class extends Error {},
+}));
 
 describe('TestWorkerInstance', () => {
-    it('should handle localWorker execution (transport.once) and not call transport.send', async () => {
-        const transport = {
-            once: vi.fn((_action: any, _handler: any) => vi.fn()),
-            onceFrom: vi.fn(),
-            send: vi.fn(),
-            registerChild: vi.fn(),
-        } as any;
-
+    it('should have a unique worker ID', () => {
+        const transport = { broadcastUniversally: vi.fn() } as any;
         const compile = vi.fn(async (src: string) => src);
         const beforeCompile = vi.fn(async () => []);
 
-        const instance = new TestWorkerInstance(
-            transport,
-            compile as any,
-            beforeCompile as any,
-            {localWorker: true},
-        );
+        const instance = new TestWorkerInstance(transport, compile, beforeCompile);
 
-        const executePromise = instance.execute(
-            {path: '/tmp/t.spec.ts', content: 'test'} as any,
-            {},
-            {},
-        );
-
-        await flush();
-
-        chai.expect(transport.once.mock.calls.length).to.equal(1);
-        chai.expect(transport.once.mock.calls[0][0]).to.equal(
-            TestWorkerAction.executionComplete,
-        );
-        chai.expect(transport.send.mock.calls.length).to.equal(0);
-
-        const completeHandler = transport.once.mock.calls[0][1];
-        completeHandler({status: TestStatus.done});
-
-        await executePromise;
+        expect(instance.getWorkerID()).toMatch(/^worker\//);
     });
 
-    it('kill should be safe when no worker has been created yet', async () => {
-        const transport = {
-            once: vi.fn(),
-            onceFrom: vi.fn(),
-            send: vi.fn(),
-            registerChild: vi.fn(),
-        } as any;
-
+    it('kill should be safe (no-op)', async () => {
+        const transport = { broadcastUniversally: vi.fn() } as any;
         const compile = vi.fn(async (src: string) => src);
         const beforeCompile = vi.fn(async () => []);
 
-        const instance = new TestWorkerInstance(
-            transport,
-            compile as any,
-            beforeCompile as any,
-            {localWorker: true},
+        const instance = new TestWorkerInstance(transport, compile, beforeCompile);
+        await instance.kill();
+    });
+
+    it('should compile source and cache it', async () => {
+        const transport = { broadcastUniversally: vi.fn() } as any;
+        const compile = vi.fn(async (src: string) => `compiled:${src}`);
+        const beforeCompile = vi.fn(async () => []);
+
+        const instance = new TestWorkerInstance(transport, compile, beforeCompile);
+
+        await instance.execute(
+            {path: '/tmp/test.spec.ts', content: 'test code'} as any,
+            {},
+            {},
         );
 
-        await instance.kill();
+        expect(compile).toHaveBeenCalledTimes(1);
+        expect(compile).toHaveBeenCalledWith('test code', '/tmp/test.spec.ts');
     });
 });

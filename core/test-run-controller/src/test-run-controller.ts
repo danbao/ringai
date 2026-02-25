@@ -87,24 +87,22 @@ export class TestRunController
 
         try {
             const configWorkerLimit = this.config.workerLimit;
+            let workerCount: number;
 
-            if (configWorkerLimit === 'local') {
-                await this.runLocalWorker(testQueue);
+            if (configWorkerLimit === 'local' || configWorkerLimit === 1) {
+                workerCount = 1;
             } else if (
                 typeof configWorkerLimit === 'number' &&
                 configWorkerLimit > 0
             ) {
-                const workerLimit =
-                    configWorkerLimit < testQueue.length
-                        ? configWorkerLimit
-                        : testQueue.length;
-
-                await this.runChildWorkers(testQueue, workerLimit);
+                workerCount = Math.min(configWorkerLimit, testQueue.length);
             } else {
                 throw new Error(
                     `Invalid workerLimit argument value ${configWorkerLimit}`,
                 );
             }
+
+            await this.runWorkers(testQueue, workerCount);
 
             await this.callHook(TestRunControllerPlugins.afterRun, null);
         } catch (error) {
@@ -119,43 +117,19 @@ export class TestRunController
         return null;
     }
 
-    private async runLocalWorker(testQueue: TestQueue): Promise<void> {
-        this.logger.debug('Run controller: Local worker is used.');
-
-        if (this.config.restartWorker) {
-            this.logger.warn('Workers won`t be restarted on every test end.');
-        }
-
-        this.workers = this.createWorkers(1);
-        const worker = this.workers[0];
-
-        if (!worker) {
-            throw new Error('Failed to create a test worker instance.');
-        }
-
-        while (testQueue.length > 0) {
-            await this.executeWorker(worker, testQueue);
-        }
-    }
-
-    private async runChildWorkers(
+    private async runWorkers(
         testQueue: TestQueue,
-        workerLimit: number,
+        workerCount: number,
     ): Promise<void> {
-        this.logger.debug(`Run controller: ${workerLimit} worker(s) created.`);
+        this.logger.debug(`Run controller: ${workerCount} worker(s) created.`);
 
-        this.workers = this.createWorkers(workerLimit);
+        this.workers = this.createWorkers(workerCount);
 
         await Promise.all(
             this.workers.map(async (worker) => {
                 while (testQueue.length > 0) {
                     await this.executeWorker(worker, testQueue);
-
-                    if (this.config.restartWorker) {
-                        await worker.kill();
-                    }
                 }
-                await worker.kill();
             }),
         );
     }

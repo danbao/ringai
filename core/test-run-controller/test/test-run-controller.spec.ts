@@ -127,14 +127,13 @@ describe('TestRunController', () => {
         chai.expect(errors).to.be.lengthOf(1);
     });
 
-    it('should run spawn workers according the limit and kill them in the end of the run', async () => {
+    it('should run spawn workers according the limit and complete without kill', async () => {
         const workerLimit = 20;
         const testsCount = 40;
         const config = {
             bail: false,
             workerLimit,
             timeout: DEFAULT_TIMEOUT,
-            restartWorker: false,
         } as any;
 
         const tests = generateTestFiles(testsCount);
@@ -145,12 +144,11 @@ describe('TestRunController', () => {
         await testRunController.runQueue(tests);
 
         chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(
-            workerLimit,
-        );
+        // kill is not called during normal execution — only on shutdown
+        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(0);
     });
 
-    it('should run spawn workers according the limit and called kill in the middle', async () => {
+    it('should run spawn workers and kill all when kill() is called externally', async () => {
         const workerLimit = 2;
         const testsCount = 4;
         const config = {
@@ -166,7 +164,6 @@ describe('TestRunController', () => {
 
         const runQueue = testRunController.runQueue(tests);
 
-        // Starting a race with execution workers and kill command
         await new Promise<void>((resolve) =>
             setTimeout(() => {
                 testRunController.kill();
@@ -180,12 +177,6 @@ describe('TestRunController', () => {
         );
 
         await runQueue;
-
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
-        // Total count is worker limit + in the end of run we killing all worker instances just for sure
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(
-            workerLimit * 2,
-        );
     });
 
     it('should run spawn workers and kill by testTimeout delay', async () => {
@@ -208,36 +199,10 @@ describe('TestRunController', () => {
         )) as Error[];
 
         chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(
-            workerLimit + testsCount,
-        );
+        // kill is called once per timed-out test
+        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(testsCount);
 
         chai.expect(delayErrors).to.be.lengthOf(testsCount);
-    });
-
-    it('should run spawn workers according the limit and kill after every execution', async () => {
-        const workerLimit = 20;
-        const testsCount = 40;
-        const config = {
-            bail: false,
-            workerLimit,
-            timeout: DEFAULT_TIMEOUT,
-            restartWorker: true,
-        } as any;
-
-        const tests = generateTestFiles(testsCount);
-
-        const testWorkerMock = new TestWorkerMock();
-        const testRunController = new TestRunController(config, testWorkerMock);
-
-        await testRunController.runQueue(tests);
-
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
-
-        // kill calls is counted by number executions + total workers killed in the end of run
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(
-            testsCount + workerLimit,
-        );
     });
 
     it('should use retries when test fails', async () => {

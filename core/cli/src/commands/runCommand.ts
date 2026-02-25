@@ -3,7 +3,7 @@ import {TestRunController} from '@ringai/test-run-controller';
 import {applyPlugins} from '@ringai/plugin-api';
 import {FSReader} from '@ringai/fs-reader';
 import {TestWorker} from '@ringai/test-worker';
-import {WebApplicationController} from '@ringai/web-application';
+import {setBrowserProxy} from '@ringai/web-application';
 import {BrowserProxyController} from '@ringai/browser-proxy';
 import {ICLICommand, IConfig, ITransport} from '@ringai/types';
 
@@ -14,7 +14,6 @@ class RunCommand implements ICLICommand {
 
     private fsWriterQueueServer!: FSStoreServer | null;
 
-    private webApplicationController!: WebApplicationController;
     private browserProxyController!: BrowserProxyController;
     private testRunController!: TestRunController;
     private fsStoreServer: FSStoreServer;
@@ -55,21 +54,16 @@ class RunCommand implements ICLICommand {
     async execute() {
         const testWorker = new TestWorker(this.transport, {
             waitForRelease: false,
-            localWorker: this.config.workerLimit === 'local',
             screenshots: this.config.screenshots,
         });
 
         this.browserProxyController = new BrowserProxyController();
+        setBrowserProxy(this.browserProxyController);
 
         this.testRunController = new TestRunController(
             this.config,
             testWorker,
             null,
-        );
-
-        this.webApplicationController = new WebApplicationController(
-            this.browserProxyController,
-            this.transport,
         );
 
         const loggerServer = new LoggerServer(
@@ -99,8 +93,6 @@ class RunCommand implements ICLICommand {
 
         await this.browserProxyController.init();
 
-        this.webApplicationController.init();
-
         this.logger.info('Executing...');
 
         const testRunResult = await this.testRunController.runQueue(tests);
@@ -118,7 +110,6 @@ class RunCommand implements ICLICommand {
             const errorMessage = `Failed ${testRunResult.length}/${tests.length} tests.`;
             this.logger.error(errorMessage);
 
-            // Ensure proper exit code is set
             const error = new Error(errorMessage);
             (error as any).exitCode = 1;
             (error as any).testFailures = testRunResult.length;
@@ -133,16 +124,13 @@ class RunCommand implements ICLICommand {
     async shutdown() {
         const testRunController = this.testRunController;
         const browserProxyController = this.browserProxyController;
-        const webApplicationController = this.webApplicationController;
 
         this.testRunController = null as any;
         this.browserProxyController = null as any;
-        this.webApplicationController = null as any;
 
         this.fsWriterQueueServer && this.fsWriterQueueServer.cleanUpTransport();
         this.fsWriterQueueServer = null as any;
 
-        webApplicationController && webApplicationController.kill();
         testRunController && (await testRunController.kill());
         browserProxyController && (await browserProxyController.kill());
     }

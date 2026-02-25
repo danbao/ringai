@@ -1,6 +1,5 @@
 import {describe, expect, it, vi, beforeEach} from 'vitest';
 
-// Mock heavy deps used inside RunCommand.execute
 vi.mock('@ringai/logger', () => {
     return {
         loggerClient: {info: vi.fn(), error: vi.fn()},
@@ -33,12 +32,9 @@ vi.mock('@ringai/test-worker', () => {
 });
 
 vi.mock('@ringai/web-application', () => {
-    class WebApplicationController {
-        init = vi.fn();
-        kill = vi.fn();
-        constructor(_browserProxy?: any, _transport?: any) {}
-    }
-    return {WebApplicationController};
+    return {
+        setBrowserProxy: vi.fn(),
+    };
 });
 
 vi.mock('@ringai/browser-proxy', () => {
@@ -54,7 +50,6 @@ vi.mock('@ringai/fs-store', () => {
         cleanUpTransport = vi.fn();
         constructor(_maxWriteThreadCount?: number) {}
     }
-
     return {FSStoreServer};
 });
 
@@ -67,7 +62,6 @@ describe('core/cli runCommand', () => {
 
     it('should throw when required tests field is missing', () => {
         const config = {
-            // missing tests
             maxWriteThreadCount: 1,
             workerLimit: 'local',
             screenshots: false,
@@ -78,7 +72,7 @@ describe('core/cli runCommand', () => {
         );
     });
 
-    it('should pass mapping of workerLimit/screenshots into TestWorker options', async () => {
+    it('should pass screenshots config into TestWorker options', async () => {
         const {TestWorker} = await import('@ringai/test-worker');
 
         const config = {
@@ -95,25 +89,7 @@ describe('core/cli runCommand', () => {
         const [, options] = (TestWorker as any).mock.calls[0];
         expect(options).toEqual({
             waitForRelease: false,
-            localWorker: true,
             screenshots: true,
         });
-    });
-
-    it('should map workerLimit != local into localWorker=false', async () => {
-        const {TestWorker} = await import('@ringai/test-worker');
-
-        const config = {
-            tests: 'tests/**/*.test.ts',
-            maxWriteThreadCount: 2,
-            workerLimit: 4,
-            screenshots: false,
-        } as any;
-
-        const cmd = runTests(config, {} as any, process.stdout);
-        await cmd.execute();
-
-        const [, options] = (TestWorker as any).mock.calls[0];
-        expect(options.localWorker).toBe(false);
     });
 });

@@ -1,9 +1,5 @@
 export {Sandbox} from './sandbox';
 export {
-    SandboxWorkerThreads,
-    createSandboxWorkerThreads,
-} from './sandbox-workerthreads';
-export {
     ESMLoaderHooks,
     esmLoaderHooks,
     createESMLoader,

@@ -1,58 +1,20 @@
 import {
     BrowserProxyActions,
-    ITransport,
     IWebApplicationClient,
-    IWebApplicationExecuteMessage,
-    IWebApplicationResponseMessage,
     SavePdfOptions,
-    WebApplicationMessageType,
     WindowFeaturesConfig,
 } from '@ringai/types';
-import {generateUniqId} from '@ringai/utils';
+import {getBrowserProxy} from './browser-proxy-registry';
 
 export class WebClient implements IWebApplicationClient {
-    constructor(private applicant: string, private transport: ITransport) {}
+    constructor(private applicant: string) {}
 
     private makeRequest(
         action: BrowserProxyActions,
         args: Array<any> = [],
     ): Promise<any> {
-        const error = new Error();
-        const transport = this.transport;
-
-        return new Promise((resolve, reject) => {
-            const uid = generateUniqId();
-            const request: IWebApplicationExecuteMessage = {
-                uid,
-                applicant: this.applicant,
-                command: {
-                    action,
-                    args,
-                },
-            };
-
-            const removeListener = transport.on<IWebApplicationResponseMessage>(
-                WebApplicationMessageType.response,
-                (message) => {
-                    if (message.uid === uid) {
-                        removeListener();
-
-                        if (message.error) {
-                            error.message = message.error.message;
-
-                            reject(error);
-                        } else {
-                            resolve(message.response);
-                        }
-                    }
-                },
-            );
-
-            transport.broadcastUniversally(
-                WebApplicationMessageType.execute,
-                request,
-            );
-        });
+        const proxy = getBrowserProxy();
+        return proxy.execute(this.applicant, { action, args });
     }
 
     public end() {

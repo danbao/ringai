@@ -27,7 +27,9 @@ const mainCommand = defineCommand({
             run: async () => {
                 const config = await getConfig(process.argv);
                 const command = runTests(config, transport, process.stdout);
-                return command.execute().catch(async (exception) => {
+                return command.execute().then(() => {
+                    setTimeout(() => process.exit(0), 200);
+                }).catch(async (exception) => {
                     loggerClient.error('[CLI] Test execution failed:', exception.message);
                     if (exception.stack) {
                         loggerClient.error('[CLI] Stack trace:', exception.stack);

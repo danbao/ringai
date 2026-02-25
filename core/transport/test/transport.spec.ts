@@ -1,120 +1,75 @@
-/* eslint sonarjs/no-identical-functions: 0 */
-
-import * as chai from 'chai';
-import {ITransportMessage} from '@ringai/types';
-import {ChildProcessMock} from './child-process.mock';
-import {RootProcessMock} from './root-process.mock';
-import {serialize} from '../src/serialize';
+import {describe, it, expect, vi} from 'vitest';
 import {Transport} from '../src/transport';
 
 describe('Transport', () => {
-    describe('child process message sending', () => {
-        const MESSAGE_TYPE = 'randomModuleName';
+    it('should emit and receive messages via on()', () => {
+        const transport = new Transport();
+        const handler = vi.fn();
 
-        it('should get response', async () => {
-            const childProcess = new ChildProcessMock();
-            const transport = new Transport();
+        transport.on('test', handler);
+        transport.broadcastUniversally('test', {data: 1});
 
-            transport.registerChild('test', childProcess as any);
-
-            await transport.send('test', MESSAGE_TYPE, []);
-        });
-
-        it('should correctly fail if there is no such process', () => new Promise<void>((resolve, reject) => {
-            const transport = new Transport();
-
-            transport
-                .send('unexpectedName', MESSAGE_TYPE, [])
-                .then(() => {
-                    reject(
-                        'Message was sended to nonexistent process somehow',
-                    );
-                })
-                .catch((exception) => {
-                    chai.expect(exception).to.be.an.instanceof(ReferenceError);
-                    resolve();
-                })
-                .catch((exception) => {
-                    reject(exception);
-                });
-        }));
-
-        it('should correctly fail, when process fails', () => new Promise<void>((resolve, reject) => {
-            const childProcessMock = new ChildProcessMock(true);
-            const transport = new Transport();
-
-            transport.registerChild('test', childProcessMock as any);
-            transport
-                .send('unexpectedName', MESSAGE_TYPE, [])
-                .then(() => {
-                    reject('Message was sended to failed process somehow');
-                })
-                .catch(() => {
-                    resolve();
-                })
-                .catch((exception) => {
-                    reject(exception);
-                });
-        }));
+        expect(handler).toHaveBeenCalledWith({data: 1});
     });
 
-    describe('root process broadcasting', () => {
-        it('should send message to process', () => {
-            const rootProcessMock = new RootProcessMock();
-            const transport = new Transport(rootProcessMock as any);
-            const payload = {};
+    it('should emit and receive messages via once()', () => {
+        const transport = new Transport();
+        const handler = vi.fn();
 
-            transport.broadcast('message', payload);
+        transport.once('test', handler);
+        transport.broadcastUniversally('test', 'first');
+        transport.broadcastUniversally('test', 'second');
 
-            chai.expect(rootProcessMock.$callCount()).to.be.equal(1);
-            chai.expect(rootProcessMock.$lastCall()).to.have.property('payload').that.deep.equals(
-                serialize(payload),
-            );
-        });
+        expect(handler).toHaveBeenCalledTimes(1);
+        expect(handler).toHaveBeenCalledWith('first');
     });
 
-    describe('message handling', () => {
-        it('should subscribe message from broadcast', () => new Promise<void>((resolve, reject) => {
-            const messageType = 'test';
-            const expectedPayload = {};
-            const rootProcessMock = new RootProcessMock();
-            const transport = new Transport(rootProcessMock as any);
+    it('should support removing listeners', () => {
+        const transport = new Transport();
+        const handler = vi.fn();
 
-            const removeListener = transport.on(messageType, (payload) => {
-                removeListener();
+        const remove = transport.on('test', handler);
+        remove();
+        transport.broadcastUniversally('test', 'data');
 
-                chai.expect(payload).to.be.equal(expectedPayload);
+        expect(handler).not.toHaveBeenCalled();
+    });
 
-                resolve();
-            });
+    it('send() should emit locally', async () => {
+        const transport = new Transport();
+        const handler = vi.fn();
 
-            rootProcessMock.$triggerListener<ITransportMessage>({
-                type: messageType,
-                payload: expectedPayload,
-            });
-        }));
+        transport.on('test', handler);
+        await transport.send('any-process', 'test', {value: 42});
 
-        it('should subscribe message from broadcast', () => new Promise<void>((resolve, reject) => {
-            const messageType = 'test';
-            const expectedPayload = {};
-            const childProcessMock = new ChildProcessMock();
+        expect(handler).toHaveBeenCalledWith({value: 42});
+    });
 
-            const transport = new Transport();
+    it('broadcast/broadcastLocal/broadcastUniversally should all emit', () => {
+        const transport = new Transport();
+        const handler = vi.fn();
 
-            transport.registerChild('test', childProcessMock as any);
+        transport.on('msg', handler);
 
-            const removeListener = transport.on(messageType, (payload) => {
-                removeListener();
+        transport.broadcast('msg', 'a');
+        transport.broadcastLocal('msg', 'b');
+        transport.broadcastUniversally('msg', 'c');
 
-                chai.expect(payload).to.be.equal(expectedPayload);
+        expect(handler).toHaveBeenCalledTimes(3);
+    });
 
-                resolve();
-            });
+    it('isChildProcess should return false', () => {
+        const transport = new Transport();
+        expect(transport.isChildProcess()).toBe(false);
+    });
 
-            childProcessMock.$triggerListener<ITransportMessage>({
-                type: messageType,
-                payload: expectedPayload,
-            });
-        }));
+    it('onceFrom should work like once (processID ignored)', () => {
+        const transport = new Transport();
+        const handler = vi.fn();
+
+        transport.onceFrom('some-id', 'test', handler);
+        transport.broadcastUniversally('test', 'value');
+
+        expect(handler).toHaveBeenCalledWith('value');
     });
 });

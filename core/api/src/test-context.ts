@@ -2,7 +2,7 @@ import {ITestQueuedTestRunData} from '@ringai/types';
 import {loggerClient} from '@ringai/logger';
 import {transport} from '@ringai/transport';
 import {WebApplication} from '@ringai/web-application';
-import {testAPIController} from './test-api-controller';
+import {testAPIController, TestAPIController} from './test-api-controller';
 
 const LOG_PREFIX = '[logged inside test]';
 
@@ -11,14 +11,17 @@ export class TestContext {
 
     private customApplications: Set<WebApplication> = new Set();
 
-    constructor(_config: any) {
+    private apiController: TestAPIController;
+
+    constructor(_config: any, apiController?: TestAPIController) {
+        this.apiController = apiController || testAPIController;
     }
 
     public get application(): WebApplication {
         const runData = this.getRunData();
 
         const value = new WebApplication(
-            testAPIController.getTestID(),
+            this.apiController.getTestID(),
             transport,
             runData,
         );
@@ -66,11 +69,11 @@ export class TestContext {
     }
 
     public getParameters(): any {
-        return testAPIController.getTestParameters();
+        return this.apiController.getTestParameters();
     }
 
     public getEnvironment(): any {
-        return testAPIController.getEnvironmentParameters();
+        return this.apiController.getEnvironmentParameters();
     }
 
     public initCustomApplication<T extends WebApplication>(Ctr: {
@@ -78,7 +81,7 @@ export class TestContext {
     }) {
         const runData = this.getRunData();
         const customApplication = new Ctr(
-            testAPIController.getTestID(),
+            this.apiController.getTestID(),
             transport,
             runData,
         );
