@@ -29,3 +29,6 @@ packages/e2e-test-app/test/playwright/test/**/*.pdf
 
 # Turborepo
 .turbo
+
+# tsup bundled cache
+tsup.config.base.bundled_*.mjs
