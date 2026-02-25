@@ -41,7 +41,7 @@ jobs:
       run: pnpm exec playwright install chromium firefox
 
     - name: Run tests with coverage
-      run: pnpm run test:ci:coverage
+      run: pnpm run test:ci
 
     - name: Analyze test performance
       if: ${{ matrix.os=='ubuntu-latest' && matrix.node-version=='22'}}
