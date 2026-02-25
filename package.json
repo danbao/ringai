@@ -29,17 +29,15 @@
     "test:plugin-playwright": "vitest run packages/plugin-playwright-driver/test",
 
     "build": "turbo run build",
-    "build:main": "turbo run build --filter=!@ringai/e2e-test-app --filter=!@ringai/devtool-frontend --filter=!@ringai/devtool-extension",
-    "build:main:watch": "pnpm --filter=!@ringai/e2e-test-app --filter=!@ringai/devtool-frontend --filter=!@ringai/devtool-extension -r exec -- tsc --watch --inlineSourceMap",
-    "build:devtool": "turbo run build --filter=@ringai/devtool-frontend",
-    "build:extension": "turbo run build --filter=@ringai/devtool-extension",
+    "build:main": "turbo run build --filter=!@ringai/e2e-test-app",
+    "build:main:watch": "pnpm --filter=!@ringai/e2e-test-app -r exec -- tsc --watch --inlineSourceMap",
 
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
 
-    "publish:ci": "node ./utils/publish.js --exclude=@ringai/devtool-frontend,@ringai/devtool-backend,@ringai/devtool-extension",
-    "publish:dev": "node ./utils/publish.js --dev --exclude=@ringai/devtool-frontend,@ringai/devtool-backend,@ringai/devtool-extension",
+    "publish:ci": "node ./utils/publish.js",
+    "publish:dev": "node ./utils/publish.js --dev",
     "deps:check": "pnpm run deps:validate",
     "deps:validate": "pnpm -r exec -- node ../../utils/check-packages-versions",
     "deps:find-updates": "ncu -m --deep --color",

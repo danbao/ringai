@@ -9,7 +9,7 @@ type AfterRunCallback = () => void | Promise<void>;
 
 export class BusEmitter extends EventEmitter {
     private async addDelayToStack(): Promise<void> {
-        new Promise((resolve) => setImmediate(resolve));
+        await new Promise((resolve) => setImmediate(resolve));
     }
 
     public async startedTest(): Promise<void> {

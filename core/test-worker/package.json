@@ -13,9 +13,6 @@
   "dependencies": {
     "@ringai/api": "workspace:*",
     "@ringai/async-breakpoints": "workspace:*",
-    "@ringai/child-process": "workspace:*",
-    "@ringai/fs-reader": "workspace:*",
-    "@ringai/fs-store": "workspace:*",
     "@ringai/logger": "workspace:*",
     "@ringai/pluggable-module": "workspace:*",
     "@ringai/sandbox": "workspace:*",
