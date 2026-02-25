@@ -60,7 +60,7 @@ vi.mock('@ringai/async-breakpoints', () => ({
 
 describe('TestWorkerInstance', () => {
     it('should have a unique worker ID', () => {
-        const transport = { broadcastUniversally: vi.fn() } as any;
+        const transport = { broadcast: vi.fn() } as any;
         const compile = vi.fn(async (src: string) => src);
         const beforeCompile = vi.fn(async () => []);
 
@@ -70,7 +70,7 @@ describe('TestWorkerInstance', () => {
     });
 
     it('kill should be safe (no-op)', async () => {
-        const transport = { broadcastUniversally: vi.fn() } as any;
+        const transport = { broadcast: vi.fn() } as any;
         const compile = vi.fn(async (src: string) => src);
         const beforeCompile = vi.fn(async () => []);
 
@@ -79,7 +79,7 @@ describe('TestWorkerInstance', () => {
     });
 
     it('should compile source and cache it', async () => {
-        const transport = { broadcastUniversally: vi.fn() } as any;
+        const transport = { broadcast: vi.fn() } as any;
         const compile = vi.fn(async (src: string) => `compiled:${src}`);
         const beforeCompile = vi.fn(async () => []);
 

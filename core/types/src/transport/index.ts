@@ -97,10 +97,6 @@ export interface ITransport {
 
     broadcast<T = unknown>(messageType: string, payload: T): void;
 
-    broadcastLocal<T = unknown>(messageType: string, payload: T): void;
-
-    broadcastUniversally<T = unknown>(messageType: string, payload: T): void;
-
     isChildProcess(): boolean;
 
     registerChild(processID: string, child: IWorkerEmitter): void;

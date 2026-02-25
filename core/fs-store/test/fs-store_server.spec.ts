@@ -46,7 +46,7 @@ describe('fs-store-server', () => {
                 switch (action) {
                     case fsReqType.access:
                         state.access -= 1;
-                        transport.broadcastUniversally<IFSStoreReq>(
+                        transport.broadcast<IFSStoreReq>(
                             releaseReqName,
                             {
                                 requestId: accessRequestID,
@@ -93,7 +93,7 @@ describe('fs-store-server', () => {
                 },
             );
 
-        transport.broadcastUniversally<IFSStoreReq>(reqName, {
+        transport.broadcast<IFSStoreReq>(reqName, {
             requestId: lockRequestID,
             action: fsReqType.lock,
             meta: {
@@ -102,7 +102,7 @@ describe('fs-store-server', () => {
         });
         state.lock += 1;
 
-        transport.broadcastUniversally<IFSStoreReq>(reqName, {
+        transport.broadcast<IFSStoreReq>(reqName, {
             requestId: accessRequestID,
             action: fsReqType.access,
             meta: {
@@ -111,7 +111,7 @@ describe('fs-store-server', () => {
         });
         state.access += 1;
 
-        transport.broadcastUniversally<IFSStoreReq>(reqName, {
+        transport.broadcast<IFSStoreReq>(reqName, {
             requestId: unlinkRequestID,
             action: fsReqType.unlink,
             meta: {
@@ -126,7 +126,7 @@ describe('fs-store-server', () => {
                 access: 0,
                 unlink: 1,
             });
-            transport.broadcastUniversally<IFSStoreReq>(releaseReqName, {
+            transport.broadcast<IFSStoreReq>(releaseReqName, {
                 requestId: lockRequestID,
                 action: fsReqType.lock,
                 meta: {
@@ -141,7 +141,7 @@ describe('fs-store-server', () => {
                     unlink: 0,
                 });
 
-                transport.broadcastUniversally<{}>(cleanReqName, {});
+                transport.broadcast<{}>(cleanReqName, {});
 
                 done();
             }, 100);

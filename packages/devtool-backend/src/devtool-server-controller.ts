@@ -132,7 +132,7 @@ export class DevtoolServerController
                 message.messageData,
             );
         } else {
-            this.transport.broadcastLocal(
+            this.transport.broadcast(
                 message.messageType,
                 message.messageData,
             );

@@ -20,14 +20,6 @@ export class TransportMock extends EventEmitter implements ITransport {
         this.emit(messageType, payload, processID);
     }
 
-    public broadcastLocal<T = any>(messageType: string, payload: T) {
-        this.emit(messageType, payload);
-    }
-
-    public broadcastUniversally<T = any>(messageType: string, payload: T) {
-        this.broadcast(messageType, payload);
-    }
-
     public isChildProcess(): boolean {
         return true;
     }

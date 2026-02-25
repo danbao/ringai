@@ -21,17 +21,6 @@ export class Transport implements ITransport {
         this.emitter.emit(messageType, payload);
     }
 
-    public broadcastLocal<T = unknown>(messageType: string, payload: T): void {
-        this.emitter.emit(messageType, payload);
-    }
-
-    public broadcastUniversally<T = unknown>(
-        messageType: string,
-        payload: T,
-    ): void {
-        this.emitter.emit(messageType, payload);
-    }
-
     public isChildProcess() {
         return false;
     }

@@ -41,7 +41,7 @@ export class WebApplicationController extends EventEmitter {
                     payload,
                 );
             } else {
-                await this.transport.broadcastLocal(
+                await this.transport.broadcast(
                     WebApplicationMessageType.response,
                     payload,
                 );
@@ -69,7 +69,7 @@ export class WebApplicationController extends EventEmitter {
                     payload,
                 );
             } else {
-                await this.transport.broadcastLocal(
+                await this.transport.broadcast(
                     WebApplicationMessageType.response,
                     payload,
                 );
