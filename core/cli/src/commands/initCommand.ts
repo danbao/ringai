@@ -98,7 +98,7 @@ export async function runInitCommand() {
 
         let plugins: string[] = [];
         if (shouldAddPlugins) {
-            plugins = ['ringai-plugin-babel', 'ringai-plugin-fs-store'];
+            plugins = ['ringai-plugin-compiler', 'ringai-plugin-fs-store'];
         }
 
         // Generate config
@@ -147,13 +147,13 @@ interface ConfigOptions {
 
 function generateConfig(projectName: string, options: ConfigOptions): string {
     const pluginsImport = options.plugins.length > 0
-        ? `\nimport { babel } from '@ringai/plugin-babel';\nimport { fsStore } from '@ringai/plugin-fs-store';`
+        ? `\nimport { compiler } from '@ringai/plugin-compiler';\nimport { fsStore } from '@ringai/plugin-fs-store';`
         : '';
 
     const pluginsConfig = options.plugins.length > 0
         ? `
     plugins: [
-        babel(),
+        compiler(),
         fsStore(),
     ],`
         : '';

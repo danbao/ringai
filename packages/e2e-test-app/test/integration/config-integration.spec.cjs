@@ -57,7 +57,7 @@ describe('Configuration Integration Tests', function() {
             const configContent = `
                 module.exports = {
                     plugins: [
-                        ['@ringai/plugin-babel', {}],
+                        ['@ringai/plugin-compiler', {}],
                         ['@ringai/plugin-nonexistent', {}] // This should fail gracefully
                     ]
                 };

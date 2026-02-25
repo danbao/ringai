@@ -2,8 +2,8 @@ import kleur from 'kleur';
 
 const OFFICIAL_PLUGINS = [
     {
-        name: '@ringai/plugin-babel',
-        description: 'Babel transpilation for tests',
+        name: '@ringai/plugin-compiler',
+        description: 'esbuild-based test code compiler (ESM→CJS, TypeScript)',
         status: 'official',
     },
     {
@@ -54,6 +54,6 @@ export async function runPluginListCommand() {
     }
 
     console.log(kleur.dim('To install a plugin:'));
-    console.log(kleur.dim('  pnpm add @ringai/plugin-babel'));
+    console.log(kleur.dim('  pnpm add @ringai/plugin-compiler'));
     console.log();
 }
