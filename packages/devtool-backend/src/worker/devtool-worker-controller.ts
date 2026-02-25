@@ -195,7 +195,7 @@ export class DevtoolWorkerController {
         messageType: string,
         message: IDevtoolProxyCleanedMessage,
     ) {
-        this.transport.broadcastUniversally<IDevtoolProxyMessage>(
+        this.transport.broadcast<IDevtoolProxyMessage>(
             DevtoolProxyMessages.FROM_WORKER,
             {
                 ...message,
@@ -211,7 +211,7 @@ export class DevtoolWorkerController {
     ) {
         const source = this.denormalizeWorkerId(workerId);
 
-        this.transport.broadcastUniversally<IDevtoolProxyMessage>(
+        this.transport.broadcast<IDevtoolProxyMessage>(
             DevtoolProxyMessages.FROM_WORKER,
             {
                 messageData,
@@ -364,12 +364,12 @@ export class DevtoolWorkerController {
             await this.initHttpServer(config);
             await this.initWSServer(config);
 
-            this.transport.broadcastUniversally(
+            this.transport.broadcast(
                 DevtoolWorkerMessages.START_SERVER_COMPLETE,
                 null,
             );
         } catch (err) {
-            this.transport.broadcastUniversally(
+            this.transport.broadcast(
                 DevtoolWorkerMessages.START_SERVER_COMPLETE,
                 err,
             );

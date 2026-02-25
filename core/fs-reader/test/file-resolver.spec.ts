@@ -1,8 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 
-
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {resolveFiles} from '../src/file-resolver';
 
@@ -43,23 +42,23 @@ describe('resolve tests', () => {
         const res = await resolveFiles(testPaths);
 
         res.forEach((file) => {
-            chai.expect(file).to.have.all.keys('path', 'content');
+            expect(file).toHaveProperty('path');
+            expect(file).toHaveProperty('content');
         });
     });
 
     it('should resolve array of same length for array of valid files', async () => {
-        chai.expect(await resolveFiles(testPaths))
-            .to.be.an('array')
-            .of.length(testPaths.length);
+        const result = await resolveFiles(testPaths);
+        expect(Array.isArray(result)).toBe(true);
+        expect(result).toHaveLength(testPaths.length);
     });
 
     it('should resolve only existing files', async () => {
         const files = [...testPaths, ...falsePaths];
         const resolvedTests = await resolveFiles(files);
 
-        chai.expect(resolvedTests)
-            .to.be.an('array')
-            .of.length(testPaths.length);
+        expect(Array.isArray(resolvedTests)).toBe(true);
+        expect(resolvedTests).toHaveLength(testPaths.length);
     });
 
     it('should throw error if none of files passed to it was read', () => new Promise<void>((resolve, reject) => {

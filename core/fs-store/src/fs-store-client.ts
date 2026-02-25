@@ -111,7 +111,7 @@ export class FSStoreClient {
             action,
             meta,
         };
-        transport.broadcastUniversally<IFSStoreReq>(this.reqName, {
+        transport.broadcast<IFSStoreReq>(this.reqName, {
             requestId,
             action,
             meta,
@@ -136,7 +136,7 @@ export class FSStoreClient {
             action,
             meta,
         };
-        transport.broadcastUniversally<IFSStoreReq>(this.reqName, {
+        transport.broadcast<IFSStoreReq>(this.reqName, {
             requestId,
             action,
             meta,
@@ -163,7 +163,7 @@ export class FSStoreClient {
         const requestId = this.ensureRequestId();
         const action = fsReqType.unlink;
         this.reqHash[requestId] = {cb, action, meta};
-        transport.broadcastUniversally<IFSStoreReq>(this.reqName, {
+        transport.broadcast<IFSStoreReq>(this.reqName, {
             requestId,
             action,
             meta,
@@ -191,7 +191,7 @@ export class FSStoreClient {
         }
         this.reqHash[requestId] = reqData;
 
-        transport.broadcastUniversally<IFSStoreReq>(this.releaseReqName, {
+        transport.broadcast<IFSStoreReq>(this.releaseReqName, {
             requestId,
             action: action as fsReqType,
             meta,
@@ -200,6 +200,6 @@ export class FSStoreClient {
     }
 
     public releaseAllWorkerActions() {
-        transport.broadcastUniversally(this.cleanReqName, {});
+        transport.broadcast(this.cleanReqName, {});
     }
 }

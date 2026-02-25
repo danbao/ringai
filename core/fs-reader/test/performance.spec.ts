@@ -1,8 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 
-
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect, beforeAll, afterAll} from 'vitest';
 import {FSReader} from '../src/fs-reader';
 import process from 'node:process';
 import * as fs from 'node:fs';
@@ -36,7 +35,7 @@ const removeTestFiles = async () => {
 describe('Performance', () => {
     if (!runPerformanceTests) {
         it('Performance tests are disabled. To enable them set PERFORMANCE_TESTS=true environment variable', () => {
-            chai.expect(true).to.be.true;
+            expect(true).toBe(true);
         });
     } else {
         describe('FSReader', () => {
@@ -54,9 +53,10 @@ describe('Performance', () => {
                 const tests = await fsReader.find(glob);
                 const end = Date.now();
                 const duration = end - start;
-                chai.expect(duration).to.be.lessThan(5000);
-                chai.expect(tests).to.be.an('array').that.not.empty;
-                chai.expect(tests).to.have.lengthOf(15003);
+                expect(duration).toBeLessThan(5000);
+                expect(Array.isArray(tests)).toBe(true);
+                expect(tests.length).toBeGreaterThan(0);
+                expect(tests).toHaveLength(15003);
             });
         });
     }

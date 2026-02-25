@@ -1,6 +1,5 @@
 
-import * as sinon from 'sinon';
-import { expect } from 'chai';
+import { vi, expect } from 'vitest';
 import playwrightPlugin from '../src/index';
 import { PluginAPIMock } from './mocks/plugin-api.mock';
 import * as path from 'path';
@@ -10,15 +9,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('PlaywrightPlugin', () => {
     let pluginAPIMock: PluginAPIMock;
-    let sandbox: sinon.SinonSandbox;
 
     beforeEach(() => {
         pluginAPIMock = new PluginAPIMock();
-        sandbox = sinon.createSandbox();
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
     });
 
     describe('Plugin Registration', () => {
@@ -31,8 +28,8 @@ describe('PlaywrightPlugin', () => {
             const registeredPath = browserProxy.$getProxyPlugin();
             const registeredConfig = browserProxy.$getProxyConfig();
             
-            expect(registeredPath).to.equal(path.join(__dirname, '../src/plugin'));
-            expect(registeredConfig).to.deep.equal(config);
+            expect(registeredPath).toBe(path.join(__dirname, '../src/plugin'));
+            expect(registeredConfig).toEqual(config);
         });
 
         it('should register plugin with empty config when no config provided', () => {
@@ -41,7 +38,7 @@ describe('PlaywrightPlugin', () => {
             const browserProxy = pluginAPIMock.$getLastBrowserProxy();
             const registeredConfig = browserProxy.$getProxyConfig();
             
-            expect(registeredConfig).to.deep.equal({});
+            expect(registeredConfig).toEqual({});
         });
 
         it('should handle undefined config', () => {
@@ -50,7 +47,7 @@ describe('PlaywrightPlugin', () => {
             const browserProxy = pluginAPIMock.$getLastBrowserProxy();
             const registeredConfig = browserProxy.$getProxyConfig();
             
-            expect(registeredConfig).to.deep.equal({});
+            expect(registeredConfig).toEqual({});
         });
     });
 
@@ -66,7 +63,7 @@ describe('PlaywrightPlugin', () => {
             
             expect(() => {
                 playwrightPlugin(pluginAPIMock as any, config);
-            }).to.not.throw();
+            }).not.toThrow();
         });
 
         it('should accept valid firefox config', () => {
@@ -80,7 +77,7 @@ describe('PlaywrightPlugin', () => {
             
             expect(() => {
                 playwrightPlugin(pluginAPIMock as any, config);
-            }).to.not.throw();
+            }).not.toThrow();
         });
 
         it('should accept valid webkit config', () => {
@@ -93,7 +90,7 @@ describe('PlaywrightPlugin', () => {
             
             expect(() => {
                 playwrightPlugin(pluginAPIMock as any, config);
-            }).to.not.throw();
+            }).not.toThrow();
         });
 
         it('should accept debugging features config', () => {
@@ -108,7 +105,7 @@ describe('PlaywrightPlugin', () => {
             
             expect(() => {
                 playwrightPlugin(pluginAPIMock as any, config);
-            }).to.not.throw();
+            }).not.toThrow();
         });
     });
 });

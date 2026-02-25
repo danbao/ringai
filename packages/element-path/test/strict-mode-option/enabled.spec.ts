@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 describe('enabled strictMode', () => {
@@ -9,7 +9,7 @@ describe('enabled strictMode', () => {
         it('call', () => {
             // @ts-ignore
             const error = () => empty.xpath('//testerror');
-            expect(error).to.throw('Can not use xpath query in strict mode');
+            expect(error).toThrow('Can not use xpath query in strict mode');
         });
     });
 });

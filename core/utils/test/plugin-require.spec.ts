@@ -1,14 +1,14 @@
 
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {requirePlugin} from '../src/plugin-require';
 
 describe('requirePlugin', () => {
     it('should resolve npm modules', async () => {
         const plugin = await requirePlugin<Record<string, unknown>>('@ringai/types');
 
-        chai.expect(typeof plugin).to.equal('object');
-        chai.expect(plugin).to.have.property('TestStatus');
+        expect(typeof plugin).toBe('object');
+        expect(plugin).toHaveProperty('TestStatus');
     });
 
     it('should resolve local node modules', async () => {
@@ -16,7 +16,7 @@ describe('requirePlugin', () => {
             path.resolve(__dirname, './fixtures/node-export.cjs'),
         );
 
-        chai.expect(plugin).to.be.equal('test');
+        expect(plugin).toBe('test');
     });
 
     it('should resolve local babel-style node modules', async () => {
@@ -24,6 +24,6 @@ describe('requirePlugin', () => {
             path.resolve(__dirname, './fixtures/babel-export.cjs'),
         );
 
-        chai.expect(plugin).to.be.equal('test');
+        expect(plugin).toBe('test');
     });
 });

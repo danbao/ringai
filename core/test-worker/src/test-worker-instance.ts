@@ -76,7 +76,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
         const signal = this.abortController.signal;
         const workerAPI = new TestAPIController();
 
-        this.transport.broadcastUniversally(TestWorkerAction.register, {});
+        this.transport.broadcast(TestWorkerAction.register, {});
 
         try {
             await this.runTest(message, workerAPI, signal);
@@ -95,7 +95,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
 
     private async completeSuccess(api: TestAPIController): Promise<void> {
         try { await api.flushAfterRunCallbacks(); } catch { /* ignore */ }
-        this.transport.broadcastUniversally(TestWorkerAction.unregister, {});
+        this.transport.broadcast(TestWorkerAction.unregister, {});
     }
 
     private async completeFailed(error: Error, api: TestAPIController): Promise<void> {
@@ -104,7 +104,7 @@ export class TestWorkerInstance implements ITestWorkerInstance {
             this.logger.error(error.stack);
         }
         try { await api.flushAfterRunCallbacks(); } catch { /* ignore */ }
-        this.transport.broadcastUniversally(TestWorkerAction.unregister, {});
+        this.transport.broadcast(TestWorkerAction.unregister, {});
     }
 
     private async runTest(

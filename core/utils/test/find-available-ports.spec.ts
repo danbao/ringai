@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import * as net from 'net';
 
 import {
@@ -38,33 +38,33 @@ const stopServer = (server: net.Server): Promise<void> => {
 describe('find ports', () => {
     it('should check available port', async () => {
         const port = 45500;
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
 
         const server = await startServer(port);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(false);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(false);
 
         await stopServer(server);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
     });
 
     it('should return any available port', async () => {
         const port = await getRandomPort(DEFAULT_HOST);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
     });
 
     it('should return first preferred available port', async () => {
         const port = await getAvailablePort([45600, 45601]);
 
-        chai.expect(port).to.be.equal(45600);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(port).toBe(45600);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
     });
 
     it('should return second preferred available port', async () => {
         const server = await startServer(45700);
         const port = await getAvailablePort([45700, 45701]);
 
-        chai.expect(port).to.be.equal(45701);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(port).toBe(45701);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
 
         await stopServer(server);
     });
@@ -74,9 +74,9 @@ describe('find ports', () => {
         const server2 = await startServer(45801);
         const port = await getAvailablePort([45800, 45801]);
 
-        chai.expect(port).to.be.not.equal(45800);
-        chai.expect(port).to.be.not.equal(45801);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(port).not.toBe(45800);
+        expect(port).not.toBe(45801);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
 
         await stopServer(server1);
         await stopServer(server2);
@@ -85,13 +85,13 @@ describe('find ports', () => {
     it('should return following available port', async () => {
         const server1 = await startServer(45500);
         const server2 = await startServer(45501);
-        chai.expect(await isAvailablePort(45502, DEFAULT_HOST)).to.be.equal(
+        expect(await isAvailablePort(45502, DEFAULT_HOST)).toBe(
             true,
         );
         const port = await getAvailableFollowingPort(45500);
 
-        chai.expect(port).to.be.equal(45502);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(port).toBe(45502);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
 
         await stopServer(server1);
         await stopServer(server2);
@@ -99,13 +99,13 @@ describe('find ports', () => {
 
     it('should return following available port and skip that are passed', async () => {
         const server1 = await startServer(45400);
-        chai.expect(await isAvailablePort(45401, DEFAULT_HOST)).to.be.equal(
+        expect(await isAvailablePort(45401, DEFAULT_HOST)).toBe(
             true,
         );
-        chai.expect(await isAvailablePort(45402, DEFAULT_HOST)).to.be.equal(
+        expect(await isAvailablePort(45402, DEFAULT_HOST)).toBe(
             true,
         );
-        chai.expect(await isAvailablePort(45403, DEFAULT_HOST)).to.be.equal(
+        expect(await isAvailablePort(45403, DEFAULT_HOST)).toBe(
             true,
         );
         const port = await getAvailableFollowingPort(
@@ -114,8 +114,8 @@ describe('find ports', () => {
             [45401, 45402],
         );
 
-        chai.expect(port).to.be.equal(45403);
-        chai.expect(await isAvailablePort(port, DEFAULT_HOST)).to.equal(true);
+        expect(port).toBe(45403);
+        expect(await isAvailablePort(port, DEFAULT_HOST)).toBe(true);
 
         await stopServer(server1);
     });

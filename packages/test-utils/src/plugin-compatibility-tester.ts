@@ -6,7 +6,7 @@
  * Playwright drivers.
  */
 
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { IBrowserProxyPlugin } from '@ringai/types';
 
 export interface CompatibilityTestConfig {
@@ -52,8 +52,8 @@ export class PluginCompatibilityTester {
                 continue;
             }
 
-            expect(this.plugin).to.have.property(method);
-            expect(typeof (this.plugin as any)[method]).to.equal('function');
+            expect(this.plugin).toHaveProperty(method);
+            expect(typeof (this.plugin as any)[method]).toBe('function');
         }
     }
 
@@ -71,23 +71,23 @@ export class PluginCompatibilityTester {
             // Test URL navigation
             const testUrl = 'https://captive.apple.com';
             const result = await this.plugin.url(applicant, testUrl);
-            expect(typeof result).to.equal('string');
+            expect(typeof result).toBe('string');
 
             // Test getting current URL
             const currentUrl = await this.plugin.url(applicant, '');
-            expect(typeof currentUrl).to.equal('string');
+            expect(typeof currentUrl).toBe('string');
 
             // Test page title
             const title = await this.plugin.getTitle(applicant);
-            expect(typeof title).to.equal('string');
+            expect(typeof title).toBe('string');
 
             // Test page refresh
             await this.plugin.refresh(applicant);
 
             // Test page source
             const source = await this.plugin.getSource(applicant);
-            expect(typeof source).to.equal('string');
-            expect(source).to.include('html');
+            expect(typeof source).toBe('string');
+            expect(source).toContain('html');
 
         } finally {
             await this.plugin.end(applicant);
@@ -109,22 +109,22 @@ export class PluginCompatibilityTester {
 
             // Test element existence
             const exists = await this.plugin.isExisting(applicant, '#test');
-            expect(typeof exists).to.equal('boolean');
+            expect(typeof exists).toBe('boolean');
 
             const notExists = await this.plugin.isExisting(applicant, '#nonexistent');
-            expect(notExists).to.be.false;
+            expect(notExists).toBe(false);
 
             // Test element visibility
             const visible = await this.plugin.isVisible(applicant, '#test');
-            expect(typeof visible).to.equal('boolean');
+            expect(typeof visible).toBe('boolean');
 
             // Test get text
             const text = await this.plugin.getText(applicant, '#test');
-            expect(typeof text).to.equal('string');
+            expect(typeof text).toBe('string');
 
         } catch (error) {
             // Some operations might fail in test environment
-            expect(error).to.be.an('error');
+            expect(error).toBeInstanceOf(Error);
         } finally {
             await this.plugin.end(applicant);
         }
@@ -158,23 +158,23 @@ export class PluginCompatibilityTester {
             // Test input value operations
             await this.plugin.setValue(applicant, '#text-input', 'new value');
             const value = await this.plugin.getValue(applicant, '#text-input');
-            expect(typeof value).to.equal('string');
+            expect(typeof value).toBe('string');
 
             // Test clear value
             await this.plugin.clearValue(applicant, '#text-input');
             const clearedValue = await this.plugin.getValue(applicant, '#text-input');
-            expect(clearedValue).to.equal('');
+            expect(clearedValue).toBe('');
 
             // Test element state
             const enabled = await this.plugin.isEnabled(applicant, '#button');
-            expect(typeof enabled).to.equal('boolean');
+            expect(typeof enabled).toBe('boolean');
 
             const selected = await this.plugin.isSelected(applicant, '#checkbox');
-            expect(typeof selected).to.equal('boolean');
+            expect(typeof selected).toBe('boolean');
 
         } catch (error) {
             // Form operations might fail in test environment
-            expect(error).to.be.an('error');
+            expect(error).toBeInstanceOf(Error);
         } finally {
             await this.plugin.end(applicant);
         }
@@ -195,19 +195,19 @@ export class PluginCompatibilityTester {
 
             // Test synchronous execution
             const syncResult = await this.plugin.execute(applicant, 'return 2 + 2', []);
-            expect(syncResult).to.equal(4);
+            expect(syncResult).toBe(4);
 
             // Test async execution
             const asyncResult = await this.plugin.executeAsync(applicant, 'return Promise.resolve(42)', []);
-            expect(typeof asyncResult).to.not.be.undefined;
+            expect(asyncResult).toBeDefined();
 
             // Test execution with arguments
             const argResult = await this.plugin.execute(applicant, 'return arguments[0] + arguments[1]', [10, 20]);
-            expect(argResult).to.equal(30);
+            expect(argResult).toBe(30);
 
         } catch (error) {
             // JS execution might fail in test environment
-            expect(error).to.be.an('error');
+            expect(error).toBeInstanceOf(Error);
         } finally {
             await this.plugin.end(applicant);
         }
@@ -227,9 +227,9 @@ export class PluginCompatibilityTester {
             await this.plugin.url(applicant, 'data:text/html,<h1>Screenshot Test</h1>');
 
             const screenshot = await this.plugin.makeScreenshot(applicant);
-            expect(typeof screenshot).to.equal('string');
+            expect(typeof screenshot).toBe('string');
             if (screenshot) {
-                expect(screenshot.length).to.be.greaterThan(0);
+                expect(screenshot.length).toBeGreaterThan(0);
             }
 
         } finally {
@@ -261,7 +261,7 @@ export class PluginCompatibilityTester {
 
         } catch (error) {
             // Wait operations might timeout in test environment
-            expect(error).to.be.an('error');
+            expect(error).toBeInstanceOf(Error);
         } finally {
             await this.plugin.end(applicant);
         }
@@ -287,8 +287,8 @@ export class PluginCompatibilityTester {
             const title1 = await this.plugin.getTitle(applicant1);
             const title2 = await this.plugin.getTitle(applicant2);
 
-            expect(typeof title1).to.equal('string');
-            expect(typeof title2).to.equal('string');
+            expect(typeof title1).toBe('string');
+            expect(typeof title2).toBe('string');
 
             // End specific session
             await this.plugin.end(applicant1);
@@ -318,9 +318,9 @@ export class PluginCompatibilityTester {
             // Test error for non-existent element
             try {
                 await this.plugin.click(applicant, '#nonexistent');
-                expect.fail('Should have thrown an error');
+                expect.unreachable('Should have thrown an error');
             } catch (error) {
-                expect(error).to.be.an('error');
+                expect(error).toBeInstanceOf(Error);
             }
 
             // Test graceful handling of non-existent session

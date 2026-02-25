@@ -148,7 +148,7 @@ export class FSStoreServer extends PluggableModule {
 
     private send<T>(workerId: string | undefined, msgId: string, data: T) {
         if (!workerId || workerId === DW_ID) {
-            transport.broadcastUniversally<T>(msgId, data);
+            transport.broadcast<T>(msgId, data);
         } else {
             transport.send<T>(workerId, msgId, data);
         }

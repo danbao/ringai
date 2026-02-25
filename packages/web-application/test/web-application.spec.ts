@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {expect} from 'vitest';
 
 import {TransportMock} from '@ringai/test-utils';
 import {generateUniqId} from '@ringai/utils';
@@ -17,6 +17,6 @@ describe('WebApplication functional', () => {
             testProperty: 123,
         });
 
-        chai.expect(link.testProperty).to.be.equal(123);
+        expect(link.testProperty).toBe(123);
     });
 });

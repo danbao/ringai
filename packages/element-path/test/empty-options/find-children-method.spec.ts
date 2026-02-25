@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 describe('find children method', () => {
@@ -7,7 +7,7 @@ describe('find children method', () => {
             exactKey: 'foo',
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root.foo');
+        expect(child.__getReversedChain()).toBe('root.foo');
     });
 
     it('by anyKey', () => {
@@ -15,7 +15,7 @@ describe('find children method', () => {
             anyKey: true,
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root["*"]');
+        expect(child.__getReversedChain()).toBe('root["*"]');
     });
 
     it('by suffix', () => {
@@ -23,7 +23,7 @@ describe('find children method', () => {
             suffix: 'foo',
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root["*foo"]');
+        expect(child.__getReversedChain()).toBe('root["*foo"]');
     });
 
     it('by prefix', () => {
@@ -31,7 +31,7 @@ describe('find children method', () => {
             prefix: 'foo',
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root["foo*"]');
+        expect(child.__getReversedChain()).toBe('root["foo*"]');
     });
 
     it('by containsKey', () => {
@@ -39,7 +39,7 @@ describe('find children method', () => {
             containsKey: 'foo',
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root["*foo*"]');
+        expect(child.__getReversedChain()).toBe('root["*foo*"]');
     });
 
     it('by parts', () => {
@@ -47,7 +47,7 @@ describe('find children method', () => {
             parts: ['foo', 'bar'],
         });
 
-        expect(child.__getReversedChain()).to.be.equal('root["foo*bar"]');
+        expect(child.__getReversedChain()).toBe('root["foo*bar"]');
     });
 
     describe('by text', () => {
@@ -56,7 +56,7 @@ describe('find children method', () => {
                 containsText: 'text',
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["{text}"]');
+            expect(child.__getReversedChain()).toBe('root["{text}"]');
         });
 
         it('by containsText with exactKey', () => {
@@ -65,7 +65,7 @@ describe('find children method', () => {
                 containsText: 'text',
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["foo{text}"]');
+            expect(child.__getReversedChain()).toBe('root["foo{text}"]');
         });
 
         it('by equalsText', () => {
@@ -73,7 +73,7 @@ describe('find children method', () => {
                 equalsText: 'text',
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["={text}"]');
+            expect(child.__getReversedChain()).toBe('root["={text}"]');
         });
 
         it('by equalsText with exactKey', () => {
@@ -82,7 +82,7 @@ describe('find children method', () => {
                 equalsText: 'text',
             });
 
-            expect(child.__getReversedChain()).to.be.equal(
+            expect(child.__getReversedChain()).toBe(
                 'root["foo={text}"]',
             );
         });
@@ -93,7 +93,7 @@ describe('find children method', () => {
 
         it('query from root', () => {
             const error = () => root.__findChildren({index: 1});
-            expect(error).to.throw('Root Element is not enumerable');
+            expect(error).toThrow('Root Element is not enumerable');
         });
 
         it('query from already index', () => {
@@ -102,7 +102,7 @@ describe('find children method', () => {
                 if (!element) {throw new Error('Element not found');}
                 return element.__findChildren({index: 1});
             };
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Can not select index element from already sliced element',
             );
         });
@@ -112,7 +112,7 @@ describe('find children method', () => {
             if (!element) {throw new Error('Element not found');}
             expect(
                 element.__findChildren({index: 1}).__getReversedChain(),
-            ).to.be.equal('root.foo[1]');
+            ).toBe('root.foo[1]');
         });
     });
 
@@ -124,7 +124,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(foo)"]');
+            expect(child.__getReversedChain()).toBe('root["(foo)"]');
         });
 
         it('by anyKey', () => {
@@ -134,7 +134,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(*)"]');
+            expect(child.__getReversedChain()).toBe('root["(*)"]');
         });
 
         it('by suffix', () => {
@@ -144,7 +144,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(*foo)"]');
+            expect(child.__getReversedChain()).toBe('root["(*foo)"]');
         });
 
         it('by prefix', () => {
@@ -154,7 +154,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(foo*)"]');
+            expect(child.__getReversedChain()).toBe('root["(foo*)"]');
         });
 
         it('by containsKey', () => {
@@ -164,7 +164,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(*foo*)"]');
+            expect(child.__getReversedChain()).toBe('root["(*foo*)"]');
         });
 
         it('by parts', () => {
@@ -174,7 +174,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(foo*bar)"]');
+            expect(child.__getReversedChain()).toBe('root["(foo*bar)"]');
         });
 
         it('by containsText', () => {
@@ -184,7 +184,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["({text})"]');
+            expect(child.__getReversedChain()).toBe('root["({text})"]');
         });
 
         it('by containsText with exactKey', () => {
@@ -195,7 +195,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal(
+            expect(child.__getReversedChain()).toBe(
                 'root["(foo{text})"]',
             );
         });
@@ -207,7 +207,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal('root["(={text})"]');
+            expect(child.__getReversedChain()).toBe('root["(={text})"]');
         });
 
         it('by equalsText with exactKey', () => {
@@ -218,7 +218,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal(
+            expect(child.__getReversedChain()).toBe(
                 'root["(foo={text})"]',
             );
         });
@@ -232,7 +232,7 @@ describe('find children method', () => {
                 },
             });
 
-            expect(child.__getReversedChain()).to.be.equal(
+            expect(child.__getReversedChain()).toBe(
                 'root["foo(foo={text})"]',
             );
         });

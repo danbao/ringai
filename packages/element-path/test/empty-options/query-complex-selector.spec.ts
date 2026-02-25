@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 describe('Heavy selectors', () => {
@@ -8,7 +8,7 @@ describe('Heavy selectors', () => {
         const chainChild = root['extensionsSelectorPopup']?.['popupContent']?.['extensionsSelectorGrid'];
         if (!chainChild) {throw new Error('Element not found');}
 
-        expect(chainChild.toString()).to.be.equal(
+        expect(chainChild.toString()).toBe(
             "(//*[@data-test-automation-id='root']" +
                 "//*[@data-test-automation-id='extensionsSelectorPopup']" +
                 "//*[@data-test-automation-id='popupContent']" +
@@ -28,7 +28,7 @@ describe('Heavy selectors', () => {
             },
         });
 
-        expect(findChildren.toString()).to.be.equal(
+        expect(findChildren.toString()).toBe(
             "(//*[@data-test-automation-id='root']" +
                 "//*[@data-test-automation-id='extensionsSelectorPopup']" +
                 "//*[@data-test-automation-id='popupContent']" +
@@ -50,7 +50,7 @@ describe('Heavy selectors', () => {
             },
         });
 
-        expect(findChildren.toString()).to.be.equal(
+        expect(findChildren.toString()).toBe(
             "(//*[@data-test-automation-id='root']" +
                 "//*[@data-test-automation-id='extensionsSelectorPopup']" +
                 "//*[@data-test-automation-id='popupContent']" +

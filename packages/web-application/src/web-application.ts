@@ -1619,7 +1619,7 @@ export class WebApplication extends PluggableModule {
                 id: this.applicationId,
             };
 
-            this.transport.broadcastUniversally(
+            this.transport.broadcast(
                 WebApplicationDevtoolActions.register,
                 payload,
             );
@@ -1651,7 +1651,7 @@ export class WebApplication extends PluggableModule {
                 id: this.applicationId,
             };
 
-            this.transport.broadcastUniversally(
+            this.transport.broadcast(
                 WebApplicationDevtoolActions.unregister,
                 payload,
             );

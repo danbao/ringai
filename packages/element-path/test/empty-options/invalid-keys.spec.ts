@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 describe('invalid keys', () => {
@@ -7,65 +7,65 @@ describe('invalid keys', () => {
     describe('getters', () => {
         it("['']", () => {
             const error = () => empty[''];
-            expect(error).to.throw('Key can not me empty');
+            expect(error).toThrow('Key can not me empty');
         });
 
         it("['*foo*bar*']", () => {
             const error = () => empty['*foo*bar*'];
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Masks prefix, suffix and inner ask are not supported',
             );
         });
 
         it("['foo*bar*']", () => {
             const error = () => empty['foo*bar*'];
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Masks prefix, suffix and inner ask are not supported',
             );
         });
 
         it("['*foo*bar']", () => {
             const error = () => empty['*foo*bar'];
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Masks prefix, suffix and inner ask are not supported',
             );
         });
 
         it("['foo*bar*baz']", () => {
             const error = () => empty['foo*bar*baz'];
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Masks with more than two parts are not supported',
             );
         });
 
         it("['{}']", () => {
             const error = () => empty['{}'];
-            expect(error).to.throw('Text search param can not be empty');
+            expect(error).toThrow('Text search param can not be empty');
         });
 
         it("['foo*{}']", () => {
             const error = () => empty['foo*{}'];
-            expect(error).to.throw('Text search param can not be empty');
+            expect(error).toThrow('Text search param can not be empty');
         });
 
         it("['{}()']", () => {
             const error = () => empty['{}()'];
-            expect(error).to.throw('Text search param can not be empty');
+            expect(error).toThrow('Text search param can not be empty');
         });
 
         it("['()']", () => {
             const error = () => empty['()'];
-            expect(error).to.throw('Selector can not contain only sub query');
+            expect(error).toThrow('Selector can not contain only sub query');
         });
 
         it("['foo*()']", () => {
             const error = () => empty['foo*()'];
-            expect(error).to.throw('Sub Query can not be empty');
+            expect(error).toThrow('Sub Query can not be empty');
         });
 
         it("['(test)']", () => {
             const error = () => empty['(test)'];
-            expect(error).to.throw('Selector can not contain only sub query');
+            expect(error).toThrow('Selector can not contain only sub query');
         });
 
         it("['foo*'][0][0]", () => {
@@ -74,7 +74,7 @@ describe('invalid keys', () => {
                 if (!element) {throw new Error('Element not found');}
                 return element[0];
             };
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Can not select index element from already sliced element',
             );
         });
@@ -85,7 +85,7 @@ describe('invalid keys', () => {
                 if (!element) {throw new Error('Element not found');}
                 return element[0];
             };
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Can not select index element from already sliced element',
             );
         });
@@ -96,7 +96,7 @@ describe('invalid keys', () => {
                 if (!element) {throw new Error('Element not found');}
                 return element['0'];
             };
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Can not select index element from already sliced element',
             );
         });

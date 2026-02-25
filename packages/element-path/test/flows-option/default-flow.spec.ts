@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 import {
@@ -24,21 +24,21 @@ describe('flows option default behavior', () => {
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(childFoo.toString()).to.be.equal(
+            expect(childFoo.toString()).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "//*[@data-test-automation-id='foo'])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${childFoo}`).to.be.equal(
+            expect(`${childFoo}`).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "//*[@data-test-automation-id='foo'])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(childFoo.toString(true)).to.be.equal(
+            expect(childFoo.toString(true)).toBe(
                 "//*[@data-test-automation-id='root']" +
                     "//*[@data-test-automation-id='foo']",
             );
@@ -118,7 +118,7 @@ describe('flows option default behavior', () => {
 
         it('function call', async () => {
             // @ts-ignore
-            expect(await childFoo.runFlow()).to.be.equal('test string');
+            expect(await childFoo.runFlow()).toBe('test string');
         });
     });
 });

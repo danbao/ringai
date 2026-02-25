@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect, beforeAll, afterAll} from 'vitest';
 
 import {FSStoreServer, fsStoreServerHooks} from '../src/fs-store-server';
 import {FSStoreClient} from '../src/fs-store-client';
@@ -31,10 +31,7 @@ describe('fs-store-client', () => {
 
         const state = {lock: 0, access: 0, unlink: 0};
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
-        chai.expect(onRelease).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE is undefined',
-        );
+        expect(onRelease).toBeDefined();
 
         onRelease &&
             onRelease.readHook('testRelease', (readOptions: any) => {
@@ -50,13 +47,13 @@ describe('fs-store-client', () => {
                 break;
             }
             if (fileName !== undefined) {
-                chai.expect(fileName).to.be.a('string');
+                expect(typeof fileName).toBe('string');
             }
             });
 
         const lockReqId = FSC.getLock({fileName}, (fName) => {
             try {
-                chai.expect(fName.includes(fileName)).to.be.equal(true);
+                expect(fName.includes(fileName)).toBe(true);
             } catch (err) {
                 done(err);
             }
@@ -64,7 +61,7 @@ describe('fs-store-client', () => {
         });
         const accessReqId = FSC.getAccess({fileName}, (fName) => {
             try {
-                chai.expect(fName.includes(fileName)).to.be.equal(true);
+                expect(fName.includes(fileName)).toBe(true);
             } catch (err) {
                 done(err);
             }
@@ -72,14 +69,14 @@ describe('fs-store-client', () => {
         });
         const unlinkReqId = FSC.getUnlink({fileName}, (fName) => {
             try {
-                chai.expect(fName.includes(fileName)).to.be.equal(true);
+                expect(fName.includes(fileName)).toBe(true);
             } catch (err) {
                 done(err);
             }
         });
         state.unlink += 1;
         setTimeout(() => {
-            chai.expect(state).to.be.deep.equal({
+            expect(state).toEqual({
                 lock: 1,
                 access: 1,
                 unlink: 1,
@@ -89,16 +86,16 @@ describe('fs-store-client', () => {
             };
 
             const lockRelRet = FSC.release(lockReqId, lockCB);
-            chai.expect(lockRelRet).to.be.equal(true);
+            expect(lockRelRet).toBe(true);
 
             const accessRelRet = FSC.release(accessReqId);
-            chai.expect(accessRelRet).to.be.equal(true);
+            expect(accessRelRet).toBe(true);
 
             const unlinkRelRet = FSC.release(unlinkReqId);
-            chai.expect(unlinkRelRet).to.be.equal(true);
+            expect(unlinkRelRet).toBe(true);
 
             setTimeout(() => {
-                chai.expect(state).to.be.deep.equal({
+                expect(state).toEqual({
                     lock: 0,
                     access: 0,
                     unlink: 0,

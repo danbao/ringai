@@ -17,9 +17,8 @@ class FakeTransport extends EventEmitter {
     return Promise.resolve();
   }
 
-  broadcastLocal(type: string, payload: any) {
+  broadcast(type: string, payload: any) {
     this.broadcasted.push({type, payload});
-    return Promise.resolve();
   }
 }
 
@@ -37,7 +36,7 @@ class FakeBrowserProxyController {
 }
 
 describe('WebApplicationController transport event dispatch', () => {
-  it('init() registers execute handler and emits execute/response/afterResponse + transport broadcastLocal', async () => {
+  it('init() registers execute handler and emits execute/response/afterResponse + transport broadcast', async () => {
     const transport = new FakeTransport();
     const browserProxy = new FakeBrowserProxyController(false);
 
@@ -64,7 +63,7 @@ describe('WebApplicationController transport event dispatch', () => {
     assert.equal(transport.broadcasted[0].payload.error, null);
   });
 
-  it('when source provided, responds via transport.send instead of broadcastLocal', async () => {
+  it('when source provided, responds via transport.send instead of broadcast', async () => {
     const transport = new FakeTransport();
     const browserProxy = new FakeBrowserProxyController(false);
 

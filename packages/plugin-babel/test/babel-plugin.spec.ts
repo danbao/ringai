@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {expect} from 'vitest';
 import {default as babelPlugin} from '../src';
 import {PluginAPIMock} from './plugin-api.mock';
 
@@ -34,7 +34,7 @@ describe('babelPlugin', () => {
             DEFAULT_FILENAME,
         );
 
-        chai.expect(result).to.be.equal(TRANSFORMED_INPUT);
+        expect(result).toBe(TRANSFORMED_INPUT);
     });
 
     it('should convert code with given preset', async () => {
@@ -48,7 +48,7 @@ describe('babelPlugin', () => {
             DEFAULT_FILENAME,
         );
 
-        chai.expect(result).to.be.equal(TRANSFORMED_INPUT);
+        expect(result).toBe(TRANSFORMED_INPUT);
     });
 
     it('import convert check', async () => {
@@ -62,6 +62,6 @@ describe('babelPlugin', () => {
             DEFAULT_FILENAME,
         );
 
-        chai.expect(result).to.be.equal(REQUIRE_OUTPUT);
+        expect(result).toBe(REQUIRE_OUTPUT);
     });
 });

@@ -1,12 +1,7 @@
 
-import * as chai from 'chai';
-import { expect } from 'chai';
-import sinonChai from 'sinon-chai';
+import { vi, expect } from 'vitest';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
 import { createBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
-import * as sinon from 'sinon';
-
-chai.use(sinonChai);
 
 /**
  * These tests demonstrate how to use the PluginCompatibilityTester
@@ -14,20 +9,19 @@ chai.use(sinonChai);
  * documentation for plugin developers.
  */
 describe('PluginCompatibilityTester Usage Examples', () => {
-    let sandbox: sinon.SinonSandbox;
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox();
+        vi.restoreAllMocks();
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
     });
 
     describe('Basic Usage Patterns', () => {
         it('should demonstrate basic compatibility testing setup', async () => {
             // Example: Testing a hypothetical plugin
-            const mockPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockPlugin = createBrowserProxyPluginMock();
 
             const config: CompatibilityTestConfig = {
                 pluginName: 'my-browser-plugin',
@@ -49,13 +43,13 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             // Or run all tests at once
             const results = await tester.runAllTests();
 
-            expect(results.passed).to.be.greaterThan(0);
-            expect(results.failed).to.be.at.most(5); // Some tests may fail due to internal validation
+            expect(results.passed).toBeGreaterThan(0);
+            expect(results.failed).toBeLessThanOrEqual(5); // Some tests may fail due to internal validation
         });
 
         it('should demonstrate how to skip problematic tests', async () => {
             // Example: Plugin that doesn't support certain features
-            const mockPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockPlugin = createBrowserProxyPluginMock();
             
             const config: CompatibilityTestConfig = {
                 pluginName: 'limited-plugin',
@@ -72,13 +66,13 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const tester = new PluginCompatibilityTester(mockPlugin as any, config);
             const results = await tester.runAllTests();
             
-            expect(results.skipped).to.be.greaterThan(0);
-            expect(results.passed).to.be.greaterThan(0);
+            expect(results.skipped).toBeGreaterThan(0);
+            expect(results.passed).toBeGreaterThan(0);
         });
 
         it('should demonstrate custom timeout configuration', async () => {
             // Example: Plugin with slower operations
-            const mockPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockPlugin = createBrowserProxyPluginMock();
             
             const config: CompatibilityTestConfig = {
                 pluginName: 'slow-plugin',
@@ -94,15 +88,15 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             await tester.testWaitOperations();
             
             // The custom timeouts would be used in actual implementations
-            expect(mockPlugin.waitForExist).to.have.been.called;
-            expect(mockPlugin.waitForVisible).to.have.been.called;
+            expect(mockPlugin.waitForExist).toHaveBeenCalled();
+            expect(mockPlugin.waitForVisible).toHaveBeenCalled();
         });
     });
 
     describe('Plugin-Specific Test Scenarios', () => {
         it('should demonstrate testing Playwright-like plugins', async () => {
             // Example configuration for Playwright-compatible plugins
-            const mockPlaywrightPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockPlaywrightPlugin = createBrowserProxyPluginMock();
             
             const playwrightConfig: CompatibilityTestConfig = {
                 pluginName: 'playwright-driver',
@@ -120,13 +114,13 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const tester = new PluginCompatibilityTester(mockPlaywrightPlugin as any, playwrightConfig);
             const results = await tester.runAllTests();
 
-            expect(results.skipped).to.equal(1); // One test skipped
-            expect(results.passed).to.be.greaterThan(0);
+            expect(results.skipped).toBe(1); // One test skipped
+            expect(results.passed).toBeGreaterThan(0);
         });
 
         it('should demonstrate testing headless browser plugins', async () => {
             // Example configuration for headless browser plugins
-            const mockHeadlessPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockHeadlessPlugin = createBrowserProxyPluginMock();
             
             const headlessConfig: CompatibilityTestConfig = {
                 pluginName: 'headless-browser',
@@ -140,14 +134,14 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const tester = new PluginCompatibilityTester(mockHeadlessPlugin as any, headlessConfig);
             const results = await tester.runAllTests();
             
-            expect(results.skipped).to.be.greaterThan(0);
+            expect(results.skipped).toBeGreaterThan(0);
         });
     });
 
     describe('Error Handling Examples', () => {
         it('should demonstrate handling plugins with missing methods', async () => {
             // Example: Plugin that doesn't implement all methods
-            const incompletePlugin = createBrowserProxyPluginMock(sandbox);
+            const incompletePlugin = createBrowserProxyPluginMock();
             delete (incompletePlugin as any).makeScreenshot;
             delete (incompletePlugin as any).uploadFile;
             delete (incompletePlugin as any).dragAndDrop;
@@ -162,15 +156,15 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const results = await tester.runAllTests();
             
             // Should fail method implementation test
-            expect(results.failed).to.be.greaterThan(0);
-            expect(results.passed).to.be.greaterThan(0); // Other tests should still pass
+            expect(results.failed).toBeGreaterThan(0);
+            expect(results.passed).toBeGreaterThan(0); // Other tests should still pass
         });
 
         it('should demonstrate handling runtime errors', async () => {
             // Example: Plugin that throws errors during operation
-            const errorPlugin = createBrowserProxyPluginMock(sandbox);
-            errorPlugin.url.rejects(new Error('Network timeout'));
-            errorPlugin.click.rejects(new Error('Element not clickable'));
+            const errorPlugin = createBrowserProxyPluginMock();
+            errorPlugin.url.mockRejectedValue(new Error('Network timeout'));
+            errorPlugin.click.mockRejectedValue(new Error('Element not clickable'));
 
             const config: CompatibilityTestConfig = {
                 pluginName: 'error-prone-plugin',
@@ -182,8 +176,8 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const results = await tester.runAllTests();
             
             // Should handle errors gracefully
-            expect(results.failed).to.be.greaterThan(0);
-            expect(results.passed).to.be.greaterThan(0); // Some tests should still pass
+            expect(results.failed).toBeGreaterThan(0);
+            expect(results.passed).toBeGreaterThan(0); // Some tests should still pass
         });
     });
 
@@ -210,21 +204,21 @@ describe('PluginCompatibilityTester Usage Examples', () => {
             const results = [];
             
             for (const config of configs) {
-                const mockPlugin = createBrowserProxyPluginMock(sandbox);
+                const mockPlugin = createBrowserProxyPluginMock();
                 const tester = new PluginCompatibilityTester(mockPlugin as any, config);
                 const result = await tester.runAllTests();
                 results.push({ config: config.pluginName, ...result });
             }
 
             // Verify all plugins were tested
-            expect(results).to.have.length(3);
+            expect(results).toHaveLength(3);
             results.forEach(result => {
-                expect(result.passed).to.be.greaterThan(0);
+                expect(result.passed).toBeGreaterThan(0);
             });
         });
 
         it('should demonstrate creating custom test suites', async () => {
-            const mockPlugin = createBrowserProxyPluginMock(sandbox);
+            const mockPlugin = createBrowserProxyPluginMock();
             const config: CompatibilityTestConfig = {
                 pluginName: 'custom-test-plugin',
                 skipTests: [],
@@ -252,8 +246,8 @@ describe('PluginCompatibilityTester Usage Examples', () => {
                 }
             }
 
-            expect(passed).to.be.greaterThan(0);
-            expect(failed).to.be.at.most(2); // Some tests may fail due to internal validation
+            expect(passed).toBeGreaterThan(0);
+            expect(failed).toBeLessThanOrEqual(2); // Some tests may fail due to internal validation
         });
     });
 });

@@ -1,7 +1,7 @@
 
 import {Writable} from 'stream';
-import * as sinon from 'sinon';
-import * as chai from 'chai';
+
+import {describe, it, expect, vi} from 'vitest';
 import {TransportMock} from '@ringai/test-utils';
 import {
     LoggerMessageTypes,
@@ -36,12 +36,12 @@ describe('Logger Server', () => {
 
         if (beforeLog && onLog) {
             beforeLog.writeHook('testPlugin', (entry: any, {processID}: any) => {
-                chai.expect(processID).to.be.equal(PROCESS_ID);
+                expect(processID).toBe(PROCESS_ID);
                 return entry;
             });
 
             onLog.readHook('testPlugin', (_entry: any, {processID}: any) => {
-                chai.expect(processID).to.be.equal(PROCESS_ID);
+                expect(processID).toBe(PROCESS_ID);
 
                 resolve();
             });
@@ -72,13 +72,13 @@ describe('Logger Server', () => {
 
         if (beforeLog && onLog) {
             beforeLog.writeHook('testPlugin', (entryBeforeTransform: ILogEntity) => {
-                chai.expect(entryBeforeTransform).to.be.deep.equal(LOG_ENTITY);
+                expect(entryBeforeTransform).toEqual(LOG_ENTITY);
 
                 return alteredEntry;
             });
 
             onLog.readHook('testPlugin', (entry: typeof alteredEntry) => {
-                chai.expect(entry).to.be.deep.equal(alteredEntry);
+                expect(entry).toEqual(alteredEntry);
 
                 resolve();
             });
@@ -129,7 +129,7 @@ describe('Logger Server', () => {
         if (onLog && onError) {
             onLog.readHook('testPlugin', (_entry: any, {processID}: { processID: string }) => {
                 try {
-                    chai.expect(processID).to.be.equal(PROCESS_ID);
+                    expect(processID).toBe(PROCESS_ID);
                 } catch (e) {
                     reject(e);
                 }
@@ -138,7 +138,7 @@ describe('Logger Server', () => {
 
             onError.readHook('testPlugin', (_error: Error, {processID}: { processID: string }) => {
                 try {
-                    chai.expect(processID).to.be.equal(PROCESS_ID);
+                    expect(processID).toBe(PROCESS_ID);
                     resolve();
                 } catch (e) {
                     reject(e);
@@ -164,10 +164,10 @@ describe('Logger Server', () => {
         );
         const onLog = loggerServer.getHook(LoggerPlugins.onLog);
 
-        const errorSpy = sinon.spy();
+        const errorSpy = vi.fn();
         const logHandler = voidLogger(1, true, errorSpy, () => {
             try {
-                chai.expect(errorSpy.callCount).to.be.equal(1);
+                expect(errorSpy.mock.calls.length).toBe(1);
                 resolve();
             } catch (e) {
                 reject(e);
@@ -198,11 +198,11 @@ describe('Logger Server', () => {
             type: LogTypes.error,
         };
 
-        const errorSpy = sinon.spy();
+        const errorSpy = vi.fn();
         const logHandler = voidLogger(1, true, errorSpy, (entry) => {
             try {
-                chai.expect(errorSpy.callCount).to.be.equal(1);
-                chai.expect(entry).to.be.deep.equal(successEntry);
+                expect(errorSpy.mock.calls.length).toBe(1);
+                expect(entry).toEqual(successEntry);
 
                 resolve();
             } catch (e) {

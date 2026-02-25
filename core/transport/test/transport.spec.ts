@@ -7,7 +7,7 @@ describe('Transport', () => {
         const handler = vi.fn();
 
         transport.on('test', handler);
-        transport.broadcastUniversally('test', {data: 1});
+        transport.broadcast('test', {data: 1});
 
         expect(handler).toHaveBeenCalledWith({data: 1});
     });
@@ -17,8 +17,8 @@ describe('Transport', () => {
         const handler = vi.fn();
 
         transport.once('test', handler);
-        transport.broadcastUniversally('test', 'first');
-        transport.broadcastUniversally('test', 'second');
+        transport.broadcast('test', 'first');
+        transport.broadcast('test', 'second');
 
         expect(handler).toHaveBeenCalledTimes(1);
         expect(handler).toHaveBeenCalledWith('first');
@@ -30,7 +30,7 @@ describe('Transport', () => {
 
         const remove = transport.on('test', handler);
         remove();
-        transport.broadcastUniversally('test', 'data');
+        transport.broadcast('test', 'data');
 
         expect(handler).not.toHaveBeenCalled();
     });
@@ -45,31 +45,18 @@ describe('Transport', () => {
         expect(handler).toHaveBeenCalledWith({value: 42});
     });
 
-    it('broadcast/broadcastLocal/broadcastUniversally should all emit', () => {
+    it('broadcast should emit multiple times', () => {
         const transport = new Transport();
         const handler = vi.fn();
 
         transport.on('msg', handler);
 
         transport.broadcast('msg', 'a');
-        transport.broadcastLocal('msg', 'b');
-        transport.broadcastUniversally('msg', 'c');
+        transport.broadcast('msg', 'b');
+        transport.broadcast('msg', 'c');
 
         expect(handler).toHaveBeenCalledTimes(3);
     });
 
-    it('isChildProcess should return false', () => {
-        const transport = new Transport();
-        expect(transport.isChildProcess()).toBe(false);
-    });
 
-    it('onceFrom should work like once (processID ignored)', () => {
-        const transport = new Transport();
-        const handler = vi.fn();
-
-        transport.onceFrom('some-id', 'test', handler);
-        transport.broadcastUniversally('test', 'value');
-
-        expect(handler).toHaveBeenCalledWith('value');
-    });
 });

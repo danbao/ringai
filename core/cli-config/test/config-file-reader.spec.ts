@@ -1,7 +1,7 @@
 /* eslint sonarjs/no-identical-functions: 0 */
 
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {getFileConfig} from '../src/config-file-reader';
 
 describe('config-file-reader', () => {
@@ -9,7 +9,7 @@ describe('config-file-reader', () => {
         const filePath = path.join(__dirname, './fixtures/testringrc.cjs');
         const config = await getFileConfig(filePath, {} as any);
 
-        chai.expect(config).to.be.deep.equal({
+        expect(config).toEqual({
             debug: true,
         });
     });
@@ -18,7 +18,7 @@ describe('config-file-reader', () => {
         const filePath = path.join(__dirname, './fixtures/testringrc_obj.cjs');
         const config = await getFileConfig(filePath, {} as any);
 
-        chai.expect(config).to.be.deep.equal({
+        expect(config).toEqual({
             debug: true,
         });
     });
@@ -34,7 +34,7 @@ describe('config-file-reader', () => {
                 `);
             })
             .catch((exception) => {
-                chai.expect(exception).to.be.an.instanceof(Error);
+                expect(exception).toBeInstanceOf(Error);
                 resolve();
             });
     }));
@@ -43,7 +43,7 @@ describe('config-file-reader', () => {
         const filePath = path.join(__dirname, './fixtures/testring.json');
         const config = await getFileConfig(filePath, {} as any);
 
-        chai.expect(config).to.be.deep.equal({
+        expect(config).toEqual({
             debug: true,
         });
     });
@@ -56,7 +56,7 @@ describe('config-file-reader', () => {
         const config = await getFileConfig(filePath, {} as any);
 
         // eslint-disable-next-line
-        chai.expect(config).to.be.null;
+        expect(config).toBeNull();
     });
 
     it('should throw correct exception when config file is invalid', () => new Promise<void>((resolve, reject) => {
@@ -70,7 +70,7 @@ describe('config-file-reader', () => {
                 `);
             })
             .catch((exception) => {
-                chai.expect(exception).to.be.an.instanceof(SyntaxError);
+                expect(exception).toBeInstanceOf(SyntaxError);
                 resolve();
             });
     }));

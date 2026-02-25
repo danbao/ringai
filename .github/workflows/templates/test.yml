@@ -90,7 +90,7 @@ jobs:
 
       - name: Run E2E tests
         if: inputs.run-e2e
-        run: pnpm run test:e2e:headless
+        run: pnpm run test:e2e
         continue-on-error: true
 
       - name: Run tests with coverage

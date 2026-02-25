@@ -1,25 +1,17 @@
 
-import * as chai from 'chai';
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-import sinonChai from 'sinon-chai';
+import { vi, expect } from 'vitest';
 import { PluginCompatibilityTester, CompatibilityTestConfig } from '../src/plugin-compatibility-tester';
 import { IBrowserProxyPlugin } from '@ringai/types';
 import { createBrowserProxyPluginMock } from './mocks/browser-proxy-plugin.mock';
 
-chai.use(sinonChai);
-
 describe('PluginCompatibilityTester', () => {
-    let mockPlugin: sinon.SinonStubbedInstance<IBrowserProxyPlugin>;
+    let mockPlugin: ReturnType<typeof createBrowserProxyPluginMock>;
     let tester: PluginCompatibilityTester;
     let config: CompatibilityTestConfig;
-    let sandbox: sinon.SinonSandbox;
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox();
-
         // Create a mock plugin with all required methods
-        mockPlugin = createBrowserProxyPluginMock(sandbox);
+        mockPlugin = createBrowserProxyPluginMock();
 
         config = {
             pluginName: 'test-plugin',
@@ -31,17 +23,17 @@ describe('PluginCompatibilityTester', () => {
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
     });
 
     describe('Constructor', () => {
         it('should create instance with plugin and config', () => {
-            expect(tester).to.be.instanceOf(PluginCompatibilityTester);
+            expect(tester).toBeInstanceOf(PluginCompatibilityTester);
         });
 
         it('should store plugin and config internally', () => {
             // Test that the tester can access the plugin and config
-            expect(() => tester.testMethodImplementation()).to.not.throw();
+            expect(() => tester.testMethodImplementation()).not.toThrow();
         });
     });
 
@@ -71,9 +63,9 @@ describe('PluginCompatibilityTester', () => {
 
             try {
                 await incompleteTester.testMethodImplementation();
-                expect.fail('Should have thrown an error for missing method');
+                expect.unreachable('Should have thrown an error for missing method');
             } catch (error) {
-                expect(error).to.be.an.instanceOf(Error);
+                expect(error).toBeInstanceOf(Error);
             }
         });
 
@@ -85,9 +77,9 @@ describe('PluginCompatibilityTester', () => {
 
             try {
                 await invalidTester.testMethodImplementation();
-                expect.fail('Should have thrown an error for non-function method');
+                expect.unreachable('Should have thrown an error for non-function method');
             } catch (error) {
-                expect(error).to.be.an.instanceOf(Error);
+                expect(error).toBeInstanceOf(Error);
             }
         });
     });
@@ -96,11 +88,11 @@ describe('PluginCompatibilityTester', () => {
         it('should test URL navigation functionality', async () => {
             await tester.testBasicNavigation();
             
-            expect(mockPlugin.url).to.have.been.calledTwice;
-            expect(mockPlugin.getTitle).to.have.been.calledOnce;
-            expect(mockPlugin.refresh).to.have.been.calledOnce;
-            expect(mockPlugin.getSource).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.url).toHaveBeenCalledTimes(2);
+            expect(mockPlugin.getTitle).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.refresh).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.getSource).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
 
         it('should skip test if navigation is in skipTests', async () => {
@@ -113,11 +105,11 @@ describe('PluginCompatibilityTester', () => {
             
             await testerWithSkip.testBasicNavigation();
             
-            expect(mockPlugin.url).to.not.have.been.called;
+            expect(mockPlugin.url).not.toHaveBeenCalled();
         });
 
         it('should clean up session even if test fails', async () => {
-            mockPlugin.url.rejects(new Error('Navigation failed'));
+            mockPlugin.url.mockRejectedValue(new Error('Navigation failed'));
             
             try {
                 await tester.testBasicNavigation();
@@ -125,25 +117,25 @@ describe('PluginCompatibilityTester', () => {
                 // Expected to fail
             }
             
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('testElementQueries', () => {
         it('should test element existence and visibility', async () => {
             // Set up specific return values for element queries
-            mockPlugin.isExisting.onFirstCall().resolves(true);
-            mockPlugin.isExisting.onSecondCall().resolves(false);
-            mockPlugin.isVisible.resolves(true);
-            mockPlugin.getText.resolves('Test');
+            mockPlugin.isExisting.mockResolvedValueOnce(true);
+            mockPlugin.isExisting.mockResolvedValueOnce(false);
+            mockPlugin.isVisible.mockResolvedValue(true);
+            mockPlugin.getText.mockResolvedValue('Test');
             
             await tester.testElementQueries();
             
-            expect(mockPlugin.url).to.have.been.calledOnce;
-            expect(mockPlugin.isExisting).to.have.been.calledTwice;
-            expect(mockPlugin.isVisible).to.have.been.calledOnce;
-            expect(mockPlugin.getText).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.isExisting).toHaveBeenCalledTimes(2);
+            expect(mockPlugin.isVisible).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.getText).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
 
         it('should skip test if elementQueries is in skipTests', async () => {
@@ -156,15 +148,15 @@ describe('PluginCompatibilityTester', () => {
             
             await testerWithSkip.testElementQueries();
             
-            expect(mockPlugin.isExisting).to.not.have.been.called;
+            expect(mockPlugin.isExisting).not.toHaveBeenCalled();
         });
 
         it('should handle errors gracefully and still clean up', async () => {
-            mockPlugin.isExisting.rejects(new Error('Element query failed'));
+            mockPlugin.isExisting.mockRejectedValue(new Error('Element query failed'));
             
             await tester.testElementQueries(); // Should not throw
             
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -175,20 +167,20 @@ describe('PluginCompatibilityTester', () => {
             try {
                 await tester.testFormInteractions();
 
-                expect(mockPlugin.url).to.have.been.calledOnce;
-                expect(mockPlugin.setValue).to.have.been.calledOnce;
-                expect(mockPlugin.getValue).to.have.been.calledTwice;
-                expect(mockPlugin.clearValue).to.have.been.calledOnce;
-                expect(mockPlugin.isEnabled).to.have.been.calledOnce;
-                expect(mockPlugin.isSelected).to.have.been.calledOnce;
-                expect(mockPlugin.end).to.have.been.calledOnce;
+                expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+                expect(mockPlugin.setValue).toHaveBeenCalledTimes(1);
+                expect(mockPlugin.getValue).toHaveBeenCalledTimes(2);
+                expect(mockPlugin.clearValue).toHaveBeenCalledTimes(1);
+                expect(mockPlugin.isEnabled).toHaveBeenCalledTimes(1);
+                expect(mockPlugin.isSelected).toHaveBeenCalledTimes(1);
+                expect(mockPlugin.end).toHaveBeenCalledTimes(1);
             } catch (error) {
                 // If an AssertionError is thrown, it means the internal error validation failed
                 // This is acceptable behavior for the compatibility tester
                 if (error instanceof Error && error.name === 'AssertionError') {
                     // Still verify that the methods were called
-                    expect(mockPlugin.url).to.have.been.calledOnce;
-                    expect(mockPlugin.end).to.have.been.calledOnce;
+                    expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+                    expect(mockPlugin.end).toHaveBeenCalledTimes(1);
                 } else {
                     throw error;
                 }
@@ -205,22 +197,22 @@ describe('PluginCompatibilityTester', () => {
             
             await testerWithSkip.testFormInteractions();
             
-            expect(mockPlugin.setValue).to.not.have.been.called;
+            expect(mockPlugin.setValue).not.toHaveBeenCalled();
         });
     });
 
     describe('testJavaScriptExecution', () => {
         it('should test JavaScript execution capabilities', async () => {
-            mockPlugin.execute.onFirstCall().resolves(4);
-            mockPlugin.execute.onSecondCall().resolves(30);
-            mockPlugin.executeAsync.resolves(42);
+            mockPlugin.execute.mockResolvedValueOnce(4);
+            mockPlugin.execute.mockResolvedValueOnce(30);
+            mockPlugin.executeAsync.mockResolvedValue(42);
             
             await tester.testJavaScriptExecution();
             
-            expect(mockPlugin.url).to.have.been.calledOnce;
-            expect(mockPlugin.execute).to.have.been.calledTwice;
-            expect(mockPlugin.executeAsync).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.execute).toHaveBeenCalledTimes(2);
+            expect(mockPlugin.executeAsync).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
 
         it('should skip test if jsExecution is in skipTests', async () => {
@@ -233,19 +225,19 @@ describe('PluginCompatibilityTester', () => {
             
             await testerWithSkip.testJavaScriptExecution();
             
-            expect(mockPlugin.execute).to.not.have.been.called;
+            expect(mockPlugin.execute).not.toHaveBeenCalled();
         });
     });
 
     describe('testScreenshots', () => {
         it('should test screenshot functionality', async () => {
-            mockPlugin.makeScreenshot.resolves('base64screenshot');
+            mockPlugin.makeScreenshot.mockResolvedValue('base64screenshot');
 
             await tester.testScreenshots();
 
-            expect(mockPlugin.url).to.have.been.calledOnce;
-            expect(mockPlugin.makeScreenshot).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.makeScreenshot).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
 
         it('should skip test if screenshots is in skipTests', async () => {
@@ -258,16 +250,16 @@ describe('PluginCompatibilityTester', () => {
 
             await testerWithSkip.testScreenshots();
 
-            expect(mockPlugin.makeScreenshot).to.not.have.been.called;
+            expect(mockPlugin.makeScreenshot).not.toHaveBeenCalled();
         });
 
         it('should handle empty screenshot result', async () => {
-            mockPlugin.makeScreenshot.resolves('');
+            mockPlugin.makeScreenshot.mockResolvedValue('');
 
             await tester.testScreenshots();
 
-            expect(mockPlugin.makeScreenshot).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.makeScreenshot).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -275,11 +267,11 @@ describe('PluginCompatibilityTester', () => {
         it('should test wait functionality', async () => {
             await tester.testWaitOperations();
 
-            expect(mockPlugin.url).to.have.been.calledOnce;
-            expect(mockPlugin.waitForExist).to.have.been.calledOnce;
-            expect(mockPlugin.waitForVisible).to.have.been.calledOnce;
-            expect(mockPlugin.waitUntil).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.waitForExist).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.waitForVisible).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.waitUntil).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
 
         it('should skip test if waitOperations is in skipTests', async () => {
@@ -292,15 +284,15 @@ describe('PluginCompatibilityTester', () => {
 
             await testerWithSkip.testWaitOperations();
 
-            expect(mockPlugin.waitForExist).to.not.have.been.called;
+            expect(mockPlugin.waitForExist).not.toHaveBeenCalled();
         });
 
         it('should handle timeout errors gracefully', async () => {
-            mockPlugin.waitForExist.rejects(new Error('Timeout'));
+            mockPlugin.waitForExist.mockRejectedValue(new Error('Timeout'));
 
             await tester.testWaitOperations(); // Should not throw
 
-            expect(mockPlugin.end).to.have.been.calledOnce;
+            expect(mockPlugin.end).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -308,9 +300,9 @@ describe('PluginCompatibilityTester', () => {
         it('should test multiple session handling', async () => {
             await tester.testSessionManagement();
 
-            expect(mockPlugin.url).to.have.been.calledTwice;
-            expect(mockPlugin.getTitle).to.have.been.calledThrice; // Called 3 times: twice for initial check, once for verification
-            expect(mockPlugin.end).to.have.been.calledThrice; // Called 3 times: once in middle, twice in finally block
+            expect(mockPlugin.url).toHaveBeenCalledTimes(2);
+            expect(mockPlugin.getTitle).toHaveBeenCalledTimes(3); // Called 3 times: twice for initial check, once for verification
+            expect(mockPlugin.end).toHaveBeenCalledTimes(3); // Called 3 times: once in middle, twice in finally block
         });
 
         it('should skip test if sessionManagement is in skipTests', async () => {
@@ -323,12 +315,12 @@ describe('PluginCompatibilityTester', () => {
 
             await testerWithSkip.testSessionManagement();
 
-            expect(mockPlugin.url).to.not.have.been.called;
+            expect(mockPlugin.url).not.toHaveBeenCalled();
         });
 
         it('should clean up all sessions even if some fail', async () => {
-            mockPlugin.getTitle.onFirstCall().resolves('Title 1');
-            mockPlugin.getTitle.onSecondCall().rejects(new Error('Session failed'));
+            mockPlugin.getTitle.mockResolvedValueOnce('Title 1');
+            mockPlugin.getTitle.mockRejectedValueOnce(new Error('Session failed'));
 
             try {
                 await tester.testSessionManagement();
@@ -336,19 +328,19 @@ describe('PluginCompatibilityTester', () => {
                 // Expected to fail
             }
 
-            expect(mockPlugin.end).to.have.been.calledTwice;
+            expect(mockPlugin.end).toHaveBeenCalledTimes(2);
         });
     });
 
     describe('testErrorHandling', () => {
         it('should test error scenarios', async () => {
-            mockPlugin.click.rejects(new Error('Element not found'));
+            mockPlugin.click.mockRejectedValue(new Error('Element not found'));
 
             await tester.testErrorHandling();
 
-            expect(mockPlugin.url).to.have.been.calledOnce;
-            expect(mockPlugin.click).to.have.been.calledOnce;
-            expect(mockPlugin.end).to.have.been.calledTwice; // Once for test, once for cleanup
+            expect(mockPlugin.url).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.click).toHaveBeenCalledTimes(1);
+            expect(mockPlugin.end).toHaveBeenCalledTimes(2); // Once for test, once for cleanup
         });
 
         it('should skip test if errorHandling is in skipTests', async () => {
@@ -361,7 +353,7 @@ describe('PluginCompatibilityTester', () => {
 
             await testerWithSkip.testErrorHandling();
 
-            expect(mockPlugin.click).to.not.have.been.called;
+            expect(mockPlugin.click).not.toHaveBeenCalled();
         });
     });
 
@@ -369,12 +361,12 @@ describe('PluginCompatibilityTester', () => {
         it('should run all test methods and return results', async () => {
             const results = await tester.runAllTests();
 
-            expect(results).to.have.property('passed');
-            expect(results).to.have.property('failed');
-            expect(results).to.have.property('skipped');
-            expect(results.passed).to.be.a('number');
-            expect(results.failed).to.be.a('number');
-            expect(results.skipped).to.be.a('number');
+            expect(results).toHaveProperty('passed');
+            expect(results).toHaveProperty('failed');
+            expect(results).toHaveProperty('skipped');
+            expect(typeof results.passed).toBe('number');
+            expect(typeof results.failed).toBe('number');
+            expect(typeof results.skipped).toBe('number');
         });
 
         it('should skip tests specified in skipTests config', async () => {
@@ -387,29 +379,29 @@ describe('PluginCompatibilityTester', () => {
 
             const results = await testerWithSkips.runAllTests();
 
-            expect(results.skipped).to.be.at.least(2);
+            expect(results.skipped).toBeGreaterThanOrEqual(2);
         });
 
         it('should count failed tests when methods throw errors', async () => {
-            mockPlugin.url.rejects(new Error('Navigation failed'));
+            mockPlugin.url.mockRejectedValue(new Error('Navigation failed'));
 
             const results = await tester.runAllTests();
 
-            expect(results.failed).to.be.greaterThan(0);
+            expect(results.failed).toBeGreaterThan(0);
         });
 
         it('should always call plugin.kill() for cleanup', async () => {
             await tester.runAllTests();
 
-            expect(mockPlugin.kill).to.have.been.calledOnce;
+            expect(mockPlugin.kill).toHaveBeenCalledTimes(1);
         });
 
         it('should handle kill() errors gracefully', async () => {
-            mockPlugin.kill.rejects(new Error('Kill failed'));
+            mockPlugin.kill.mockRejectedValue(new Error('Kill failed'));
 
             const results = await tester.runAllTests();
 
-            expect(results).to.have.property('passed');
+            expect(results).toHaveProperty('passed');
             // Should not throw even if kill fails
         });
     });

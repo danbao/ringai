@@ -1,18 +1,18 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {getArguments} from '../src/arguments-parser';
 
 describe('argument parser', () => {
     it('should correctly work without argv', () => {
         const args = getArguments(undefined as any);
 
-        chai.expect(args).to.be.equal(null);
+        expect(args).toBe(null);
     });
 
     it('should correctly get empty arguments array', () => {
         const args = getArguments([]);
 
-        chai.expect(args).to.be.deep.equal({});
+        expect(args).toEqual({});
     });
 
     it('should correctly parse user arguments', () => {
@@ -59,6 +59,6 @@ describe('argument parser', () => {
             },
         };
 
-        chai.expect(args).to.be.deep.equal(expected);
+        expect(args).toEqual(expected);
     });
 });

@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 import {
     getDescriptor,
@@ -15,21 +15,21 @@ describe("empty options ElementPath root['foo*']", () => {
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(childFoo.toString()).to.be.equal(
+            expect(childFoo.toString()).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "/descendant::*[starts-with(@data-test-automation-id, 'foo')])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${childFoo}`).to.be.equal(
+            expect(`${childFoo}`).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "/descendant::*[starts-with(@data-test-automation-id, 'foo')])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(childFoo.toString(true)).to.be.equal(
+            expect(childFoo.toString(true)).toBe(
                 "//*[@data-test-automation-id='root']" +
                     "/descendant::*[starts-with(@data-test-automation-id, 'foo')]",
             );
@@ -97,16 +97,16 @@ describe("empty options ElementPath root['foo*']", () => {
 
     describe('.__getReversedChain() call', () => {
         it('with root', () => {
-            expect(childFoo.__getReversedChain()).to.be.equal('root["foo*"]');
+            expect(childFoo.__getReversedChain()).toBe('root["foo*"]');
         });
         it('without root', () => {
-            expect(childFoo.__getReversedChain(false)).to.be.equal('["foo*"]');
+            expect(childFoo.__getReversedChain(false)).toBe('["foo*"]');
         });
     });
 
     describe('.__getChildType() call', () => {
         it('return type check', () => {
-            expect(childFoo.__getChildType()).to.be.a('symbol');
+            expect(typeof childFoo.__getChildType()).toBe('symbol');
         });
     });
 });

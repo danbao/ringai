@@ -1,6 +1,6 @@
 
-import * as chai from 'chai';
-import * as sinon from 'sinon';
+import {describe, it, expect, vi} from 'vitest';
+
 
 import {TransportMock} from '@ringai/test-utils';
 import {LoggerMessageTypes, LogTypes, FSFileLogType} from '@ringai/types';
@@ -10,7 +10,7 @@ import {report, stepsTypes} from './fixtures/constants';
 
 describe('Logger client', () => {
     it('should broadcast messages on log, info, warn, error and debug', () => {
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport);
 
@@ -25,16 +25,16 @@ describe('Logger client', () => {
         loggerClient.verbose(...report);
         loggerClient.file('README.md', {type: FSFileLogType.SCREENSHOT});
 
-        chai.expect(spy.callCount).to.be.equal(8);
+        expect(spy.mock.calls.length).toBe(8);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].prefix).to.be.equal(null);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].prefix).toBe(null);
         }
     });
 
     it('should broadcast messages log, info, warn, error and debug with prefix', () => {
         const PREFIX = 'myPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
 
@@ -48,16 +48,16 @@ describe('Logger client', () => {
         loggerClient.verbose(...report);
         loggerClient.file('README.md', {type: FSFileLogType.SCREENSHOT});
 
-        chai.expect(spy.callCount).to.be.equal(8);
+        expect(spy.mock.calls.length).toBe(8);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].prefix).to.be.equal(PREFIX);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].prefix).toBe(PREFIX);
         }
     });
 
     it('should broadcast messages log, info, warn, error and debug from generated logger', () => {
         const PREFIX = 'addingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerParent = new LoggerClient(transport);
         const loggerClient = loggerParent.withPrefix(PREFIX);
@@ -71,16 +71,16 @@ describe('Logger client', () => {
         loggerClient.success(...report);
         loggerClient.verbose(...report);
 
-        chai.expect(spy.callCount).to.be.equal(7);
+        expect(spy.mock.calls.length).toBe(7);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].prefix).to.be.equal(PREFIX);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].prefix).toBe(PREFIX);
         }
     });
 
     it('should broadcast messages log, info, warn, error and debug from generated logger saving prefix', () => {
         const PREFIX = 'savingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerParent = new LoggerClient(transport, PREFIX);
         const loggerClient = loggerParent.createNewLogger();
@@ -94,16 +94,16 @@ describe('Logger client', () => {
         loggerClient.success(...report);
         loggerClient.verbose(...report);
 
-        chai.expect(spy.callCount).to.be.equal(7);
+        expect(spy.mock.calls.length).toBe(7);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].prefix).to.be.equal(PREFIX);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].prefix).toBe(PREFIX);
         }
     });
 
     it('should open multiple inherited steps with sync startStep', () => {
         const PREFIX = 'savingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
         transport.on(LoggerMessageTypes.REPORT, spy);
@@ -116,22 +116,22 @@ describe('Logger client', () => {
         loggerClient.startStepError('error');
         loggerClient.log(...report);
 
-        chai.expect(spy.callCount).to.be.equal(7);
+        expect(spy.mock.calls.length).toBe(7);
 
-        chai.expect(spy.getCall(0).args[0].parentStep).to.be.equal(null);
-        chai.expect(spy.getCall(0).args[0]).to.deep.include(stepsTypes[0]);
+        expect(spy.mock.calls[0][0].parentStep).toBe(null);
+        expect(spy.mock.calls[0][0]).toMatchObject(stepsTypes[0]);
 
-        for (let i = 1, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].parentStep).to.be.equal(
-                spy.getCall(i - 1).args[0].stepUid,
+        for (let i = 1, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].parentStep).toBe(
+                spy.mock.calls[i - 1][0].stepUid,
             );
-            chai.expect(spy.getCall(i).args[0]).to.deep.include(stepsTypes[i]);
+            expect(spy.mock.calls[i][0]).toMatchObject(stepsTypes[i]);
         }
     });
 
     it('should open multiple inherited steps with async step', async () => {
         const PREFIX = 'savingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
         transport.on(LoggerMessageTypes.REPORT, spy);
@@ -150,22 +150,22 @@ describe('Logger client', () => {
             });
         });
 
-        chai.expect(spy.callCount).to.be.equal(7);
+        expect(spy.mock.calls.length).toBe(7);
 
-        chai.expect(spy.getCall(0).args[0].parentStep).to.be.equal(null);
-        chai.expect(spy.getCall(0).args[0]).to.deep.include(stepsTypes[0]);
+        expect(spy.mock.calls[0][0].parentStep).toBe(null);
+        expect(spy.mock.calls[0][0]).toMatchObject(stepsTypes[0]);
 
-        for (let i = 1, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].parentStep).to.be.equal(
-                spy.getCall(i - 1).args[0].stepUid,
+        for (let i = 1, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].parentStep).toBe(
+                spy.mock.calls[i - 1][0].stepUid,
             );
-            chai.expect(spy.getCall(i).args[0]).to.deep.include(stepsTypes[i]);
+            expect(spy.mock.calls[i][0]).toMatchObject(stepsTypes[i]);
         }
     });
 
     it('should not be inherited', async () => {
         const PREFIX = 'savingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
         transport.on(LoggerMessageTypes.REPORT, spy);
@@ -175,16 +175,16 @@ describe('Logger client', () => {
                 throw TypeError('Preventing');
             });
         } catch (err) {
-            chai.expect(err).to.be.instanceOf(TypeError);
-            chai.expect((err as Error).message).to.be.equal('Preventing');
+            expect(err).toBeInstanceOf(TypeError);
+            expect((err as Error).message).toBe('Preventing');
         }
 
         loggerClient.log(...report);
 
-        chai.expect(spy.callCount).to.be.equal(2);
+        expect(spy.mock.calls.length).toBe(2);
 
-        chai.expect(spy.getCall(0).args[0].parentStep).to.be.equal(null);
-        chai.expect(spy.getCall(1).args[0]).to.deep.include({
+        expect(spy.mock.calls[0][0].parentStep).toBe(null);
+        expect(spy.mock.calls[1][0]).toMatchObject({
             content: report,
             type: LogTypes.log,
             parentStep: null,
@@ -193,7 +193,7 @@ describe('Logger client', () => {
 
     it('should not be inherited with async callback', async () => {
         const PREFIX = 'savingPrefix';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
         transport.on(LoggerMessageTypes.REPORT, spy);
@@ -205,19 +205,19 @@ describe('Logger client', () => {
                 });
             });
         } catch (err) {
-            chai.expect(err).to.be.instanceOf(TypeError);
-            chai.expect((err as Error).message).to.be.equal('Preventing');
+            expect(err).toBeInstanceOf(TypeError);
+            expect((err as Error).message).toBe('Preventing');
         }
 
         loggerClient.log(...report);
 
-        chai.expect(spy.callCount).to.be.equal(3);
+        expect(spy.mock.calls.length).toBe(3);
 
-        chai.expect(spy.getCall(0).args[0].parentStep).to.be.equal(null);
-        chai.expect(spy.getCall(1).args[0].parentStep).to.be.equal(
-            spy.getCall(0).args[0].stepUid,
+        expect(spy.mock.calls[0][0].parentStep).toBe(null);
+        expect(spy.mock.calls[1][0].parentStep).toBe(
+            spy.mock.calls[0][0].stepUid,
         );
-        chai.expect(spy.getCall(2).args[0]).to.deep.include({
+        expect(spy.mock.calls[2][0]).toMatchObject({
             content: report,
             type: LogTypes.log,
             parentStep: null,
@@ -226,7 +226,7 @@ describe('Logger client', () => {
 
     it('should close one step by message', async () => {
         const PREFIX = 'savingPrefixWithSteps';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
 
@@ -237,30 +237,30 @@ describe('Logger client', () => {
         loggerClient.endStep('start2');
         loggerClient.log(...report);
 
-        chai.expect(spy.callCount).to.be.equal(3);
+        expect(spy.mock.calls.length).toBe(3);
 
-        chai.expect(spy.getCall(0).args[0]).to.deep.include({
+        expect(spy.mock.calls[0][0]).toMatchObject({
             content: ['start1'],
             type: LogTypes.step,
             parentStep: null,
         });
 
-        chai.expect(spy.getCall(1).args[0]).to.deep.include({
+        expect(spy.mock.calls[1][0]).toMatchObject({
             content: ['start2'],
             type: LogTypes.step,
-            parentStep: spy.getCall(0).args[0].stepUid,
+            parentStep: spy.mock.calls[0][0].stepUid,
         });
 
-        chai.expect(spy.getCall(2).args[0]).to.deep.include({
+        expect(spy.mock.calls[2][0]).toMatchObject({
             content: report,
             type: LogTypes.log,
-            parentStep: spy.getCall(0).args[0].stepUid,
+            parentStep: spy.mock.calls[0][0].stepUid,
         });
     });
 
     it('should close started all steps', async () => {
         const PREFIX = 'savingPrefixWithSteps';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerClient = new LoggerClient(transport, PREFIX);
 
@@ -271,21 +271,21 @@ describe('Logger client', () => {
         loggerClient.endStep();
         loggerClient.log(...report);
 
-        chai.expect(spy.callCount).to.be.equal(3);
+        expect(spy.mock.calls.length).toBe(3);
 
-        chai.expect(spy.getCall(0).args[0]).to.deep.include({
+        expect(spy.mock.calls[0][0]).toMatchObject({
             content: ['start1'],
             type: LogTypes.step,
             parentStep: null,
         });
 
-        chai.expect(spy.getCall(1).args[0]).to.deep.include({
+        expect(spy.mock.calls[1][0]).toMatchObject({
             content: ['start2'],
             type: LogTypes.step,
-            parentStep: spy.getCall(0).args[0].stepUid,
+            parentStep: spy.mock.calls[0][0].stepUid,
         });
 
-        chai.expect(spy.getCall(2).args[0]).to.deep.include({
+        expect(spy.mock.calls[2][0]).toMatchObject({
             content: report,
             type: LogTypes.log,
             parentStep: null,
@@ -294,7 +294,7 @@ describe('Logger client', () => {
 
     it('should broadcast messages from different instances but with saving levels', async () => {
         const PREFIX = 'savingPrefixWithSteps';
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerParent = new LoggerClient(transport, PREFIX);
         const loggerClient = loggerParent.withPrefix(PREFIX);
@@ -314,59 +314,59 @@ describe('Logger client', () => {
             loggerParent.verbose(...report);
         });
 
-        chai.expect(spy.callCount).to.be.equal(8);
+        expect(spy.mock.calls.length).toBe(8);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].prefix).to.be.equal(PREFIX);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].prefix).toBe(PREFIX);
         }
 
-        chai.expect(spy.getCall(0).args[0]).to.deep.include({
+        expect(spy.mock.calls[0][0]).toMatchObject({
             content: ['start step'],
             type: LogTypes.step,
             parentStep: null,
         });
-        chai.expect(spy.getCall(1).args[0]).to.deep.include({
+        expect(spy.mock.calls[1][0]).toMatchObject({
             content: report,
             type: LogTypes.log,
-            parentStep: spy.getCall(0).args[0].stepUid,
+            parentStep: spy.mock.calls[0][0].stepUid,
         });
-        chai.expect(spy.getCall(2).args[0]).to.deep.include({
+        expect(spy.mock.calls[2][0]).toMatchObject({
             content: report,
             type: LogTypes.info,
-            parentStep: spy.getCall(0).args[0].stepUid,
+            parentStep: spy.mock.calls[0][0].stepUid,
         });
 
-        chai.expect(spy.getCall(3).args[0]).to.deep.include({
+        expect(spy.mock.calls[3][0]).toMatchObject({
             content: report,
             type: LogTypes.warning,
             parentStep: null,
         });
-        chai.expect(spy.getCall(4).args[0]).to.deep.include({
+        expect(spy.mock.calls[4][0]).toMatchObject({
             content: report,
             type: LogTypes.error,
             parentStep: null,
         });
 
-        chai.expect(spy.getCall(5).args[0]).to.deep.include({
+        expect(spy.mock.calls[5][0]).toMatchObject({
             content: ['start second step'],
             type: LogTypes.step,
             parentStep: null,
         });
-        chai.expect(spy.getCall(6).args[0]).to.deep.include({
+        expect(spy.mock.calls[6][0]).toMatchObject({
             content: report,
             type: LogTypes.debug,
-            parentStep: spy.getCall(5).args[0].stepUid,
+            parentStep: spy.mock.calls[5][0].stepUid,
         });
-        chai.expect(spy.getCall(7).args[0]).to.deep.include({
+        expect(spy.mock.calls[7][0]).toMatchObject({
             content: report,
             type: LogTypes.debug,
-            parentStep: spy.getCall(5).args[0].stepUid,
+            parentStep: spy.mock.calls[5][0].stepUid,
         });
     });
 
     it('should broadcast messages with marker', async () => {
         const MARKER = 1;
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerParent = new LoggerClient(transport);
         const loggerClient = loggerParent.withMarker(MARKER);
@@ -380,16 +380,16 @@ describe('Logger client', () => {
         loggerClient.success(...report);
         loggerClient.verbose(...report);
 
-        chai.expect(spy.callCount).to.be.equal(7);
+        expect(spy.mock.calls.length).toBe(7);
 
-        for (let i = 0, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].marker).to.be.equal(MARKER);
+        for (let i = 0, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].marker).toBe(MARKER);
         }
     });
 
     it('should broadcast messages with marker override marker', async () => {
         const MARKER = 1;
-        const spy = sinon.spy();
+        const spy = vi.fn();
         const transport = new TransportMock();
         const loggerParent = new LoggerClient(transport, null, MARKER);
         const loggerClient = loggerParent.withMarker(null);
@@ -412,14 +412,14 @@ describe('Logger client', () => {
         loggerClient.success(...report);
         loggerClient.verbose(...report);
 
-        chai.expect(spy.callCount).to.be.equal(14);
+        expect(spy.mock.calls.length).toBe(14);
 
-        for (let i = 0, len = spy.callCount / 2; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].marker).to.be.equal(MARKER);
+        for (let i = 0, len = spy.mock.calls.length / 2; i < len; i++) {
+            expect(spy.mock.calls[i][0].marker).toBe(MARKER);
         }
 
-        for (let i = spy.callCount / 2, len = spy.callCount; i < len; i++) {
-            chai.expect(spy.getCall(i).args[0].marker).to.be.equal(null);
+        for (let i = spy.mock.calls.length / 2, len = spy.mock.calls.length; i < len; i++) {
+            expect(spy.mock.calls[i][0].marker).toBe(null);
         }
     });
 });

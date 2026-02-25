@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {
     FilePermissionResolver,
@@ -15,14 +15,12 @@ function stateCheck(
     unlink: chkObj,
     msg: string,
 ) {
-    chai.expect(access).to.be.deep.equal(
+    expect(access).toEqual(
         FPR.getAccessQueueLength(),
-        `access ${msg}`,
     );
-    chai.expect(lock).to.be.deep.equal(FPR.getLockPoolSize(), `lock ${msg}`);
-    chai.expect(unlink).to.be.deep.equal(
+    expect(lock).toEqual(FPR.getLockPoolSize());
+    expect(unlink).toEqual(
         FPR.getUnlinkQueueLength(),
-        `unlink ${msg}`,
     );
 }
 
@@ -48,16 +46,16 @@ describe('fs-permission', () => {
             throw new Error('pData[x] is undefined');
         }
         FPR.lock(pData[0].workerId, pData[0].requestId, ({dataId, status}) => {
-            chai.expect(status).to.be.equals(actionState.locked);
-            chai.expect(dataId).to.be.equals(fileName);
+            expect(status).toBe(actionState.locked);
+            expect(dataId).toBe(fileName);
         });
         FPR.lock(pData[1].workerId, pData[1].requestId, ({dataId, status}) => {
-            chai.expect(status).to.be.equals(actionState.locked);
-            chai.expect(dataId).to.be.equals(fileName);
+            expect(status).toBe(actionState.locked);
+            expect(dataId).toBe(fileName);
         });
         FPR.lock(pData[2].workerId, pData[2].requestId, ({dataId, status}) => {
-            chai.expect(status).to.be.equals(actionState.locked);
-            chai.expect(dataId).to.be.equals(fileName);
+            expect(status).toBe(actionState.locked);
+            expect(dataId).toBe(fileName);
         });
 
         stateCheck(
@@ -81,7 +79,7 @@ describe('fs-permission', () => {
             pData[0].workerId,
             pData[0].requestId,
             ({dataId}, cleanCB) => {
-                chai.expect(dataId).to.be.equals(fileName);
+                expect(dataId).toBe(fileName);
                 stateCheck(
                     FPR,
                     {active: 1, queue: 0},
@@ -105,7 +103,7 @@ describe('fs-permission', () => {
             pData[1].workerId,
             pData[1].requestId,
             ({dataId}, cleanCB) => {
-                chai.expect(dataId).to.be.equals(fileName);
+                expect(dataId).toBe(fileName);
                 stateCheck(
                     FPR,
                     {active: 1, queue: 0},
@@ -122,7 +120,7 @@ describe('fs-permission', () => {
             pData[2].workerId,
             pData[2].requestId,
             ({dataId}, cleanCB) => {
-                chai.expect(dataId).to.be.equals(fileName);
+                expect(dataId).toBe(fileName);
                 stateCheck(
                     FPR,
                     {active: 1, queue: 0},
@@ -146,10 +144,9 @@ describe('fs-permission', () => {
             pData[0].workerId,
             pData[0].requestId,
             ({dataId, status}, cleanCB) => {
-                chai.expect(dataId).to.be.equals(fileName);
-                chai.expect(status).to.be.equals(
+                expect(dataId).toBe(fileName);
+                expect(status).toBe(
                     actionState.deleting,
-                    'on first Unlink should get transitian state deleting ',
                 );
                 stateCheck(
                     FPR,
@@ -166,10 +163,9 @@ describe('fs-permission', () => {
             pData[1].workerId,
             pData[1].requestId,
             ({dataId, status}, cleanCB) => {
-                chai.expect(dataId).to.be.equals(fileName);
-                chai.expect(status).to.be.equals(
+                expect(dataId).toBe(fileName);
+                expect(status).toBe(
                     actionState.deleted,
-                    'on any after second "deleted"',
                 );
                 stateCheck(
                     FPR,

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 import {
@@ -25,7 +25,7 @@ describe('.xpath()', () => {
         it('call without xpath and id', () => {
             // @ts-ignore
             const error = () => root['foo']?.xpath();
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Invalid options, "xpath" string is required',
             );
         });
@@ -33,7 +33,7 @@ describe('.xpath()', () => {
         it('call without xpath', () => {
             // @ts-ignore
             const error = () => root['foo']?.xpath('test');
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Invalid options, "xpath" string is required',
             );
         });
@@ -45,13 +45,13 @@ describe('.xpath()', () => {
                 "//*[@class='selected']",
             );
             if (!child) {throw new Error('Element not found');}
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with empty string id', () => {
             const child = root['foo']?.xpath('', "//*[@class='selected']");
             if (!child) {throw new Error('Element not found');}
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with not string', () => {
@@ -61,27 +61,27 @@ describe('.xpath()', () => {
                 "//*[@class='selected']",
             );
             if (!child) {throw new Error('Element not found');}
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
     });
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(xpathSelectorCall.toString()).to.be.equal(
+            expect(xpathSelectorCall.toString()).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "//*[@data-test-automation-id='foo']//*[@class='selected'])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${xpathSelectorCall}`).to.be.equal(
+            expect(`${xpathSelectorCall}`).toBe(
                 "(//*[@data-test-automation-id='root']" +
                     "//*[@data-test-automation-id='foo']//*[@class='selected'])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(xpathSelectorCall.toString(true)).to.be.equal(
+            expect(xpathSelectorCall.toString(true)).toBe(
                 "//*[@data-test-automation-id='root']//*[@data-test-automation-id='foo']//*[@class='selected']",
             );
         });
@@ -164,12 +164,12 @@ describe('.xpath()', () => {
 
     describe('.__getReversedChain call', () => {
         it('with root', () => {
-            expect(xpathSelectorCall.__getReversedChain()).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain()).toBe(
                 'root.foo.xpath("selected", "//*[@class=\'selected\']")',
             );
         });
         it('without root', () => {
-            expect(xpathSelectorCall.__getReversedChain(false)).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain(false)).toBe(
                 '.foo.xpath("selected", "//*[@class=\'selected\']")',
             );
         });

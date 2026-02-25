@@ -1,6 +1,6 @@
 /* eslint sonarjs/no-identical-functions: 0 */
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {TestWorkerMock} from '@ringai/test-utils';
 import {TestRunControllerPlugins} from '@ringai/types/src/test-run-controller';
 import {TestRunController} from '../src/test-run-controller';
@@ -32,10 +32,10 @@ describe('TestRunController', () => {
 
         const errors = (await testRunController.runQueue(tests)) as Error[];
 
-        chai.expect(errors).to.be.lengthOf(1);
-        chai.expect(errors[0]).to.be.instanceOf(Error);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).toBeInstanceOf(Error);
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(workerLimit);
     });
 
     it('should run spawn workers with count from according limit', async () => {
@@ -53,7 +53,7 @@ describe('TestRunController', () => {
 
         await testRunController.runQueue(tests);
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(workerLimit);
     });
 
     it('should run only one local worker', async () => {
@@ -70,7 +70,7 @@ describe('TestRunController', () => {
 
         await testRunController.runQueue(tests);
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(1);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(1);
     });
 
     it('should run all test in one local worker', async () => {
@@ -88,8 +88,8 @@ describe('TestRunController', () => {
 
         const errors = (await testRunController.runQueue(tests)) as Error[];
 
-        chai.expect(errors).to.be.lengthOf(testsFiledCount);
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(1);
+        expect(errors).toHaveLength(testsFiledCount);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(1);
     });
 
     it('should run spawn workers by test count, if limit is higher', async () => {
@@ -107,7 +107,7 @@ describe('TestRunController', () => {
 
         await testRunController.runQueue(tests);
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(testsCount);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(testsCount);
     });
 
     it('should fail instantly, if bail flag passed', async () => {
@@ -124,7 +124,7 @@ describe('TestRunController', () => {
 
         const errors = await testRunController.runQueue(tests);
 
-        chai.expect(errors).to.be.lengthOf(1);
+        expect(errors).toHaveLength(1);
     });
 
     it('should run spawn workers according the limit and complete without kill', async () => {
@@ -143,9 +143,9 @@ describe('TestRunController', () => {
 
         await testRunController.runQueue(tests);
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(workerLimit);
         // kill is not called during normal execution — only on shutdown
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(0);
+        expect(testWorkerMock.$getKillCallsCount()).toBe(0);
     });
 
     it('should run spawn workers and kill all when kill() is called externally', async () => {
@@ -171,8 +171,8 @@ describe('TestRunController', () => {
             }, 100),
         );
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(
+        expect(testWorkerMock.$getSpawnedCount()).toBe(workerLimit);
+        expect(testWorkerMock.$getKillCallsCount()).toBe(
             workerLimit,
         );
 
@@ -198,11 +198,11 @@ describe('TestRunController', () => {
             tests,
         )) as Error[];
 
-        chai.expect(testWorkerMock.$getSpawnedCount()).to.be.equal(workerLimit);
+        expect(testWorkerMock.$getSpawnedCount()).toBe(workerLimit);
         // kill is called once per timed-out test
-        chai.expect(testWorkerMock.$getKillCallsCount()).to.be.equal(testsCount);
+        expect(testWorkerMock.$getKillCallsCount()).toBe(testsCount);
 
-        chai.expect(delayErrors).to.be.lengthOf(testsCount);
+        expect(delayErrors).toHaveLength(testsCount);
     });
 
     it('should use retries when test fails', async () => {
@@ -225,10 +225,10 @@ describe('TestRunController', () => {
         const executionCalls = testWorkerMock.$getExecutionCallsCount();
 
         // Errors are generated only when last retry has failed
-        chai.expect(errors).to.be.lengthOf(testsCount);
+        expect(errors).toHaveLength(testsCount);
 
         // Runner must try to run all failed test with given retries number
-        chai.expect(executionCalls).to.be.equal(
+        expect(executionCalls).toBe(
             testsCount + testsCount * retriesCount,
         );
     });
@@ -255,10 +255,10 @@ describe('TestRunController', () => {
             shouldNotRetry.writeHook(
                 'testPlugin',
                 (state: boolean, _queueItem: unknown, {processID}: {processID: string | number}) => {
-                    chai.expect(processID).to.be.equal(
+                    expect(processID).toBe(
                         testWorkerMock.$getInstanceName(),
                     );
-                    chai.expect(state).to.be.equal(false);
+                    expect(state).toBe(false);
                     return true;
                 },
             );
@@ -269,10 +269,10 @@ describe('TestRunController', () => {
         const executionCalls = testWorkerMock.$getExecutionCallsCount();
 
         // Errors are generated only when last retry has failed
-        chai.expect(errors).to.be.lengthOf(testsCount);
+        expect(errors).toHaveLength(testsCount);
 
         // Runner must not try to retry tests run
-        chai.expect(executionCalls).to.be.equal(testsCount);
+        expect(executionCalls).toBe(testsCount);
     });
 
     it('should not start tests execution', async () => {
@@ -295,7 +295,7 @@ describe('TestRunController', () => {
 
         if (shouldNotStart) {
             shouldNotStart.writeHook('testPlugin', (state: boolean) => {
-                chai.expect(state).to.be.equal(false);
+                expect(state).toBe(false);
                 return true;
             });
         }
@@ -305,10 +305,10 @@ describe('TestRunController', () => {
         const executionCalls = testWorkerMock.$getExecutionCallsCount();
 
         // There should not ba any errors
-        chai.expect(errors).to.be.equal(null);
+        expect(errors).toBe(null);
 
         // Runner must not try to retry tests run
-        chai.expect(executionCalls).to.be.equal(0);
+        expect(executionCalls).toBe(0);
     });
 
     it('should not start tests', async () => {
@@ -333,10 +333,10 @@ describe('TestRunController', () => {
             shouldNotStart.writeHook(
                 'testPlugin',
                 (state: boolean, _queueItem: unknown, {processID}: {processID: string | number}) => {
-                    chai.expect(processID).to.be.equal(
+                    expect(processID).toBe(
                         testWorkerMock.$getInstanceName(),
                     );
-                    chai.expect(state).to.be.equal(false);
+                    expect(state).toBe(false);
                     return true;
                 },
             );
@@ -347,10 +347,10 @@ describe('TestRunController', () => {
         const executionCalls = testWorkerMock.$getExecutionCallsCount();
 
         // There should not ba any errors
-        chai.expect(errors).to.be.equal(null);
+        expect(errors).toBe(null);
 
         // Runner must not try to retry tests run
-        chai.expect(executionCalls).to.be.equal(0);
+        expect(executionCalls).toBe(0);
     });
 
     it('should be matching processID meta', async () => {
@@ -372,13 +372,13 @@ describe('TestRunController', () => {
 
         if (beforeTest && afterTest) {
             beforeTest.readHook('testPlugin', (_entry: unknown, {processID}: {processID: string | number}) => {
-                chai.expect(processID).to.be.equal(
+                expect(processID).toBe(
                     testWorkerMock.$getInstanceName(),
                 );
             });
 
             afterTest.writeHook('testPlugin', (_entry: unknown, _error: Error | null, {processID}: {processID: string | number}) => {
-                chai.expect(processID).to.be.equal(
+                expect(processID).toBe(
                     testWorkerMock.$getInstanceName(),
                 );
             });
@@ -388,7 +388,7 @@ describe('TestRunController', () => {
         if (errors && errors.length > 0) {
             throw errors[0];
         }
-        chai.expect(errors).to.be.equal(null);
+        expect(errors).toBe(null);
     });
 
     it('should throw an error processID meta afterTest hook', async () => {
@@ -412,24 +412,24 @@ describe('TestRunController', () => {
 
         if (beforeTest && afterTest) {
             beforeTest.readHook('testPlugin', (_entry: unknown, {processID}: {processID: string | number}) => {
-                chai.expect(processID).to.be.equal(
+                expect(processID).toBe(
                     testWorkerMock.$getInstanceName(),
                 );
             });
 
             afterTest.writeHook('testPlugin', (_entry: unknown, error: Error | null, {processID}: {processID: string | number}) => {
-                chai.expect(processID).to.be.equal(
+                expect(processID).toBe(
                     testWorkerMock.$getInstanceName(),
                 );
-                chai.expect(error).to.be.deep.equal(
+                expect(error).toEqual(
                     testWorkerMock.$getErrorInstance(),
                 );
             });
         }
 
         const errors = (await testRunController.runQueue(tests)) as Error[];
-        chai.expect(errors).to.be.lengthOf(testsCount);
-        chai.expect(errors[0]).to.be.deep.equal(
+        expect(errors).toHaveLength(testsCount);
+        expect(errors[0]).toEqual(
             testWorkerMock.$getErrorInstance(),
         );
     });

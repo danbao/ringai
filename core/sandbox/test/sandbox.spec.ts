@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect, afterEach} from 'vitest';
 import {fileReaderFactory, fileResolverFactory} from '@ringai/test-utils';
 import {Sandbox} from '../src/sandbox';
 
@@ -25,7 +25,7 @@ describe('Sandbox', () => {
             const sandbox = new Sandbox(source, 'simple-module.js', {});
             const module = sandbox.execute();
 
-            chai.expect(module).to.be.equal('Hello, world!');
+            expect(module).toBe('Hello, world!');
         });
 
         it('should throw exception, if code have some inner exceptions', async () => {
@@ -50,7 +50,7 @@ describe('Sandbox', () => {
 
                 return Promise.reject('Code was compiled');
             } catch (error) {
-                chai.expect(error).to.be.instanceof(SyntaxError);
+                expect(error).toBeInstanceOf(SyntaxError);
             }
         });
 
@@ -63,7 +63,7 @@ describe('Sandbox', () => {
 
                 return Promise.reject('Code was compiled');
             } catch (exception) {
-                chai.expect(exception).to.be.instanceof(EvalError);
+                expect(exception).toBeInstanceOf(EvalError);
             }
         });
     });
@@ -82,14 +82,14 @@ describe('Sandbox', () => {
             const {array, map, set, weakMap, weakSet, promise, buffer, error} =
                 sandbox.execute();
 
-            chai.expect(array instanceof Array).to.be.equal(true);
-            chai.expect(map instanceof Map).to.be.equal(true);
-            chai.expect(set instanceof Set).to.be.equal(true);
-            chai.expect(weakMap instanceof WeakMap).to.be.equal(true);
-            chai.expect(weakSet instanceof WeakSet).to.be.equal(true);
-            chai.expect(promise instanceof Promise).to.be.equal(true);
-            chai.expect(buffer instanceof Buffer).to.be.equal(true);
-            chai.expect(error instanceof Error).to.be.equal(true);
+            expect(array instanceof Array).toBe(true);
+            expect(map instanceof Map).toBe(true);
+            expect(set instanceof Set).toBe(true);
+            expect(weakMap instanceof WeakMap).toBe(true);
+            expect(weakSet instanceof WeakSet).toBe(true);
+            expect(promise instanceof Promise).toBe(true);
+            expect(buffer instanceof Buffer).toBe(true);
+            expect(error instanceof Error).toBe(true);
         });
 
         it('should set global variables into own context', async () => {
@@ -99,9 +99,9 @@ describe('Sandbox', () => {
             const module = sandbox.execute();
             const context = sandbox.getContext();
 
-            chai.expect(module).to.be.equal(true);
-            chai.expect(context['amaGlobal']).to.be.equal(true);
-            chai.expect((global as any)['amaGlobal']).to.be.equal(undefined);
+            expect(module).toBe(true);
+            expect(context['amaGlobal']).toBe(true);
+            expect((global as any)['amaGlobal']).toBe(undefined);
         });
 
         it('should correctly handle function declarations', async () => {
@@ -110,7 +110,7 @@ describe('Sandbox', () => {
 
             sandbox.execute();
 
-            chai.expect(sandbox.execute()).to.be.equal(1);
+            expect(sandbox.execute()).toBe(1);
         });
 
         it('should read global variables from current process context', () => {
@@ -127,7 +127,7 @@ describe('Sandbox', () => {
 
             const context = sandbox.getContext();
 
-            chai.expect(context[key]).to.be.equal((global as any)[key]);
+            expect(context[key]).toBe((global as any)[key]);
 
             delete (global as any)[key];
         });
@@ -138,14 +138,14 @@ describe('Sandbox', () => {
             const source = await fixturesFileReader('external-dependency.js');
             const sandbox = new Sandbox(source, 'external-dependency.js', {});
 
-            chai.expect(sandbox.execute()).to.be.equal(true);
+            expect(sandbox.execute()).toBe(true);
         });
 
         it('should import native module', async () => {
             const source = await fixturesFileReader('native-dependency.js');
             const sandbox = new Sandbox(source, 'native-dependency.js', {});
 
-            chai.expect(sandbox.execute()).to.be.equal(true);
+            expect(sandbox.execute()).toBe(true);
         });
 
         it("should throw ReferenceError, when can't resolve dependency", async () => {
@@ -157,7 +157,7 @@ describe('Sandbox', () => {
 
                 return Promise.reject('Code was compiled');
             } catch (error) {
-                chai.expect(error).to.be.instanceof(Error);
+                expect(error).toBeInstanceOf(Error);
             }
         });
 
@@ -200,7 +200,7 @@ describe('Sandbox', () => {
 
             const result = sandbox1.execute();
 
-            chai.expect(result).to.be.deep.equal(testData);
+            expect(result).toEqual(testData);
         });
 
         it('should handle error propagation in circular dependency', async () => {
@@ -250,7 +250,7 @@ describe('Sandbox', () => {
             const source = await fixturesFileReader('exports-reference.js');
             const sandbox = new Sandbox(source, 'exports-reference.js', {});
 
-            chai.expect(sandbox.execute().data).to.be.equal(true);
+            expect(sandbox.execute().data).toBe(true);
         });
 
         it('should add fields to "module" object', async () => {
@@ -260,8 +260,8 @@ describe('Sandbox', () => {
             const module = sandbox.execute();
             const context = sandbox.getContext();
 
-            chai.expect(module).to.be.equal(true);
-            chai.expect(context.module.customField).to.be.equal(true);
+            expect(module).toBe(true);
+            expect(context.module.customField).toBe(true);
         });
 
         it('should correctly provide commonjs module.exports object', async () => {
@@ -274,14 +274,14 @@ describe('Sandbox', () => {
                 {},
             );
 
-            chai.expect(sandbox.execute().equals).to.be.equal(true);
+            expect(sandbox.execute().equals).toBe(true);
         });
 
         it('should correctly provide commonjs exports object', async () => {
             const source = await fixturesFileReader('commonjs-exports.js');
             const sandbox = new Sandbox(source, 'commonjs-exports.js', {});
 
-            chai.expect(sandbox.execute().equals).to.be.equal(true);
+            expect(sandbox.execute().equals).toBe(true);
         });
     });
 
@@ -294,7 +294,7 @@ describe('Sandbox', () => {
 
             await Sandbox.evaluateScript('test-data.js', 'test = 20;');
             const context = sandbox.getContext();
-            chai.expect(context.test).to.be.equal(20);
+            expect(context.test).toBe(20);
         });
     });
 });

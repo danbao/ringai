@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {expect} from 'vitest';
 import {getFormattedString} from '../src/utils';
 
 describe('utils', () => {
@@ -9,33 +9,33 @@ describe('utils', () => {
             toString: null,
         };
 
-        chai.expect(getFormattedString(object)).to.equal('UNKNOWN_OBJECT');
+        expect(getFormattedString(object)).toBe('UNKNOWN_OBJECT');
     });
 
     it('should return the "undefined" if undefined is passed', () => {
-        chai.expect(getFormattedString(undefined)).to.equal('undefined');
+        expect(getFormattedString(undefined)).toBe('undefined');
     });
 
     it('should return the "null" if null is passed', () => {
-        chai.expect(getFormattedString(null)).to.equal('null');
+        expect(getFormattedString(null)).toBe('null');
     });
 
     it('should return the same string if Symbol is passed', () => {
         const symbol = Symbol('@symbol');
 
-        chai.expect(getFormattedString(symbol)).to.equal('Symbol(@symbol)');
+        expect(getFormattedString(symbol)).toBe('Symbol(@symbol)');
     });
 
     it('should return [object Object] if called from Object', () => {
-        chai.expect(getFormattedString({})).to.equal('[object Object]');
+        expect(getFormattedString({})).toBe('[object Object]');
     });
 
     it('should return empty string if called from empty Array', () => {
-        chai.expect(getFormattedString([])).to.equal('');
+        expect(getFormattedString([])).toBe('');
     });
 
     it('should return concatenated string if called from Array', () => {
-        chai.expect(getFormattedString([1, 2, 3])).to.equal('1,2,3');
+        expect(getFormattedString([1, 2, 3])).toBe('1,2,3');
     });
 
     it('should return toString method call result', () => {
@@ -51,7 +51,7 @@ describe('utils', () => {
             }
         }
 
-        chai.expect(getFormattedString(new Dummy('foo'))).to.equal('foo');
+        expect(getFormattedString(new Dummy('foo'))).toBe('foo');
     });
 
     it('should return toString property call result', () => {
@@ -59,7 +59,7 @@ describe('utils', () => {
             toString: () => 'bar',
         };
 
-        chai.expect(getFormattedString(object)).to.equal('bar');
+        expect(getFormattedString(object)).toBe('bar');
     });
 
     it('should return toFormattedString method call result', () => {
@@ -79,7 +79,7 @@ describe('utils', () => {
             }
         }
 
-        chai.expect(getFormattedString(new Dummy('foo'))).to.equal(
+        expect(getFormattedString(new Dummy('foo'))).toBe(
             'formatted foo',
         );
     });
@@ -95,6 +95,6 @@ describe('utils', () => {
             toString: () => 'test',
         };
 
-        chai.expect(getFormattedString(object)).to.equal('formatted bar');
+        expect(getFormattedString(object)).toBe('formatted bar');
     });
 });

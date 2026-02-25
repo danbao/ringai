@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {IConfig} from '@ringai/types';
 import {mergeConfigs} from '../src/merge-configs';
 
@@ -12,7 +12,7 @@ describe('getConfig', () => {
             plugins: ['plugin3'],
         });
 
-        chai.expect(source).to.not.equal(config);
+        expect(source).not.toBe(config);
     });
 
     it('should not mutate the source object', () => {
@@ -23,7 +23,7 @@ describe('getConfig', () => {
             plugins: ['plugin3'],
         });
 
-        chai.expect(source).to.be.deep.equal({
+        expect(source).toEqual({
             plugins: ['plugin1', 'plugin2'],
         });
     });
@@ -38,7 +38,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: ['plugin1', 'plugin2', 'plugin3'],
         });
     });
@@ -74,7 +74,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: [
                 [
                     'plugin2',
@@ -110,7 +110,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: [
                 'plugin2',
                 [
@@ -148,7 +148,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: [
                 [
                     'plugin1',
@@ -186,7 +186,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: [
                 [
                     'plugin1',
@@ -232,7 +232,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             plugins: [
                 [
                     'plugin1',
@@ -285,7 +285,7 @@ describe('getConfig', () => {
             },
         );
 
-        chai.expect(config).to.be.deep.equals({
+        expect(config).toEqual({
             test: [
                 [
                     'plugin1',

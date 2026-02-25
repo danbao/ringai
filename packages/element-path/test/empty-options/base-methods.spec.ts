@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath, ElementPathProxy} from '../../src';
 
 describe('base methods', () => {
@@ -6,11 +6,11 @@ describe('base methods', () => {
         const dummy = createElementPath();
 
         it('checking proxy object', () => {
-            expect(dummy['__proxy']).to.be.equal(dummy);
+            expect(dummy['__proxy']).toBe(dummy);
         });
 
         it('checking instance object', () => {
-            expect(dummy.__getInstance()).not.to.be.equal(dummy);
+            expect(dummy.__getInstance()).not.toBe(dummy);
         });
     });
 
@@ -20,7 +20,7 @@ describe('base methods', () => {
 
             const setter = () =>
                 (dummy['test'] = 123 as unknown as ElementPathProxy);
-            expect(setter).to.throw(TypeError, 'Immutable object');
+            expect(setter).toThrow('Immutable object');
         });
 
         it('set own property', () => {
@@ -29,7 +29,7 @@ describe('base methods', () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const setter = () => (dummy.__path = 123);
-            expect(setter).to.throw(TypeError, 'Immutable object');
+            expect(setter).toThrow('Immutable object');
         });
     });
 
@@ -38,14 +38,14 @@ describe('base methods', () => {
             const dummy = createElementPath();
 
             const setter = () => delete dummy['test'];
-            expect(setter).to.throw(TypeError, 'Immutable object');
+            expect(setter).toThrow('Immutable object');
         });
 
         it('set own property', () => {
             const dummy = createElementPath();
 
             const setter = () => delete dummy.__path;
-            expect(setter).to.throw(TypeError, 'Immutable object');
+            expect(setter).toThrow('Immutable object');
         });
     });
 });
