@@ -6,22 +6,12 @@ const TIMEOUTS = require('../../timeout-config.cjs');
 module.exports = async (config) => {
     const local = !config.headless;
 
-    const babelConfig = {
-        presets: [
-            [
-                '@babel/preset-env',
-                {
-                    targets: {
-                        node: 'current',
-                    },
-                },
-            ],
-        ],
+    const compilerConfig = {
+        target: 'es2022',
     };
 
     if (config.debug) {
-        babelConfig.presets[0][1].debug = true;
-        babelConfig.sourceMaps = 'inline';
+        compilerConfig.sourceMap = true;
     }
 
     return {
@@ -46,7 +36,7 @@ module.exports = async (config) => {
                     clientTimeout: local ? 0 : (config.testTimeout || TIMEOUTS.CLIENT_SESSION),
                 },
             ],
-            ['babel', babelConfig],
+            ['compiler', compilerConfig],
         ],
     };
 };
