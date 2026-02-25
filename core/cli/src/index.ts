@@ -9,7 +9,7 @@ import { runInitCommand } from './commands/initCommand.js';
 import { runPluginListCommand } from './commands/pluginCommand.js';
 import { getConfig } from '@ringai/cli-config';
 import { transport } from '@ringai/transport';
-import { loggerClient, LoggerServer } from '@ringai/logger';
+import { loggerClient } from '@ringai/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
@@ -26,10 +26,6 @@ const mainCommand = defineCommand({
             meta: { name: 'run', description: 'Run tests' },
             run: async () => {
                 const config = await getConfig(process.argv);
-                // start logger transport early
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const loggerServer = new LoggerServer(config, transport, process.stdout);
-
                 const command = runTests(config, transport, process.stdout);
                 return command.execute().catch(async (exception) => {
                     loggerClient.error('[CLI] Test execution failed:', exception.message);
