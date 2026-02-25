@@ -3,7 +3,6 @@ import {IConfig, LogLevel} from '@ringai/types';
 export const defaultConfiguration: IConfig = {
     devtool: false,
     tests: './tests/**/*.js',
-    restartWorker: false,
     screenshots: 'disable',
     screenshotPath: './_tmp/',
     config: '.ringairc',

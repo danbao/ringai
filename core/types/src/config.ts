@@ -14,7 +14,6 @@ export interface IConfigLogger {
 export interface IConfig extends IConfigLogger {
     // TODO (flops) make configurable
     devtool: boolean;
-    restartWorker: boolean;
     screenshots: ScreenshotsConfig;
     screenshotPath: string;
     config: string;

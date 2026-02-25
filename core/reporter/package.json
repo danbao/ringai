@@ -1,6 +1,6 @@
 {
   "name": "@ringai/reporter",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "type": "module",

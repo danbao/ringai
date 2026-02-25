@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const mockGithubUsername = 'testuser';
 const mockCommitId = 'abc1234';
-const excludeList = ['@ringai/devtool-frontend', '@ringai/devtool-backend', '@ringai/devtool-extension'];
+const excludeList = [];
 
 function getWorkspacePackages() {
     const rootDir = path.resolve(__dirname, '..');

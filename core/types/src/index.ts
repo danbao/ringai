@@ -6,13 +6,7 @@ export * from './test-run-controller';
 
 export * from './pluggable-module';
 
-export * from './client-ws-transport';
-
-export * from './devtool-backend/enums';
 export * from './devtool-backend';
-
-export * from './devtool-extension/enums';
-export * from './devtool-extension';
 
 export * from './child-process';
 export * from './fs-reader';
