@@ -37,6 +37,6 @@
     "@types/express-serve-static-core": "5.0.1",
     "@types/node": "22.8.5",
     "@types/ws": "8.5.12",
-    "vitest": "2.1.8"
+    "vitest": "2.1.9"
   }
 }

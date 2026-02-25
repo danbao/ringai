@@ -52,6 +52,6 @@
     "ts-node": "10.9.2"
   },
   "devDependencies": {
-    "wrangler": "4.26.0"
+    "wrangler": "4.59.1"
   }
 }
