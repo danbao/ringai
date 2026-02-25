@@ -24,7 +24,7 @@ module.exports = async (config) => {
 
     return {
         screenshotPath: './_tmp/',
-        workerLimit: local ? 'local' : 5,
+        workerLimit: 'local',
         maxWriteThreadCount: 2,
         screenshots: 'disable',
         retryCount: local ? 0 : 2, // 在 CI 环境中重试失败的测试

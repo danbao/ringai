@@ -25,12 +25,17 @@ async function getConfig(argv?: string[]): Promise<IConfig> {
     const configPath = args?.config as string | undefined;
     const envConfigPath = args?.envConfig as string | undefined;
 
+    // Pre-merge args into defaults so config file functions can see CLI flags
+    const baseConfig = args
+        ? mergeConfigs(defaultConfiguration, args as Partial<IConfig>)
+        : defaultConfiguration;
+
     const fileConfig = await getFileConfig(
         configPath || defaultConfiguration.config,
-        defaultConfiguration,
+        baseConfig,
     );
 
-    const envConfig = await getFileConfig(envConfigPath, defaultConfiguration);
+    const envConfig = await getFileConfig(envConfigPath, baseConfig);
 
     // Priority: defaults < envConfig < fileConfig < args
     const configs: Partial<IConfig>[] = [];
