@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {expect} from 'vitest';
 import {FSFileUniqPolicy} from '@ringai/types';
 
 import {cbGen} from '../src/onFileName';
@@ -35,7 +35,7 @@ describe('fs-store-plugin', () => {
                 });
                 // Normalize path separators for cross-platform compatibility
                 const normalizedFullPath = fullPath.replace(/\\/g, '/');
-                chai.expect(normalizedFullPath).to.be.equals(metaData.fullPath);
+                expect(normalizedFullPath).toBe(metaData.fullPath);
             }),
         );
     });

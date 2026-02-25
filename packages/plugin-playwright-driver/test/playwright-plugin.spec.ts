@@ -1,5 +1,5 @@
 
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { PlaywrightPlugin } from '../src/plugin/index';
 
 describe('PlaywrightPlugin Core Functionality', () => {
@@ -20,7 +20,7 @@ describe('PlaywrightPlugin Core Functionality', () => {
             const applicant = 'test-applicant';
             await plugin.url(applicant, 'data:text/html,<html><body>Test</body></html>');
             const title = await plugin.getTitle(applicant);
-            expect(title).to.be.a('string');
+            expect(typeof title).toBe('string');
         });
 
         it('should create separate clients for different applicants', async () => {
@@ -33,8 +33,8 @@ describe('PlaywrightPlugin Core Functionality', () => {
 
             const title1 = await plugin.getTitle('applicant1');
             const title2 = await plugin.getTitle('applicant2');
-            expect(title1).to.be.a('string');
-            expect(title2).to.be.a('string');
+            expect(typeof title1).toBe('string');
+            expect(typeof title2).toBe('string');
         });
     });
 
@@ -52,7 +52,7 @@ describe('PlaywrightPlugin Core Functionality', () => {
         it('should navigate to URL', async () => {
             const url = 'data:text/html,<html><body>Nav Test</body></html>';
             const result = await plugin.url(applicant, url);
-            expect(result).to.equal(url);
+            expect(result).toBe(url);
         });
 
         it('should refresh page', async () => {
@@ -61,7 +61,7 @@ describe('PlaywrightPlugin Core Functionality', () => {
 
         it('should get page title', async () => {
             const title = await plugin.getTitle(applicant);
-            expect(title).to.equal('Test Page');
+            expect(title).toBe('Test Page');
         });
     });
 
@@ -78,24 +78,24 @@ describe('PlaywrightPlugin Core Functionality', () => {
 
         it('should take screenshot', async () => {
             const screenshot = await plugin.makeScreenshot(applicant);
-            expect(screenshot).to.be.a('string');
-            expect(screenshot.length).to.be.greaterThan(0);
+            expect(typeof screenshot).toBe('string');
+            expect(screenshot.length).toBeGreaterThan(0);
         });
 
         it('should get page source', async () => {
             const source = await plugin.getSource(applicant);
-            expect(source).to.include('html');
-            expect(source).to.include('body');
+            expect(source).toContain('html');
+            expect(source).toContain('body');
         });
 
         it('should execute JavaScript', async () => {
             const result = await plugin.execute(applicant, () => 2 + 2, []);
-            expect(result).to.equal(4);
+            expect(result).toBe(4);
         });
 
         it('should execute async JavaScript', async () => {
             const result = await plugin.executeAsync(applicant, () => Promise.resolve(42), []);
-            expect(result).to.equal(42);
+            expect(result).toBe(42);
         });
     });
 
@@ -139,9 +139,9 @@ describe('PlaywrightPlugin Core Functionality', () => {
             await plugin.url(applicant, 'data:text/html,<html><body>Error Test</body></html>');
             try {
                 await plugin.click(applicant, '#nonexistent');
-                expect.fail('Should have thrown error');
+                expect.unreachable('Should have thrown error');
             } catch (error) {
-                expect(error instanceof Error ? error.message : String(error)).to.include('Timeout');
+                expect(error instanceof Error ? error.message : String(error)).toContain('Timeout');
             }
         });
 
@@ -151,9 +151,9 @@ describe('PlaywrightPlugin Core Functionality', () => {
             });
             try {
                 await invalidPlugin.url('test', 'data:text/html,<html><body>Error Test</body></html>');
-                expect.fail('Should have thrown error');
+                expect.unreachable('Should have thrown error');
             } catch (error) {
-                expect(error instanceof Error ? error.message : String(error)).to.include('Unsupported browser');
+                expect(error instanceof Error ? error.message : String(error)).toContain('Unsupported browser');
             }
         });
     });

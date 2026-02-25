@@ -1,7 +1,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect, beforeAll, afterAll} from 'vitest';
 
 import {loggerClient} from '@ringai/logger';
 
@@ -39,16 +39,13 @@ describe('fs-store-file', () => {
     it('store file static methods test', async () => {
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
 
-        chai.expect(onRelease).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onRelease).toBeDefined();
 
         onRelease &&
             onRelease.readHook(
                 'testRelease',
                 ({fileName}: { fileName: string; }) => {
-                    chai.expect(fileName).to.be.a('string');
+                    expect(typeof fileName).toBe('string');
                 },
             );
 
@@ -58,37 +55,37 @@ describe('fs-store-file', () => {
             fsStorePrefix: prefix,
         });
         const fName = path.basename(fullPath);
-        chai.expect(fName).to.be.a('string');
+        expect(typeof fName).toBe('string');
 
         const fullPath_02 = await FSStoreFile.append(Buffer.from(str + '2'), {
             meta: {type: filetype, fileName: fName},
             fsStorePrefix: prefix,
         });
-        chai.expect(fullPath_02).to.be.equal(fullPath_02);
+        expect(fullPath_02).toBe(fullPath_02);
 
         const contents = await FSStoreFile.read({
             meta: {type: filetype, fileName: fName},
             fsStorePrefix: prefix,
         });
-        chai.expect(contents.toString()).to.be.equal(str + str + '2');
+        expect(contents.toString()).toBe(str + str + '2');
 
         const fullPath_03 = await FSStoreFile.write(Buffer.from(str), {
             meta: {type: filetype, fileName: fName},
             fsStorePrefix: prefix,
         });
-        chai.expect(fullPath_03).to.be.equal(fullPath);
+        expect(fullPath_03).toBe(fullPath);
 
         const contents_01 = await readFile(fullPath_03);
-        chai.expect(contents_01.toString()).to.be.equal(str);
+        expect(contents_01.toString()).toBe(str);
 
         const fullPath_04 = await FSStoreFile.write(Buffer.from(str + '2'), {
             meta: {type: filetype, fileName: fName},
             fsStorePrefix: prefix,
         });
-        chai.expect(fullPath_04).to.be.equal(fullPath);
+        expect(fullPath_04).toBe(fullPath);
 
         const contents_02 = await readFile(fullPath_04);
-        chai.expect(contents_02.toString()).to.be.equal(str + '2');
+        expect(contents_02.toString()).toBe(str + '2');
 
         return Promise.resolve();
     });
@@ -96,10 +93,7 @@ describe('fs-store-file', () => {
     it('store object create random file', async () => {
         const onFileName = FSS.getHook(fsStoreServerHooks.ON_FILENAME);
 
-        chai.expect(onFileName).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onFileName).toBeDefined();
 
         onFileName &&
             onFileName.writeHook('testFileName', (_: string, opts: any) => {
@@ -122,7 +116,7 @@ describe('fs-store-file', () => {
         await file.write(Buffer.from(str));
         const data = (await file.read()).toString();
 
-        chai.expect(data).to.be.equal(str);
+        expect(data).toBe(str);
 
         return file.unlink();
     });
@@ -135,10 +129,7 @@ describe('fs-store-file', () => {
 
         const state = {lock: 0, access: 0, unlink: 0};
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
-        chai.expect(onRelease).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onRelease).toBeDefined();
 
         onRelease &&
             onRelease.readHook('testRelease', (readOptions: ReadOptions) => {
@@ -157,7 +148,7 @@ describe('fs-store-file', () => {
                 break;
             }
             if (fileName !== undefined) {
-                chai.expect(fileName).to.be.a('string');
+                expect(typeof fileName).toBe('string');
             }
             log.debug({fileName, state}, 'release hook done');
             });
@@ -174,10 +165,10 @@ describe('fs-store-file', () => {
 
             const content = await file.read();
             state.access += 1;
-            chai.expect(content.toString()).to.be.equal('data more data');
+            expect(content.toString()).toBe('data more data');
 
             const wasUnlocked = await file.unlock();
-            chai.expect(wasUnlocked).to.be.equal(true);
+            expect(wasUnlocked).toBe(true);
 
             state.unlink += 1;
             await file.unlink();
@@ -189,7 +180,7 @@ describe('fs-store-file', () => {
         return new Promise((res, rej) => {
             setTimeout(() => {
                 try {
-                    chai.expect(state).to.be.deep.equal({
+                    expect(state).toEqual({
                         lock: 0,
                         access: 0,
                         unlink: 0,
@@ -217,7 +208,7 @@ describe('fs-store-file', () => {
                     await file.append(Buffer.from(' more data'));
 
                     const content = await file.read();
-                    chai.expect(content.toString()).to.be.equal(
+                    expect(content.toString()).toBe(
                         'data more data',
                     );
                 }),
@@ -226,14 +217,14 @@ describe('fs-store-file', () => {
                     await file.append(Buffer.from(' more data02'));
 
                     const content = await file.read();
-                    chai.expect(content.toString()).to.be.equal(
+                    expect(content.toString()).toBe(
                         'data02 more data02',
                     );
                 }),
             ]);
 
             const wasUnlocked = await file.unlock();
-            chai.expect(wasUnlocked).to.be.equal(true);
+            expect(wasUnlocked).toBe(true);
             await file.unlink();
         } catch (e) {
             log.error(e, 'ERROR during file write test 02');

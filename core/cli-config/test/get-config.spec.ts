@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -19,13 +19,13 @@ describe('Get config', () => {
     it('should return default configuration if nothing else passed', async () => {
         const config = await getConfig();
 
-        chai.expect(config).to.be.deep.equal(defaultConfiguration);
+        expect(config).toEqual(defaultConfiguration);
     });
 
     it('should override default config fields with file config', async () => {
         const config = await getConfig([`--config=${fileConfigPath}`]);
 
-        chai.expect(config).to.have.property(
+        expect(config).toHaveProperty(
             'workerLimit',
             fileConfig.workerLimit,
         );
@@ -37,7 +37,7 @@ describe('Get config', () => {
             `--env-config=${envConfigPath}`,
         ]);
 
-        chai.expect(config).to.have.property(
+        expect(config).toHaveProperty(
             'workerLimit',
             fileConfig.workerLimit,
         );
@@ -46,7 +46,7 @@ describe('Get config', () => {
     it('should override config fields with env config', async () => {
         const config = await getConfig([`--env-config=${envConfigPath}`]);
 
-        chai.expect(config).to.have.property(
+        expect(config).toHaveProperty(
             'workerLimit',
             envConfig.workerLimit,
         );
@@ -60,7 +60,7 @@ describe('Get config', () => {
             `--worker-limit=${override}`,
         ]);
 
-        chai.expect(config).to.have.property('workerLimit', override);
+        expect(config).toHaveProperty('workerLimit', override);
     });
 
     it('should override every resolved config fields with arguments', async () => {
@@ -72,7 +72,7 @@ describe('Get config', () => {
             `--worker-limit=${override}`,
         ]);
 
-        chai.expect(config).to.have.property('workerLimit', override);
+        expect(config).toHaveProperty('workerLimit', override);
     });
 
     it('should override config fields with env config with @extend', async () => {
@@ -80,7 +80,7 @@ describe('Get config', () => {
             `--env-config=${envConfigWithExtendPath}`,
         ]);
 
-        chai.expect(config).to.have.property(
+        expect(config).toHaveProperty(
             'workerLimit',
             envConfig.workerLimit,
         );
@@ -93,7 +93,7 @@ describe('Get config', () => {
             `--env-config=${envConfigPath}`,
         ]);
 
-        chai.expect(config).to.have.property(
+        expect(config).toHaveProperty(
             'workerLimit',
             fileConfig.workerLimit,
         );
@@ -107,7 +107,7 @@ describe('Get config', () => {
             `--worker-limit=${override}`,
         ]);
 
-        chai.expect(config).to.have.property('workerLimit', override);
+        expect(config).toHaveProperty('workerLimit', override);
     });
 
     it('should override every resolved config fields with @extend and arguments', async () => {
@@ -119,6 +119,6 @@ describe('Get config', () => {
             `--worker-limit=${override}`,
         ]);
 
-        chai.expect(config).to.have.property('workerLimit', override);
+        expect(config).toHaveProperty('workerLimit', override);
     });
 });

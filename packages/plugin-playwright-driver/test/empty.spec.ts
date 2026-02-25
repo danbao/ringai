@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 // See other test files for complete PlaywrightPlugin tests:
 // - plugin.spec.ts - Basic plugin functionality
@@ -6,6 +6,6 @@ import { expect } from 'chai';
 
 describe('Test Suite Organization', () => {
     it('should have comprehensive test coverage', () => {
-        expect(true).to.be.true;
+        expect(true).toBe(true);
     });
 });

@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {expect} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import {getCursor} from '../src/get-cursor';
@@ -37,7 +37,7 @@ describe('get-cursor', () => {
             column: 10,
         };
         const newCursorPosition = getCursor(code, currentPosition);
-        chai.expect(newCursorPosition).to.be.deep.equal({
+        expect(newCursorPosition).toEqual({
             line: 3,
             column: 14,
         });
@@ -50,7 +50,7 @@ describe('get-cursor', () => {
             column: 44,
         };
         const newCursorPosition = getCursor(code, currentPosition);
-        chai.expect(newCursorPosition).to.be.deep.equal({
+        expect(newCursorPosition).toEqual({
             line: 10,
             column: 47,
         });
@@ -63,7 +63,7 @@ describe('get-cursor', () => {
             column: 16,
         };
         const newCursorPosition = getCursor(code, currentPosition);
-        chai.expect(newCursorPosition).to.be.deep.equal({
+        expect(newCursorPosition).toEqual({
             line: 9,
             column: 5,
         });

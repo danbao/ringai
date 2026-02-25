@@ -1,5 +1,5 @@
 /* eslint sonarjs/no-identical-functions: 0 */
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {AsyncBreakpoints, BreakStackError} from '../src';
 
@@ -26,13 +26,13 @@ describe('Async Breakpoints', () => {
 
         asyncBreakpoint.addBeforeInstructionBreakpoint();
 
-        chai.expect(
+        expect(
             asyncBreakpoint.isBeforeInstructionBreakpointActive(),
-        ).to.be.equal(true);
+        ).toBe(true);
         asyncBreakpoint.resolveBeforeInstructionBreakpoint();
-        chai.expect(
+        expect(
             asyncBreakpoint.isBeforeInstructionBreakpointActive(),
-        ).to.be.equal(false);
+        ).toBe(false);
     });
 
     it('Before break call', () => new Promise<void>((resolve, reject) => {
@@ -42,7 +42,7 @@ describe('Async Breakpoints', () => {
 
         asyncBreakpoint.waitBeforeInstructionBreakpoint().catch((err) => {
             try {
-                chai.expect(err).to.be.instanceOf(BreakStackError);
+                expect(err).toBeInstanceOf(BreakStackError);
                 resolve();
             } catch (e) {
                 reject(e);
@@ -67,13 +67,13 @@ describe('Async Breakpoints', () => {
 
         asyncBreakpoint.addAfterInstructionBreakpoint();
 
-        chai.expect(
+        expect(
             asyncBreakpoint.isAfterInstructionBreakpointActive(),
-        ).to.be.equal(true);
+        ).toBe(true);
         asyncBreakpoint.resolveAfterInstructionBreakpoint();
-        chai.expect(
+        expect(
             asyncBreakpoint.isAfterInstructionBreakpointActive(),
-        ).to.be.equal(false);
+        ).toBe(false);
     });
 
     it('After break call', () => new Promise<void>((resolve, reject) => {
@@ -83,7 +83,7 @@ describe('Async Breakpoints', () => {
 
         asyncBreakpoint.waitAfterInstructionBreakpoint().catch((err) => {
             try {
-                chai.expect(err).to.be.instanceOf(BreakStackError);
+                expect(err).toBeInstanceOf(BreakStackError);
                 resolve();
             } catch (e) {
                 reject(e);
@@ -119,7 +119,7 @@ describe('Async Breakpoints', () => {
             asyncBreakpoint.waitAfterInstructionBreakpoint(),
         ]).catch((err) => {
             try {
-                chai.expect(err).to.be.instanceOf(BreakStackError);
+                expect(err).toBeInstanceOf(BreakStackError);
                 resolve();
             } catch (e) {
                 reject(e);
@@ -157,7 +157,7 @@ describe('Async Breakpoints', () => {
             asyncBreakpoint.waitAfterInstructionBreakpoint(),
         ]).catch((err) => {
             try {
-                chai.expect(err).to.be.instanceOf(BreakStackError);
+                expect(err).toBeInstanceOf(BreakStackError);
                 resolve();
             } catch (e) {
                 reject(e);

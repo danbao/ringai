@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -25,7 +25,7 @@ describe('fs-store-server', () => {
     it('should init fss and test the transport lock', (done) => {
         const FSS = new FSStoreServer(10, msgNamePrefix);
 
-        chai.expect(FSS.getState()).to.be.equal(serverState.initialized);
+        expect(FSS.getState()).toBe(serverState.initialized);
 
         const lockRequestID = 'lock_test';
         const accessRequestID = 'acc_test';
@@ -38,7 +38,7 @@ describe('fs-store-server', () => {
         transport.on<IFSStoreResp>(
             respName,
             ({requestId, fullPath, status, action}) => {
-                chai.expect(requestId).to.be.oneOf([
+                expect(requestId).toBeOneOf([
                     lockRequestID,
                     accessRequestID,
                     unlinkRequestID,
@@ -61,25 +61,22 @@ describe('fs-store-server', () => {
                         state.unlink -= 1;
                         break;
                 }
-                chai.expect(status).to.be.a('string');
-                chai.expect(fullPath).to.be.a('string');
-                chai.expect(fullPath).to.be.equals(
+                expect(typeof status).toBe('string');
+                expect(typeof fullPath).toBe('string');
+                expect(fullPath).toBe(
                     path.join(os.tmpdir(), baseFileName),
                 );
             },
         );
 
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
-        chai.expect(onRelease).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onRelease).toBeDefined();
 
         onRelease &&
             onRelease.readHook(
                 'testRelease',
                 ({requestId, fileName, action}: { requestId: string; fileName: string; action: fsReqType }) => {
-                    chai.expect(requestId).to.be.oneOf([
+                    expect(requestId).toBeOneOf([
                         lockRequestID,
                         accessRequestID,
                         unlinkRequestID,
@@ -89,7 +86,7 @@ describe('fs-store-server', () => {
                             state.lock -= 1;
                             break;
                     }
-                    chai.expect(fileName).to.be.a('string');
+                    expect(typeof fileName).toBe('string');
                 },
             );
 
@@ -121,7 +118,7 @@ describe('fs-store-server', () => {
         state.unlink += 1;
 
         setTimeout(() => {
-            chai.expect(state).to.be.deep.equal({
+            expect(state).toEqual({
                 lock: 1,
                 access: 0,
                 unlink: 1,
@@ -135,7 +132,7 @@ describe('fs-store-server', () => {
             });
 
             setTimeout(() => {
-                chai.expect(state).to.be.deep.equal({
+                expect(state).toEqual({
                     lock: 0,
                     access: 0,
                     unlink: 0,

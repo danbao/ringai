@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 import {
@@ -23,7 +23,7 @@ describe('.xpathByLocator() from root', () => {
         it('call without xpath', () => {
             // @ts-ignore
             const error = () => root.xpathByLocator({});
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Invalid options, "locator" string is required',
             );
         });
@@ -33,7 +33,7 @@ describe('.xpathByLocator() from root', () => {
             const child = root.xpathByLocator({
                 locator: "//*[@class='selected']",
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with empty string id', () => {
@@ -41,7 +41,7 @@ describe('.xpathByLocator() from root', () => {
                 id: '',
                 locator: "//*[@class='selected']",
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with not string', () => {
@@ -50,25 +50,25 @@ describe('.xpathByLocator() from root', () => {
                 id: 0,
                 locator: "//*[@class='selected']",
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
     });
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(xpathSelectorCall.toString()).to.be.equal(
+            expect(xpathSelectorCall.toString()).toBe(
                 "(//*[@class='selected'])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${xpathSelectorCall}`).to.be.equal(
+            expect(`${xpathSelectorCall}`).toBe(
                 "(//*[@class='selected'])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(xpathSelectorCall.toString(true)).to.be.equal(
+            expect(xpathSelectorCall.toString(true)).toBe(
                 "//*[@class='selected']",
             );
         });
@@ -126,12 +126,12 @@ describe('.xpathByLocator() from root', () => {
 
     describe('.__getReversedChain call', () => {
         it('with root', () => {
-            expect(xpathSelectorCall.__getReversedChain()).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain()).toBe(
                 '.xpath("selected", "//*[@class=\'selected\']")',
             );
         });
         it('without root', () => {
-            expect(xpathSelectorCall.__getReversedChain(false)).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain(false)).toBe(
                 '.xpath("selected", "//*[@class=\'selected\']")',
             );
         });

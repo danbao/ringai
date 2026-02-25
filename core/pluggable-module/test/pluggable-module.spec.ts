@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {PluggableModule} from '../src/pluggable-module';
 
 class TestModule extends PluggableModule {
@@ -22,7 +22,7 @@ describe('PluggableModule', () => {
 
         if (hook) {
             hook.readHook('testPlugin', (data: any) => {
-                chai.expect(data).to.be.equal(testData);
+                expect(data).toBe(testData);
                 resolve();
             });
 
@@ -45,7 +45,7 @@ describe('PluggableModule', () => {
 
             const result = await testModule.call(testData);
 
-            chai.expect(result).to.be.deep.equal({
+            expect(result).toEqual({
                 main: 1,
                 additional: 1,
             });
@@ -67,12 +67,12 @@ describe('PluggableModule', () => {
         const hook = testModule.getHook(TestModule.hookName);
 
         // eslint-disable-next-line no-unused-expressions
-        chai.expect(!!hook).to.be.true;
+        expect(!!hook).toBe(true);
 
         if (hook) {
             hook.writeHook('testPlugin1', async (data: any, dataExtra: any) => {
-                chai.expect(data).to.be.deep.equal(testData);
-                chai.expect(dataExtra).to.be.deep.equal(testDataExtra);
+                expect(data).toEqual(testData);
+                expect(dataExtra).toEqual(testDataExtra);
                 return {
                     ...data,
                     ...dataExtra,
@@ -80,8 +80,8 @@ describe('PluggableModule', () => {
                 };
             });
             hook.writeHook('testPlugin2', async (data: any, dataExtra: any) => {
-                chai.expect(data).to.be.deep.equal(expectedResult);
-                chai.expect(dataExtra).to.be.deep.equal(testDataExtra);
+                expect(data).toEqual(expectedResult);
+                expect(dataExtra).toEqual(testDataExtra);
                 return {
                     ...data,
                 };
@@ -89,7 +89,7 @@ describe('PluggableModule', () => {
 
             const result = await testModule.call(testData, testDataExtra);
 
-            chai.expect(result).to.be.deep.equal(expectedResult);
+            expect(result).toEqual(expectedResult);
         }
     });
 });

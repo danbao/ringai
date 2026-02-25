@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {MultiLock} from '../src/multi-lock';
 
@@ -11,10 +11,10 @@ describe('multi-lock', () => {
         const id = 'test';
         const acquire = lock.acquire(id);
         // eslint-disable-next-line no-unused-expressions
-        chai.expect(acquire).to.be.true;
+        expect(acquire).toBe(true);
 
-        chai.expect(lock.getSize(id)).to.be.equal(1);
-        chai.expect(lock.getSize()).to.be.equal(1);
+        expect(lock.getSize(id)).toBe(1);
+        expect(lock.getSize()).toBe(1);
     });
 
     it('should Unsuccessfully lock & clean', () => {
@@ -22,23 +22,23 @@ describe('multi-lock', () => {
         const id = 'test';
         const id2 = 'test2';
         lock.acquire(id); // true
-        chai.expect(lock.getSize()).to.be.equal(1);
+        expect(lock.getSize()).toBe(1);
         lock.acquire(id); // true
-        chai.expect(lock.getSize()).to.be.equal(2);
+        expect(lock.getSize()).toBe(2);
         lock.acquire(id2); // true
-        chai.expect(lock.getSize()).to.be.equal(3);
+        expect(lock.getSize()).toBe(3);
 
         const acquire = lock.acquire(id); // false
         // eslint-disable-next-line no-unused-expressions
-        chai.expect(acquire).to.be.false;
+        expect(acquire).toBe(false);
 
-        chai.expect(lock.getSize(id)).to.be.equal(2);
-        chai.expect(lock.getSize(id2)).to.be.equal(1);
+        expect(lock.getSize(id)).toBe(2);
+        expect(lock.getSize(id2)).toBe(1);
 
         lock.clean();
-        chai.expect(lock.getSize(id)).to.be.equal(0);
-        chai.expect(lock.getSize(id2)).to.be.equal(0);
-        chai.expect(lock.getSize()).to.be.equal(0);
+        expect(lock.getSize(id)).toBe(0);
+        expect(lock.getSize(id2)).toBe(0);
+        expect(lock.getSize()).toBe(0);
     });
 
     it('should successfully lock & release', () => {
@@ -50,26 +50,26 @@ describe('multi-lock', () => {
         lock.acquire(id2);
         const acquire = lock.acquire(id);
         // eslint-disable-next-line no-unused-expressions
-        chai.expect(acquire).to.be.false;
+        expect(acquire).toBe(false);
 
         lock.release(id);
-        chai.expect(lock.getSize()).to.be.equal(2);
+        expect(lock.getSize()).toBe(2);
         const acquire2 = lock.acquire(id2);
         // eslint-disable-next-line no-unused-expressions
-        chai.expect(acquire2).to.be.true;
+        expect(acquire2).toBe(true);
 
-        chai.expect(lock.getSize(id)).to.be.equal(1);
-        chai.expect(lock.getSize(id2)).to.be.equal(2);
-        chai.expect(lock.getSize()).to.be.equal(3);
+        expect(lock.getSize(id)).toBe(1);
+        expect(lock.getSize(id2)).toBe(2);
+        expect(lock.getSize()).toBe(3);
 
         lock.clean(id2);
-        chai.expect(lock.getSize(id)).to.be.equal(1);
-        chai.expect(lock.getSize(id2)).to.be.equal(0);
-        chai.expect(lock.getSize()).to.be.equal(1);
+        expect(lock.getSize(id)).toBe(1);
+        expect(lock.getSize(id2)).toBe(0);
+        expect(lock.getSize()).toBe(1);
 
         lock.clean(id);
-        chai.expect(lock.getSize(id)).to.be.equal(0);
-        chai.expect(lock.getSize(id2)).to.be.equal(0);
-        chai.expect(lock.getSize()).to.be.equal(0);
+        expect(lock.getSize(id)).toBe(0);
+        expect(lock.getSize(id2)).toBe(0);
+        expect(lock.getSize()).toBe(0);
     });
 });

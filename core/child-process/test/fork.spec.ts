@@ -1,6 +1,6 @@
 
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {fork} from '../src/fork';
 
 const fixtures = path.resolve(__dirname, './fixtures');
@@ -13,9 +13,9 @@ describe('fork', () => {
                     reject(signal);
                 } else {
                     const spawnfile = ps['spawnfile'] as string;
-                    chai.expect(
+                    expect(
                         spawnfile.endsWith('node') || spawnfile.endsWith('node.exe'),
-                    ).to.equal(true);
+                    ).toBe(true);
 
                     resolve();
                 }

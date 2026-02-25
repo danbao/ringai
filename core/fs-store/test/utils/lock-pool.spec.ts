@@ -1,9 +1,7 @@
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {LockPool} from '../../src/utils/LockPool';
-
-const {expect} = chai;
 
 // type chkObj = Record<string, number>;
 
@@ -26,13 +24,13 @@ describe('lock-pool', () => {
 
         await pool.acquire(pData[0].workerId, pData[0].requestId);
         state = pool.getState();
-        expect(state['curLocks']).to.be.eqls(1);
-        expect(state['locks'].get(pData[0].workerId)).to.be.eqls(1);
+        expect(state['curLocks']).toEqual(1);
+        expect(state['locks'].get(pData[0].workerId)).toEqual(1);
 
         await pool.acquire(pData[0].workerId, pData[1].requestId);
         state = pool.getState();
-        expect(state['curLocks']).to.be.eqls(2);
-        expect(state['locks'].get(pData[0].workerId)).to.be.eqls(2);
+        expect(state['curLocks']).toEqual(2);
+        expect(state['locks'].get(pData[0].workerId)).toEqual(2);
 
         const to = 250;
         const st = Date.now();
@@ -45,20 +43,20 @@ describe('lock-pool', () => {
                 pData[0].requestId,
             );
             // eslint-disable-next-line no-unused-expressions
-            expect(releaseResult).to.be.true;
+            expect(releaseResult).toBe(true);
         }, to);
 
         // WILL WAIT for Timeout
         await pool.acquire(pData[2].workerId, pData[2].requestId);
-        expect(Date.now() - st).to.be.gte(to);
+        expect(Date.now() - st).toBeGreaterThanOrEqual(to);
         state = pool.getState();
-        expect(state['curLocks']).to.be.eqls(2);
-        expect(state['locks'].get(pData[0].workerId)).to.be.eqls(1);
-        expect(state['locks'].get(pData[2].workerId)).to.be.eqls(1);
+        expect(state['curLocks']).toEqual(2);
+        expect(state['locks'].get(pData[0].workerId)).toEqual(1);
+        expect(state['locks'].get(pData[2].workerId)).toEqual(1);
 
         return Promise.resolve();
     });
     it('should wait for lock acquire', () => {
-        expect(1).to.be.equal(1);
+        expect(1).toBe(1);
     });
 });

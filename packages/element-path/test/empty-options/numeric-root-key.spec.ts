@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 describe('empty options ElementPath root[0]', () => {
@@ -6,11 +6,11 @@ describe('empty options ElementPath root[0]', () => {
 
     it('error handling for root numeric path', () => {
         const getter = () => empty[0];
-        expect(getter).to.throw('Root Element is not enumerable');
+        expect(getter).toThrow('Root Element is not enumerable');
     });
 
     it('error handling for root string numeric path', () => {
         const getter = () => empty['0'];
-        expect(getter).to.throw('Root Element is not enumerable');
+        expect(getter).toThrow('Root Element is not enumerable');
     });
 });

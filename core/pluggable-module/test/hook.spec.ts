@@ -1,4 +1,4 @@
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {Hook} from '../src/hook';
 
 describe('Hook (legacy) - execution order & error propagation', () => {
@@ -26,8 +26,8 @@ describe('Hook (legacy) - execution order & error propagation', () => {
         const result = await hook.callHooks<number>(1);
 
         // ((1 + 1) * 2) = 4
-        chai.expect(result).to.equal(4);
-        chai.expect(calls).to.deep.equal(['w1', 'w2', 'r1:4', 'r2:4']);
+        expect(result).toBe(4);
+        expect(calls).toEqual(['w1', 'w2', 'r1:4', 'r2:4']);
     });
 
     it('should fail-fast when a write hook throws and wrap error with plugin name', async () => {
@@ -61,10 +61,10 @@ describe('Hook (legacy) - execution order & error propagation', () => {
             caught = e;
         }
 
-        chai.expect(caught).to.be.instanceOf(Error);
-        chai.expect(String(caught.message)).to.include('Plugin badPlugin failed: boom');
+        expect(caught).toBeInstanceOf(Error);
+        expect(String(caught.message)).toContain('Plugin badPlugin failed: boom');
         // fail-fast: w3 and reads are not executed
-        chai.expect(calls).to.deep.equal(['w1', 'bad']);
+        expect(calls).toEqual(['w1', 'bad']);
     });
 
     it('should fail-fast when a read hook throws and wrap error with plugin name', async () => {
@@ -95,8 +95,8 @@ describe('Hook (legacy) - execution order & error propagation', () => {
             caught = e;
         }
 
-        chai.expect(caught).to.be.instanceOf(Error);
-        chai.expect(String(caught.message)).to.include('Plugin badRead failed: read boom');
-        chai.expect(calls).to.deep.equal(['w1', 'r1', 'badRead']);
+        expect(caught).toBeInstanceOf(Error);
+        expect(String(caught.message)).toContain('Plugin badRead failed: read boom');
+        expect(calls).toEqual(['w1', 'r1', 'badRead']);
     });
 });

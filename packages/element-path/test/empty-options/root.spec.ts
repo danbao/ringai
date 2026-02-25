@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 import {
     getDescriptor,
@@ -13,19 +13,19 @@ describe('empty options ElementPath root', () => {
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(empty.toString()).to.be.equal(
+            expect(empty.toString()).toBe(
                 "(//*[@data-test-automation-id='root'])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${empty}`).to.be.equal(
+            expect(`${empty}`).toBe(
                 "(//*[@data-test-automation-id='root'])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(empty.toString(true)).to.be.equal(
+            expect(empty.toString(true)).toBe(
                 "//*[@data-test-automation-id='root']",
             );
         });
@@ -79,19 +79,19 @@ describe('empty options ElementPath root', () => {
 
     describe('.__getReversedChain() call', () => {
         it('with root', () => {
-            expect(empty.__getReversedChain()).to.be.equal('root');
+            expect(empty.__getReversedChain()).toBe('root');
         });
         it('without root', () => {
-            expect(empty.__getReversedChain(false)).to.be.equal('');
+            expect(empty.__getReversedChain(false)).toBe('');
         });
     });
 
     describe('.__getChildType() call', () => {
         it('return type check', () => {
-            expect(empty.__getChildType()).to.be.a('string');
+            expect(typeof empty.__getChildType()).toBe('string');
         });
         it('return value check', () => {
-            expect(empty.__getChildType()).to.be.equal('root');
+            expect(empty.__getChildType()).toBe('root');
         });
     });
 });

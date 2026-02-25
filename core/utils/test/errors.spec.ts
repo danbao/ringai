@@ -1,4 +1,4 @@
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 
 import {
     RingaiError,
@@ -8,20 +8,18 @@ import {
     WorkerError,
 } from '../src/errors';
 
-const {expect} = chai;
-
 describe('errors', () => {
     describe('RingaiError', () => {
         it('should create a basic error', () => {
             const error = new RingaiError('Test error');
-            expect(error.message).to.equal('Test error');
-            expect(error.name).to.equal('RingaiError');
+            expect(error.message).toBe('Test error');
+            expect(error.name).toBe('RingaiError');
         });
 
         it('should create error with context string', () => {
             const error = new RingaiError('Test error', 'worker-1');
-            expect(error.message).to.equal('worker-1: Test error');
-            expect(error.contextId).to.equal('worker-1');
+            expect(error.message).toBe('worker-1: Test error');
+            expect(error.contextId).toBe('worker-1');
         });
 
         it('should create error with ErrorContext', () => {
@@ -33,11 +31,11 @@ describe('errors', () => {
                 cause: originalError,
             });
 
-            expect(error.message).to.equal('ERR_TEST:plugin-1: Test error');
-            expect(error.code).to.equal('ERR_TEST');
-            expect(error.contextId).to.equal('plugin-1');
-            expect(error.metadata).to.deep.equal({foo: 'bar'});
-            expect(error.cause).to.equal(originalError);
+            expect(error.message).toBe('ERR_TEST:plugin-1: Test error');
+            expect(error.code).toBe('ERR_TEST');
+            expect(error.contextId).toBe('plugin-1');
+            expect(error.metadata).toEqual({foo: 'bar'});
+            expect(error.cause).toBe(originalError);
         });
 
         it('should serialize to JSON correctly', () => {
@@ -47,34 +45,34 @@ describe('errors', () => {
             });
 
             const json = error.toJSON();
-            expect(json['name']).to.equal('RingaiError');
-            expect(json['message']).to.equal('ERR_TEST:worker-1: Test error');
-            expect(json['code']).to.equal('ERR_TEST');
-            expect(json['contextId']).to.equal('worker-1');
+            expect(json['name']).toBe('RingaiError');
+            expect(json['message']).toBe('ERR_TEST:worker-1: Test error');
+            expect(json['code']).toBe('ERR_TEST');
+            expect(json['contextId']).toBe('worker-1');
         });
     });
 
     it('TransportError should create transport error', () => {
         const error = new TransportError('Connection failed', 'transport-1');
-        expect(error.name).to.equal('TransportError');
-        expect(error.message).to.equal('transport-1: Connection failed');
+        expect(error.name).toBe('TransportError');
+        expect(error.message).toBe('transport-1: Connection failed');
     });
 
     it('PluginError should create plugin error', () => {
         const error = new PluginError('Plugin not found', 'my-plugin');
-        expect(error.name).to.equal('PluginError');
-        expect(error.message).to.equal('my-plugin: Plugin not found');
+        expect(error.name).toBe('PluginError');
+        expect(error.message).toBe('my-plugin: Plugin not found');
     });
 
     it('ConfigError should create config error', () => {
         const error = new ConfigError('Invalid config', {code: 'ERR_CONFIG'});
-        expect(error.name).to.equal('ConfigError');
-        expect(error.code).to.equal('ERR_CONFIG');
+        expect(error.name).toBe('ConfigError');
+        expect(error.code).toBe('ERR_CONFIG');
     });
 
     it('WorkerError should create worker error', () => {
         const error = new WorkerError('Worker crashed');
-        expect(error.name).to.equal('WorkerError');
-        expect(error.message).to.equal('Worker crashed');
+        expect(error.name).toBe('WorkerError');
+        expect(error.message).toBe('Worker crashed');
     });
 });

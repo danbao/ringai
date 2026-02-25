@@ -1,7 +1,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect, beforeAll, afterAll} from 'vitest';
 
 import {loggerClient} from '@ringai/logger';
 
@@ -32,10 +32,7 @@ describe('fs-store-presets', () => {
     it('store object create random file', async () => {
         const onFileName = FSS.getHook(fsStoreServerHooks.ON_FILENAME);
 
-        chai.expect(onFileName).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onFileName).toBeDefined();
 
         onFileName &&
             onFileName.writeHook('testFileName', (_: string, opts: any) => {
@@ -60,7 +57,7 @@ describe('fs-store-presets', () => {
         await file.write(Buffer.from(str));
         const data = (await file.read()).toString();
 
-        chai.expect(data).to.be.equal(str);
+        expect(data).toBe(str);
 
         return file.unlink();
     });
@@ -75,10 +72,7 @@ describe('fs-store-presets', () => {
 
         const state = {lock: 0, access: 0, unlink: 0};
         const onRelease = FSS.getHook(fsStoreServerHooks.ON_RELEASE);
-        chai.expect(onRelease).not.to.be.an(
-            'undefined',
-            'Hook ON_RELEASE in undefined',
-        );
+        expect(onRelease).toBeDefined();
 
         
 
@@ -99,7 +93,7 @@ describe('fs-store-presets', () => {
                 break;
             }
             if (fileName !== undefined) {
-                chai.expect(fileName).to.be.a('string');
+                expect(typeof fileName).toBe('string');
             }
             log.debug({fileName, state}, 'release hook done');
             });
@@ -116,10 +110,10 @@ describe('fs-store-presets', () => {
 
             const content = await file.read();
             state.access += 1;
-            chai.expect(content.toString()).to.be.equal('data more data');
+            expect(content.toString()).toBe('data more data');
 
             const wasUnlocked = await file.unlock();
-            chai.expect(wasUnlocked).to.be.equal(true);
+            expect(wasUnlocked).toBe(true);
 
             state.unlink += 1;
             await file.unlink();
@@ -131,7 +125,7 @@ describe('fs-store-presets', () => {
         return new Promise((res, rej) => {
             setTimeout(() => {
                 try {
-                    chai.expect(state).to.be.deep.equal({
+                    expect(state).toEqual({
                         lock: 0,
                         access: 0,
                         unlink: 0,
@@ -161,7 +155,7 @@ describe('fs-store-presets', () => {
                     await file.append(Buffer.from(' more data'));
 
                     const content = await file.read();
-                    chai.expect(content.toString()).to.be.equal(
+                    expect(content.toString()).toBe(
                         'data more data',
                     );
                 }),
@@ -170,14 +164,14 @@ describe('fs-store-presets', () => {
                     await file.append(Buffer.from(' more data02'));
 
                     const content = await file.read();
-                    chai.expect(content.toString()).to.be.equal(
+                    expect(content.toString()).toBe(
                         'data02 more data02',
                     );
                 }),
             ]);
 
             const wasUnlocked = await file.unlock();
-            chai.expect(wasUnlocked).to.be.equal(true);
+            expect(wasUnlocked).toBe(true);
             await file.unlink();
         } catch (e) {
             log.error(e, 'ERROR during file write test 02');

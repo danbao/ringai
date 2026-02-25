@@ -1,15 +1,15 @@
 /// <reference types="mocha" />
 
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {isChildProcess} from '../src/utils';
 
 describe('isChildProcess', () => {
     it('not child args', () => {
-        chai.expect(isChildProcess([])).to.be.equal(false);
+        expect(isChildProcess([])).toBe(false);
     });
     it('child args', () => {
-        chai.expect(
+        expect(
             isChildProcess(['--some=argument', '--ringai-parent-pid=10']),
-        ).to.be.equal(true);
+        ).toBe(true);
     });
 });

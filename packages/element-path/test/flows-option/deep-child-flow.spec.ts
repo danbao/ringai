@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 import {
@@ -45,7 +45,7 @@ describe('flows option on deep child', () => {
 
         it('function call', async () => {
             // @ts-ignore
-            expect(await deepChildFoo.foo()).to.be.equal('test string foo');
+            expect(await deepChildFoo.foo()).toBe('test string foo');
         });
     });
     describe('.bar property traps', () => {
@@ -57,7 +57,7 @@ describe('flows option on deep child', () => {
 
         it('function call', () => {
             // @ts-ignore
-            expect(deepChildFoo.bar()).to.be.equal('test string bar');
+            expect(deepChildFoo.bar()).toBe('test string bar');
         });
     });
 });

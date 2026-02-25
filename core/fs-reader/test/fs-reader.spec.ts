@@ -1,8 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 
-
 import * as path from 'path';
-import * as chai from 'chai';
+import {describe, it, expect} from 'vitest';
 import {FSReader} from '../src/fs-reader';
 
 const glob = path.resolve(__dirname, './fixtures/testfiles/**/**/*.test.js');
@@ -42,6 +41,7 @@ describe('TestsFinder', () => {
         const fsReader = new FSReader();
         const tests = await fsReader.find(glob);
 
-        chai.expect(tests).to.be.an('array').that.not.empty;
+        expect(Array.isArray(tests)).toBe(true);
+        expect(tests.length).toBeGreaterThan(0);
     });
 });

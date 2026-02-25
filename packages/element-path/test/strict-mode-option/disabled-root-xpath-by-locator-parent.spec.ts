@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect} from 'chai';
+import {expect} from 'vitest';
 import {createElementPath} from '../../src';
 
 import {
@@ -24,7 +24,7 @@ describe('.xpathByLocator() with parent', () => {
         it('call without xpath', () => {
             // @ts-ignore
             const error = () => root.xpathByLocator({parent: 'foo.bar'});
-            expect(error).to.throw(
+            expect(error).toThrow(
                 'Invalid options, "locator" string is required',
             );
         });
@@ -35,7 +35,7 @@ describe('.xpathByLocator() with parent', () => {
                 locator: "//*[@class='selected']",
                 parent: '',
             });
-            expect(child.toString()).to.be.equal(
+            expect(child.toString()).toBe(
                 "(//*[@data-test-automation-id='root']//*[@class='selected'])[1]",
             );
         });
@@ -46,7 +46,7 @@ describe('.xpathByLocator() with parent', () => {
                 locator: "//*[@class='selected']",
                 parent: 'foo.bar',
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with empty string id', () => {
@@ -55,7 +55,7 @@ describe('.xpathByLocator() with parent', () => {
                 locator: "//*[@class='selected']",
                 parent: 'foo.bar',
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
 
         it('call with not string', () => {
@@ -65,27 +65,27 @@ describe('.xpathByLocator() with parent', () => {
                 locator: "//*[@class='selected']",
                 parent: 'foo.bar',
             });
-            expect(child.toString()).to.be.equal(xpathSelectorCall.toString());
+            expect(child.toString()).toBe(xpathSelectorCall.toString());
         });
     });
 
     describe('basic Object methods', () => {
         it('.toString()', () => {
-            expect(xpathSelectorCall.toString()).to.be.equal(
+            expect(xpathSelectorCall.toString()).toBe(
                 "(//*[@data-test-automation-id='root']//*[@data-test-automation-id='foo']" +
                     "//*[@data-test-automation-id='bar']//*[@class='selected'])[1]",
             );
         });
 
         it('to string converting', () => {
-            expect(`${xpathSelectorCall}`).to.be.equal(
+            expect(`${xpathSelectorCall}`).toBe(
                 "(//*[@data-test-automation-id='root']//*[@data-test-automation-id='foo']" +
                     "//*[@data-test-automation-id='bar']//*[@class='selected'])[1]",
             );
         });
 
         it('.toString(true)', () => {
-            expect(xpathSelectorCall.toString(true)).to.be.equal(
+            expect(xpathSelectorCall.toString(true)).toBe(
                 "//*[@data-test-automation-id='root']//*[@data-test-automation-id='foo']" +
                     "//*[@data-test-automation-id='bar']//*[@class='selected']",
             );
@@ -183,12 +183,12 @@ describe('.xpathByLocator() with parent', () => {
 
     describe('.__getReversedChain call', () => {
         it('with root', () => {
-            expect(xpathSelectorCall.__getReversedChain()).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain()).toBe(
                 'root.foo.bar.xpath("selected", "//*[@class=\'selected\']")',
             );
         });
         it('without root', () => {
-            expect(xpathSelectorCall.__getReversedChain(false)).to.be.equal(
+            expect(xpathSelectorCall.__getReversedChain(false)).toBe(
                 '.foo.bar.xpath("selected", "//*[@class=\'selected\']")',
             );
         });
