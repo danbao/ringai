@@ -4,10 +4,7 @@ import {applyPlugins} from '@ringai/plugin-api';
 import {FSReader} from '@ringai/fs-reader';
 import {TestWorker} from '@ringai/test-worker';
 import {WebApplicationController} from '@ringai/web-application';
-import {
-    browserProxyControllerFactory,
-    BrowserProxyController,
-} from '@ringai/browser-proxy';
+import {BrowserProxyController} from '@ringai/browser-proxy';
 import {ICLICommand, IConfig, ITransport} from '@ringai/types';
 
 import {FSStoreServer} from '@ringai/fs-store';
@@ -62,9 +59,7 @@ class RunCommand implements ICLICommand {
             screenshots: this.config.screenshots,
         });
 
-        this.browserProxyController = browserProxyControllerFactory(
-            this.transport,
-        );
+        this.browserProxyController = new BrowserProxyController();
 
         this.testRunController = new TestRunController(
             this.config,
@@ -102,9 +97,7 @@ class RunCommand implements ICLICommand {
 
         this.logger.info(`Found ${tests.length} test(s) to run.`);
 
-        await this.browserProxyController.init({
-            workerLimit: this.config.workerLimit,
-        });
+        await this.browserProxyController.init();
 
         this.webApplicationController.init();
 

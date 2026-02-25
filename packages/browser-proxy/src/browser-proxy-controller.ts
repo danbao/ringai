@@ -1,17 +1,13 @@
-import {ChildProcess} from 'child_process';
 import {
-    BrowserProxyActions,
     BrowserProxyPlugins,
     IBrowserProxyCommand,
     IBrowserProxyController,
-    IBrowserProxyWorker,
+    IBrowserProxyPlugin,
     IBrowserProxyWorkerConfig,
-    ITransport,
 } from '@ringai/types';
 import {PluggableModule} from '@ringai/pluggable-module';
 import {loggerClient} from '@ringai/logger';
-import {BrowserProxyWorker} from './browser-proxy-worker';
-import {BrowserProxyLocalWorker} from './browser-proxy-local-worker';
+import {requirePlugin} from '@ringai/utils';
 
 const logger = loggerClient.withPrefix('[browser-proxy-controller]');
 
@@ -19,141 +15,67 @@ export class BrowserProxyController
     extends PluggableModule
     implements IBrowserProxyController
 {
-    private workersPool: Set<IBrowserProxyWorker> = new Set();
-    private applicantWorkerMap: Map<string, IBrowserProxyWorker> = new Map();
-    private defaultExternalPlugin: IBrowserProxyWorkerConfig = {
+    private plugin: IBrowserProxyPlugin | null = null;
+    private logger = logger;
+    private defaultPluginConfig: IBrowserProxyWorkerConfig = {
         plugin: 'unknown',
         config: null,
     };
-    private externalPlugin: IBrowserProxyWorkerConfig = this.defaultExternalPlugin;
-    private lastWorkerIndex = -1;
-    private workerLimit: number | 'local' = 1;
-    private logger = logger;
-    private localWorker: BrowserProxyLocalWorker | null = null;
 
-    constructor(
-        private transport: ITransport,
-        private workerCreator: (
-            pluginPath: string,
-            config: any,
-        ) => ChildProcess | Promise<ChildProcess>,
-    ) {
+    constructor() {
         super([BrowserProxyPlugins.getPlugin]);
     }
 
-    public async init(mainConfig?: { workerLimit?: number | 'local' }): Promise<void> {
-        if (typeof this.workerCreator !== 'function') {
-            this.logger.error(
-                `Unsupported worker type "${typeof this.workerCreator}"`,
-            );
-            throw new Error(
-                `Unsupported worker type "${typeof this.workerCreator}"`,
-            );
-        }
-
-        this.externalPlugin = await this.callHook(
+    public async init(): Promise<void> {
+        const pluginConfig: IBrowserProxyWorkerConfig = await this.callHook(
             BrowserProxyPlugins.getPlugin,
-            this.defaultExternalPlugin,
+            this.defaultPluginConfig,
         );
-        const {config} = this.externalPlugin;
 
-        if (config && config.workerLimit) {
-            this.workerLimit =
-                config.workerLimit === 'local'
-                    ? 'local'
-                    : Number(config.workerLimit);
-        } else if (mainConfig?.workerLimit) {
-            this.workerLimit =
-                mainConfig.workerLimit === 'local'
-                    ? 'local'
-                    : Number(mainConfig.workerLimit);
+        if (pluginConfig.plugin === 'unknown') {
+            this.logger.warn('No browser proxy plugin configured');
+            return;
         }
 
-        if (this.workerLimit === 'local') {
-            this.localWorker = new BrowserProxyLocalWorker(
-                this.transport,
-                this.externalPlugin,
+        const pluginFactory = await requirePlugin<(config: any) => IBrowserProxyPlugin>(
+            pluginConfig.plugin,
+        );
+
+        if (typeof pluginFactory !== 'function') {
+            throw new TypeError(
+                `Browser proxy plugin "${pluginConfig.plugin}" is not a function`,
             );
         }
-    }
 
-    private getWorker(applicant: string): IBrowserProxyWorker {
-        if (this.workerLimit === 'local' && this.localWorker) {
-            return this.localWorker;
-        }
-
-        const mappedWorker = this.applicantWorkerMap.get(applicant);
-        let worker: IBrowserProxyWorker | undefined;
-
-        if (mappedWorker) {
-            return mappedWorker;
-        }
-
-        if (this.workersPool.size < (this.workerLimit as number)) {
-            worker = new BrowserProxyWorker(
-                this.transport,
-                this.workerCreator,
-                this.externalPlugin,
-            );
-            this.workersPool.add(worker);
-            this.lastWorkerIndex = this.workersPool.size - 1;
-        } else {
-            this.lastWorkerIndex =
-                this.lastWorkerIndex + 1 < this.workersPool.size
-                    ? this.lastWorkerIndex + 1
-                    : 0;
-            worker = [...this.workersPool.values()][this.lastWorkerIndex];
-        }
-
-        if (!worker) {
-            throw new Error('Failed to get or create a worker');
-        }
-        this.applicantWorkerMap.set(applicant, worker);
-        return worker;
+        this.plugin = pluginFactory(pluginConfig.config);
+        this.logger.debug(`Browser proxy plugin "${pluginConfig.plugin}" loaded`);
     }
 
     public async execute(
         applicant: string,
         command: IBrowserProxyCommand,
     ): Promise<any> {
-        if (command.action === BrowserProxyActions.end) {
-            if (this.localWorker) {
-                return this.localWorker.execute(applicant, command);
-            }
-
-            if (this.applicantWorkerMap.has(applicant)) {
-                const worker = this.getWorker(applicant);
-                this.applicantWorkerMap.delete(applicant);
-                return worker.execute(applicant, command);
-            }
-            return true;
+        if (!this.plugin) {
+            throw new Error('Browser proxy plugin is not initialized');
         }
 
-        const worker = this.getWorker(applicant);
-        return worker.execute(applicant, command);
+        const method = (this.plugin as any)[command.action];
+
+        if (typeof method !== 'function') {
+            throw new Error(`Unknown browser proxy action: ${command.action}`);
+        }
+
+        return method.call(this.plugin, applicant, ...command.args);
     }
 
     public async kill(): Promise<void> {
-        if (this.workerLimit === 'local' && this.localWorker) {
-            await this.localWorker.kill();
-            this.localWorker = null;
-            return;
+        if (this.plugin) {
+            try {
+                await this.plugin.kill();
+            } catch (err) {
+                this.logger.error('Failed to kill browser proxy plugin:', err);
+            }
+            this.plugin = null;
         }
-
-        const workersToKill = [...this.workersPool.values()].map((worker) =>
-            worker.kill(),
-        );
-
-        try {
-            await Promise.all(workersToKill);
-        } catch (err) {
-            logger.error('Exit failed ', err);
-        }
-
-        this.workersPool.clear();
-        this.applicantWorkerMap.clear();
-        this.externalPlugin = this.defaultExternalPlugin;
-        this.lastWorkerIndex = -1;
-        this.workerLimit = 1;
     }
 }

@@ -42,12 +42,11 @@ vi.mock('@ringai/web-application', () => {
 });
 
 vi.mock('@ringai/browser-proxy', () => {
-    return {
-        browserProxyControllerFactory: vi.fn().mockImplementation(() => ({
-            init: vi.fn().mockResolvedValue(undefined),
-            kill: vi.fn().mockResolvedValue(undefined),
-        })),
-    };
+    class BrowserProxyController {
+        init = vi.fn().mockResolvedValue(undefined);
+        kill = vi.fn().mockResolvedValue(undefined);
+    }
+    return { BrowserProxyController };
 });
 
 vi.mock('@ringai/fs-store', () => {

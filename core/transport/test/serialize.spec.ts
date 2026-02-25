@@ -55,12 +55,15 @@ describe('serialize', () => {
         chai.expect(deserializedError.stack).to.be.equal(error.stack);
     });
 
-    it('should throw when trying to serialize function', () => {
+    it('should serialize and deserialize functions via string representation', () => {
         const arrowFunction = (a: any, b: any) => {
             return a + b + 2;
         };
 
-        chai.expect(() => serialize(arrowFunction)).to.throw();
+        const serialized = serialize(arrowFunction);
+        const deserialized = deserialize(serialized);
+        chai.expect(typeof deserialized).to.equal('function');
+        chai.expect(deserialized(1, 2)).to.equal(5);
     });
 
     it('should serialize objects with circular references', () => {

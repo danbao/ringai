@@ -1985,7 +1985,7 @@ function stepLog<T extends (...args: any[]) => any>(
                     try {
                         resolve(await originalMethod.apply(self, args));
                     } catch (err: any) {
-                        err.message = errorLogInterceptor(err, ...args);
+                        try { err.message = errorLogInterceptor(err, ...args); } catch { /* getter-only */ }
                         reject(err);
                     }
                 } else {
@@ -2005,7 +2005,7 @@ function stepLog<T extends (...args: any[]) => any>(
                         if (result && result.catch && typeof result.catch === 'function') {
                             result
                                 .catch(async (err: any) => {
-                                    err.message = errorLogInterceptor(err, ...args);
+                                    try { err.message = errorLogInterceptor(err, ...args); } catch { /* getter-only */ }
                                     await self.asyncErrorHandler(err);
                                     logger.endStep(message);
                                     self.isLogOpened = false;
@@ -2021,7 +2021,7 @@ function stepLog<T extends (...args: any[]) => any>(
                             self.isLogOpened = false;
                         }
                     } catch (err: any) {
-                        err.message = errorLogInterceptor(err, ...args);
+                        try { err.message = errorLogInterceptor(err, ...args); } catch { /* getter-only */ }
                         self.errorHandler(err);
                         logger.endStep(message);
                         self.isLogOpened = false;
