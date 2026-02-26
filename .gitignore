@@ -30,5 +30,5 @@ packages/e2e-test-app/test/playwright/test/**/*.pdf
 # Turborepo
 .turbo
 
-# Yarn (project uses pnpm)
-.yarn
+# tsup bundled cache
+tsup.config.base.bundled_*.mjs
