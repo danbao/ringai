@@ -16,5 +16,5 @@
   "peerDependencies": {
     "vue": "^3.3.0"
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "pnpm@10.28.2"
 }
