@@ -2,14 +2,14 @@ name: E2E
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
     paths:
       - 'packages/e2e-test-app/**'
       - 'packages/plugin-playwright-driver/**'
       - 'packages/web-application/**'
       - '.github/workflows/e2e.yml'
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
     paths:
       - 'packages/e2e-test-app/**'
       - 'packages/plugin-playwright-driver/**'
