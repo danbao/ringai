@@ -150,12 +150,12 @@ export abstract class AbstractLoggerClient implements AbstractLoggerType {
         this.createLog(LogTypes.media, LogLevel.info, args);
     }
 
-    public startStep(message: string, stepType?: LogStepTypes): void {
+    public startStep(message: string, stepType?: LogStepTypes, logLevel: LogLevel = LogLevel.info): void {
         const step = this.generateStepEntity(message);
 
         this.pushStackStep(step);
 
-        this.createLog(LogTypes.step, LogLevel.info, [message], stepType);
+        this.createLog(LogTypes.step, logLevel, [message], stepType);
     }
 
     public startStepLog(message: any): void {
@@ -214,8 +214,9 @@ export abstract class AbstractLoggerClient implements AbstractLoggerType {
         message: any,
         callback: () => any,
         stepType?: LogStepTypes,
+        logLevel: LogLevel = LogLevel.info,
     ): Promise<void> {
-        this.startStep(message, stepType);
+        this.startStep(message, stepType, logLevel);
 
         let caughtError;
 

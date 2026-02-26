@@ -610,7 +610,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         if (!options?.force && clickOptions.timeout > 5000) {
             // For non-force clicks, use a much shorter timeout to fail fast
             clickOptions.timeout = 2000; // 2 seconds instead of 30 seconds
-            console.log(`[DEBUG] Using short timeout (${clickOptions.timeout}ms) for ${selector}`);
+            this.logger.debug(`Using short timeout (${clickOptions.timeout}ms) for ${selector}`);
         }
 
         await page.click(normalizedSelector, clickOptions);

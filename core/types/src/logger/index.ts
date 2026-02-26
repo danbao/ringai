@@ -42,7 +42,7 @@ export interface ILoggerClient<Transport, Prefix, Marker, Stack> {
     verbose(...args: any[]): void;
     success(...args: any[]): void;
 
-    startStep(message: any, stepType?: LogStepTypes): void;
+    startStep(message: any, stepType?: LogStepTypes, logLevel?: LogLevel): void;
 
     startStepLog(message: any): void;
     startStepInfo(message: any): void;
@@ -58,6 +58,7 @@ export interface ILoggerClient<Transport, Prefix, Marker, Stack> {
         message: string,
         callback: () => Promise<any> | any,
         stepType?: LogStepTypes,
+        logLevel?: LogLevel,
     ): Promise<any>;
 
     stepLog(message: any, callback: () => Promise<any> | any): Promise<any>;

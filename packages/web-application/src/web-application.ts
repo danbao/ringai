@@ -22,6 +22,7 @@ import {loggerClient, LoggerClient} from '@ringai/logger';
 import {generateUniqId} from '@ringai/utils';
 import {PluggableModule} from '@ringai/pluggable-module';
 import {createElementPath, ElementPathProxy} from '@ringai/element-path';
+import {LogLevel} from '@ringai/types';
 
 import {createAssertion} from './async-assert';
 import {WebClient} from './web-client';
@@ -111,14 +112,14 @@ export class WebApplication extends PluggableModule {
         const logger = this.logger;
 
         if (successMessage) {
-            await logger.stepSuccess(successMessage, async () => {
+            await logger.step(successMessage, async () => {
                 await this.makeScreenshot();
                 await logger.debug(assertMessage);
-            });
+            }, undefined, LogLevel.debug);
         } else {
-            await logger.stepSuccess(assertMessage, async () => {
+            await logger.step(assertMessage, async () => {
                 await this.makeScreenshot();
-            });
+            }, undefined, LogLevel.debug);
         }
     }
 
@@ -1981,7 +1982,7 @@ function stepLog<T extends (...args: any[]) => any>(
                 const message = logFn.apply(self, args);
                 let result;
                 if (self.isLogOpened) {
-                    logger.debug(message);
+                    logger.verbose(message);
                     try {
                         resolve(await originalMethod.apply(self, args));
                     } catch (err: any) {
@@ -1998,7 +1999,7 @@ function stepLog<T extends (...args: any[]) => any>(
                             }
                         },
                     );
-                    logger.startStep(message);
+                    logger.startStep(message, undefined, LogLevel.debug);
                     self.isLogOpened = true;
                     try {
                         result = originalMethod.apply(self, args);
