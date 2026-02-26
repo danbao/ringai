@@ -1885,6 +1885,13 @@ export class WebApplication extends PluggableModule {
         return this.client.getWindowSize();
     }
 
+    @stepLog(function (this: WebApplication, width: number, height: number) {
+        return `Setting viewport size to ${width}x${height}`;
+    })
+    public async setViewportSize(width: number, height: number) {
+        return this.client.setViewportSize(width, height);
+    }
+
     public async savePDF(options: SavePdfOptions) {
         if (!options.filepath) {
             throw new Error('Filepath is not defined');

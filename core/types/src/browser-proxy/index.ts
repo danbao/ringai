@@ -189,4 +189,8 @@ export interface IBrowserProxyPlugin {
     gridTestSession(applicant: string): Promise<any>;
 
     getHubConfig(applicant: string): Promise<any>;
+
+    setViewportSize(applicant: string, width: number, height: number): Promise<void>;
+
+    getWindowSize(applicant: string): Promise<{ width: number; height: number }>;
 }

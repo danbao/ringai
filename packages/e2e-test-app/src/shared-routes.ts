@@ -28,6 +28,7 @@ import { getAssertDemoHtml } from './static-fixtures/assert-demo';
 import { getSimulateFieldHtml } from './static-fixtures/simulate-field';
 import { getLocationSizeHtml } from './static-fixtures/location-size';
 import { getTagNameHtml } from './static-fixtures/tag-name';
+import { getResponsiveHtml } from './static-fixtures/responsive';
 
 
 
@@ -96,6 +97,7 @@ export function createSharedApp(): Hono {
     app.get('/static/simulate-field.html', getSimulateFieldHtml);
     app.get('/static/location-size.html', getLocationSizeHtml);
     app.get('/static/tag-name.html', getTagNameHtml);
+    app.get('/static/responsive.html', getResponsiveHtml);
 
     // 首页
     app.get('/', (c: Context) => {

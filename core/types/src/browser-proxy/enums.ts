@@ -92,4 +92,5 @@ export const enum BrowserProxyActions {
     waitForStable = 'waitForStable',
     setCustomBrowserClientConfig = 'setCustomBrowserClientConfig',
     getCustomBrowserClientConfig = 'getCustomBrowserClientConfig',
+    setViewportSize = 'setViewportSize',
 }

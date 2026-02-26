@@ -395,6 +395,10 @@ export class WebClient implements IWebApplicationClient {
         return this.makeRequest(BrowserProxyActions.getWindowSize, []);
     }
 
+    public setViewportSize(width: number, height: number) {
+        return this.makeRequest(BrowserProxyActions.setViewportSize, [width, height]);
+    }
+
     public savePDF(options: SavePdfOptions) {
         return this.makeRequest(BrowserProxyActions.savePDF, [options]);
     }

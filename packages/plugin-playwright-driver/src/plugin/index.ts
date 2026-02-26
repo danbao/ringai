@@ -2154,6 +2154,12 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         return viewport || { width: 1920, height: 1080 };
     }
 
+    public async setViewportSize(applicant: string, width: number, height: number): Promise<void> {
+        await this.createClient(applicant);
+        const { page } = this.getBrowserClient(applicant);
+        await page.setViewportSize({ width, height });
+    }
+
     public async keysOnElement(applicant: string, selector: string, keys: string): Promise<void> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
