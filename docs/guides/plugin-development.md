@@ -301,7 +301,7 @@ Refer to these existing plugins in the `packages/` directory for real-world exam
 | Plugin | Description |
 |--------|-------------|
 | `@ringai/plugin-playwright-driver` | Playwright browser automation driver |
-| `@ringai/plugin-babel` | Babel transpilation for test files |
+| `@ringai/plugin-compiler` | Code compilation for test files |
 | `@ringai/plugin-fs-store` | File system storage for test artifacts |
 
 ## Summary

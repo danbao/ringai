@@ -6,8 +6,8 @@ End-to-end test application for the ringai framework. This private package serve
 
 The e2e-test-app provides:
 
-- **37 Playwright-based E2E test specs** covering all WebApplication methods
-- **Hono-based mock web server** with 27 static HTML fixtures
+- **30 Playwright-based E2E test specs** covering all WebApplication methods (27 main + 3 webdriver-protocol)
+- **Hono-based mock web server** with 28 static HTML fixtures
 - **Cloudflare Worker deployment** for online test environments
 - **Screenshot testing** configuration examples
 - **Complete test patterns** for assertions, soft assertions, form handling, navigation, etc.
@@ -20,7 +20,7 @@ e2e-test-app/
 │   ├── mock-web-server.ts        # Hono mock server (port 8080)
 │   ├── test-runner.ts            # E2E test execution wrapper
 │   ├── shared-routes.ts          # Route registration for all HTML fixtures
-│   └── static-fixtures/          # 27 HTML fixture generators (TypeScript)
+│   └── static-fixtures/          # 28 HTML fixture generators (TypeScript)
 │       ├── alert.ts
 │       ├── assert-demo.ts
 │       ├── click.ts
@@ -37,6 +37,7 @@ e2e-test-app/
 │       ├── iframe1.ts / iframe2.ts
 │       ├── location-size.ts
 │       ├── mock.ts
+│       ├── responsive.ts
 │       ├── screenshot.ts
 │       ├── scroll.ts
 │       ├── simulate-field.ts
@@ -52,12 +53,11 @@ e2e-test-app/
 │   │   ├── config.cjs            # Playwright test configuration
 │   │   ├── config-screenshot.cjs # Screenshot-enabled config
 │   │   ├── env.json              # Environment parameters
-│   │   ├── test/                 # 33 spec files
+│   │   ├── test/                 # 27 spec files + 3 webdriver-protocol specs
 │   │   │   ├── utils.js          # getTargetUrl helper
 │   │   │   ├── alert.spec.js
 │   │   │   ├── assert-methods.spec.js
 │   │   │   ├── basic-custom-config.spec.js
-│   │   │   ├── basic-verification.spec.js
 │   │   │   ├── click.spec.js
 │   │   │   ├── cookie.spec.js
 │   │   │   ├── css.spec.js
@@ -69,9 +69,8 @@ e2e-test-app/
 │   │   │   ├── get-html-and-texts.spec.js
 │   │   │   ├── get-size.spec.js
 │   │   │   ├── get-source.spec.js
-│   │   │   ├── location-and-window.spec.js
+│   │   │   ├── responsive.spec.js
 │   │   │   ├── screenshot-control.spec.js
-│   │   │   ├── screenshots-disabled.spec.js
 │   │   │   ├── scroll-and-move.spec.js
 │   │   │   ├── select.spec.js
 │   │   │   ├── simulate-field.spec.js
@@ -81,11 +80,9 @@ e2e-test-app/
 │   │   │   ├── upload.spec.js
 │   │   │   ├── wait-for-exist.spec.js
 │   │   │   ├── wait-for-visible.spec.js
-│   │   │   ├── wait-methods-extended.spec.js
 │   │   │   ├── wait-until.spec.js
 │   │   │   ├── windows.spec.js
-│   │   │   └── webdriver-protocol/   # 4 protocol-level specs
-│   │   │       ├── elements.spec.js
+│   │   │   └── webdriver-protocol/   # 3 protocol-level specs
 │   │   │       ├── save-pdf.spec.js
 │   │   │       ├── set-timezone.spec.js
 │   │   │       └── status-back-forward.spec.js
@@ -147,24 +144,38 @@ All E2E tests are executed via `tsx src/test-runner.ts` which starts the mock we
 ### Playwright Config (`test/playwright/config.cjs`)
 
 ```javascript
+const TIMEOUTS = require('../../timeout-config.cjs');
+
 module.exports = async (config) => {
     const local = !config.headless;
+
+    const compilerConfig = {
+        target: 'es2022',
+    };
+
+    if (config.debug) {
+        compilerConfig.sourceMap = true;
+    }
+
     return {
         screenshotPath: './_tmp/',
-        workerLimit: local ? 'local' : 5,
+        workerLimit: 5,
         maxWriteThreadCount: 2,
         screenshots: 'disable',
         retryCount: local ? 0 : 2,
+        testTimeout: local ? 0 : 90000,
         tests: 'test/playwright/test/**/*.spec.js',
         plugins: [
             ['playwright-driver', {
                 browserName: 'chromium',
                 launchOptions: {
                     headless: !local,
+                    slowMo: local ? 500 : 0,
                     args: local ? [] : ['--no-sandbox'],
                 },
+                clientTimeout: local ? 0 : (config.testTimeout || TIMEOUTS.CLIENT_SESSION),
             }],
-            ['babel', { presets: [['@babel/preset-env', { targets: { node: 'current' } }]] }],
+            ['compiler', compilerConfig],
         ],
     };
 };
@@ -270,13 +281,13 @@ click, clickButton, clickCoordinates, doubleClick, url, getTitle, refresh
 ### Elements (`elements.spec.js`)
 isElementsExist, notExists, isExisting, getElementsCount, getElementsIds, isElementSelected
 
-### Wait Methods (`wait-for-exist.spec.js`, `wait-for-visible.spec.js`, `wait-until.spec.js`, `wait-methods-extended.spec.js`)
+### Wait Methods (`wait-for-exist.spec.js`, `wait-for-visible.spec.js`, `wait-until.spec.js`)
 waitForExist, waitForNotExists, waitForVisible, waitForNotVisible, waitForRoot, waitForValue, waitForAlert, waitUntil, isBecomeVisible, isBecomeHidden
 
 ### Window/Tab (`windows.spec.js`)
 getMainTabId, getTabIds, getCurrentTabId, switchTab, setActiveTab, newWindow, window, windowHandles, closeCurrentTab, closeBrowserWindow, closeAllOtherTabs, closeFirstSiblingTab, switchToFirstSiblingTab, switchToMainSiblingTab, maximizeWindow, getWindowSize, refresh
 
-### Position & Size (`get-size.spec.js`, `location-and-window.spec.js`)
+### Position & Size (`get-size.spec.js`)
 getSize, getLocation, getWindowSize, getActiveElement
 
 ### Scroll & Mouse (`scroll-and-move.spec.js`)
@@ -296,18 +307,22 @@ getTagName, execute (sync), executeAsync (async callback)
 - `screenshot-control.spec.js` — disableScreenshots, enableScreenshots, makeScreenshot
 - `upload.spec.js` — uploadFile
 - `focus-stable.spec.js` — isFocused, isStable, waitForStable, isClickable, waitForClickable
+- `responsive.spec.js` — setViewportSize, responsive layout testing
 - `webdriver-protocol/` — savePDF, setTimeZone, status, back, forward
 
 ## Dependencies
 
 - **`hono`** + **`@hono/node-server`** — Mock web server
 - **`ringai`** — Main framework
+- **`@ringai/cli`** — CLI for running tests
 - **`@ringai/plugin-playwright-driver`** — Playwright browser driver
-- **`@ringai/plugin-babel`** — Babel transpilation for spec files
+- **`@ringai/plugin-compiler`** — TypeScript/ESM compilation for spec files
 - **`@ringai/plugin-fs-store`** — Screenshot storage
-- **`@babel/preset-env`** — Babel preset for Node.js target
+- **`@ringai/web-application`** — Web application testing API
 - **`c8`** — E2E code coverage
 - **`concurrently`** — Parallel process execution
+- **`chai`** — Assertion library
+- **`mocha`** — Integration test runner
 
 ## Related Modules
 

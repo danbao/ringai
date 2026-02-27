@@ -7,7 +7,7 @@ This guide will help you install and set up ringai for your project.
 Before installing ringai, ensure you have:
 
 - **Node.js** 22.0 or higher
-- **pnpm** 9.0 or higher
+- **pnpm** 10.0 or higher
 - A supported operating system (Windows, macOS, Linux)
 
 ## Installation
@@ -36,8 +36,8 @@ See the [Playwright Driver Guide](../playwright-driver/installation.md) for deta
 Install additional plugins based on your needs:
 
 ```bash
-# Babel transpilation for tests
-pnpm add -D @ringai/plugin-babel
+# esbuild compilation for tests
+pnpm add -D @ringai/plugin-compiler
 
 # Filesystem storage for screenshots and artifacts
 pnpm add -D @ringai/plugin-fs-store
@@ -66,7 +66,7 @@ You should see the ringai CLI help output with available options.
 **Node.js version issues:**
 ```bash
 node --version  # Should be 22.0+
-pnpm --version  # Should be 9.0+
+pnpm --version  # Should be 10.0+
 ```
 
 **Playwright browser installation issues:**

@@ -47,7 +47,7 @@ Create a ringai configuration file `.ringairc` in your project root:
     "tests": "./test/**/*.spec.js",
     "plugins": [
         ["@ringai/plugin-playwright-driver", { "headless": true }],
-        "@ringai/plugin-babel"
+        "@ringai/plugin-compiler"
     ],
     "workerLimit": 2
 }
@@ -63,23 +63,13 @@ npx ringai run
 
 ## Step 5: Add More Features
 
-### Add Babel Support
+### Add Compiler Support
 
-For transpilation support with modern JavaScript features:
+For compilation support with modern JavaScript features:
 
 ```bash
-pnpm add -D @ringai/plugin-babel @babel/preset-env
+pnpm add -D @ringai/plugin-compiler
 ```
-
-Create a `.babelrc` file:
-
-```json
-{
-    "presets": ["@babel/preset-env"]
-}
-```
-
-Make sure `@ringai/plugin-babel` is listed in the `plugins` array of your `.ringairc` (as shown in Step 3).
 
 ### Add File Storage
 
@@ -95,7 +85,7 @@ Update `.ringairc` to include the plugin:
 {
     "tests": "./test/**/*.spec.js",
     "plugins": [
-        "@ringai/plugin-babel",
+        "@ringai/plugin-compiler",
         "@ringai/plugin-fs-store",
         ["@ringai/plugin-playwright-driver", { "headless": true }]
     ],

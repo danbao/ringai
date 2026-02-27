@@ -388,8 +388,8 @@ A custom object passed into every test. Retrieve it inside tests with `api.getEn
 {
   "tests": "./tests/**/*.spec.js",
   "plugins": [
-    "@aspect/plugin-playwright-driver",
-    ["@aspect/plugin-babel", { "presets": ["@babel/preset-env"] }]
+    "@ringai/plugin-playwright-driver",
+    ["@ringai/plugin-compiler", {}]
   ],
   "workerLimit": 4,
   "bail": false,

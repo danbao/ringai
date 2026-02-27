@@ -237,14 +237,18 @@ If you prefer JSON configuration, you can use a `.ringairc` file:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `browserName` | string | `'chromium'` | Browser to use: `'chromium'`, `'firefox'`, `'webkit'`, or `'msedge'` |
-| `launchOptions` | object | `{}` | Playwright browser launch options |
+| `launchOptions` | object | `{ headless: true, args: [] }` | Playwright browser launch options |
 | `contextOptions` | object | `{}` | Browser context options |
-| `seleniumGrid` | object | `{}` | Selenium Grid configuration |
+| `clientCheckInterval` | number | `5000` | Client health check interval in milliseconds |
+| `clientTimeout` | number | `900000` | Client timeout in milliseconds (15 min) |
+| `disableClientPing` | boolean | `false` | Disable client health check pings |
+| `delayAfterSessionClose` | number | — | Delay after session close in milliseconds |
+| `workerLimit` | number \| `'local'` | — | Worker limit for parallel sessions |
 | `coverage` | boolean | `false` | Enable code coverage collection |
 | `video` | boolean | `false` | Enable video recording |
+| `videoDir` | string | — | Directory for video recordings |
 | `trace` | boolean | `false` | Enable trace recording |
-| `clientTimeout` | number | `900000` | Client timeout in milliseconds |
-| `navigationTimeout` | number | `30000` | Navigation timeout in milliseconds |
+| `traceDir` | string | — | Directory for trace files |
 
 ### Launch Options
 
@@ -274,14 +278,6 @@ Browser context configuration options:
 | `deviceScaleFactor` | number | Device scale factor |
 | `isMobile` | boolean | Mobile device emulation |
 | `hasTouch` | boolean | Touch events support |
-
-### Selenium Grid Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `seleniumGrid.gridUrl` | string | Selenium Grid Hub URL |
-| `seleniumGrid.gridCapabilities` | object | Browser capabilities for Selenium Grid |
-| `seleniumGrid.gridHeaders` | object | Additional headers for Grid requests |
 
 ## Browser Support
 
@@ -629,10 +625,9 @@ For complete API documentation, see the [@ringai/web-application](web-applicatio
 
 ## Related Modules
 
-- **`@ringai/plugin-selenium-driver`** - Selenium WebDriver plugin (migration source)
 - **`@ringai/web-application`** - Web application testing interface
 - **`@ringai/browser-proxy`** - Browser proxy service
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/ringcentral/ringai/blob/master/LICENSE) file for details.
+MIT License - see the [LICENSE](https://github.com/danbao/ringai/blob/main/LICENSE) file for details.

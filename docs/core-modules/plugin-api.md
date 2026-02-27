@@ -37,16 +37,9 @@ applyPlugins(moduleInstances, config);
 | `pluginsDestinations`  | `IPluginModules`  | Object containing framework module instances           |
 | `config`               | `IConfig`         | Full ringai configuration (reads `config.plugins`)   |
 
-### `PluginController` class
+### `PluginController` class (internal)
 
-Handles plugin resolution, loading, validation, and initialization.
-
-```typescript
-import { PluginController } from '@ringai/plugin-api';
-
-const controller = new PluginController(moduleInstances);
-controller.initialize(config.plugins);
-```
+Handles plugin resolution, loading, validation, and initialization. Not exported from the public API — used internally by `applyPlugins()`.
 
 #### `controller.initialize(plugins)`
 

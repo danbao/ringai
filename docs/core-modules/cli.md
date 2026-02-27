@@ -88,7 +88,7 @@ ringai supports multiple configuration file formats. The default config file is 
     "tests": "./tests/**/*.spec.js",
     "plugins": [
         ["@ringai/plugin-playwright-driver", { "headless": true }],
-        "@ringai/plugin-babel"
+        "@ringai/plugin-compiler"
     ],
     "workerLimit": 2,
     "retryCount": 3,

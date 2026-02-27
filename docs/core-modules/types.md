@@ -27,12 +27,12 @@ type ConfigPluginDescriptor = string | [string] | [string, PluginConfig];
 
 interface IConfigLogger {
   logLevel: LogLevel;
+  logFormat?: 'text' | 'jsonl';
   silent: boolean;
 }
 
 interface IConfig extends IConfigLogger {
   devtool: boolean;
-  restartWorker: boolean;
   screenshots: ScreenshotsConfig;
   screenshotPath: string;
   config: string;
@@ -131,16 +131,10 @@ interface IWorkerEmitter extends EventEmitter {
 }
 
 interface ITransport {
-  getProcessesList(): Array<string>;
   send<T = unknown>(processID: string, messageType: string, payload: T): Promise<void>;
   broadcast<T = unknown>(messageType: string, payload: T): void;
-  broadcastLocal<T = unknown>(messageType: string, payload: T): void;
-  broadcastUniversally<T = unknown>(messageType: string, payload: T): void;
-  isChildProcess(): boolean;
-  registerChild(processID: string, child: IWorkerEmitter): void;
   on<T = unknown>(messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
   once<T = unknown>(messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
-  onceFrom<T = unknown>(processID: string, messageType: string, callback: TransportMessageHandler<T>): RemoveHandlerFunction;
 }
 ```
 
@@ -380,6 +374,7 @@ const enum BrowserProxyActions {
   savePDF, addValue, doubleClick, isClickable, waitForClickable,
   isFocused, isStable, waitForEnabled, waitForStable,
   setCustomBrowserClientConfig, getCustomBrowserClientConfig,
+  setViewportSize,
 }
 ```
 
@@ -493,6 +488,8 @@ interface IBrowserProxyPlugin {
   selectByAttribute(applicant: string, xpath: string, attribute: string, value: string): Promise<any>;
   gridTestSession(applicant: string): Promise<any>;
   getHubConfig(applicant: string): Promise<any>;
+  setViewportSize(applicant: string, width: number, height: number): Promise<void>;
+  getWindowSize(applicant: string): Promise<{ width: number; height: number }>;
 }
 ```
 
@@ -681,113 +678,6 @@ type SavePdfOptions = {
 
 ---
 
-## Devtool Types
-
-### Devtool Backend (`src/devtool-backend/`)
-
-```typescript
-const enum DevtoolWSServerEvents { CONNECTION, ERROR, MESSAGE, CLOSE }
-const enum DevtoolWorkerMessages { START_SERVER, START_SERVER_COMPLETE }
-const enum DevtoolProxyMessages { TO_WORKER, FROM_WORKER }
-const enum DevtoolPluginHooks { beforeStart, afterStart, beforeStop, afterStop }
-
-interface IDevtoolRuntimeConfiguration {
-  host: string;
-  httpPort: number;
-  wsPort: number;
-  extensionId: string;
-}
-
-interface IDevtoolServerConfig {
-  host: string;
-  httpPort: number;
-  wsPort: number;
-  router: IDevtoolServerRoute[];
-  staticRoutes: IDevtoolStaticRoutes;
-}
-
-interface IDevtoolServerRoute { method: string; mask: string; handler: string; windowProps?: { width: number; height: number; position: number } }
-type DevtoolHttpRouteHandler = (req: any, res: any, context: any, appId: string, options?: any) => Promise<void> | void;
-type DevtoolHttpContextResolver = (req: any, res: any) => Promise<{ context: object; key: string }>;
-interface IDevtoolHttpRoute { method: string; mask: string; handler: DevtoolHttpRouteHandler; options?: any; windowProps?: { width: number; height: number; position: number } }
-interface IDevtoolStaticRoutes { [key: string]: { rootPath: string; directory: string; options?: {} } }
-
-interface IHttpServerController { kill: () => void }
-interface IDevtoolServerController { init: () => Promise<void>; kill: () => Promise<void> }
-interface IServer { run: () => Promise<void>; stop: () => Promise<void>; getUrl: () => string }
-
-interface IDevtoolProxyCleanedMessage { source: null | string; messageData: any }
-interface IDevtoolProxyMessage extends IDevtoolProxyCleanedMessage { messageType: string }
-interface IDevtoolWorkerRegisterMessage extends IDevtoolProxyCleanedMessage { messageData: ITestControllerExecutionState }
-interface IDevtoolWorkerUpdateStateMessage extends IDevtoolProxyCleanedMessage { messageData: ITestControllerExecutionState }
-interface IDevtoolWebAppRegisterMessage extends IDevtoolProxyCleanedMessage { messageData: IWebApplicationRegisterMessage }
-interface IDevtoolWebAppRegisterCompleteMessage extends IDevtoolProxyCleanedMessage { messageData: IWebApplicationRegisterCompleteMessage }
-
-interface IDevtoolWSMeta { connectionId: string }
-
-// WebSocket message union type
-type IDevtoolWSMessage =
-  | IDevtoolWSHandshakeResponseMessage
-  | IDevtoolWSHandshakeRequestMessage
-  | IDevtoolWSGetStoreStateMessage
-  | IDevtoolWSUpdateStoreStateMessage
-  | IDevtoolWSCallWorkerAction;
-
-interface IDevtoolWSHandshakeRequestMessage { type: DevtoolEvents.HANDSHAKE_REQUEST; payload: { appId: string } }
-interface IDevtoolWSHandshakeResponseMessage { type: DevtoolEvents.HANDSHAKE_RESPONSE; payload: { appId: string; connectionId: string; error: null | Error | string } }
-interface IDevtoolWSGetStoreStateMessage { type: DevtoolEvents.GET_STORE; payload: void }
-interface IDevtoolWSUpdateStoreStateMessage { type: DevtoolEvents.STORE_STATE; payload: any }
-interface IDevtoolWSCallWorkerAction { type: DevtoolEvents.WORKER_ACTION; payload: { actionType: TestWorkerAction } }
-```
-
-### Devtool Extension (`src/devtool-extension/`)
-
-```typescript
-const enum DevtoolEvents {
-  HANDSHAKE_REQUEST, HANDSHAKE_RESPONSE,
-  WORKER_ACTION, STORE_STATE, GET_STORE,
-}
-
-const enum ExtensionMessagingTransportEvents { CONNECT, DISCONNECT, MESSAGE }
-
-const enum ExtensionMessagingTransportTypes {
-  SET_EXTENSION_OPTIONS, WAIT_FOR_READY, DISPATCH_ACTION, IS_READY,
-}
-
-const enum ClientWsTransportEvents { OPEN, CLOSE, ERROR, MESSAGE }
-
-const enum ExtensionPostMessageTypes {
-  CLEAR_HIGHLIGHTS, ADD_XPATH_HIGHLIGHT, REMOVE_XPATH_HIGHLIGHT,
-}
-
-type ElementSummary = {
-  tagName: string;
-  attributes: { [name: string]: string };
-  innerText?: string;
-  value?: string;
-  children?: ElementSummary[];
-};
-
-interface IExtensionNetworkConfig { httpPort: number; wsPort: number; host: string }
-interface IExtensionApplicationConfig extends IExtensionNetworkConfig { appId: string }
-interface IExtensionMessagingTransportMessage { type: ExtensionMessagingTransportTypes; payload: any }
-```
-
-### Client WS Transport (`src/client-ws-transport/`)
-
-```typescript
-interface IClientWsTransport extends EventEmitter {
-  // Type-safe event methods for OPEN, MESSAGE, CLOSE, ERROR events
-  addListener(event: ClientWsTransportEvents.OPEN, listener: (arg: void) => void): this;
-  addListener(event: ClientWsTransportEvents.MESSAGE, listener: (arg: IDevtoolWSMessage) => void): this;
-  addListener(event: ClientWsTransportEvents.CLOSE, listener: (arg: void) => void): this;
-  addListener(event: ClientWsTransportEvents.ERROR, listener: (arg: Error) => void): this;
-  send(event: IDevtoolWSMessage['type'], payload: IDevtoolWSMessage['payload']): Promise<void>;
-}
-```
-
----
-
 ## Reporter Types
 
 **Source:** `src/reporter/`
@@ -876,34 +766,6 @@ interface IChildProcessForkOptions {
 
 interface IChildProcessFork extends ChildProcess {
   debugPort: number | null;
-}
-```
-
----
-
-## Async Assert Types
-
-**Source:** `src/async-assert/`
-
-```typescript
-interface IAssertionSuccessMeta {
-  isSoft: boolean;
-  successMessage?: string;
-  assertMessage?: string;
-  originalMethod: string;
-  args: any[];
-}
-
-interface IAssertionErrorMeta extends IAssertionSuccessMeta {
-  errorMessage?: string;
-  error?: Error;
-}
-
-interface IAssertionOptions {
-  isSoft?: boolean;
-  onSuccess?: (arg0: IAssertionSuccessMeta) => void | Promise<void>;
-  onError?: (arg0: IAssertionErrorMeta) => void | Error | Promise<void | Error>;
-  plugins?: ChaiPlugin[];
 }
 ```
 

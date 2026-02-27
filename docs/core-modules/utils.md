@@ -233,12 +233,22 @@ Loads a module using Node.js `createRequire`. Resolution strategy:
 1. If `parentModule` is provided, resolves relative to its directory first, then falls back to absolute
 2. Falls back to `resolve.sync()` from `process.cwd()`
 
-Throws `ReferenceError` with a descriptive message if the module cannot be loaded.
+If the module is an ES module (throws `ERR_REQUIRE_ESM`), falls back to dynamic `import()`. Throws `ReferenceError` with a descriptive message if the module cannot be loaded.
 
 ```typescript
 import { requirePackage } from '@ringai/utils';
 
-const config = requirePackage<MyConfig>('./config.json');
+const config = await requirePackage<MyConfig>('./config.json');
+```
+
+#### `requirePackageSync<T>(modulePath, parentModule?)`
+
+Synchronous version of `requirePackage`. Uses Node.js `createRequire` with the same resolution strategy. Does not support ES module fallback. Throws `ReferenceError` if the module cannot be loaded.
+
+```typescript
+import { requirePackageSync } from '@ringai/utils';
+
+const config = requirePackageSync<MyConfig>('./config.json');
 ```
 
 #### `resolvePackage(modulePath, parentModule?)`
@@ -265,7 +275,7 @@ Handles ES module default export normalization (detects `__esModule` flag and re
 ```typescript
 import { requirePlugin } from '@ringai/utils';
 
-const plugin = requirePlugin('playwright-driver');
+const plugin = await requirePlugin('playwright-driver');
 // Resolves @ringai/plugin-playwright-driver
 ```
 

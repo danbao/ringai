@@ -249,10 +249,10 @@ The `SandboxWorkerThreads` class creates a fresh `Worker` thread per execution. 
 
 ```bash
 # Run E2E tests
-pnpm run test:e2e:headless
+pnpm run test:e2e
 
 # Debug by running headed
-# Set headless: false in the Playwright config
+pnpm run test:e2e:headed
 ```
 
 ## Playwright Browser Issues
@@ -464,7 +464,7 @@ npx playwright install
 
 If you're still experiencing issues:
 
-1. Check the [GitHub Issues](https://github.com/nicholasrq/ringai/issues)
+1. Check the [GitHub Issues](https://github.com/danbao/ringai/issues)
 2. Review the [API Documentation](../core-modules/api.md)
 3. Run with debug logging enabled
 4. Create a minimal reproduction case

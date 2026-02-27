@@ -55,7 +55,7 @@ docs/
 
 ## GitHub Pages Deployment
 
-The documentation is automatically deployed to GitHub Pages when changes are pushed to the `master` branch. The deployment is handled by the GitHub Actions workflow at `.github/workflows/docs.yml`.
+The documentation is automatically deployed to GitHub Pages when changes are pushed to the `main` branch. The deployment is handled by the GitHub Actions workflow at `.github/workflows/docs.yml`.
 
 ### Manual Deployment
 

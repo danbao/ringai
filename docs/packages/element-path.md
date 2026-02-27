@@ -62,13 +62,13 @@ type ElementPathProxy = ElementPath & {
 
   // Internals
   __getInstance(): ElementPath;          // unwrap the raw ElementPath
+  __path?: ElementPath['getElementPathChain'];  // path chain accessor
   __getReversedChain: ElementPath['getReversedChain'];
-  __findChildren(searchOptions: SearchObject, withoutParent?: boolean): ElementPathProxy;
+  __findChildren(options: any): ElementPathProxy;
   __getChildType: ElementPath['getElementType'];
 
-  // Dynamic property access — any string/number key generates a child ElementPath
+  // Dynamic property access — any string key generates a child ElementPath
   [key: string]: ElementPathProxy;
-  [key: number]: ElementPathProxy;
 };
 ```
 

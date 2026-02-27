@@ -106,7 +106,6 @@ import { defaultConfiguration } from '@ringai/cli-config';
 const defaultConfiguration: IConfig = {
   devtool: false,
   tests: './tests/**/*.js',
-  restartWorker: false,
   screenshots: 'disable',
   screenshotPath: './_tmp/',
   config: '.ringairc',
@@ -120,19 +119,19 @@ const defaultConfiguration: IConfig = {
   retryDelay: 2000,
   testTimeout: 900000, // 15 minutes
   logLevel: 'info',
+  logFormat: 'text',
   envParameters: {},
 };
 ```
 
 ---
 
-### `mergeConfigs(defaults, ...extensions)`
+### `mergeConfigs(defaults, ...extensions)` *(internal, not exported)*
 
-Deep-merges multiple configuration objects with special handling for the `plugins` array. Plugins are merged by name — if two config layers reference the same plugin, their options are deep-merged rather than duplicated.
+Deep-merges multiple configuration objects with special handling for the `plugins` array. Plugins are merged by name — if two config layers reference the same plugin, their options are deep-merged rather than duplicated. This function is used internally by `getConfig()` and is not part of the public API.
 
 ```typescript
-import { mergeConfigs } from '@ringai/cli-config';
-
+// Used internally by getConfig() - not importable from @ringai/cli-config
 const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
 ```
 
@@ -140,13 +139,13 @@ const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
 
 ```typescript
 // Layer 1
-{ plugins: ['@ringai/plugin-babel'] }
+{ plugins: ['@ringai/plugin-compiler'] }
 
 // Layer 2
-{ plugins: [['@ringai/plugin-babel', { presets: ['@babel/preset-env'] }]] }
+{ plugins: [['@ringai/plugin-compiler', { presets: ['@babel/preset-env'] }]] }
 
 // Result
-{ plugins: [['@ringai/plugin-babel', { presets: ['@babel/preset-env'] }]] }
+{ plugins: [['@ringai/plugin-compiler', { presets: ['@babel/preset-env'] }]] }
 ```
 
 ## Config File Formats
@@ -160,7 +159,7 @@ const merged = mergeConfigs(defaults, envConfig, fileConfig, cliArgs);
   "retryCount": 3,
   "plugins": [
     "@ringai/plugin-playwright-driver",
-    ["@ringai/plugin-babel", { "presets": ["@babel/preset-env"] }]
+    ["@ringai/plugin-compiler", { "presets": ["@babel/preset-env"] }]
   ]
 }
 ```
@@ -221,9 +220,9 @@ ringai run \
   --env-parameters.baseUrl "https://api.example.com"
 ```
 
-## Arguments Parser (`getArguments`)
+## Arguments Parser (`getArguments`) *(internal, not exported)*
 
-Internal function that parses raw `argv` strings into a `Partial<IConfig>`. It:
+Internal function that parses raw `argv` strings into a `Partial<IConfig>`. This function is used internally by `getConfig()` and is not part of the public API. It:
 
 1. Uses `yargs/helpers` `Parser` to parse arguments
 2. Strips internal yargs fields (`_`, `$0`, `version`, `help`)
@@ -231,8 +230,7 @@ Internal function that parses raw `argv` strings into a `Partial<IConfig>`. It:
 4. Removes `undefined` values
 
 ```typescript
-import { getArguments } from '@ringai/cli-config';
-
+// Used internally - not importable from @ringai/cli-config
 const args = getArguments(['--worker-limit', '4', '--bail']);
 // { workerLimit: 4, bail: true }
 ```

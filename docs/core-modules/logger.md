@@ -54,7 +54,7 @@ new LoggerServer(
 | `onLog`      | read  | `(logEntity, meta)`          | Observe log entry after output             |
 | `onError`    | read  | `(error, meta)`              | Observe errors during hook/output processing |
 
-**Queue processing:** Log entries are queued and processed sequentially. If `config.silent` is `true` or the entry's level is below `config.logLevel`, the entry is discarded without queuing.
+**Queue processing:** Log entries are queued and processed sequentially. If `config.silent` is `true` or the entry's level is below `config.logLevel`, the entry is discarded without queuing. Output format is determined by `config.logFormat`: `'text'` (default) for human-readable format, or `'jsonl'` for JSON Lines format.
 
 #### `getQueueStatus(): LogQueueStatus`
 
@@ -104,7 +104,7 @@ loggerClient.error('Something failed', error);
 
 ### `AbstractLoggerClient` class
 
-Base class providing the full logging API. Both `LoggerClient` and any custom client implementations extend this class.
+Base class providing the full logging API. Both `LoggerClient` and any custom client implementations extend this class. This class is not directly exported from the package index but is available via `LoggerClient` which extends it.
 
 **Constructor:**
 
@@ -140,10 +140,10 @@ Steps provide hierarchical grouping of log entries. Steps can be nested — each
 
 | Method                          | Description                                                    |
 | ------------------------------- | -------------------------------------------------------------- |
-| `startStep(message, stepType?)` | Push a new step onto the stack and emit a step log entry       |
+| `startStep(message, stepType?, logLevel?)` | Push a new step onto the stack and emit a step log entry. `logLevel` defaults to `info` |
 | `endStep(message?, ...args)`    | Pop steps until matching `message` is found; optionally log args |
 | `endAllSteps()`                 | Pop all steps from the stack                                   |
-| `step(message, callback, stepType?)` | Wraps `startStep` / `endStep` around an async callback    |
+| `step(message, callback, stepType?, logLevel?)` | Wraps `startStep` / `endStep` around an async callback. `logLevel` defaults to `info` |
 
 **Typed step shortcuts:** `startStepLog`, `startStepInfo`, `startStepDebug`, `startStepSuccess`, `startStepWarning`, `startStepError` — each calls `startStep` with the corresponding `LogStepTypes` value. Similarly `stepLog`, `stepInfo`, `stepDebug`, `stepSuccess`, `stepWarning`, `stepError`.
 
@@ -220,6 +220,7 @@ On macOS terminals with emoji support, log levels display as emoji icons (`ℹ`,
 ```typescript
 interface IConfigLogger {
   logLevel: 'verbose' | 'debug' | 'info' | 'warning' | 'error' | 'silent';
+  logFormat?: 'text' | 'jsonl';
   silent: boolean;
 }
 ```

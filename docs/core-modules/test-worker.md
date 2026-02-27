@@ -1,6 +1,6 @@
 # @ringai/test-worker
 
-Test worker module that manages spawning and executing tests in isolated processes. Provides the execution engine for the ringai framework with support for child process isolation, local (in-process) execution, compilation hooks, and IPC-based communication via `@ringai/transport`.
+Test worker module that manages compiling and executing tests using the `Sandbox` from `@ringai/sandbox`. Provides compilation hooks via the plugin system and in-process test execution with scoped API instances.
 
 ## Installation
 
@@ -10,27 +10,38 @@ pnpm add @ringai/test-worker --dev
 
 ## Architecture Overview
 
-The module consists of several key components:
+The module consists of two key components:
 
 1. **TestWorker** — Main factory class (extends `PluggableModule`) that creates worker instances
-2. **TestWorkerInstance** — Manages a forked child process for isolated test execution
-3. **TestWorkerLocal** — In-process worker for debugging (no child process)
-4. **WorkerController** — Runs inside the child process, orchestrates test execution via `SandboxWorkerThreads`
-5. **TestWorkerTinypool** — Experimental `worker_threads`-based alternative using Tinypool
+2. **TestWorkerInstance** — Compiles test source code, creates a sandboxed execution environment with scoped API modules, and runs the test in-process
 
-### Process Model
+### Execution Model
 
 ```
-Main Process                          Child Process (forked)
-┌──────────────────┐                  ┌──────────────────────┐
-│  TestWorker      │                  │  worker/index.ts     │
-│    .spawn()  ────┼──── fork() ────→ │    WorkerController  │
-│                  │                  │      .init()         │
-│  TestWorkerInstance                 │                      │
-│    .execute() ───┼── transport ───→ │    .executeTest()    │
-│    .kill()       │                  │      SandboxWorker   │
-│                  │  ← transport ──  │      Threads         │
-└──────────────────┘                  └──────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  Main Process                                            │
+│                                                          │
+│  TestWorker                                              │
+│    .spawn() ──→ TestWorkerInstance                       │
+│                   .execute(file, params, envParams)      │
+│                       │                                  │
+│                       ├── beforeCompile hook              │
+│                       ├── compile hook (source → JS)      │
+│                       ├── Create scoped API modules       │
+│                       ├── Sandbox(source, path, deps,     │
+│                       │          moduleOverrides)         │
+│                       └── sandbox.execute()               │
+│                            ├── Test calls run()           │
+│                            ├── Bus events (started/       │
+│                            │   finished/failed)           │
+│                            └── Promise resolves/rejects   │
+└──────────────────────────────────────────────────────────┘
+```
+
+## Exports
+
+```typescript
+import { TestWorker, TestWorkerInstance } from '@ringai/test-worker';
 ```
 
 ## TestWorker Class
@@ -57,7 +68,7 @@ class TestWorker extends PluggableModule implements ITestWorker {
 | Hook | Enum | Signature | Description |
 |------|------|-----------|-------------|
 | `beforeCompile` | `TestWorkerPlugin.beforeCompile` | `(paths: string[]) => Promise<string[]>` | Called before compilation with file paths |
-| `compile` | `TestWorkerPlugin.compile` | `(source: string, filename: string) => Promise<string>` | Compiles source code (e.g., TypeScript → JavaScript) |
+| `compile` | `TestWorkerPlugin.compile` | `(source: string, filename: string) => Promise<string>` | Compiles source code (e.g., TypeScript to JavaScript) |
 
 ### Methods
 
@@ -75,7 +86,6 @@ import { TestWorkerPlugin } from '@ringai/types';
 const testWorker = new TestWorker(transport, {
     screenshots: 'disable',
     waitForRelease: false,
-    localWorker: false,
 });
 
 // Register a TypeScript compiler plugin
@@ -95,7 +105,7 @@ const instance = testWorker.spawn();
 
 ## TestWorkerInstance Class
 
-Manages a single child process (or local worker) for test execution. Handles process lifecycle, IPC communication, and source compilation.
+Manages compilation and in-process execution of test files. Uses `Sandbox` from `@ringai/sandbox` with module overrides to provide scoped API instances per test.
 
 ```typescript
 import { TestWorkerInstance } from '@ringai/test-worker';
@@ -120,7 +130,6 @@ class TestWorkerInstance implements ITestWorkerInstance {
 interface ITestWorkerConfig {
     screenshots: ScreenshotsConfig;  // Screenshot capture mode
     waitForRelease: boolean;         // Wait for devtools release signal
-    localWorker: boolean;            // Use in-process execution (no fork)
 }
 ```
 
@@ -129,7 +138,6 @@ Default config:
 {
     screenshots: 'disable',
     waitForRelease: false,
-    localWorker: false,
 }
 ```
 
@@ -137,111 +145,42 @@ Default config:
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `execute(file, parameters, envParameters)` | `Promise<void>` | Compiles and sends a test file for execution. Resolves on `TestStatus.done`, rejects on `TestStatus.failed`. |
+| `execute(file, parameters, envParameters)` | `Promise<void>` | Compiles source, creates a sandboxed environment, and runs the test. Resolves on success, rejects on failure. |
 | `getWorkerID()` | `string` | Returns the unique worker ID (format: `worker/<uniqId>`) |
-| `kill(signal?)` | `Promise<void>` | Terminates the worker process. Default signal: `SIGTERM`. |
+| `kill()` | `Promise<void>` | Aborts the current test execution via `AbortController`. |
 
 ### Execution Flow
 
 1. **`execute(file, parameters, envParameters)`** is called
 2. `beforeCompile` hook is invoked with file paths
 3. Source is compiled via the `compile` hook (with caching)
-4. Worker process is initialized (forked if not already running)
-5. Execution payload is sent via transport: `TestWorkerAction.executeTest`
-6. Worker listens for `TestWorkerAction.executionComplete` response
-7. Promise resolves/rejects based on `TestStatus`
+4. A scoped `TestAPIController` is created for this execution
+5. Module overrides are set up mapping `@ringai/api` and `ringai` to scoped versions
+6. A `Sandbox` instance is created with the compiled source, dependencies, and module overrides
+7. `sandbox.execute()` runs the test code
+8. The test code calls the scoped `run()` which emits bus events (`started`/`finished`/`failed`)
+9. On `finished`: the promise resolves
+10. On `failed`: the promise rejects with the error
 
-### Worker Process Creation
+### Scoped API Modules
 
-When `localWorker` is `false` (default):
-- Uses `fork()` from `@ringai/child-process` to spawn a child process
-- The child runs `worker/index.ts` which initializes a `WorkerController`
-- The worker is registered with transport using the worker ID
-- stdout/stderr are piped to the logger
-
-When `localWorker` is `true`:
-- Creates a `TestWorkerLocal` instance (in-process, no fork)
-- Uses the same `WorkerController` but runs in the main process
-- Useful for debugging since breakpoints and stack traces work directly
-
-## TestWorkerLocal Class
-
-In-process worker that implements `IWorkerEmitter`. Used when `localWorker: true`.
+Each test execution gets its own scoped versions of the API modules. This ensures test isolation when running multiple tests:
 
 ```typescript
-class TestWorkerLocal extends EventEmitter implements IWorkerEmitter {
-    constructor(transportInstance: ITransport)
-}
-```
-
-| Method | Description |
-|--------|-------------|
-| `kill()` | Emits `'exit'` event |
-| `send(message)` | Dispatches `executeTest` messages to the internal `WorkerController` |
-
-## WorkerController Class
-
-Runs inside the child process (or in-process for local mode). Orchestrates test execution using `SandboxWorkerThreads` from `@ringai/sandbox`.
-
-```typescript
-class WorkerController {
-    constructor(transport: ITransport, testAPI: TestAPIController)
-}
-```
-
-### Methods
-
-| Method | Description |
-|--------|-------------|
-| `init()` | Registers transport listener for `TestWorkerAction.executeTest` |
-| `executeTest(message)` | Main execution method — sets up API, runs sandbox, handles completion/failure |
-
-### Test Execution Flow (inside worker)
-
-1. Broadcasts `TestWorkerAction.register` with execution state
-2. If `waitForRelease` is set, registers devtools listeners (pause, resume, evaluate, release)
-3. Creates a `SandboxWorkerThreads` instance with compiled source and dependencies
-4. Configures `TestAPIController` with environment/test parameters and test ID
-5. Calls `sandbox.execute()` — runs the test code
-6. Listens for `TestEvents.started`/`finished`/`failed` from the test API bus
-7. On completion: flushes callbacks, clears sandbox cache, broadcasts `executionComplete`
-
-### Devtools Integration
-
-When `waitForRelease: true`, the worker supports:
-
-| Transport Action | Behavior |
-|-----------------|----------|
-| `evaluateCode` | Currently a no-op (SandboxWorkerThreads doesn't support live evaluation) |
-| `releaseTest` | Breaks execution stack and completes successfully |
-| `pauseTestExecution` | Adds a before-instruction breakpoint via `asyncBreakpoints` |
-| `runTillNextExecution` | Resolves current breakpoint, adds after-instruction breakpoint |
-| `resumeTestExecution` | Releases all breakpoints |
-
-## TestWorkerTinypool Class (Experimental)
-
-An experimental alternative that uses Tinypool (`worker_threads` pool) instead of `child_process.fork()`.
-
-```typescript
-import { TestWorkerTinypool, createTinypoolWorker } from '@ringai/test-worker';
-```
-
-Benefits over child process:
-- Lower overhead (no separate V8 instance)
-- Shared memory support via `SharedArrayBuffer`
-- Automatic worker recycling
-
-```typescript
-class TestWorkerTinypool extends EventEmitter implements IWorkerEmitter {
-    constructor(transport: ITransport, workerScript: string)
-    
-    init(): Promise<void>
-    executeTest(payload: any): Promise<void>
-    send(message: any): boolean
-    kill(): Promise<void>
-}
-
-function createTinypoolWorker(transport: ITransport, workerScript: string): TestWorkerTinypool
+// Module overrides injected into the Sandbox
+moduleOverrides.set('@ringai/api', {
+    testAPIController: workerAPI,    // Scoped controller
+    TestAPIController,
+    TestContext,
+    WebApplication,
+    run: scopedRun,                  // Scoped run function
+    beforeRun: scopedBeforeRun,
+    afterRun: scopedAfterRun,
+});
+moduleOverrides.set('ringai', {
+    run: scopedRun,
+    default: scopedRun,
+});
 ```
 
 ## Type Reference
@@ -292,7 +231,6 @@ interface ITestWorkerInstance {
 interface ITestWorkerConfig {
     screenshots: ScreenshotsConfig;
     waitForRelease: boolean;
-    localWorker: boolean;
 }
 
 interface ITestWorker {
@@ -312,19 +250,17 @@ interface ITestExecutionMessage {
 ## Dependencies
 
 - `@ringai/pluggable-module` — Plugin hook system (`PluggableModule`)
-- `@ringai/child-process` — `fork()` for spawning worker processes
-- `@ringai/transport` — IPC message passing between main and worker processes
-- `@ringai/sandbox` — `SandboxWorkerThreads` for test code execution
-- `@ringai/api` — `TestAPIController` for test lifecycle events
-- `@ringai/async-breakpoints` — Breakpoint support for devtools integration
+- `@ringai/transport` — Transport instance for broadcasting worker events
+- `@ringai/sandbox` — `Sandbox` for test code execution
+- `@ringai/api` — `TestAPIController`, `TestContext`, `WebApplication` for scoped test API
+- `@ringai/async-breakpoints` — `BreakStackError` for devtools integration
 - `@ringai/logger` — Logging via `loggerClient`
-- `@ringai/fs-store` — `FSStoreClient` for file system operations
 - `@ringai/utils` — `generateUniqId()`, `restructureError()`
 - `@ringai/types` — All type definitions and enums
 
 ## Related Modules
 
 - [`@ringai/sandbox`](./sandbox.md) — Code execution sandbox
-- [`@ringai/test-run-controller`](./index.md) — Orchestrates test runs using TestWorker
+- [`@ringai/test-run-controller`](./test-run-controller.md) — Orchestrates test runs using TestWorker
 - [`@ringai/transport`](./transport.md) — Inter-process communication layer
 - [`@ringai/api`](./api.md) — Test API and lifecycle events

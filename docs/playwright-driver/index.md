@@ -133,4 +133,4 @@ module.exports = {
 - [Package Documentation](../packages/plugin-playwright-driver.md)
 - [Configuration Reference](../configuration/)
 - [Plugin Development Guide](../guides/plugin-development.md)
-- [GitHub Repository](https://github.com/ringcentral/ringai)
+- [GitHub Repository](https://github.com/danbao/ringai)

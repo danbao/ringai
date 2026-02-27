@@ -30,7 +30,7 @@ export default defineConfig({
       { text: 'Packages', link: '/packages/' },
       { text: 'Guides', link: '/guides/' },
       { text: 'Test Fixtures', link: 'https://testring-dev.ringcentral.workers.dev/', target: '_blank' },
-      { text: 'GitHub', link: 'https://github.com/ringcentral/ringai', target: '_blank' }
+      { text: 'GitHub', link: 'https://github.com/danbao/ringai', target: '_blank' }
     ],
 
     // Sidebar
@@ -43,14 +43,6 @@ export default defineConfig({
             { text: 'Installation', link: '/getting-started/installation' },
             { text: 'Quick Start', link: '/getting-started/quick-start' },
             { text: 'Migration Guides', link: '/getting-started/migration-guides/' }
-          ]
-        }
-      ],
-      '/api/': [
-        {
-          text: 'API Reference',
-          items: [
-            { text: 'Overview', link: '/api/' }
           ]
         }
       ],
@@ -84,10 +76,9 @@ export default defineConfig({
             { text: 'Sandbox', link: '/core-modules/sandbox' },
             { text: 'Test Worker', link: '/core-modules/test-worker' },
             { text: 'Test Run Controller', link: '/core-modules/test-run-controller' },
+            { text: 'Reporter', link: '/core-modules/reporter' },
             { text: 'Plugin API', link: '/core-modules/plugin-api' },
             { text: 'Pluggable Module', link: '/core-modules/pluggable-module' },
-            { text: 'Dependencies Builder', link: '/core-modules/dependencies-builder' },
-            { text: 'Async Assert', link: '/core-modules/async-assert' },
             { text: 'Async Breakpoints', link: '/core-modules/async-breakpoints' },
             { text: 'Ringai', link: '/core-modules/ringai' }
           ]
@@ -99,20 +90,14 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/packages/' },
             { text: 'Browser Proxy', link: '/packages/browser-proxy' },
-            { text: 'Client WS Transport', link: '/packages/client-ws-transport' },
-            { text: 'DevTool Backend', link: '/packages/devtool-backend' },
-            { text: 'DevTool Extension', link: '/packages/devtool-extension' },
-            { text: 'DevTool Frontend', link: '/packages/devtool-frontend' },
             { text: 'Element Path', link: '/packages/element-path' },
-            { text: 'HTTP API', link: '/packages/http-api' },
-            { text: 'Plugin Babel', link: '/packages/plugin-babel' },
+            { text: 'Plugin Compiler', link: '/packages/plugin-compiler' },
             { text: 'Plugin FS Store', link: '/packages/plugin-fs-store' },
             { text: 'Plugin Playwright Driver', link: '/packages/plugin-playwright-driver' },
-            { text: 'Plugin Selenium Driver', link: '/packages/plugin-selenium-driver' },
+            { text: 'Timeout Config', link: '/packages/timeout-config' },
             { text: 'Test Utils', link: '/packages/test-utils' },
             { text: 'Web Application', link: '/packages/web-application' },
-            { text: 'E2E Test App', link: '/packages/e2e-test-app' },
-            { text: 'Download Collector CRX', link: '/packages/download-collector-crx' }
+            { text: 'E2E Test App', link: '/packages/e2e-test-app' }
           ]
         }
       ],
@@ -122,8 +107,9 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/playwright-driver/' },
             { text: 'Installation', link: '/playwright-driver/installation' },
-            { text: 'Migration', link: '/playwright-driver/migration' },
-            { text: 'Debug', link: '/playwright-driver/debug' },
+            { text: 'Configuration', link: '/playwright-driver/configuration' },
+            { text: 'Advanced Features', link: '/playwright-driver/advanced-features' },
+            { text: 'Compatibility', link: '/playwright-driver/compatibility' },
             { text: 'Selenium Grid Guide', link: '/playwright-driver/selenium-grid-guide' }
           ]
         }
@@ -140,7 +126,7 @@ export default defineConfig({
 
     // Social links
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/ringcentral/ringai' }
+      { icon: 'github', link: 'https://github.com/danbao/ringai' }
     ],
 
     // Footer
@@ -156,7 +142,7 @@ export default defineConfig({
 
     // Edit link
     editLink: {
-      pattern: 'https://github.com/ringcentral/ringai/edit/master/docs/:path',
+      pattern: 'https://github.com/danbao/ringai/edit/main/docs/:path',
       text: 'Edit this page on GitHub'
     },
 

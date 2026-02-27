@@ -15,6 +15,8 @@ import {
   WebApplication,
   WebApplicationSimplified,
   WebApplicationController,
+  setBrowserProxy,
+  getBrowserProxy,
 } from '@ringai/web-application';
 ```
 
@@ -209,6 +211,7 @@ await app.switchToFirstSiblingTab(): Promise<boolean>
 await app.switchToMainSiblingTab(): Promise<boolean>
 await app.maximizeWindow(): Promise<boolean>
 await app.getWindowSize(): Promise<any>
+await app.setViewportSize(width: number, height: number): Promise<any>
 ```
 
 ### Frames
@@ -374,6 +377,21 @@ Events emitted:
 - `WebApplicationControllerEventType.execute` — when a command is received
 - `WebApplicationControllerEventType.response` — when a response is sent back
 - `WebApplicationControllerEventType.afterResponse` — after response is delivered
+
+## setBrowserProxy / getBrowserProxy
+
+Global registry for sharing a `BrowserProxyController` instance across modules:
+
+```typescript
+import { setBrowserProxy, getBrowserProxy } from '@ringai/web-application';
+import type { IBrowserProxyController } from '@ringai/types';
+
+// Store the proxy controller instance
+setBrowserProxy(controller);
+
+// Retrieve it later (throws if not yet initialized)
+const proxy: IBrowserProxyController = getBrowserProxy();
+```
 
 ## Usage Example
 

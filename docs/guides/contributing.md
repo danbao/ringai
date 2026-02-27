@@ -7,7 +7,7 @@ Thank you for your interest in contributing to ringai! This guide will help you 
 Before you begin, ensure you have:
 
 - **Node.js 22+** (ES2022 target, ESM-first)
-- **pnpm 9+** (package manager for the monorepo)
+- **pnpm 10+** (package manager for the monorepo)
 - **Git**
 - A GitHub account
 
@@ -47,8 +47,8 @@ Before you begin, ensure you have:
 
 1. **Sync with upstream**:
    ```bash
-   git checkout master
-   git pull upstream master
+   git checkout main
+   git pull upstream main
    ```
 
 2. **Create a feature branch**:
@@ -93,7 +93,7 @@ Before you begin, ensure you have:
 
 ```
 ringai/
-├── core/                 # Core framework modules (~20 packages)
+├── core/                 # Core framework modules (18 packages)
 │   ├── api/             # Test execution API
 │   ├── cli/             # Command-line interface (citty)
 │   ├── child-process/   # Child process management
@@ -102,7 +102,7 @@ ringai/
 │   └── ...
 ├── packages/            # Extension packages
 │   ├── plugin-playwright-driver/  # Playwright browser driver
-│   ├── plugin-babel/              # Babel integration
+│   ├── plugin-compiler/             # Code compilation
 │   ├── plugin-fs-store/           # File system storage
 │   └── ...
 ├── docs/                # Documentation
@@ -140,7 +140,7 @@ All packages use `"type": "module"` in `package.json` and compile to ESM output 
 # Full build (all packages, turbo-orchestrated)
 pnpm run build
 
-# Build main packages only (excludes e2e-test-app, devtool-frontend, devtool-extension)
+# Build main packages only (excludes e2e-test-app)
 pnpm run build:main
 
 # Watch mode for development
@@ -163,10 +163,10 @@ pnpm run test:unit:watch
 npx vitest run path/to/file.spec.ts
 
 # Run E2E tests (headless)
-pnpm run test:e2e:headless
+pnpm run test:e2e
 
 # Run E2E tests with coverage
-pnpm run test:e2e:coverage:lcov
+pnpm run test:e2e:coverage
 
 # Run all tests (unit + E2E)
 pnpm test
@@ -286,7 +286,7 @@ The changeset will be consumed during the release process to update package vers
 Use the `@ringai/plugin-api` package for creating new plugins. Follow existing plugin patterns in the `packages/` directory:
 
 - `plugin-playwright-driver` — Playwright browser automation
-- `plugin-babel` — Babel transpilation support
+- `plugin-compiler` — Code compilation support
 - `plugin-fs-store` — File system storage
 
 See the [Plugin Development Guide](./plugin-development.md) for detailed instructions.

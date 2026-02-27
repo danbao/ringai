@@ -293,18 +293,22 @@ ringai run --reporter=json --reporter-output=results.json
 
 - TypeScript errors in transport may require type casting (will be fixed in Phase 5.x)
 - Some packages still have `any` types that need refinement
-- `devtool-extension` and `devtool-frontend` still use webpack (migration to Vite planned)
 
 ## Getting Help
 
-- GitHub Issues: https://github.com/ringcentral/ringai/issues
+- GitHub Issues: https://github.com/danbao/ringai/issues
 
 ## Changelog Highlights
 
-### Removed Packages (replaced by native Node.js):
-- `@ringai/async-assert` → Use `node:assert` + Vitest `expect`
-- `@ringai/transport/serialize` → Use `structuredClone`
-- `@ringai/http-api` → Use native `fetch`
-
-### Deprecated:
-- `plugin-selenium-driver` → Use `plugin-playwright-driver`
+### Removed Packages:
+- `@ringai/async-assert` — merged into `@ringai/web-application`
+- `@ringai/transport/serialize` — use `structuredClone`
+- `@ringai/http-api` — use native `fetch`
+- `@ringai/plugin-babel` — replaced by `@ringai/plugin-compiler`
+- `@ringai/client-ws-transport` — removed
+- `@ringai/devtool-backend` — removed
+- `@ringai/devtool-frontend` — removed
+- `@ringai/devtool-extension` — removed
+- `@ringai/download-collector-crx` — removed
+- `@ringai/dependencies-builder` — removed
+- `@ringai/plugin-selenium-driver` — use `@ringai/plugin-playwright-driver`

@@ -96,36 +96,6 @@ When `env` is provided, it is merged with `process.env` (`{ ...process.env, ...e
 
 The spawned process uses `process.cwd()` as the working directory and runs in detached mode.
 
-### `spawnWithPipes(command, args?)`
-
-Spawns a child process with piped stdio (`stdin`, `stdout`, `stderr`). Unlike `spawn`, this function uses attached mode (`detached: false`), hides the console window on Windows (`windowsHide: true`), and calls `child.unref()` so the child does not keep the parent's event loop active.
-
-```typescript
-import { spawnWithPipes } from '@ringai/child-process';
-
-function spawnWithPipes(
-  command: string,
-  args?: Array<string>,
-): ChildProcess;
-```
-
-**Parameters:**
-
-| Parameter | Type              | Default | Description                      |
-| --------- | ----------------- | ------- | -------------------------------- |
-| `command` | `string`          | —       | The command to execute           |
-| `args`    | `Array<string>`   | `[]`   | Arguments to pass to the command |
-
-**Key differences from `spawn`:**
-
-| Feature        | `spawn`                          | `spawnWithPipes`                  |
-| -------------- | -------------------------------- | --------------------------------- |
-| stdio          | `[null, null, null, 'ipc']`      | `['pipe', 'pipe', 'pipe']`       |
-| detached       | `true`                           | `false`                           |
-| IPC channel    | Yes                              | No                                |
-| `windowsHide`  | No                               | `true`                            |
-| `unref()`      | No                               | Yes                               |
-
 ### `isChildProcess(argv?)`
 
 Checks whether the current process was spawned by ringai by looking for a `--ringai-parent-pid=` argument in the process argv.
@@ -200,18 +170,6 @@ if (isChildProcess()) {
   // Running as the main process
   console.log('Main process');
 }
-```
-
-### Spawn with Pipes
-
-```typescript
-import { spawnWithPipes } from '@ringai/child-process';
-
-const child = spawnWithPipes('node', ['--version']);
-
-child.stdout?.on('data', (data) => {
-  console.log(`Output: ${data}`);
-});
 ```
 
 ### Spawn with Custom Environment

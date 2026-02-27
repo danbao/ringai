@@ -96,8 +96,8 @@ Extend Ringai with powerful [packages](/packages/):
 
 - <span class="badge package">Playwright Driver</span> **Modern Browser Automation** — Playwright-based multi-browser automation
 - <span class="badge package">Browser Proxy</span> **Network Interception** — Advanced network testing capabilities
-- <span class="badge package">DevTools</span> **Development Tools** — Debugging and development utilities
-- <span class="badge package">Plugins</span> **Custom Extensions** — Babel, FS Store, and custom drivers
+- <span class="badge package">Web Application</span> **Browser API** — High-level browser interaction API
+- <span class="badge package">Plugins</span> **Custom Extensions** — Compiler, FS Store, and custom drivers
 
 ## Community & Support
 

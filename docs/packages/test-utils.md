@@ -53,12 +53,6 @@ class TransportMock extends EventEmitter implements ITransport {
   // Emit messageType with payload and processID as source
   broadcastFrom<T>(messageType: string, payload: T, processID: string): void;
 
-  // Same as broadcast (local-only mock)
-  broadcastLocal<T>(messageType: string, payload: T): void;
-
-  // Same as broadcast (mock has no remote distinction)
-  broadcastUniversally<T>(messageType: string, payload: T): void;
-
   // Emit messageType with payload (src is ignored in mock)
   send<T>(src: string, messageType: string, payload: T): Promise<void>;
 
@@ -68,18 +62,8 @@ class TransportMock extends EventEmitter implements ITransport {
   // Subscribe once — returns unsubscribe function
   once<T>(messageType: string, callback: (m: T, source?: string) => void): () => void;
 
-  // Subscribe once, filtered by processID source
-  onceFrom<T>(processID: string, messageType: string, callback: (m: T, source?: string) => void): () => void;
-
-  // Register a child process emitter
-  registerChild(processID: string, process: IWorkerEmitter): void;
-
-  // Always returns true (mock assumes child-process context)
-  isChildProcess(): boolean;
-
-  // Return empty arrays (no real processes)
+  // Return empty array (no real process stdio config)
   getProcessStdioConfig(): any[];
-  getProcessesList(): any[];
 }
 ```
 

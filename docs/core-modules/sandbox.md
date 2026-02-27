@@ -1,6 +1,6 @@
 # @ringai/sandbox
 
-Code sandbox module providing isolated JavaScript execution environments for test files. Offers two implementations: a legacy `vm`-based sandbox and a modern `worker_threads`-based sandbox, plus ESM loader hooks for module mocking and instrumentation.
+Code sandbox module providing isolated JavaScript execution environments for test files. Uses Node.js `vm` module to create sandboxed contexts with custom `require()` implementations for dependency resolution and module overriding.
 
 ## Installation
 
@@ -10,17 +10,17 @@ pnpm add @ringai/sandbox --dev
 
 ## Architecture Overview
 
-The sandbox module provides three main subsystems:
+The sandbox module provides an in-process `vm.createContext`-based execution environment. The `TestWorkerInstance` in `@ringai/test-worker` uses `Sandbox` as its execution engine, injecting module overrides to provide scoped test API instances.
 
-1. **Sandbox** — Legacy `vm.createContext`-based execution (synchronous, in-process)
-2. **SandboxWorkerThreads** — Modern `worker_threads`-based execution (async, isolated per-thread)
-3. **ESMLoaderHooks** — Hook registry for intercepting ESM module loading, enabling mocking and code instrumentation
+## Exports
 
-The `WorkerController` in `@ringai/test-worker` uses `SandboxWorkerThreads` as its default execution engine.
+```typescript
+import { Sandbox } from '@ringai/sandbox';
+```
 
-## Sandbox Class (Legacy VM)
+## Sandbox Class
 
-The `Sandbox` class executes source code inside a `vm.createContext()` with a custom `require()` implementation that resolves dependencies from a pre-built `DependencyDict`.
+The `Sandbox` class executes source code inside a `vm.createContext()` with a custom `require()` implementation that resolves dependencies from a pre-built `DependencyDict` and supports module overrides.
 
 ```typescript
 import { Sandbox } from '@ringai/sandbox';
@@ -33,14 +33,17 @@ type DependencyDict = Record<string, Record<string, { path: string; content: str
 ```typescript
 class Sandbox {
     constructor(
-        source: string,           // Source code to execute
-        filename: string,         // Absolute file path (used for require resolution)
-        dependencies: DependencyDict  // Pre-built dependency map
+        source: string,                       // Source code to execute
+        filename: string,                     // Absolute file path (used for require resolution)
+        dependencies: DependencyDict,         // Pre-built dependency map
+        moduleOverrides?: Map<string, any>,   // Optional map of module name → mock exports
     )
 }
 ```
 
 On construction, the sandbox creates a proxied context and caches itself in a static `modulesCache` keyed by filename.
+
+The `moduleOverrides` parameter allows callers to provide custom module implementations that take priority over the dependency dict and package resolution. This is used by `TestWorkerInstance` to inject scoped versions of `@ringai/api` and `ringai` modules per test execution.
 
 ### Methods
 
@@ -76,7 +79,8 @@ The `require()` implementation:
 
 1. Looks up the requested path in `dependencies[currentFilename]`
 2. If found, creates a new `Sandbox` for the dependency (or uses cached) and calls `.execute()`
-3. If not found, falls back to `requirePackage()` from `@ringai/utils` for Node.js built-ins and installed packages
+3. If a `moduleOverrides` map is provided and contains the requested path, returns the override
+4. Otherwise, falls back to `requirePackageSync()` from `@ringai/utils` for Node.js built-ins and installed packages
 
 ### Usage Example
 
@@ -105,158 +109,23 @@ const result = sandbox.execute(); // 5
 Sandbox.clearCache();
 ```
 
-## SandboxWorkerThreads Class
-
-The `SandboxWorkerThreads` class runs test code in an isolated `worker_threads.Worker`. Internally it spawns a worker that recreates the legacy VM sandbox logic inside the thread, providing process-level isolation without the overhead of `child_process.fork()`.
+### Module Overrides Example
 
 ```typescript
-import { SandboxWorkerThreads, createSandboxWorkerThreads } from '@ringai/sandbox';
-```
+import { Sandbox } from '@ringai/sandbox';
 
-### Constructor
+const overrides = new Map<string, any>();
+overrides.set('my-module', { greet: () => 'hello from override' });
 
-```typescript
-class SandboxWorkerThreads extends EventEmitter {
-    constructor(
-        source: string,           // Source code to execute
-        filename: string,         // Absolute file path
-        dependencies: DependencyDict  // Pre-built dependency map
-    )
-}
-```
-
-### Methods
-
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `execute()` | `Promise<void>` | Spawns a fresh `Worker` thread, posts the source/filename/dependencies, waits for completion. Rejects on error or non-zero exit. |
-| `static clearCache()` | `void` | No-op (each execution creates a fresh worker). |
-
-### How It Works
-
-1. A `Worker` is created with `eval: true` using an inlined script
-2. The inlined script contains a minimal `VmSandbox` class (mirror of the legacy `Sandbox`)
-3. The main thread sends an `execute` message with `{ source, filename, dependencies }`
-4. The worker executes the code in a `vm.createContext` and posts back `{ ok: true }` or `{ ok: false, error }`
-5. The worker is terminated after each execution
-
-### Factory Function
-
-```typescript
-function createSandboxWorkerThreads(
-    source: string,
-    filename: string,
-    dependencies: DependencyDict
-): SandboxWorkerThreads
-```
-
-### Usage Example
-
-```typescript
-import { SandboxWorkerThreads } from '@ringai/sandbox';
-
-const sandbox = new SandboxWorkerThreads(
-    'console.log("Hello from worker thread");',
-    '/tests/hello.js',
-    {}
+const sandbox = new Sandbox(
+    'const m = require("my-module"); module.exports = m.greet();',
+    '/tests/override-test.js',
+    {},
+    overrides,
 );
 
-await sandbox.execute();
-```
-
-## ESM Loader Hooks
-
-The `ESMLoaderHooks` system provides a registry for intercepting ESM module loading, enabling test mocking and code instrumentation.
-
-```typescript
-import {
-    ESMLoaderHooks,
-    esmLoaderHooks,
-    createESMLoader,
-    createMock,
-    createDefaultMock,
-} from '@ringai/sandbox';
-```
-
-### Types
-
-```typescript
-type MockedModule = {
-    [key: string]: any;
-};
-
-type ModuleMock = {
-    default?: MockedModule;       // Default export mock
-    namedExports?: MockedModule;  // Named exports mock
-};
-
-type LoaderHook = {
-    onLoad?: (specifier: string, context: any) => Promise<ModuleMock | null> | ModuleMock | null;
-    onLoaded?: (specifier: string, module: any) => Promise<any> | any;
-    onError?: (specifier: string, error: Error) => void;
-};
-```
-
-### ESMLoaderHooks Class
-
-Manages hooks and mocked modules:
-
-| Method | Description |
-|--------|-------------|
-| `registerHook(pattern, hook)` | Register a `LoaderHook` for a module pattern (supports `*` wildcards) |
-| `unregisterHook(pattern)` | Remove a registered hook |
-| `mockModule(specifier, mock)` | Mock a specific module |
-| `unmockModule(specifier)` | Remove a module mock |
-| `clearMocks()` | Clear all mocked modules |
-| `isMocked(specifier)` | Check if a module is mocked |
-| `getMock(specifier)` | Get the mock for a specifier |
-| `findMatchingHooks(specifier)` | Find all hooks matching a specifier (exact match or wildcard) |
-
-### Global Instance
-
-```typescript
-// Pre-created singleton
-export const esmLoaderHooks = new ESMLoaderHooks();
-```
-
-### createESMLoader(hook)
-
-Creates a Node.js-compatible ESM loader object with `resolve` and `load` hooks. The loader:
-
-- Checks for mocked modules and returns `data:` URLs with generated mock code
-- Runs registered `onLoad` hooks during resolution
-- Runs registered `onLoaded` hooks after loading
-
-```typescript
-const loader = createESMLoader({
-    onLoad: async (specifier) => {
-        if (specifier === './my-module') {
-            return { default: { mock: true } };
-        }
-        return null;
-    }
-});
-```
-
-### createMock(namedExports)
-
-Creates a `ModuleMock` with named exports:
-
-```typescript
-const mock = createMock({
-    myFunction: () => 'mocked',
-    myValue: 42,
-});
-esmLoaderHooks.mockModule('./my-module', mock);
-```
-
-### createDefaultMock(defaultExport)
-
-Creates a `ModuleMock` with a default export:
-
-```typescript
-const mock = createDefaultMock({ foo: 'bar' });
-esmLoaderHooks.mockModule('./my-module', mock);
+const result = sandbox.execute(); // 'hello from override'
+Sandbox.clearCache();
 ```
 
 ## Script Class (Internal)
@@ -274,24 +143,35 @@ Used internally by the `Sandbox` class.
 
 ## Integration with Test Worker
 
-The `WorkerController` in `@ringai/test-worker` creates a `SandboxWorkerThreads` instance for each test execution:
+The `TestWorkerInstance` in `@ringai/test-worker` creates a `Sandbox` instance for each test execution, injecting scoped API modules via `moduleOverrides`:
 
 ```typescript
-// Inside WorkerController.runTest()
-const sandbox = new SandboxWorkerThreads(
+// Inside TestWorkerInstance.runTest()
+const moduleOverrides = new Map<string, any>();
+moduleOverrides.set('@ringai/api', {
+    testAPIController: workerAPI,
+    TestAPIController,
+    TestContext,
+    WebApplication,
+    run: scopedRun,
+    beforeRun: scopedBeforeRun,
+    afterRun: scopedAfterRun,
+});
+moduleOverrides.set('ringai', {
+    run: scopedRun,
+    default: scopedRun,
+});
+
+const sandbox = new Sandbox(
     message.content,
     message.path,
-    message.dependencies
+    message.dependencies,
+    moduleOverrides,
 );
 await sandbox.execute();
 ```
 
-After execution completes (or fails), `SandboxWorkerThreads.clearCache()` is called for cleanup.
-
 ## Dependencies
 
-- `@ringai/utils` — `requirePackage()` for fallback module resolution, `generateUniqId()`
-- `@ringai/logger` — Logging via `loggerClient`
+- `@ringai/utils` — `requirePackageSync()` for fallback module resolution
 - `node:vm` — VM context creation and script execution
-- `node:worker_threads` — Worker thread isolation
-- `node:url` — `fileURLToPath` for ESM loader hooks
