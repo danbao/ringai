@@ -1,187 +1,109 @@
-<coding_guidelines>
 # CLAUDE.md
 
-This file provides guidance to AI coding assistants when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
 ringai is a modern, ESM-first Node.js automated UI testing framework for web applications. It provides multi-process parallel test execution, a rich plugin system, multi-browser support (Chrome, Firefox, Safari, Edge) via Playwright, and a TypeScript-native development experience.
 
-- **Version:** 0.8.x
 - **Node.js:** 22+
-- **Package Manager:** pnpm 10+
-- **Module System:** ESM (`"type": "module"`)
-- **TypeScript Target:** ES2022
-
-## Architecture
-
-### Monorepo Structure
-- **`core/`** — Core modules providing framework foundations (~20 packages)
-- **`packages/`** — Extension packages with plugins and tools
-- **`docs/`** — Documentation files
-- **`utils/`** — Build and maintenance utilities
-
-### Build System
-- **tsup** — Compiles each package (ESM-only, ES2022 target, sourcemaps)
-- **turbo** — Orchestrates builds and tasks across the monorepo
-- **pnpm workspaces** — Manages dependencies across packages
-
-### Core Module Dependencies (10-Layer Architecture)
-The core modules follow a strict layered architecture with clear dependency hierarchy:
-
-**Layer 0 (Base):** `types`, `async-breakpoints`
-**Layer 1 (Utils):** `utils`, `pluggable-module`
-**Layer 2 (Infrastructure):** `child-process`, `transport`
-**Layer 3 (Services):** `logger`, `fs-reader`
-**Layer 4 (Config/Storage):** `cli-config`, `fs-store`
-**Layer 5 (APIs):** `api`, `plugin-api`
-**Layer 6 (Advanced):** `sandbox`, `test-run-controller`, `reporter`
-**Layer 7 (Execution):** `test-worker`
-**Layer 8 (Interface):** `cli`
-**Layer 9 (Entry):** `ringai`
+- **Package Manager:** pnpm 10+ (`pnpm@10.28.2`)
+- **Module System:** ESM-only (`"type": "module"`)
+- **TypeScript:** 5.6.3 targeting ES2022
 
 ## Development Commands
 
 ### Build
 ```bash
-# Full build (all packages, turbo-orchestrated)
-pnpm run build
-
-# Build main packages only (excludes e2e-test-app, devtool-frontend, devtool-extension)
-pnpm run build:main
-
-# Watch mode for development
-pnpm run build:main:watch
+pnpm run build              # Full build (all packages, turbo-orchestrated)
+pnpm run build:main         # Build main packages only (excludes e2e-test-app)
+pnpm run build:main:watch   # Watch mode for development
 ```
 
-### Testing
+### Test
 ```bash
-# Run all tests (unit + E2E headless)
-pnpm test
-
-# Run unit tests only (vitest)
-pnpm run test:unit
-
-# Run unit tests with coverage (vitest + v8 provider)
-pnpm run test:unit:coverage
-
-# Run unit tests in watch mode
-pnpm run test:unit:watch
-
-# Run a single test file
-npx vitest run path/to/file.spec.ts
-
-# Run E2E tests (headless, default)
-pnpm run test:e2e
-
-# Run E2E tests (headed, with browser visible)
-pnpm run test:e2e:headed
-
-# Run E2E tests with coverage (c8)
-pnpm run test:e2e:coverage
-
-# Run CI tests (unit coverage + E2E coverage)
-pnpm run test:ci
+pnpm test                       # Run all tests (unit + E2E headless)
+pnpm run test:unit              # Unit tests only (vitest)
+pnpm run test:unit:watch        # Unit tests in watch mode
+pnpm run test:unit:coverage     # Unit tests with V8 coverage
+npx vitest run path/to/file.spec.ts  # Run a single test file
+pnpm run test:e2e               # E2E tests (headless Playwright)
+pnpm run test:e2e:headed        # E2E tests (headed, browser visible)
+pnpm run test:e2e:coverage      # E2E tests with c8 coverage
 ```
 
-### Linting and Code Quality
+### Lint
 ```bash
-# Lint all files (eslint flat config)
-pnpm run lint
-
-# Fix linting issues
-pnpm run lint:fix
+pnpm run lint       # Lint all files (eslint flat config)
+pnpm run lint:fix   # Auto-fix lint issues
 ```
 
 ### Package Management
 ```bash
-# Clean all packages
-pnpm run cleanup
-
-# Reinstall all dependencies
-pnpm run reinstall
-
-# Check for dependency updates
-pnpm run deps:find-updates
-
-# Validate package versions
-pnpm run deps:validate
+pnpm run cleanup     # Clean all packages (dist, node_modules artifacts)
+pnpm run reinstall   # Clean + install + build from scratch
 ```
 
-## Key Technical Details
+## Architecture
 
-### TypeScript Configuration
-- Target: **ES2022**
-- Module: **ES2022**
-- Module Resolution: **bundler**
-- Strict mode enabled with all strict flags
-- Composite builds enabled for incremental compilation
-- All packages have individual `tsconfig.json` extending `tsconfig.base.json`
+### Monorepo Structure
+- **`core/`** — 18 core modules providing framework foundations
+- **`packages/`** — 9 extension packages (plugins, utilities, e2e tests)
+- **`utils/`** — Build and maintenance scripts
+- pnpm workspaces defined in `pnpm-workspace.yaml` with `core/*` and `packages/*`
+- All packages use `@ringai/` scope (e.g., `@ringai/transport`, `@ringai/plugin-playwright-driver`)
+- Inter-package dependencies use `workspace:*` protocol
 
-### Testing Framework
-- **Vitest** for all unit and integration tests
-- Coverage via **@vitest/coverage-v8** (V8 provider)
-- **c8** for E2E coverage
-- Tests run in parallel using Vitest's thread pool
-- Root `vitest.config.ts` configures all test inclusion/exclusion patterns
+### Core Module Dependencies (10-Layer Architecture)
+Core modules follow a strict layered dependency hierarchy. Lower layers must not depend on higher layers:
 
-### Build System
-- **pnpm workspaces** for monorepo dependency management
-- **tsup** compiles each package to ESM with sourcemaps
-- **turbo** orchestrates build/test/lint tasks with caching
-- Each package builds to its own `dist/` directory
-- Base tsup config in `tsup.config.base.ts`
+| Layer | Modules | Role |
+|-------|---------|------|
+| 0 | `types`, `async-breakpoints` | Base types and primitives |
+| 1 | `utils`, `pluggable-module` | Shared utilities |
+| 2 | `child-process`, `transport` | Process and IPC infrastructure |
+| 3 | `logger`, `fs-reader` | Services |
+| 4 | `cli-config`, `fs-store` | Configuration and storage |
+| 5 | `api`, `plugin-api` | Public APIs |
+| 6 | `sandbox`, `test-run-controller`, `reporter` | Advanced orchestration |
+| 7 | `test-worker` | Test execution |
+| 8 | `cli` | Command-line interface (citty) |
+| 9 | `ringai` | Entry point |
 
-### CLI
-- Built with **citty** (lightweight CLI framework)
-- Subcommands: `run`, `init`, `plugin`
-- Configuration files: `.ringairc` (JSON), `.ringairc.js` (ESM), `.ringairc.cjs` (CJS)
+### Build Pipeline
+- **tsup** compiles each package to ESM with sourcemaps (base config: `tsup.config.base.ts`)
+- **turbo** orchestrates builds respecting `^build` dependency chain (`turbo.json`)
+- Type declarations generated by TypeScript separately (`dts: false` in tsup)
+- Each package has `tsup.config.ts`, `tsconfig.json` (extends `tsconfig.base.json`), and `tsconfig.build.json`
 
-### Package Structure
-Each package follows a consistent structure:
-- `src/` — TypeScript source files
-- `test/` — Test files (`.spec.ts`)
-- `dist/` — Built output (ESM)
-- `package.json` — Package configuration (`"type": "module"`)
-- `tsconfig.json` — TypeScript config (extends `tsconfig.base.json`)
-- `tsconfig.build.json` — Build-specific config
-- `tsup.config.ts` — tsup build configuration
+### Key Architectural Patterns
 
-## Working with Packages
+**Inter-Process Communication:** The `transport` package provides EventEmitter-based IPC with `send` (point-to-point async), `broadcast` (sync), and event subscription (`on`/`once`).
 
-### Adding New Packages
-New packages should follow the existing structure and be placed in either `core/` or `packages/` depending on their purpose. Ensure `"type": "module"` is set in `package.json` and provide a `tsup.config.ts`.
+**Plugin System:** Built on `hookable`. Plugins receive a `PluginAPI` instance providing access to Logger, FSReader, TestWorker, TestRunController, BrowserProxy, and FSStoreServer modules. Follow existing patterns in `packages/plugin-*`.
 
-### Modifying Core Packages
-When modifying core packages, be aware of the dependency hierarchy. Changes to lower-layer packages may affect multiple dependent packages. Turbo handles the build ordering automatically.
+**Error Hierarchy:** `RingaiError` base class with specialized types: `TransportError`, `PluginError`, `ConfigError`, `WorkerError`.
 
-### Plugin Development
-Use the `plugin-api` package for creating new plugins. Follow existing plugin patterns in the `packages/` directory (e.g., `plugin-playwright-driver`, `plugin-babel`, `plugin-fs-store`).
+**CLI:** Built with `citty`. Subcommands: `run`, `init`, `plugin`. Configuration files: `.ringairc` (JSON), `.ringairc.js` (ESM), `.ringairc.cjs` (CJS).
 
-## Common Patterns
+## TypeScript Strictness
 
-### Error Handling
-The framework uses a `RingaiError` hierarchy with specialized error types:
-- `RingaiError` — Base error class
-- `TransportError` — IPC/transport errors
-- `PluginError` — Plugin lifecycle errors
-- `ConfigError` — Configuration validation errors
-- `WorkerError` — Worker process errors
+The project uses maximum TypeScript strictness (`tsconfig.base.json`). Beyond `strict: true`, these additional checks are enabled:
+- `exactOptionalPropertyTypes` — optional properties cannot be explicitly `undefined` unless typed as such
+- `noUncheckedIndexedAccess` — index access returns `T | undefined`
+- `noPropertyAccessFromIndexSignature` — must use bracket notation for index signatures
+- `noImplicitOverride` — override keyword required
+- `noUnusedLocals` / `noUnusedParameters` — no dead code
 
-### Async Operations
-All async operations use modern async/await patterns with ES2022 features.
+## Testing Details
 
-### Inter-Process Communication
-The `transport` package handles all IPC between test workers and the main process, with `serialize`/`deserialize` for message passing.
+**Unit tests** (Vitest): Files matching `core/*/test/**/*.spec.ts` and `packages/*/test/**/*.spec.ts`. Some functional tests are excluded from the unit test suite (see `vitest.config.ts` exclude list) — these run separately. Test timeout: 60s, hook timeout: 30s. Coverage outputs to `.coverage/`.
 
-### File System Operations
-Use `fs-reader` for reading test files and `fs-store` for managing test artifacts and caching.
+**E2E tests**: Run via the `@ringai/e2e-test-app` package using ringai's own test runner with Playwright. Coverage via c8, outputs to `c8-cov/`. E2E tests use a local test server or Cloudflare Worker for test fixtures.
 
-### Key Dependencies
-- **citty** — CLI framework
-- **hookable** — Plugin hook system
-- **tinypool** — Worker thread pool
-- **tinyglobby** — Fast glob matching
-- **kleur** — Terminal colors
-- **@clack/prompts** — Interactive CLI prompts
-</coding_guidelines>
+## ESLint Notes
+
+- Flat config (`eslint.config.js`) with `typescript-eslint` and `sonarjs` plugins
+- `@typescript-eslint/no-explicit-any` is **off** — `any` is allowed
+- `no-console` is **warn** — prefer the logger module
+- Unused vars with `_` prefix are allowed (`_arg` pattern)
