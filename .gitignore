@@ -32,3 +32,5 @@ packages/e2e-test-app/test/playwright/test/**/*.pdf
 
 # tsup bundled cache
 tsup.config.base.bundled_*.mjs
+
+CLAUDE.md
