@@ -93,7 +93,7 @@ export class TestResultCollector {
             }
         });
 
-        controller.registerHook('beforeTestRetry', (queuedTest: IQueuedTest, _error: Error, _meta: ITestWorkerCallbackMeta) => {
+        controller.registerHook('beforeTestRetry', (_queuedTest: IQueuedTest, _error: Error, _meta: ITestWorkerCallbackMeta) => {
             this.state.retries++;
         });
 

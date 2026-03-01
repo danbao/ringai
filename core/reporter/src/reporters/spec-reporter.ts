@@ -6,7 +6,7 @@ import type { ITestResult, IReporterOptions } from '../interfaces.js';
  * Similar to Mocha's spec reporter
  */
 export class SpecReporter extends TestReporter {
-    public name = 'spec';
+    public override name = 'spec';
     
     private errorMessages: string[] = [];
     
