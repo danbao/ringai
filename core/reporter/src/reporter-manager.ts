@@ -10,6 +10,7 @@ import type {
 import { SpecReporter } from './reporters/spec-reporter.js';
 import { DotReporter } from './reporters/dot-reporter.js';
 import { JsonReporter } from './reporters/json-reporter.js';
+import { AIJsonReporter } from './reporters/ai-json-reporter.js';
 
 /**
  * Manages multiple reporters and dispatches events to them
@@ -35,7 +36,8 @@ export class ReporterManager {
         spec: SpecReporter,
         dot: DotReporter,
         json: JsonReporter,
-        list: SpecReporter, // alias to spec
+        'ai-json': AIJsonReporter,
+        list: SpecReporter,
     };
     
     /**

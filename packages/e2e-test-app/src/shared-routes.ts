@@ -1,6 +1,6 @@
 import { Hono, Context } from 'hono';
 
-// 导入所有 HTML 页面函数
+// Import all HTML page functions
 import { getUploadHtml } from './static-fixtures/upload';
 import { getMockHtml } from './static-fixtures/mock';
 import { getScrollHtml } from './static-fixtures/scroll';
@@ -33,7 +33,7 @@ import { getResponsiveHtml } from './static-fixtures/responsive';
 
 
 /**
- * 创建共享的 Hono 应用程序，包含所有通用路由
+ * Create shared Hono application with all common routes
  */
 export function createSharedApp(): Hono {
     const app = new Hono();
@@ -59,7 +59,7 @@ export function createSharedApp(): Hono {
 
 
 
-    // 健康检查端点
+    // Health check endpoint
     app.get('/health', (c: Context) => {
         const environment = getEnvironment();
         return c.json({ 
@@ -69,7 +69,7 @@ export function createSharedApp(): Hono {
         });
     });
 
-    // HTML 页面路由
+    // HTML page routes
     app.get('/static/upload.html', getUploadHtml);
     app.get('/static/mock.html', getMockHtml);
     app.get('/static/scroll.html', getScrollHtml);
@@ -99,7 +99,7 @@ export function createSharedApp(): Hono {
     app.get('/static/tag-name.html', getTagNameHtml);
     app.get('/static/responsive.html', getResponsiveHtml);
 
-    // 首页
+    // Home page
     app.get('/', (c: Context) => {
         const environment = getEnvironment();
         return c.json({
@@ -117,15 +117,15 @@ export function createSharedApp(): Hono {
 }
 
 /**
- * 获取当前运行环境
+ * Get the current runtime environment
  */
 function getEnvironment(): string | undefined {
-    // 检查是否在 Cloudflare Workers 环境中
+    // Check if running in Cloudflare Workers
     if (typeof globalThis.caches !== 'undefined' && typeof (globalThis as any).cf !== 'undefined') {
         return 'Cloudflare Workers';
     }
     
-    // 检查是否在 Node.js 环境中
+    // Check if running in Node.js
     if (typeof process !== 'undefined' && process.versions?.node) {
         return 'Node.js';
     }

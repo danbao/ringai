@@ -18,57 +18,25 @@ export abstract class TestReporter implements ITestReporter {
     /**
      * Called when test run starts
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onStart(runInfo: { startTime: number; tests: unknown[] }): void {
-        // Default no-op - override in subclasses
+    onStart(_runInfo: { startTime: number; tests: unknown[] }): void {
     }
     
-    /**
-     * Called when a test passes
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onTestPass(test: unknown): void {
-        // Default no-op - override in subclasses
+    onTestPass(_test: unknown): void {
     }
     
-    /**
-     * Called when a test fails
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onTestFail(test: unknown): void {
-        // Default no-op - override in subclasses
+    onTestFail(_test: unknown): void {
     }
     
-    /**
-     * Called when a test is skipped
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onTestSkip(test: unknown): void {
-        // Default no-op - override in subclasses
+    onTestSkip(_test: unknown): void {
     }
     
-    /**
-     * Called when a test is pending
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onTestPending(test: unknown): void {
-        // Default no-op - override in subclasses
+    onTestPending(_test: unknown): void {
     }
     
-    /**
-     * Called when test run ends
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onEnd(result: unknown): void {
-        // Default no-op - override in subclasses
+    onEnd(_result: unknown): void {
     }
     
-    /**
-     * Called when there's a runner error
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onError(error: Error): void {
-        // Default no-op - override in subclasses
+    onError(_error: Error): void {
     }
     
     /**

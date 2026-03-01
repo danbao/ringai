@@ -213,7 +213,7 @@ export type ReporterConstructor = new (options?: IReporterOptions) => ITestRepor
 /**
  * Built-in reporter names
  */
-export type BuiltInReporter = 'spec' | 'dot' | 'json' | 'list';
+export type BuiltInReporter = 'spec' | 'dot' | 'json' | 'ai-json' | 'list';
 
 /**
  * Reporter configuration

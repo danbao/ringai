@@ -93,4 +93,6 @@ export const enum BrowserProxyActions {
     setCustomBrowserClientConfig = 'setCustomBrowserClientConfig',
     getCustomBrowserClientConfig = 'getCustomBrowserClientConfig',
     setViewportSize = 'setViewportSize',
+    storageState = 'storageState',
+    emulateMedia = 'emulateMedia',
 }

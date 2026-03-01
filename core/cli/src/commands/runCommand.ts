@@ -6,6 +6,7 @@ import {TestWorker} from '@ringai/test-worker';
 import {setBrowserProxy} from '@ringai/web-application';
 import {BrowserProxyController} from '@ringai/browser-proxy';
 import {ICLICommand, IConfig, ITransport} from '@ringai/types';
+import {ReporterManager, TestResultCollector} from '@ringai/reporter';
 
 import {FSStoreServer} from '@ringai/fs-store';
 
@@ -17,6 +18,7 @@ class RunCommand implements ICLICommand {
     private browserProxyController!: BrowserProxyController;
     private testRunController!: TestRunController;
     private fsStoreServer: FSStoreServer;
+    private reporterManager!: ReporterManager;
 
     constructor(
         private config: IConfig,
@@ -65,6 +67,15 @@ class RunCommand implements ICLICommand {
             testWorker,
             null,
         );
+
+        const reporterConfigs = (this.config as any).reporter
+            ? [{ reporter: (this.config as any).reporter as string }]
+            : [];
+        this.reporterManager = new ReporterManager(reporterConfigs, {
+            output: this.stdout as NodeJS.WriteStream,
+        });
+        const resultCollector = new TestResultCollector(this.reporterManager);
+        resultCollector.registerHooks(this.testRunController);
 
         const loggerServer = new LoggerServer(
             this.config,
@@ -133,6 +144,10 @@ class RunCommand implements ICLICommand {
 
         testRunController && (await testRunController.kill());
         browserProxyController && (await browserProxyController.kill());
+
+        if (this.reporterManager) {
+            await this.reporterManager.close();
+        }
     }
 }
 

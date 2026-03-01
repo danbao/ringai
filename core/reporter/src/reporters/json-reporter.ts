@@ -6,7 +6,7 @@ import type { ITestResult, IReporterOptions, ITestRunResult } from '../interface
  * Useful for CI systems and programmatic processing
  */
 export class JsonReporter extends TestReporter {
-    public name = 'json';
+    public override name = 'json';
     
     private startTime: number = 0;
     private tests: ITestResult[] = [];

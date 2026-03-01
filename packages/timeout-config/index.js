@@ -1,6 +1,6 @@
 /**
- * 统一的Timeout配置
- * 支持不同环境和操作类型的timeout设置
+ * Unified timeout configuration
+ * Supports timeout settings for different environments and operation types
  */
 
 const isLocal = process.env.NODE_ENV === 'development' || process.env.LOCAL === 'true';
@@ -8,8 +8,8 @@ const isCI = process.env.CI === 'true';
 const isDebug = process.env.DEBUG === 'true' || process.env.PLAYWRIGHT_DEBUG === '1';
 
 /**
- * 基础timeout配置（毫秒）
- * 与 Playwright 默认值保持完全一致
+ * Base timeout configuration (milliseconds)
+ * Aligned with Playwright defaults
  */
 const BASE_TIMEOUTS = {
   fast: {
@@ -53,7 +53,7 @@ const BASE_TIMEOUTS = {
 };
 
 /**
- * 环境相关的timeout倍数
+ * Environment-specific timeout multipliers
  */
 const ENVIRONMENT_MULTIPLIERS = {
   local: isLocal ? {
@@ -70,7 +70,7 @@ const ENVIRONMENT_MULTIPLIERS = {
 };
 
 /**
- * 计算最终的timeout值
+ * Calculate final timeout value
  */
 function calculateTimeout(category, operation, baseValue = null) {
   const base = baseValue || BASE_TIMEOUTS[category][operation];
@@ -90,7 +90,7 @@ function calculateTimeout(category, operation, baseValue = null) {
 }
 
 /**
- * 导出的timeout配置
+ * Exported timeout configuration
  */
 const TIMEOUTS = {
   CLICK: calculateTimeout('fast', 'click'),

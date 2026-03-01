@@ -7,7 +7,7 @@ import {
 import { chromium, firefox, webkit, Browser, BrowserContext, Page } from 'playwright';
 import { loggerClient } from '@ringai/logger';
 
-// 导入统一的timeout配置
+// Unified timeout configuration
 import TIMEOUTS from '@ringai/timeout-config';
 
 const DEFAULT_CONFIG: PlaywrightPluginConfig = {
@@ -45,7 +45,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     private pendingDialogs: Map<string, any> = new Map();
     private tabIdMap: Map<string, Page> = new Map(); // Maps generated tab IDs to page instances
     private pageToTabIdMap: WeakMap<Page, string> = new WeakMap(); // Maps page instances to tab IDs
-    private isCleaningUp: boolean = false; // 标记是否正在清理过程中
+    private isCleaningUp: boolean = false;
 
     constructor(config: Partial<PlaywrightPluginConfig> = {}) {
         this.config = { ...DEFAULT_CONFIG, ...config };
@@ -88,23 +88,23 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     }
 
     private async getBrowser(): Promise<Browser> {
-        // 检查现有浏览器是否仍然可用
+        // Check if existing browser is still usable
         if (this.browser) {
             try {
-                // 检查浏览器是否仍然连接
+                // Check if browser is still connected
                 if (this.browser.isConnected && this.browser.isConnected()) {
                     return this.browser;
                 }
             } catch (error) {
-                // 浏览器已断开连接，需要重新创建
+                // Browser disconnected, needs recreation
                 this.logger.debug('Existing browser is disconnected, creating new one');
                 this.browser = undefined;
             }
         }
 
-        // 检查是否正在清理过程中，避免在清理时启动新浏览器
+        // Avoid launching a new browser while cleanup is in progress
         if (this.isCleaningUp) {
-            // 等待清理完成
+            // Wait for cleanup to finish
             let waitCount = 0;
             while (this.isCleaningUp && waitCount < 10) {
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -118,37 +118,45 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
 
         const browserName = this.config.browserName || 'chromium';
         const launchOptions = this.config.launchOptions || {};
-        
-        switch (browserName) {
-            case 'chromium':
-                this.browser = await chromium.launch(launchOptions);
-                break;
-            case 'firefox':
-                this.browser = await firefox.launch(launchOptions);
-                break;
-            case 'webkit':
-                this.browser = await webkit.launch(launchOptions);
-                break;
-            case 'msedge':
-                // Microsoft Edge 使用 chromium 引擎，通过 channel 参数指定
-                const msedgeOptions = {
-                    ...launchOptions,
-                    channel: 'msedge'
-                };
-                this.browser = await chromium.launch(msedgeOptions);
-                break;
-            default:
-                throw new Error(`Unsupported browser: ${browserName}`);
+
+        if (this.config.cdpEndpoint) {
+            const cdpOptions: any = { wsEndpoint: this.config.cdpEndpoint };
+            if (this.config.cdpIsLocal !== undefined) {
+                cdpOptions.isLocal = this.config.cdpIsLocal;
+            }
+            this.browser = await chromium.connectOverCDP(this.config.cdpEndpoint, cdpOptions);
+        } else {
+            switch (browserName) {
+                case 'chromium':
+                    this.browser = await chromium.launch(launchOptions);
+                    break;
+                case 'firefox':
+                    this.browser = await firefox.launch(launchOptions);
+                    break;
+                case 'webkit':
+                    this.browser = await webkit.launch(launchOptions);
+                    break;
+                case 'msedge': {
+                    const msedgeOptions = {
+                        ...launchOptions,
+                        channel: 'msedge'
+                    };
+                    this.browser = await chromium.launch(msedgeOptions);
+                    break;
+                }
+                default:
+                    throw new Error(`Unsupported browser: ${browserName}`);
+            }
         }
 
-        // 尝试获取并注册浏览器进程 PID（适用于 Chromium 和 MSEdge）
+        // Attempt to register browser process info (Chromium and MSEdge)
         if ((browserName === 'chromium' || browserName === 'msedge') && this.browser) {
             try {
-                // Playwright 没有直接暴露 PID，但我们可以通过其他方式追踪
+                // Playwright doesn't expose PID directly; use other metadata for tracking
                 const context = await this.browser.newContext();
                 const page = await context.newPage();
                 
-                // 获取 browser 的一些元信息用于追踪
+                // Retrieve browser metadata for tracking
                 const version = this.browser.version();
                 this.logger.debug(`Browser launched: ${browserName} ${version}`);
                 
@@ -182,7 +190,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         // Check if browser is still connected before creating context
         try {
             // Test if browser is still alive by checking if it's connected
-            if (typeof (browser as any).isConnected === 'function' && !(browser as any).isConnected()) {
+            if (!browser.isConnected()) {
                 throw new Error('Browser is not connected');
             }
         } catch (error: any) {
@@ -366,7 +374,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         }
     }
 
-    // 等待上下文中所有页面的待处理操作完成
+    // Wait for all pending page operations in the context to complete
     private async waitForPendingOperations(context: any): Promise<void> {
         try {
             const pages = context.pages();
@@ -374,27 +382,27 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
 
             for (const page of pages) {
                 try {
-                    // 等待页面加载完成
+                    // Wait for page load to complete
                     waitPromises.push(
                         page.waitForLoadState('networkidle', { timeout: 1000 }).catch(() => {})
                     );
 
-                    // 等待所有正在进行的请求完成
+                    // Wait for all in-flight requests to complete
                     waitPromises.push(
                         page.waitForLoadState('domcontentloaded', { timeout: 1000 }).catch(() => {})
                     );
                 } catch (error) {
-                    // 忽略已关闭页面的错误
+                    // Ignore errors from already-closed pages
                 }
             }
 
-            // 等待所有页面操作完成，但设置超时避免无限等待
+            // Wait for all page operations to complete with a timeout to prevent infinite waits
             await Promise.race([
                 Promise.all(waitPromises),
-                new Promise(resolve => setTimeout(resolve, 2000)) // 最多等待2秒
+                new Promise(resolve => setTimeout(resolve, 2000))
             ]);
         } catch (error) {
-            // 忽略等待操作的错误，不影响清理流程
+            // Ignore wait errors during cleanup
         }
     }
 
@@ -425,11 +433,11 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         const clientData = this.browserClients.get(applicant);
 
         try {
-            // 等待所有正在进行的页面操作完成
-            // 等待所有页面的导航和操作完成
+            // Wait for all in-progress page operations to finish
+            // Wait for all page navigations and operations to complete
             await this.waitForPendingOperations(context);
 
-            // 额外等待一下确保所有异步操作完成
+            // Extra wait to ensure all async operations have settled
             await new Promise(resolve => setTimeout(resolve, 200));
             // Stop tracing with timeout
             if (this.config.trace && clientData) {
@@ -600,7 +608,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     public async click(applicant: string, selector: string, options?: any): Promise<void> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
-        const clickOptions = { timeout: TIMEOUTS.CLICK, ...options }; // 点击操作timeout
+        const clickOptions = { timeout: TIMEOUTS.CLICK, ...options };
 
         // Handle XPath selectors
         const normalizedSelector = this.normalizeSelector(selector);
@@ -721,30 +729,30 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // waitForExist should only wait for element to exist in DOM, not be visible
-        await page.waitForSelector(normalizedSelector, { state: 'attached', timeout });
+        await page.locator(normalizedSelector).waitFor({ state: 'attached', timeout });
     }
 
     public async waitForVisible(applicant: string, selector: string, timeout: number): Promise<void> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        await page.waitForSelector(normalizedSelector, { state: 'visible', timeout });
+        await page.locator(normalizedSelector).waitFor({ state: 'visible', timeout });
     }
 
     public async isVisible(applicant: string, selector: string): Promise<boolean> {
         await this.createClient(applicant);
         const currentContext = this.getCurrentContext(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        const element = await currentContext.$(normalizedSelector);
-        return element ? await element.isVisible() : false;
+        const locator = currentContext.locator(normalizedSelector).first();
+        const count = await currentContext.locator(normalizedSelector).count();
+        return count > 0 ? await locator.isVisible() : false;
     }
 
     public async moveToObject(applicant: string, selector: string, _x: number, _y: number): Promise<void> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // 使用统一的超时配置，Playwright 的 hover 有完整的自动等待机制
+        // Playwright hover has built-in auto-wait
         await page.hover(normalizedSelector, { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
     }
 
@@ -1033,27 +1041,21 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         
-        // elementId should be in format "element-0", "element-1", etc.
-        // This corresponds to the index from the elements() method
         if (elementId.startsWith('element-')) {
             const clientData = this.browserClients.get(applicant);
-            if (clientData && (clientData as any).elementIdToSelector) {
-                const elementIdToSelector = (clientData as any).elementIdToSelector;
-                const elementInfo = elementIdToSelector.get(elementId);
+            if (clientData?.elementIdToSelector) {
+                const elementInfo = clientData.elementIdToSelector.get(elementId);
                 
                 if (elementInfo) {
                     const { selector, index } = elementInfo;
                     const normalizedSelector = this.normalizeSelector(selector);
-                    const elements = await page.$$(normalizedSelector);
-                    if (elements[index]) {
-                        return await elements[index].textContent() || '';
-                    }
+                    const locator = page.locator(normalizedSelector).nth(index);
+                    return await locator.textContent() || '';
                 }
             }
         }
         
-        // Fallback - try as data-testid
-        const element = await page.locator(`[data-testid="${elementId}"]`).first();
+        const element = page.locator(`[data-testid="${elementId}"]`).first();
         return await element.textContent() || '';
     }
 
@@ -1061,19 +1063,17 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        const elements = await page.$$(normalizedSelector);
+        const elements = await page.locator(normalizedSelector).all();
         
-        // Store the selector for elementIdText method
         const clientData = this.browserClients.get(applicant);
         if (clientData) {
-            (clientData as any).lastElementsSelector = selector;
-            (clientData as any).lastElementsCount = elements.length;
+            clientData.lastElementsSelector = selector;
+            clientData.lastElementsCount = elements.length;
             
-            // Store selector for each element ID using global counter
-            if (!(clientData as any).elementIdToSelector) {
-                (clientData as any).elementIdToSelector = new Map();
+            if (!clientData.elementIdToSelector) {
+                clientData.elementIdToSelector = new Map();
             }
-            const elementIdToSelector = (clientData as any).elementIdToSelector;
+            const elementIdToSelector = clientData.elementIdToSelector;
             
             const elementIds = [];
             for (let i = 0; i < elements.length; i++) {
@@ -1092,7 +1092,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // inputValue 没有内置等待，使用 locator 的 inputValue 方法，它有自动等待
+        // Use locator-based inputValue for built-in auto-wait
         return await page.locator(normalizedSelector).inputValue({ timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
     }
 
@@ -1108,7 +1108,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
             // Handle file upload
             await page.setInputFiles(normalizedSelector, value);
         } else {
-            await page.fill(normalizedSelector, value, { timeout: TIMEOUTS.FILL }); // 填充操作timeout
+            await page.fill(normalizedSelector, value, { timeout: TIMEOUTS.FILL });
         }
     }
 
@@ -1116,7 +1116,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // 使用统一的超时配置，Playwright 的 selectOption 有完整的自动等待机制
+        // Playwright selectOption has built-in auto-wait
         await page.selectOption(normalizedSelector, { index }, { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
     }
 
@@ -1124,7 +1124,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // 使用统一的超时配置，Playwright 的 selectOption 有完整的自动等待机制
+        // Playwright selectOption has built-in auto-wait
         await page.selectOption(normalizedSelector, { value }, { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
     }
 
@@ -1132,7 +1132,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // 使用统一的超时配置，Playwright 的 selectOption 有完整的自动等待机制
+        // Playwright selectOption has built-in auto-wait
         await page.selectOption(normalizedSelector, { label: text }, { timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
     }
 
@@ -1345,15 +1345,14 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        const element = await page.$(normalizedSelector);
-        if (!element) return '';
+        const locator = page.locator(normalizedSelector).first();
+        const count = await page.locator(normalizedSelector).count();
+        if (count === 0) return '';
         
         if (outerHTML) {
-            // Get the outer HTML including the element itself
-            return await page.evaluate((el) => el.outerHTML, element);
+            return await locator.evaluate((el) => el.outerHTML);
         } else {
-            // Get the inner HTML
-            return await element.innerHTML();
+            return await locator.innerHTML();
         }
     }
 
@@ -1361,10 +1360,9 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        const element = await page.$(normalizedSelector);
-        if (!element) return null;
-        const box = await element.boundingBox();
-        // Return only width and height, not x and y coordinates
+        const count = await page.locator(normalizedSelector).count();
+        if (count === 0) return null;
+        const box = await page.locator(normalizedSelector).first().boundingBox();
         return box ? { width: box.width, height: box.height } : null;
     }
 
@@ -1489,7 +1487,7 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         const normalizedSelector = this.normalizeSelector(selector);
-        // textContent 没有内置等待，使用 locator 的 textContent 方法，它有自动等待
+        // Use locator-based textContent for built-in auto-wait
         return await page.locator(normalizedSelector).textContent({ timeout: TIMEOUTS.WAIT_FOR_ELEMENT }) || '';
     }
 
@@ -1497,65 +1495,58 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         
-        // Similar to elementIdText, handle element-N format
         if (elementId.startsWith('element-')) {
             const clientData = this.browserClients.get(applicant);
-            if (clientData && (clientData as any).elementIdToSelector) {
-                const elementIdToSelector = (clientData as any).elementIdToSelector;
-                const elementInfo = elementIdToSelector.get(elementId);
+            if (clientData?.elementIdToSelector) {
+                const elementInfo = clientData.elementIdToSelector.get(elementId);
                 
                 if (elementInfo) {
                     const { selector, index } = elementInfo;
                     const normalizedSelector = this.normalizeSelector(selector);
-                    const elements = await page.$$(normalizedSelector);
+                    const locator = page.locator(normalizedSelector).nth(index);
                     
-                    if (elements[index]) {
-                        // Check if this element is a checkbox or radio button
-                        const tagName = await elements[index].evaluate((el) => el.tagName.toLowerCase());
-                        const inputType = await elements[index].evaluate((el) => 
-                            el.tagName.toLowerCase() === 'input' ? (el as HTMLInputElement).type : null
-                        );
-                        
-                        if (tagName === 'input' && (inputType === 'checkbox' || inputType === 'radio')) {
-                            return await elements[index].isChecked();
-                        } else if (tagName === 'option') {
-                            return await elements[index].evaluate((el) => (el as HTMLOptionElement).selected);
-                        }
-                        
-                        // For other elements, check if they have selected attribute
-                        const hasSelected = await elements[index].evaluate((el) => 
-                            el.hasAttribute('selected') || el.hasAttribute('checked') || 
-                            (el as any).selected === true || (el as any).checked === true
-                        );
-                        return hasSelected;
+                    const tagName = await locator.evaluate((el) => el.tagName.toLowerCase());
+                    const inputType = await locator.evaluate((el) => 
+                        el.tagName.toLowerCase() === 'input' ? (el as HTMLInputElement).type : null
+                    );
+                    
+                    if (tagName === 'input' && (inputType === 'checkbox' || inputType === 'radio')) {
+                        return await locator.isChecked();
+                    } else if (tagName === 'option') {
+                        return await locator.evaluate((el) => (el as HTMLOptionElement).selected);
                     }
+                    
+                    const hasSelected = await locator.evaluate((el) => 
+                        el.hasAttribute('selected') || el.hasAttribute('checked') || 
+                        (el as any).selected === true || (el as any).checked === true
+                    );
+                    return hasSelected;
                 }
             }
         }
         
-        // Fallback - try as data-testid
         try {
-            const element = await page.$(`[data-testid="${elementId}"]`);
-            if (element) {
-                const tagName = await element.evaluate((el) => el.tagName.toLowerCase());
-                const inputType = await element.evaluate((el) => 
+            const locator = page.locator(`[data-testid="${elementId}"]`).first();
+            const count = await page.locator(`[data-testid="${elementId}"]`).count();
+            if (count > 0) {
+                const tagName = await locator.evaluate((el) => el.tagName.toLowerCase());
+                const inputType = await locator.evaluate((el) => 
                     el.tagName.toLowerCase() === 'input' ? (el as HTMLInputElement).type : null
                 );
                 
                 if (tagName === 'input' && (inputType === 'checkbox' || inputType === 'radio')) {
-                    return await element.isChecked();
+                    return await locator.isChecked();
                 } else if (tagName === 'option') {
-                    return await element.evaluate((el) => (el as HTMLOptionElement).selected);
+                    return await locator.evaluate((el) => (el as HTMLOptionElement).selected);
                 }
                 
-                // For other elements, check if they have selected attribute
-                const hasSelected = await element.evaluate((el) => 
+                const hasSelected = await locator.evaluate((el) => 
                     el.hasAttribute('selected') || el.hasAttribute('checked') || 
                     (el as any).selected === true || (el as any).checked === true
                 );
                 return hasSelected;
             }
-        } catch (error) {
+        } catch (_error) {
             // Ignore errors and fall back to false
         }
         
@@ -1679,11 +1670,10 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         try {
             const { page } = await this.validatePageAccess(applicant, 'Check element existence');
             const normalizedSelector = this.normalizeSelector(selector);
-            const element = await page.$(normalizedSelector);
-            return element !== null;
+            return await page.locator(normalizedSelector).count() > 0;
         } catch (error: any) {
             if (error.message.includes('Page for') || error.message.includes('Browser context for')) {
-                throw error; // Re-throw validation errors as-is
+                throw error;
             }
             throw new Error(`Element existence check failed for ${applicant}: ${error.message}`);
         }
@@ -2019,13 +2009,8 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         const { page } = this.getBrowserClient(applicant);
         
         try {
-            // Wait for element to exist
-            await page.waitForSelector(selector, { state: 'attached', timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
-            
-            // For now, let's wait a bit to check if element is stable
-            // This is a simplified implementation
-            await page.waitForTimeout(200);
-            
+            const normalizedSelector = this.normalizeSelector(selector);
+            await page.locator(normalizedSelector).waitFor({ state: 'attached', timeout: TIMEOUTS.WAIT_FOR_ELEMENT });
             return true;
         } catch {
             return false;
@@ -2067,16 +2052,16 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
     public async waitForStable(applicant: string, selector: string, timeout: number): Promise<void> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
-        await page.waitForSelector(selector, { state: 'attached', timeout });
+        const normalizedSelector = this.normalizeSelector(selector);
+        await page.locator(normalizedSelector).waitFor({ state: 'attached', timeout });
     }
 
     public async getActiveElement(applicant: string): Promise<any> {
         await this.createClient(applicant);
         const { page } = this.getBrowserClient(applicant);
         
-        // Try to use the last elements selector to find the index of the active element
         const clientData = this.browserClients.get(applicant);
-        const lastSelector = clientData && (clientData as any).lastElementsSelector;
+        const lastSelector = clientData?.lastElementsSelector;
         
         if (lastSelector) {
             const normalizedSelector = this.normalizeSelector(lastSelector);
@@ -2084,7 +2069,6 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
                 const activeElement = document.activeElement;
                 if (!activeElement) return -1;
                 
-                // Find all elements matching the last selector
                 const elements = selector.startsWith('xpath=') 
                     ? (() => {
                         const xpath = selector.replace('xpath=', '');
@@ -2105,7 +2089,6 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
             }
         }
         
-        // Fallback: return element-0 for any active element
         const hasActiveElement = await page.evaluate(() => document.activeElement !== document.body);
         return hasActiveElement ? { ELEMENT: 'element-0' } : null;
     }
@@ -2115,17 +2098,15 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         const { page } = this.getBrowserClient(applicant);
         
         if (selector) {
-            // Get element location
             const normalizedSelector = this.normalizeSelector(selector);
-            const element = await page.$(normalizedSelector);
-            if (element) {
-                const box = await element.boundingBox();
+            const count = await page.locator(normalizedSelector).count();
+            if (count > 0) {
+                const box = await page.locator(normalizedSelector).first().boundingBox();
                 return box ? { x: box.x, y: box.y } : { x: 0, y: 0 };
             }
             return { x: 0, y: 0 };
         }
         
-        // Get window location
         return await page.evaluate(() => ({
             href: window.location.href,
             origin: window.location.origin,
@@ -2199,6 +2180,35 @@ export class PlaywrightPlugin implements IBrowserProxyPlugin {
         if (deviceName.toLowerCase().includes('mobile')) {
             await page.setViewportSize({ width: 375, height: 667 });
         }
+    }
+
+    public async storageState(applicant: string, options?: { indexedDB?: boolean }): Promise<any> {
+        await this.createClient(applicant);
+        const clientData = this.browserClients.get(applicant);
+        if (!clientData) {
+            throw new Error(`No browser client for ${applicant}`);
+        }
+        const context = (clientData as any).context;
+        if (!context) {
+            throw new Error(`No browser context for ${applicant}`);
+        }
+        return context.storageState({ indexedDB: options?.indexedDB ?? false });
+    }
+
+    public async emulateMedia(applicant: string, options: { colorScheme?: string; contrast?: string; media?: string }): Promise<void> {
+        await this.createClient(applicant);
+        const { page } = this.getBrowserClient(applicant);
+        const emulateOptions: any = {};
+        if (options.colorScheme) {
+            emulateOptions.colorScheme = options.colorScheme;
+        }
+        if (options.contrast) {
+            emulateOptions.contrast = options.contrast;
+        }
+        if (options.media) {
+            emulateOptions.media = options.media;
+        }
+        await page.emulateMedia(emulateOptions);
     }
 }
 

@@ -65,6 +65,18 @@ export interface PlaywrightPluginConfig {
      * Trace directory path
      */
     traceDir?: string;
+
+    /**
+     * CDP endpoint URL for connecting to an existing browser via Chrome DevTools Protocol.
+     * When set, the plugin connects to this endpoint instead of launching a new browser.
+     */
+    cdpEndpoint?: string;
+
+    /**
+     * When connecting via CDP, set to true to enable file system optimizations
+     * for local CDP targets (Playwright 1.58+).
+     */
+    cdpIsLocal?: boolean;
 }
 
 export interface BrowserClientItem {
@@ -73,4 +85,7 @@ export interface BrowserClientItem {
     initTime: number;
     coverage: any;
     currentFrame?: any;
+    lastElementsSelector?: string;
+    lastElementsCount?: number;
+    elementIdToSelector?: Map<string, { selector: string; index: number }>;
 }

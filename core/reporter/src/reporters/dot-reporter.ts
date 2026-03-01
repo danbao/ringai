@@ -6,7 +6,7 @@ import type { ITestResult, IReporterOptions, ITestRunResult } from '../interface
  * . = pass, F = fail, P = pending, S = skipped
  */
 export class DotReporter extends TestReporter {
-    public name = 'dot';
+    public override name = 'dot';
     
     private dots: string[] = [];
     private currentLineLength: number = 0;

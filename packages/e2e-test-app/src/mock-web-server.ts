@@ -27,48 +27,48 @@ export class MockWebServer {
         this.httpServerInstance.close();
     }
 
-    // 获取 Hono app 实例，用于 Cloudflare Workers 部署
+    // Get Hono app instance for Cloudflare Workers deployment
     getApp(): Hono {
         return this.app;
     }
 
     private createHonoApp(): Hono {
-        // 使用共享的路由（包含 HTML 路由）
+        // Use shared routes (includes HTML routes)
         const app = createSharedApp();
         return app;
     }
 }
 
-// 导出 Hono app 实例，用于 Cloudflare Workers 部署
+// Export Hono app instance for Cloudflare Workers deployment
 export const app = new MockWebServer().getApp();
 
-// 默认导出，用于 Cloudflare Workers
+// Default export for Cloudflare Workers
 export default app;
 
-// 如果直接运行此文件，启动服务器
+// Start server when this file is run directly
 const isMainModule = import.meta.url === `file://${process.argv[1]}` ||
     process.argv[1]?.endsWith('mock-web-server.ts');
 if (isMainModule) {
     const server = new MockWebServer();
 
     server.start().then(() => {
-        console.log('🚀 Mock Web Server 已启动在 http://localhost:8080');
+        console.log('Mock Web Server started at http://localhost:8080');
         console.log('');
-        console.log('可用的端点：');
-        console.log('  POST /upload - 文件上传端点');
-        console.log('  GET  /grid-test - 测试页面');
-        console.log('  GET  /health - 健康检查');
-        console.log('  GET  /static/* - HTML 测试页面（所有环境）');
+        console.log('Available endpoints:');
+        console.log('  POST /upload - File upload endpoint');
+        console.log('  GET  /grid-test - Test page');
+        console.log('  GET  /health - Health check');
+        console.log('  GET  /static/* - HTML test pages (all environments)');
         console.log('');
-        console.log('按 Ctrl+C 停止服务器');
+        console.log('Press Ctrl+C to stop the server');
     }).catch((error) => {
-        console.error('启动服务器失败:', error);
+        console.error('Failed to start server:', error);
         process.exit(1);
     });
 
-    // 优雅关闭
+    // Graceful shutdown
     process.on('SIGINT', () => {
-        console.log('\n正在关闭服务器...');
+        console.log('\nShutting down server...');
         server.stop();
         process.exit(0);
     });
