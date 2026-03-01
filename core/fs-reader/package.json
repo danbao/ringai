@@ -20,6 +20,6 @@
     "@ringai/pluggable-module": "workspace:*",
     "@ringai/types": "workspace:*",
     "tinyglobby": "0.2.15",
-    "p-limit": "3.1.0"
+    "p-limit": "7.0.0"
   }
 }

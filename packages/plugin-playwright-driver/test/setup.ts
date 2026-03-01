@@ -1,12 +1,12 @@
-// 全局测试设置
-// 在所有测试开始前设置进程监听器限制，避免 MaxListenersExceededWarning
+// Global test setup
+// Set process listener limit before all tests to avoid MaxListenersExceededWarning
 
-// 设置足够大的监听器限制以避免警告
-// 这是因为 Playwright 和测试框架会注册多个进程监听器
-// 在大型测试套件中，可能需要更大的限制
+// Set a sufficiently large listener limit to avoid warnings
+// Playwright and the test framework register multiple process listeners
+// Larger test suites may require a higher limit
 process.setMaxListeners(200);
 
-// 可选：如果需要调试监听器问题，可以启用以下代码
+// Optional: enable the following code to debug listener issues
 // const originalAddListener = process.addListener;
 // process.addListener = function(event: string, listener: (...args: any[]) => void) {
 //     console.log(`Adding listener for event: ${event}, current count: ${process.listenerCount(event)}`);

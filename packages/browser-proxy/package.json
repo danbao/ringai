@@ -18,7 +18,7 @@
     "@ringai/types": "workspace:*",
     "@ringai/utils": "workspace:*",
     "@types/node": "^22.0.0",
-    "playwright": "^1.48.0"
+    "playwright": "^1.58.0"
   },
   "devDependencies": {
     "@ringai/test-utils": "workspace:*"

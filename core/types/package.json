@@ -13,6 +13,9 @@
   "dependencies": {
     "@types/node": "22.8.5"
   },
+  "devDependencies": {
+    "chai": "^5.2.0"
+  },
   "scripts": {
     "build": "tsup --config ../../tsup.config.base.ts && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly"
   }

@@ -174,11 +174,15 @@ export default defineConfig({
 }
 
 function generateTestExample(): string {
-    return `import { test, expect } from 'vitest';
+    return `import { run } from 'ringai';
 
-test('example test', async ({ page }) => {
-    await page.goto('https://example.com');
-    await expect(page.locator('h1')).toContainText('Example');
+run(async (api) => {
+    const app = api.application;
+
+    await app.url('https://example.com');
+
+    const heading = await app.getText('h1');
+    await app.assert.include(heading, 'Example');
 });
 `;
 }

@@ -443,4 +443,12 @@ export class WebClient implements IWebApplicationClient {
             timeout,
         ]);
     }
+
+    public storageState(options?: { indexedDB?: boolean }) {
+        return this.makeRequest(BrowserProxyActions.storageState, [options]);
+    }
+
+    public emulateMedia(options: { colorScheme?: string; contrast?: string; media?: string }) {
+        return this.makeRequest(BrowserProxyActions.emulateMedia, [options]);
+    }
 }

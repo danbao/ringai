@@ -3,7 +3,7 @@ import {run} from 'ringai';
 run(async (api) => {
     const app = api.application;
     
-    // 测试基本的自定义浏览器客户端配置功能
+    // Test basic custom browser client configuration
     await app.client.setCustomBrowserClientConfig({
         hostname: 'localhost',
         port: 8080,
@@ -12,7 +12,7 @@ run(async (api) => {
         },
     });
     
-    // 验证配置是否正确设置
+    // Verify configuration was applied correctly
     const config = await app.client.getCustomBrowserClientConfig();
     await app.assert.equal(
         config.headers['X-Ringai-Custom-Header'],
@@ -20,10 +20,10 @@ run(async (api) => {
         'Custom header should be set correctly'
     );
     
-    // 测试基本的页面访问功能
+    // Test basic page navigation
     await app.url('https://captive.apple.com');
     
-    // 验证页面标题（简单的功能验证）
+    // Verify page title (basic functional check)
     const title = await app.getTitle();
     await app.assert.ok(title.length > 0, 'Page should have a title');
     

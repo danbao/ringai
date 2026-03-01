@@ -193,4 +193,8 @@ export interface IBrowserProxyPlugin {
     setViewportSize(applicant: string, width: number, height: number): Promise<void>;
 
     getWindowSize(applicant: string): Promise<{ width: number; height: number }>;
+
+    storageState(applicant: string, options?: { indexedDB?: boolean }): Promise<any>;
+
+    emulateMedia(applicant: string, options: { colorScheme?: string; contrast?: string; media?: string }): Promise<void>;
 }

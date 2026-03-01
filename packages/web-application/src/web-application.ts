@@ -34,7 +34,7 @@ import {
     simulateJSFieldChangeScript,
 } from './browser-scripts';
 
-// 导入统一的timeout配置
+// Unified timeout configuration
 import TIMEOUTS from '@ringai/timeout-config';
 
 type valueType = string | number | null | undefined;
@@ -1967,6 +1967,24 @@ export class WebApplication extends PluggableModule {
     public async isStable(xpath: ElementPath) {
         xpath = this.normalizeSelector(xpath);
         return this.client.isStable(xpath);
+    }
+
+    @stepLog(function (this: WebApplication, options?: { indexedDB?: boolean }) {
+        return `Getting storage state${options?.indexedDB ? ' (with IndexedDB)' : ''}`;
+    })
+    public async storageState(options?: { indexedDB?: boolean }) {
+        return this.client.storageState(options);
+    }
+
+    @stepLog(function (this: WebApplication, options: { colorScheme?: string; contrast?: string; media?: string }) {
+        const parts = [];
+        if (options.colorScheme) parts.push(`colorScheme=${options.colorScheme}`);
+        if (options.contrast) parts.push(`contrast=${options.contrast}`);
+        if (options.media) parts.push(`media=${options.media}`);
+        return `Emulating media: ${parts.join(', ')}`;
+    })
+    public async emulateMedia(options: { colorScheme?: string; contrast?: string; media?: string }) {
+        return this.client.emulateMedia(options);
     }
 }
 

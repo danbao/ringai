@@ -1,10 +1,10 @@
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const globals = require('globals');
-const importPlugin = require('eslint-plugin-import');
-const sonarjs = require('eslint-plugin-sonarjs');
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import globals from 'globals';
+import importPlugin from 'eslint-plugin-import';
+import sonarjs from 'eslint-plugin-sonarjs';
 
-module.exports = tseslint.config(
+export default tseslint.config(
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
     {

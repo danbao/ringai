@@ -1,10 +1,10 @@
 import { createSharedApp } from './shared-routes';
 
-// 创建共享的应用程序实例
+// Create shared application instance
 const app = createSharedApp();
 
-// Cloudflare Workers 特定的配置可以在这里添加
-// 例如 CORS、额外的中间件等
+// Cloudflare Workers-specific configuration can be added here
+// e.g. CORS, additional middleware, etc.
 
-// 默认导出，用于 Cloudflare Workers
+// Default export for Cloudflare Workers
 export default app; 

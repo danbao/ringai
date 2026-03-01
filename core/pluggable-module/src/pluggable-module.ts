@@ -90,17 +90,12 @@ class LegacyHook {
  * Maintains backward compatibility with legacy Hook API
  */
 export class PluggableModule implements IPluggableModule<LegacyHook> {
-    // New hookable instance for modern hook management
     protected hookable: Hookable;
-    
-    // Legacy hook instances for backward compatibility
     protected pluginHooks: Map<string, LegacyHook> = new Map();
+    private registeredHookableNames: Set<string> = new Set();
 
     constructor(hooks: Array<HookDescriptor> = []) {
-        // Initialize new hookable
         this.hookable = new Hookable();
-        
-        // Create legacy Hook instances for backward compatibility
         this.createHooks(hooks);
     }
 
@@ -116,9 +111,7 @@ export class PluggableModule implements IPluggableModule<LegacyHook> {
      * Call a registered hook by name
      */
     protected async callHook<T = any>(name: string, ...args: any[]): Promise<T> {
-        // Try new hookable first
-        const hookNames = Object.keys((this.hookable as any)._hooks || {});
-        if (hookNames.includes(name)) {
+        if (this.registeredHookableNames.has(name)) {
             return this.hookable.callHook(name, ...args) as Promise<T>;
         }
         
@@ -143,6 +136,7 @@ export class PluggableModule implements IPluggableModule<LegacyHook> {
      * Register a hook handler using new hookable API
      */
     public registerHook(name: string, handler: HookHandler): () => void {
+        this.registeredHookableNames.add(name);
         return this.hookable.hook(name, handler);
     }
 
@@ -150,6 +144,9 @@ export class PluggableModule implements IPluggableModule<LegacyHook> {
      * Register multiple hooks at once
      */
     public registerHooks(hooks: Record<string, HookHandler | HookHandler[]>): () => void {
+        for (const name of Object.keys(hooks)) {
+            this.registeredHookableNames.add(name);
+        }
         return this.hookable.addHooks(hooks);
     }
 
@@ -172,15 +169,14 @@ export class PluggableModule implements IPluggableModule<LegacyHook> {
      */
     public getHookNames(): string[] {
         const legacyNames = Array.from(this.pluginHooks.keys());
-        const newHookNames = Object.keys((this.hookable as any)._hooks || {});
-        return [...new Set([...legacyNames, ...newHookNames])];
+        return [...new Set([...legacyNames, ...this.registeredHookableNames])];
     }
 
     /**
      * Check if a hook exists
      */
     public hasHook(name: string): boolean {
-        return this.pluginHooks.has(name) || Object.keys((this.hookable as any)._hooks || {}).includes(name);
+        return this.pluginHooks.has(name) || this.registeredHookableNames.has(name);
     }
 
     /**
@@ -188,6 +184,7 @@ export class PluggableModule implements IPluggableModule<LegacyHook> {
      */
     public removeAllHooks(): void {
         this.pluginHooks.clear();
+        this.registeredHookableNames.clear();
         this.hookable.removeAllHooks();
     }
 

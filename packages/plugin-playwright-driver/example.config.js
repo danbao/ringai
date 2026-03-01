@@ -30,8 +30,7 @@ module.exports = {
             launchOptions: {
                 // headless mode is controlled by PLAYWRIGHT_DEBUG environment variable only
                 // Do not set headless: false here - use PLAYWRIGHT_DEBUG=1 instead
-                slowMo: 100, // Custom slow motion (PLAYWRIGHT_DEBUG=1 sets this to 500ms automatically)
-                devtools: true
+                slowMo: 100 // Custom slow motion (PLAYWRIGHT_DEBUG=1 sets this to 500ms automatically)
             },
             contextOptions: {
                 viewport: { width: 1920, height: 1080 },

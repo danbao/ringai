@@ -6,7 +6,7 @@
  * 2. Keeps assert hooks (success/error handlers)
  * 3. Uses Playwright's native API for everything else
  * 
- * Target: Phase 4.5 - 简化 WebApplication → 薄封装 Playwright Page
+ * Target: Phase 4.5 - Simplified WebApplication as a thin wrapper around Playwright Page
  */
 
 import { Page, Locator, BrowserContext } from 'playwright';

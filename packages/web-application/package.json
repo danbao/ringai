@@ -20,7 +20,8 @@
     "@ringai/transport": "workspace:*",
     "@ringai/types": "workspace:*",
     "@ringai/utils": "workspace:*",
-    "playwright": "^1.48.0"
+    "chai": "^5.2.0",
+    "playwright": "^1.58.0"
   },
   "devDependencies": {
     "@ringai/child-process": "workspace:*",

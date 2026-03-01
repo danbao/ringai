@@ -20,13 +20,14 @@
     "@ringai/fs-store": "workspace:*",
     "@ringai/logger": "workspace:*",
     "@ringai/plugin-api": "workspace:*",
+    "@ringai/reporter": "workspace:*",
     "@ringai/test-run-controller": "workspace:*",
     "@ringai/test-worker": "workspace:*",
     "@ringai/transport": "workspace:*",
     "@ringai/types": "workspace:*",
     "@ringai/web-application": "workspace:*",
     "@types/node": "22.8.5",
-    "citty": "^0.1.6",
+    "citty": "^0.2.1",
     "kleur": "^4.1.5"
   },
   "scripts": {
