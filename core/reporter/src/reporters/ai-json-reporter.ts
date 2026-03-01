@@ -150,7 +150,9 @@ export class AIJsonReporter extends TestReporter {
                     title: test.title,
                     fullTitle: test.fullTitle,
                     file: test.file.path,
-                    status: test.status === 'passed' && test.retries > 0 ? 'flaky' : test.status,
+                    status: test.status === 'passed' && test.retries > 0
+                        ? 'flaky'
+                        : test.status === 'pending' ? 'skipped' : test.status,
                     duration: test.duration,
                     retries: test.retries,
                     artifacts: {},
