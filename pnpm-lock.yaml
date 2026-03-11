@@ -451,8 +451,8 @@ importers:
   packages/e2e-test-app:
     dependencies:
       '@hono/node-server':
-        specifier: ^1.12.2
-        version: 1.19.9(hono@4.11.10)
+        specifier: ^1.19.10
+        version: 1.19.10(hono@4.12.7)
       '@ringai/cli':
         specifier: workspace:*
         version: link:../../core/cli
@@ -484,8 +484,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1
       hono:
-        specifier: ^4.6.3
-        version: 4.11.10
+        specifier: ^4.12.7
+        version: 4.12.7
       mocha:
         specifier: ^10.0.0
         version: 10.8.2
@@ -1100,8 +1100,8 @@ packages:
   '@gerrit0/mini-shiki@3.22.0':
     resolution: {integrity: sha512-jMpciqEVUBKE1QwU64S4saNMzpsSza6diNCk4MWAeCxO2+LFi2FIFmL2S0VDLzEJCxuvCbU783xi8Hp/gkM5CQ==}
 
-  '@hono/node-server@1.19.9':
-    resolution: {integrity: sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw==}
+  '@hono/node-server@1.19.10':
+    resolution: {integrity: sha512-hZ7nOssGqRgyV3FVVQdfi+U4q02uB23bpnYpdvNXkYTRRyWx84b7yf1ans+dnJ/7h41sGL3CeQTfO+ZGxuO+Iw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -2457,8 +2457,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.11.10:
-    resolution: {integrity: sha512-kyWP5PAiMooEvGrA9jcD3IXF7ATu8+o7B3KCbPXid5se52NPqnOpM/r9qeW2heMnOekF4kqR1fXJqCYeCLKrZg==}
+  hono@4.12.7:
+    resolution: {integrity: sha512-jq9l1DM0zVIvsm3lv9Nw9nlJnMNPOcAtsbsgiUhWcFzPE99Gvo6yRTlszSLLYacMeQ6quHD6hMfId8crVHvexw==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.0.1:
@@ -4207,9 +4207,9 @@ snapshots:
       '@shikijs/types': 3.22.0
       '@shikijs/vscode-textmate': 10.0.2
 
-  '@hono/node-server@1.19.9(hono@4.11.10)':
+  '@hono/node-server@1.19.10(hono@4.12.7)':
     dependencies:
-      hono: 4.11.10
+      hono: 4.12.7
 
   '@humanfs/core@0.19.1': {}
 
@@ -5638,7 +5638,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.11.10: {}
+  hono@4.12.7: {}
 
   hookable@6.0.1: {}
 
